@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "sqlite": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["mcp-server-sqlite", "--db-path", "${CLAUDE_PLUGIN_ROOT}/data/analytics.db"],
+      "env": {}
+    }
+  }
+}

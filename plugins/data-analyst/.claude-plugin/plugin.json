@@ -1,0 +1,14 @@
+{
+  "name": "data-analyst",
+  "version": "1.0.0",
+  "description": "Comprehensive data analysis and visualization assistant for exploratory analysis and insights",
+  "author": {
+    "name": "Ven0m0",
+    "url": "https://github.com/Ven0m0"
+  },
+  "homepage": "https://github.com/Ven0m0/claude-config",
+  "repository": "https://github.com/Ven0m0/claude-config",
+  "license": "MIT",
+  "keywords": ["data-analysis", "visualization", "statistics", "exploratory-analysis", "insights"],
+  "skills": ["./skills/"]
+}
