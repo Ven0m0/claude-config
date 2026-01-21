@@ -2,6 +2,10 @@
 
 A comprehensive collection of Claude AI configuration files, prompts, and templates for various use cases.
 
+## 🚀 Quick Start
+
+**New to this repository?** Check out the [Setup Guide (SETUP.md)](SETUP.md) for step-by-step instructions!
+
 ## 📁 Repository Structure
 
 ```
@@ -10,8 +14,8 @@ A comprehensive collection of Claude AI configuration files, prompts, and templa
 │   ├── config.json            # Core Claude configuration
 │   ├── README.md              # Detailed documentation
 │   ├── settings/              # API and conversation settings
-│   │   ├── api_settings.json
-│   │   └── conversation_settings.json
+│   │   ├── api_settings.example.json  # Template for API settings
+│   │   └── conversation_settings.json # Conversation preferences
 │   ├── prompts/               # Specialized system prompts
 │   │   ├── coding_assistant.md
 │   │   ├── technical_writer.md
@@ -21,7 +25,14 @@ A comprehensive collection of Claude AI configuration files, prompts, and templa
 │   │   └── code_review.md
 │   └── context/               # Project-specific context
 │       └── project_context.md
+├── examples/                  # Example usage scripts
+│   ├── README.md
+│   ├── example_usage.py       # Python example
+│   ├── example_usage.js       # Node.js example
+│   └── cli_examples.md        # CLI usage examples
 ├── README.md                  # This file
+├── SETUP.md                   # Setup guide
+├── .gitignore                 # Git ignore rules
 └── LICENSE
 ```
 
