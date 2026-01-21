@@ -1,0 +1,47 @@
+# API Keys and Secrets
+.claude/settings/api_settings.json
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# Conversation History
+conversations/
+*.conversation.json
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# IDE and Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+
+# Node modules (if using Node.js tools)
+node_modules/
+
+# Python (if using Python tools)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+
+# Backup files
+*.bak
+*.backup
