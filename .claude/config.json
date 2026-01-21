@@ -1,0 +1,15 @@
+{
+  "model": "claude-3-5-sonnet-20241022",
+  "max_tokens": 8192,
+  "temperature": 1.0,
+  "system_prompts": [
+    "You are a helpful AI assistant powered by Claude."
+  ],
+  "tools_enabled": true,
+  "streaming": true,
+  "preferences": {
+    "response_style": "detailed",
+    "code_formatting": "markdown",
+    "language": "en"
+  }
+}
