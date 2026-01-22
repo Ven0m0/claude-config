@@ -69,12 +69,12 @@ claude
 **Optional (for auto-formatting hook):**
 ```bash
 # JavaScript/TypeScript
-npm install -g prettier
+npm install -g @biomejs/biome
 
-# Python
-pip install black
-# or
-pip install autopep8
+# Python (via uv - auto-installs on first use)
+pip install uv
+# or install ruff directly
+pip install ruff
 
 # Go (included with Go installation)
 # Rust
@@ -206,7 +206,7 @@ cd ~/.claude/plugins/data-analyst
 **Error:** Hook script fails to execute
 
 **Solution:**
-1. Check formatter is installed (prettier, black, etc.)
+1. Check formatter is installed (biome, ruff, etc.)
 2. Make script executable: `chmod +x ~/.claude/plugins/coding-assistant/scripts/format.sh`
 3. Test script manually: `~/.claude/plugins/coding-assistant/scripts/format.sh test.js`
 4. Disable hook if not needed (edit plugin.json)

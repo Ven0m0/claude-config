@@ -35,11 +35,13 @@ def format_python(file_path: str, cwd: str) -> None:
         pass
 
 
-def format_prettier(file_path: str, cwd: str) -> None:
-    """Format files with prettier."""
+def format_biome(file_path: str, cwd: str) -> None:
+    """Format files with biome."""
     try:
         subprocess.run(
-            ["npx", "prettier", "--write", file_path], cwd=cwd, capture_output=True
+            ["npx", "@biomejs/biome", "format", "--write", file_path],
+            cwd=cwd,
+            capture_output=True,
         )
     except FileNotFoundError:
         pass
@@ -69,8 +71,8 @@ def main() -> None:
         format_rust(file_path, cwd)
     elif ext in (".py", ".pyi"):
         format_python(file_path, cwd)
-    elif ext in (".json5", ".yaml", ".yml", ".md"):
-        format_prettier(file_path, cwd)
+    elif ext in (".js", ".jsx", ".ts", ".tsx", ".json", ".jsonc", ".json5"):
+        format_biome(file_path, cwd)
 
 
 if __name__ == "__main__":
