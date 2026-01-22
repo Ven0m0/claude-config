@@ -1,0 +1,56 @@
+{
+  "name": "claude-config-marketplace",
+  "owner": {
+    "name": "Ven0m0",
+    "email": "ven0m0@users.noreply.github.com"
+  },
+  "metadata": {
+    "description": "A curated collection of Claude Code plugins, skills, and tools for enhanced productivity",
+    "version": "1.0.0",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "coding-assistant",
+      "description": "Advanced coding assistant with code review, refactoring, and best practices",
+      "version": "1.0.0",
+      "author": {
+        "name": "Ven0m0"
+      },
+      "homepage": "https://github.com/Ven0m0/claude-config",
+      "repository": "https://github.com/Ven0m0/claude-config",
+      "license": "MIT",
+      "source": "coding-assistant",
+      "keywords": ["coding", "development", "code-review", "refactoring"],
+      "category": "productivity"
+    },
+    {
+      "name": "technical-writer",
+      "description": "Technical documentation and API documentation writer",
+      "version": "1.0.0",
+      "author": {
+        "name": "Ven0m0"
+      },
+      "homepage": "https://github.com/Ven0m0/claude-config",
+      "repository": "https://github.com/Ven0m0/claude-config",
+      "license": "MIT",
+      "source": "technical-writer",
+      "keywords": ["documentation", "technical-writing", "api-docs"],
+      "category": "productivity"
+    },
+    {
+      "name": "data-analyst",
+      "description": "Data analysis and visualization assistant",
+      "version": "1.0.0",
+      "author": {
+        "name": "Ven0m0"
+      },
+      "homepage": "https://github.com/Ven0m0/claude-config",
+      "repository": "https://github.com/Ven0m0/claude-config",
+      "license": "MIT",
+      "source": "data-analyst",
+      "keywords": ["data-analysis", "visualization", "statistics"],
+      "category": "productivity"
+    }
+  ]
+}

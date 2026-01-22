@@ -1,275 +1,298 @@
 # Setup Guide
 
-This guide will help you set up and configure this Claude configuration repository.
+This guide will help you install and configure the Claude Code Plugin Marketplace.
 
 ## Prerequisites
 
-- Git installed on your system
-- Python 3.6+ or Node.js 14+ (depending on your preferred language)
-- An Anthropic API key (get one at https://console.anthropic.com/)
+- **Claude Code CLI** installed ([Installation Guide](https://code.claude.com/docs/en/installation.md))
+- **Git** installed on your system
+- **Plugin-specific requirements** (see below for each plugin)
 
 ## Installation Steps
 
-### 1. Clone the Repository
+### Option 1: Add Marketplace to Claude Code (Recommended)
+
+This is the easiest way to install all plugins:
 
 ```bash
+# Start Claude Code
+claude
+
+# Add this marketplace
+/plugin marketplace add Ven0m0/claude-config
+
+# Install all plugins
+/plugin install coding-assistant technical-writer data-analyst @claude-config-marketplace
+```
+
+### Option 2: Install Individual Plugins
+
+Install only the plugins you need:
+
+```bash
+claude
+
+# Install just the coding assistant
+/plugin install coding-assistant@claude-config-marketplace
+
+# Or install the technical writer
+/plugin install technical-writer@claude-config-marketplace
+
+# Or install the data analyst
+/plugin install data-analyst@claude-config-marketplace
+```
+
+### Option 3: Local Development/Testing
+
+Clone and test locally before publishing:
+
+```bash
+# Clone the repository
 git clone https://github.com/Ven0m0/claude-config.git
 cd claude-config
+
+# In Claude Code, add as local marketplace
+claude
+/plugin marketplace add ./path/to/claude-config
+
+# Install plugins from local marketplace
+/plugin install coding-assistant@claude-config-marketplace
 ```
 
-### 2. Configure API Settings
+## Plugin Requirements
 
-Create your API settings file from the example:
+### Coding Assistant
 
+**Required:**
+- No special requirements (uses Claude Code's built-in tools)
+
+**Optional (for auto-formatting hook):**
 ```bash
-cp .claude/settings/api_settings.example.json .claude/settings/api_settings.json
-```
+# JavaScript/TypeScript
+npm install -g prettier
 
-Then edit `.claude/settings/api_settings.json` and replace `YOUR_API_KEY_HERE` with your actual API key:
-
-```bash
-# Using your favorite editor
-nano .claude/settings/api_settings.json
+# Python
+pip install black
 # or
-vim .claude/settings/api_settings.json
-# or
-code .claude/settings/api_settings.json
+pip install autopep8
+
+# Go (included with Go installation)
+# Rust
+rustup component add rustfmt
 ```
 
-**Important:** Never commit your actual API key to version control! The `.gitignore` file is configured to exclude `api_settings.json`.
+### Technical Writer
 
-### 3. Set Environment Variables (Recommended)
+**Required:**
+- No special requirements
 
-For better security, store your API key as an environment variable:
+### Data Analyst
 
-**Linux/Mac:**
+**Required for analysis:**
 ```bash
-export ANTHROPIC_API_KEY="your-api-key-here"
+pip install pandas numpy matplotlib seaborn
 ```
 
-Add this to your `~/.bashrc` or `~/.zshrc` to make it permanent:
+**Optional (for visualizations):**
 ```bash
-echo 'export ANTHROPIC_API_KEY="your-api-key-here"' >> ~/.bashrc
-source ~/.bashrc
+pip install plotly
 ```
 
-**Windows (PowerShell):**
-```powershell
-$env:ANTHROPIC_API_KEY="your-api-key-here"
-```
-
-To make it permanent:
-```powershell
-[System.Environment]::SetEnvironmentVariable('ANTHROPIC_API_KEY', 'your-api-key-here', 'User')
-```
-
-### 4. Install Dependencies (Optional)
-
-If you want to use the example scripts:
-
-**Python:**
+**Optional (for MCP database server):**
 ```bash
-pip install anthropic
+pip install uvx
+uvx mcp-server-sqlite
 ```
 
-**Node.js:**
-```bash
-npm install @anthropic-ai/sdk
-```
+## Verifying Installation
 
-### 5. Test Your Setup
-
-**Python:**
-```bash
-python examples/example_usage.py
-```
-
-**Node.js:**
-```bash
-node examples/example_usage.js
-```
-
-You should see output showing your configuration being loaded successfully.
-
-## Quick Test with the API
-
-### Python Quick Test
+After installing plugins, verify they're active:
 
 ```bash
-python3 << 'EOF'
-import os
-from anthropic import Anthropic
+# List installed plugins
+/plugin list
 
-client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+# List available skills
+/help
 
-message = client.messages.create(
-    model="claude-3-5-sonnet-20241022",
-    max_tokens=1024,
-    messages=[
-        {"role": "user", "content": "Hello, Claude!"}
-    ]
-)
-
-print(message.content[0].text)
-EOF
+# Test a skill
+/code-review --help
 ```
 
-### Node.js Quick Test
+You should see your installed plugins and their skills listed.
+
+## Using the Plugins
+
+### Coding Assistant Examples
 
 ```bash
-node << 'EOF'
-const Anthropic = require('@anthropic-ai/sdk');
+# Review code
+/code-review src/components/UserProfile.tsx
 
-const anthropic = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY,
-});
+# Debug an issue
+/debug "TypeError: Cannot read property 'map' of undefined"
 
-(async () => {
-    const message = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 1024,
-        messages: [
-            { role: 'user', content: 'Hello, Claude!' }
-        ]
-    });
-    
-    console.log(message.content[0].text);
-})();
-EOF
+# Refactor code
+/refactor src/utils/helpers.js
 ```
 
-## Configuration Customization
-
-### 1. Adjust Model Settings
-
-Edit `.claude/config.json` to change:
-- Model version
-- Token limits
-- Temperature (creativity)
-- System prompts
-
-### 2. Create Custom Prompts
-
-Add new prompt files in `.claude/prompts/`:
+### Technical Writer Examples
 
 ```bash
-cat > .claude/prompts/my_custom_prompt.md << 'EOF'
-# My Custom Prompt
+# Generate API documentation
+/api-docs POST /api/v1/users
 
-You are a specialized assistant for...
-
-## Guidelines
-- ...
-EOF
+# Create a user guide
+/user-guide "Getting Started with Our Platform"
 ```
 
-### 3. Add Project Context
-
-Add project-specific information in `.claude/context/`:
+### Data Analyst Examples
 
 ```bash
-cat > .claude/context/my_project.md << 'EOF'
-# My Project Context
+# Analyze a dataset
+/analyze-data sales_data.csv
 
-## Overview
-This project is about...
-
-## Architecture
-...
-EOF
+# Create visualizations
+/visualize-data data.csv
 ```
 
-### 4. Modify Conversation Settings
+## Configuration
 
-Edit `.claude/settings/conversation_settings.json` to customize:
-- History length
-- Output format
-- Behavioral settings
+### Disabling Auto-format Hook
 
-## Verification
+If you don't want automatic code formatting, edit the plugin configuration:
 
-After setup, verify everything is working:
+```bash
+# Navigate to plugin directory
+cd ~/.claude/plugins/coding-assistant
 
-1. **Check configuration files exist:**
-   ```bash
-   ls -la .claude/settings/api_settings.json
-   ls -la .claude/config.json
-   ```
+# Edit plugin.json and remove the "hooks" field
+# or comment it out
+```
 
-2. **Validate JSON files:**
-   ```bash
-   # Check all JSON files are valid
-   for file in .claude/**/*.json; do
-     echo "Checking $file..."
-     python -m json.tool "$file" > /dev/null && echo "✓ Valid" || echo "✗ Invalid"
-   done
-   ```
+### Customizing MCP Servers
 
-3. **Test API connectivity:**
-   Run the example scripts as shown above.
+To use your own database with the data-analyst plugin:
+
+```bash
+# Navigate to plugin directory
+cd ~/.claude/plugins/data-analyst
+
+# Edit .mcp.json and update the db-path
+```
 
 ## Troubleshooting
 
-### API Key Not Found
+### Plugin Not Found
 
-**Error:** `"api_key must be provided"`
+**Error:** `Plugin 'coding-assistant' not found in marketplace 'claude-config-marketplace'`
 
-**Solution:** Make sure your API key is set either in:
-- The environment variable `ANTHROPIC_API_KEY`, or
-- The file `.claude/settings/api_settings.json`
+**Solution:**
+1. Ensure the marketplace is added: `/plugin marketplace list`
+2. Refresh marketplace: `/plugin marketplace refresh`
+3. Try adding again: `/plugin marketplace add Ven0m0/claude-config`
 
-### Module Not Found
+### Skill Not Working
 
-**Error:** `ModuleNotFoundError: No module named 'anthropic'` (Python) or `Cannot find module '@anthropic-ai/sdk'` (Node.js)
+**Error:** `Skill '/code-review' not found`
 
-**Solution:** Install the required SDK:
+**Solution:**
+1. Check plugin is installed: `/plugin list`
+2. Verify the plugin loaded correctly: `/plugin info coding-assistant`
+3. Reinstall if needed: `/plugin uninstall coding-assistant && /plugin install coding-assistant@claude-config-marketplace`
+
+### Hook Errors
+
+**Error:** Hook script fails to execute
+
+**Solution:**
+1. Check formatter is installed (prettier, black, etc.)
+2. Make script executable: `chmod +x ~/.claude/plugins/coding-assistant/scripts/format.sh`
+3. Test script manually: `~/.claude/plugins/coding-assistant/scripts/format.sh test.js`
+4. Disable hook if not needed (edit plugin.json)
+
+### MCP Server Not Starting
+
+**Error:** SQLite MCP server fails to start
+
+**Solution:**
+1. Install uvx: `pip install uvx`
+2. Verify mcp-server-sqlite: `uvx mcp-server-sqlite --help`
+3. Check database path in `.mcp.json`
+4. Create database directory if needed: `mkdir -p ~/.claude/plugins/data-analyst/data`
+
+## Updating Plugins
+
+Keep your plugins up to date:
+
 ```bash
-# Python
-pip install anthropic
+# Update all plugins from a marketplace
+/plugin marketplace update claude-config-marketplace
 
-# Node.js
-npm install @anthropic-ai/sdk
+# Update specific plugin
+/plugin update coding-assistant
+
+# Check for updates
+/plugin outdated
 ```
 
-### Permission Denied
+## Uninstalling
 
-**Error:** `Permission denied` when running example scripts
+Remove plugins you no longer need:
 
-**Solution:** Make the scripts executable:
 ```bash
-chmod +x examples/example_usage.py
-chmod +x examples/example_usage.js
+# Uninstall a plugin
+/plugin uninstall coding-assistant
+
+# Remove marketplace
+/plugin marketplace remove claude-config-marketplace
 ```
 
-### Rate Limit Errors
+## Development
 
-**Error:** `RateLimitError`
+### Creating Custom Skills
 
-**Solution:** Adjust the rate limits in `.claude/settings/api_settings.json` or wait before making more requests.
+To add your own skills to a plugin:
 
-## Next Steps
+1. Navigate to plugin's skills directory
+2. Create a new directory for your skill
+3. Add a `SKILL.md` file with frontmatter
+4. Reload the plugin
 
-1. Review the [README.md](README.md) for full documentation
-2. Explore the prompts in `.claude/prompts/`
-3. Check out the templates in `.claude/templates/`
-4. Read the CLI examples in `examples/cli_examples.md`
-5. Customize configurations for your use case
+Example:
+```bash
+cd ~/.claude/plugins/coding-assistant/skills
+mkdir my-skill
+cat > my-skill/SKILL.md << 'EOF'
+---
+name: my-skill
+description: What my skill does
+user-invocable: true
+---
+
+Your skill instructions here...
+EOF
+```
+
+### Contributing
+
+Want to contribute? See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## Getting Help
 
-- Check the [Anthropic Documentation](https://docs.anthropic.com/)
-- Review the `.claude/README.md` for detailed configuration options
-- Open an issue on GitHub if you encounter problems
+- **Documentation**: [README.md](README.md)
+- **Plugin Docs**: Check individual plugin README files
+- **Claude Code Docs**: https://code.claude.com/docs
+- **Issues**: Open an issue on GitHub
+- **Examples**: See the `examples/` directory
 
-## Security Reminders
+## Security
 
-- ✅ **DO** use environment variables for API keys
-- ✅ **DO** keep `.gitignore` configured to exclude secrets
-- ✅ **DO** use the example files as templates
-- ❌ **DON'T** commit API keys to version control
-- ❌ **DON'T** share your API keys
-- ❌ **DON'T** commit `.claude/settings/api_settings.json` with real keys
+- **Review plugins** before installing
+- **Check hooks** to understand what commands they run
+- **Use caution** with plugins that execute system commands
+- **Report security issues** privately to the maintainers
 
 ---
 
-**You're all set! Happy coding with Claude! 🚀**
+**You're all set! Start using your Claude Code plugins! 🚀**

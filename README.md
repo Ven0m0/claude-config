@@ -1,208 +1,221 @@
-# Claude Configuration Repository
+# Claude Code Plugin Marketplace
 
-A comprehensive collection of Claude AI configuration files, prompts, and templates for various use cases.
+A curated collection of Claude Code plugins, skills, and tools for enhanced productivity. This marketplace provides professional-grade plugins for coding, documentation, and data analysis workflows.
 
 ## 🚀 Quick Start
 
-**New to this repository?** Check out the [Setup Guide (SETUP.md)](SETUP.md) for step-by-step instructions!
+### Installing the Marketplace
+
+Add this marketplace to your Claude Code installation:
+
+```bash
+/plugin marketplace add Ven0m0/claude-config
+```
+
+### Installing Plugins
+
+Install individual plugins from the marketplace:
+
+```bash
+# Install coding assistant
+/plugin install coding-assistant@claude-config-marketplace
+
+# Install technical writer
+/plugin install technical-writer@claude-config-marketplace
+
+# Install data analyst
+/plugin install data-analyst@claude-config-marketplace
+```
+
+Or install all plugins at once:
+
+```bash
+/plugin install coding-assistant technical-writer data-analyst @claude-config-marketplace
+```
+
+## 📦 Available Plugins
+
+### 🔧 Coding Assistant
+
+Advanced coding assistant with code review, debugging, and refactoring capabilities.
+
+**Skills:**
+- `/code-review` - Comprehensive code reviews with security and performance checks
+- `/debug` - Systematic debugging and root cause analysis
+- `/refactor` - Code refactoring for better structure and maintainability
+
+**Features:**
+- Automatic code formatting after edits (Prettier, Black, gofmt, rustfmt)
+- Security vulnerability detection
+- Performance optimization suggestions
+- Best practices guidance
+
+[View Plugin Documentation](./plugins/coding-assistant/README.md)
+
+### 📝 Technical Writer
+
+Professional technical documentation and API documentation writer.
+
+**Skills:**
+- `/api-docs` - Generate comprehensive API documentation with multi-language examples
+- `/user-guide` - Create detailed user guides and tutorials
+
+**Features:**
+- Standardized API documentation templates
+- Multi-language code examples (cURL, Python, JavaScript)
+- Step-by-step tutorial generation
+- Industry-standard documentation practices
+
+[View Plugin Documentation](./plugins/technical-writer/README.md)
+
+### 📊 Data Analyst
+
+Comprehensive data analysis and visualization assistant.
+
+**Skills:**
+- `/analyze-data` - Exploratory data analysis with statistical insights
+- `/visualize-data` - Create effective data visualizations
+
+**Features:**
+- Descriptive statistics and pattern identification
+- Data quality assessment
+- Correlation analysis
+- matplotlib, seaborn, and Plotly visualizations
+- Optional SQLite MCP server for database analysis
+
+[View Plugin Documentation](./plugins/data-analyst/README.md)
 
 ## 📁 Repository Structure
 
 ```
 .
-├── .claude/                    # Main configuration directory
-│   ├── config.json            # Core Claude configuration
-│   ├── README.md              # Detailed documentation
-│   ├── settings/              # API and conversation settings
-│   │   ├── api_settings.example.json  # Template for API settings
-│   │   └── conversation_settings.json # Conversation preferences
-│   ├── prompts/               # Specialized system prompts
-│   │   ├── coding_assistant.md
-│   │   ├── technical_writer.md
-│   │   └── data_analyst.md
-│   ├── templates/             # Reusable templates
-│   │   ├── api_documentation.md
-│   │   └── code_review.md
-│   └── context/               # Project-specific context
-│       └── project_context.md
-├── examples/                  # Example usage scripts
-│   ├── README.md
-│   ├── example_usage.py       # Python example
-│   ├── example_usage.js       # Node.js example
-│   └── cli_examples.md        # CLI usage examples
-├── README.md                  # This file
-├── SETUP.md                   # Setup guide
-├── .gitignore                 # Git ignore rules
+├── .claude-plugin/
+│   └── marketplace.json        # Marketplace catalog
+├── plugins/
+│   ├── coding-assistant/       # Code review, debug, refactor
+│   ├── technical-writer/       # API docs, user guides
+│   └── data-analyst/           # Data analysis and visualization
+├── .claude/                    # Legacy configuration files
+├── examples/                   # Usage examples
+├── README.md                   # This file
+├── SETUP.md                    # Setup guide
+├── CHANGELOG.md                # Version history
 └── LICENSE
 ```
 
-## 🚀 Quick Start
+## 🎯 Usage Examples
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Ven0m0/claude-config.git
-   cd claude-config
-   ```
+### Code Review Workflow
 
-2. **Configure API Settings**
-   - Edit `.claude/settings/api_settings.json`
-   - Add your API key (never commit this!)
-   - Adjust rate limits and timeouts as needed
+```bash
+# Review a file or directory
+/code-review src/components/UserProfile.tsx
 
-3. **Choose a Prompt**
-   - Browse `.claude/prompts/` for specialized prompts
-   - Select one that matches your use case
-   - Customize as needed
-
-4. **Add Context**
-   - Place project-specific files in `.claude/context/`
-   - Include architecture docs, conventions, etc.
-
-## 📚 Configuration Files
-
-### Main Configuration (`config.json`)
-
-The main configuration file includes:
-- **Model**: Claude 3.5 Sonnet (latest)
-- **Max Tokens**: 8192 (adjustable)
-- **Temperature**: 1.0 (balanced creativity)
-- **Features**: Tools enabled, streaming enabled
-
-### API Settings (`settings/api_settings.json`)
-
-API configuration includes:
-- API endpoint and version
-- Timeout and retry settings
-- Rate limiting configuration
-- Custom headers
-
-### Conversation Settings (`settings/conversation_settings.json`)
-
-Conversation preferences:
-- History management
-- Output formatting (markdown, syntax highlighting)
-- Behavioral settings (auto-suggest, confirmations)
-
-## 🎯 Available Prompts
-
-### Coding Assistant (`prompts/coding_assistant.md`)
-For software development tasks:
-- Writing clean, maintainable code
-- Debugging and optimization
-- Code reviews and best practices
-- Test development
-
-### Technical Writer (`prompts/technical_writer.md`)
-For documentation tasks:
-- Clear technical documentation
-- API documentation
-- User guides and tutorials
-- Structured content
-
-### Data Analyst (`prompts/data_analyst.md`)
-For data analysis tasks:
-- Exploratory data analysis
-- Data visualization
-- Statistical analysis
-- Insights and recommendations
-
-## 📝 Templates
-
-### API Documentation Template
-Standardized format for documenting APIs:
-- Endpoint details
-- Request/response examples
-- Error handling
-- Usage examples in multiple languages
-
-### Code Review Template
-Comprehensive code review checklist:
-- Code quality assessment
-- Security review
-- Performance evaluation
-- Testing and documentation checks
-
-## 🔧 Customization
-
-### Adding New Prompts
-1. Create a new `.md` file in `.claude/prompts/`
-2. Define the role and guidelines
-3. Include examples and best practices
-
-### Adding Templates
-1. Create a new `.md` file in `.claude/templates/`
-2. Define the structure and sections
-3. Include placeholders and examples
-
-### Adding Context
-1. Create files in `.claude/context/`
-2. Include project-specific information
-3. Reference these in your prompts
-
-## 🔒 Security Best Practices
-
-- **Never commit API keys** to version control
-- Use environment variables for sensitive data
-- Add `settings/api_settings.json` to `.gitignore` if it contains secrets
-- Regularly rotate API keys
-- Use `.env` files for local development
-
-## 💡 Usage Examples
-
-### Using with Python
-```python
-import json
-
-# Load configuration
-with open('.claude/config.json', 'r') as f:
-    config = json.load(f)
-
-# Load a prompt
-with open('.claude/prompts/coding_assistant.md', 'r') as f:
-    prompt = f.read()
-
-# Use with your Claude API client
-# ...
+# Review with specific focus
+/code-review --focus security src/api/
 ```
 
-### Using with Node.js
-```javascript
-const fs = require('fs');
+### API Documentation
 
-// Load configuration
-const config = JSON.parse(fs.readFileSync('.claude/config.json', 'utf8'));
+```bash
+# Document an endpoint
+/api-docs POST /api/v1/users
 
-// Load a prompt
-const prompt = fs.readFileSync('.claude/prompts/coding_assistant.md', 'utf8');
-
-// Use with your Claude API client
-// ...
+# Generate docs from OpenAPI spec
+/api-docs openapi.yaml
 ```
+
+### Data Analysis
+
+```bash
+# Analyze a dataset
+/analyze-data sales_data.csv
+
+# Create visualizations
+/visualize-data data.csv --type scatter
+```
+
+## 🔧 Requirements
+
+### Global Requirements
+- Claude Code CLI (latest version)
+- Git
+
+### Plugin-Specific Requirements
+
+**Coding Assistant:**
+- Optional formatters: Prettier, Black, autopep8, gofmt, rustfmt
+
+**Technical Writer:**
+- No additional requirements
+
+**Data Analyst:**
+- Python 3.8+
+- pandas, numpy, matplotlib, seaborn
+- Optional: SQLite MCP server (`uvx mcp-server-sqlite`)
+
+## 🎨 Features
+
+### Plugin System
+- Modular plugin architecture
+- Easy installation and updates
+- Version management
+
+### Skills
+- User-invocable commands via `/skill-name`
+- Context-aware assistance
+- Specialized tools for each domain
+
+### Hooks
+- Automatic code formatting
+- Post-edit validations
+- Custom workflows
+
+### MCP Servers
+- SQLite database integration
+- Extensible server architecture
+
+## 📚 Documentation
+
+- [Setup Guide](./SETUP.md) - Detailed installation and configuration
+- [Plugin Documentation](./plugins/) - Individual plugin documentation
+- [Examples](./examples/) - Usage examples and tutorials
+- [Changelog](./CHANGELOG.md) - Version history and updates
 
 ## 🤝 Contributing
 
-Feel free to:
-- Add new prompts for different use cases
+Contributions are welcome! Feel free to:
+
+- Add new plugins
+- Improve existing skills
 - Create additional templates
-- Improve existing configurations
-- Share your custom context files (without sensitive data)
+- Report issues or suggest features
+
+## 🔒 Security
+
+- Never commit API keys or sensitive data
+- Use environment variables for credentials
+- Review the code before installing plugins
+- Report security issues privately
 
 ## 📄 License
 
-This project is licensed under the terms specified in the LICENSE file.
+This project is licensed under the MIT License. See [LICENSE](./LICENSE) for details.
 
-## 📖 Additional Resources
+## 🔗 Links
 
-- [Claude API Documentation](https://docs.anthropic.com/)
-- [Prompt Engineering Guide](https://docs.anthropic.com/claude/docs/prompt-engineering)
-- [Best Practices](https://docs.anthropic.com/claude/docs/best-practices)
+- [Claude Code Documentation](https://code.claude.com/docs)
+- [Plugin Development Guide](https://code.claude.com/docs/en/plugins.md)
+- [MCP Documentation](https://code.claude.com/docs/en/mcp.md)
+- [Skills Guide](https://code.claude.com/docs/en/skills.md)
 
 ## 🙋 Support
 
 For issues or questions:
 - Open an issue on GitHub
-- Check the `.claude/README.md` for detailed configuration documentation
+- Check the [Setup Guide](./SETUP.md)
+- Review individual plugin documentation
 
 ---
 
-**Happy prompting with Claude! 🚀**
+**Happy coding with Claude! 🚀**
