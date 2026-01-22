@@ -1,0 +1,49 @@
+{
+  "name": "conserve",
+  "version": "1.3.0",
+  "description": "Resource optimization and performance monitoring toolkit for efficient Claude Code workflows",
+  "skills": [
+    "./skills/bloat-detector",
+    "./skills/code-quality-principles",
+    "./skills/context-optimization",
+    "./skills/cpu-gpu-performance",
+    "./skills/decisive-action",
+    "./skills/mcp-code-execution",
+    "./skills/optimizing-large-skills",
+    "./skills/response-compression",
+    "./skills/token-conservation"
+  ],
+  "commands": [
+    "./commands/ai-hygiene-audit.md",
+    "./commands/analyze-growth.md",
+    "./commands/bloat-scan.md",
+    "./commands/optimize-context.md",
+    "./commands/unbloat.md"
+  ],
+  "agents": [
+    "./agents/ai-hygiene-auditor.md",
+    "./agents/bloat-auditor.md",
+    "./agents/context-optimizer.md",
+    "./agents/unbloat-remediator.md"
+  ],
+  "keywords": [
+    "conserve",
+    "performance",
+    "resource-management",
+    "token-optimization",
+    "context-optimization",
+    "MECW",
+    "efficiency",
+    "bloat-detection",
+    "dead-code",
+    "code-cleanup",
+    "technical-debt",
+    "codebase-optimization"
+  ],
+  "author": {
+    "name": "Alex Thola",
+    "url": "https://github.com/athola"
+  },
+  "license": "MIT",
+  "hooks": "./hooks/hooks.json"
+}

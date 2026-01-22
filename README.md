@@ -85,6 +85,102 @@ Comprehensive data analysis and visualization assistant.
 
 [View Plugin Documentation](./plugins/data-analyst/README.md)
 
+### ⚡ Conserve
+
+Resource optimization and performance monitoring toolkit for efficient Claude Code workflows.
+
+**Commands:**
+- `/bloat-scan` - Identify dead code, duplication, and documentation bloat
+- `/optimize-context` - Optimize context usage and token efficiency
+- `/analyze-growth` - Analyze codebase growth patterns
+- `/ai-hygiene-audit` - Audit AI-generated code quality
+- `/unbloat` - Remove unnecessary code and improve efficiency
+
+**Features:**
+- Maximum Effective Context Window (MECW) principle
+- MCP patterns for efficient data processing
+- Progressive loading for reduced session footprint
+- Token usage optimization
+- Dead code detection and remediation
+
+**Author:** Alex Thola ([athola](https://github.com/athola))
+
+[View Plugin Documentation](./plugins/conserve/README.md)
+
+### 💡 Prompt Improver
+
+Intelligent prompt optimization using skill-based architecture. Enriches vague prompts with research-based clarifying questions before Claude Code executes them.
+
+**Features:**
+- Automatic prompt clarity evaluation
+- Research-based clarifying questions (1-6 questions)
+- Zero overhead for clear prompts
+- 31% token reduction through skill-based architecture
+- Uses AskUserQuestion tool for targeted clarification
+
+**Author:** severity1
+
+[View Plugin Documentation](./plugins/prompt-improver/README.md)
+
+### 🔒 Block Dotfiles
+
+Security plugin that blocks access to sensitive dotfiles and configuration files containing credentials.
+
+**Features:**
+- Blocks access to shell configuration files (.bashrc, .zshrc, etc.)
+- Blocks access to environment variable files (.env, .env.local, etc.)
+- Blocks access to credential directories (.ssh, .aws, .docker, .kube, etc.)
+- Blocks access to credential files (.npmrc, .pypirc, .gitconfig, .netrc)
+- Comprehensive test suite with 104 tests
+
+**Author:** wombat9000
+
+[View Plugin Documentation](./plugins/block-dotfiles/README.md)
+
+### 🧙 Config Wizard
+
+Interactive wizard to help create new Claude Code plugins.
+
+**Commands:**
+- `/config-wizard:cmd-init` - Initialize a new slash command
+- `/config-wizard:cmd-review` - Review an existing slash command
+
+**Skills:**
+- `designing-claude-skills` - Guide for creating, reviewing, and improving skills
+- `managing-permissions` - Guide for configuring Claude Code permissions
+
+**Author:** wombat9000
+
+[View Plugin Documentation](./plugins/config-wizard/README.md)
+
+### 🚫 Dependency Blocker
+
+Performance plugin that prevents Claude from accessing dependency directories to save tokens.
+
+**Features:**
+- Blocks access to `node_modules`, `.git`, `dist`, `build`, `vendor`, `target`, `.venv`, and `venv`
+- Blocks Bash commands targeting excluded directories
+- Blocks Read operations from excluded directories
+- Blocks Glob patterns targeting excluded directories
+- Blocks Grep searches in excluded directories
+
+**Author:** wombat9000
+
+[View Plugin Documentation](./plugins/dependency-blocker/README.md)
+
+### 🤖 Gemini Delegation
+
+Delegate research and web search tasks to Gemini AI via CLI.
+
+**Features:**
+- Delegate web research to Gemini AI
+- Session context integration
+- CLI-based task delegation
+
+**Author:** wombat9000
+
+[View Plugin Documentation](./plugins/gemini-delegation/README.md)
+
 ## 📁 Repository Structure
 
 ```
