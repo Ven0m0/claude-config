@@ -54,7 +54,7 @@ Commands are available via the CLI's command system. See individual `.md` files 
 
 Active hooks (auto-run on file edits):
 
-1. **post-edit-format.py** - Auto-formats Python (ruff), JS/TS (prettier), Rust (cargo fmt)
+1. **post-edit-format.py** - Auto-formats Python (ruff), JS/TS (biome), Rust (cargo fmt)
 2. **enforce_rg_over_grep.py** - Policy: blocks `grep`/`find`, suggests `rg`/`fd`
 3. **json-to-toon.mjs** - Compresses JSON/CSV in prompts (via plugin)
 4. **auto-git-add.md** - Auto-stages edited files

@@ -45,7 +45,7 @@ Advanced coding assistant with code review, debugging, and refactoring capabilit
 - `/refactor` - Code refactoring for better structure and maintainability
 
 **Features:**
-- Automatic code formatting after edits (Prettier, Black, gofmt, rustfmt)
+- Automatic code formatting after edits (Biome, ruff, gofmt, rustfmt)
 - Security vulnerability detection
 - Performance optimization suggestions
 - Best practices guidance
@@ -240,7 +240,7 @@ Delegate research and web search tasks to Gemini AI via CLI.
 ### Plugin-Specific Requirements
 
 **Coding Assistant:**
-- Optional formatters: Prettier, Black, autopep8, gofmt, rustfmt
+- Optional formatters: Biome, ruff, gofmt, rustfmt
 
 **Technical Writer:**
 - No additional requirements
