@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/format.sh $FILE",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/format.sh\" \"$FILE\"",
             "description": "Auto-format code after editing"
           }
         ]
