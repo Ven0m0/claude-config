@@ -62,12 +62,14 @@ For reference, the legacy config.json contained:
   "conversation": {
     "max_history_length": 10,
     "context_window": 200000,
-    "save_conversations": true
+    "save_conversations": true,
+    "conversation_directory": "./conversations"
   },
   "output": {
     "format": "markdown",
     "syntax_highlighting": true,
-    "line_numbers": true
+    "line_numbers": true,
+    "word_wrap": true
   },
   "behavior": {
     "auto_suggest": true,
