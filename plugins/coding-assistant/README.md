@@ -15,7 +15,7 @@ Advanced coding assistant with code review, refactoring, debugging, and best pra
 This plugin includes automatic code formatting after edits:
 
 - **PostToolUse**: Automatically formats code files after Write/Edit operations
-- Supports: JavaScript/TypeScript (Prettier), Python (Black/autopep8), Go (gofmt), Rust (rustfmt)
+- Supports: JavaScript/TypeScript (Biome), Python (ruff), Go (gofmt), Rust (rustfmt)
 
 ## Usage Examples
 
@@ -39,8 +39,8 @@ This plugin includes automatic code formatting after edits:
 The auto-format hook runs after every Write or Edit operation. To use it:
 
 1. Install the appropriate formatter for your language:
-   - JavaScript/TypeScript: `npm install -g prettier`
-   - Python: `pip install black` or `pip install autopep8`
+   - JavaScript/TypeScript: `npm install -g @biomejs/biome`
+   - Python: `pip install uv` (ruff auto-installs via uvx) or `pip install ruff`
    - Go: Included with Go installation
    - Rust: `rustup component add rustfmt`
 
@@ -54,8 +54,8 @@ The auto-format hook runs after every Write or Edit operation. To use it:
 - No special requirements - uses Claude's built-in tools
 
 ### For Auto-formatting (optional)
-- **JavaScript/TypeScript**: Prettier (`npm install -g prettier`)
-- **Python**: Black (`pip install black`) or autopep8 (`pip install autopep8`)
+- **JavaScript/TypeScript**: Biome (`npm install -g @biomejs/biome`)
+- **Python**: ruff (`pip install uv` or `pip install ruff`)
 - **Go**: gofmt (comes with Go)
 - **Rust**: rustfmt (`rustup component add rustfmt`)
 

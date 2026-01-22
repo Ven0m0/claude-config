@@ -16,20 +16,20 @@ EXT="${FILE##*.}"
 # Format based on file type
 case "$EXT" in
     js|jsx|ts|tsx|json)
-        # Check if prettier is available
-        if command -v prettier &> /dev/null; then
-            prettier --write "$FILE" 2>/dev/null
-            echo "✓ Formatted with Prettier: $FILE"
+        # Check if biome is available
+        if command -v npx &> /dev/null; then
+            npx @biomejs/biome format --write "$FILE" 2>/dev/null
+            echo "✓ Formatted with Biome: $FILE"
         fi
         ;;
     py)
-        # Check if black is available
-        if command -v black &> /dev/null; then
-            black "$FILE" 2>/dev/null
-            echo "✓ Formatted with Black: $FILE"
-        elif command -v autopep8 &> /dev/null; then
-            autopep8 --in-place "$FILE" 2>/dev/null
-            echo "✓ Formatted with autopep8: $FILE"
+        # Check if ruff is available (prefer uvx for auto-install)
+        if command -v uvx &> /dev/null; then
+            uvx ruff format "$FILE" 2>/dev/null
+            echo "✓ Formatted with ruff: $FILE"
+        elif command -v ruff &> /dev/null; then
+            ruff format "$FILE" 2>/dev/null
+            echo "✓ Formatted with ruff: $FILE"
         fi
         ;;
     go)
