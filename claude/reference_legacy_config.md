@@ -81,7 +81,7 @@ For reference, the legacy config.json contained:
 
 ## Claude Code Equivalent
 
-In Claude Code, these settings are configured through:
+1. **Model Selection**: via `claude/settings.json` or environment variables:
 
 1. **Model Selection**: `claude/settings.json` env variables:
    - `ANTHROPIC_DEFAULT_OPUS_MODEL`
