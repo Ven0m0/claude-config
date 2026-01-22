@@ -12,8 +12,8 @@ The legacy configuration used the following structure:
 ├── settings/
 │   ├── api_settings.json       # API keys and endpoints
 │   └── conversation_settings.json  # Conversation preferences
-├── prompts/                    # System prompts → Now in plugins/*/reference/prompt.md
-├── templates/                  # Document templates → Now in plugins/*/reference/*_guide.md
+├── prompts/                    # System prompts for different use cases
+├── templates/                  # Document templates for common tasks
 └── context/                    # Project context documentation
 ```
 
