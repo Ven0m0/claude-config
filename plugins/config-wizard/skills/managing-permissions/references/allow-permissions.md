@@ -93,7 +93,7 @@ Use `ask` instead of `allow`:
 
 ```json
 {
- 
+
 
   "deny": [
     // Sensitive files

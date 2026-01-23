@@ -356,7 +356,7 @@ Implement JWT authentication with refresh tokens, support both HttpOnly cookies 
 ### Example 4: Specific File and Action
 
 **Original Prompt:**
-```
+```javascript
 Refactor the getUserById function in src/api/users.ts to use async/await instead of promise chains
 ```
 
@@ -485,7 +485,7 @@ const registrationSchema = Joi.object({
 ### Example 7: Asterisk Bypass
 
 **Original Prompt:**
-```
+```javascript
 * just add a quick comment explaining this function
 ```
 
@@ -541,7 +541,7 @@ Memory system stores the note.
 ### Example 10: File Viewing Context Makes Clear
 
 **Context:**
-```
+```json
 [System: User opened src/components/LoginForm.tsx]
 ```
 
@@ -596,7 +596,7 @@ Check if PostgreSQL is running, verify connection config, start service if neede
 ### Example 12: Ongoing Discussion Provides Context
 
 **Message History:**
-```
+```json
 User: "Should I use Prisma or TypeORM for the database?"
 Assistant: "Prisma has better TypeScript support and migration tooling..."
 User: "ok let's go with Prisma"

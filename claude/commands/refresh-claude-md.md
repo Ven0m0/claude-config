@@ -15,7 +15,7 @@ First, locate the project's agent instructions file:
 ```
 Check for (in order of precedence):
 1. CLAUDE.md in project root
-2. AGENTS.md in project root  
+2. AGENTS.md in project root
 3. .claude/CLAUDE.md
 4. No file exists (offer to create one)
 ```

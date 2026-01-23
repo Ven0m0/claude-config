@@ -134,7 +134,7 @@ def main() -> int:
   for path in Path.cwd().rglob('*'):
     if path.is_file():
       sizes[path.suffix].append(path.stat().st_size)
-  
+
   results = aggregate_by_key(sizes)
   for ext, result in sorted(results.items()):
     print(f"{ext}: {result.count} files, avg {result.average/1024:.1f}KB")
@@ -170,16 +170,16 @@ def main() -> int:
   if not has('ffmpeg'):
     print("Error: ffmpeg not found")
     return 1
-  
+
   input_file = Path("input.mp4")
   output_file = Path("output.mp4")
-  
+
   cmd = [
     'ffmpeg', '-i', str(input_file),
     '-c:v', 'libx264', '-crf', '23',
     str(output_file)
   ]
-  
+
   success = run_tool(cmd, "Converting video")
   return 0 if success else 1
 ```
@@ -203,11 +203,11 @@ class Config:
   max_size: int
   extensions: frozenset[str]
   verbose: bool = False
-  
+
   def validate(self) -> list[str]:
     """Validate configuration. Returns list of errors."""
     errors: list[str] = []
-    
+
     if not self.input_dir.exists():
       errors.append(f"Input dir not found: {self.input_dir}")
     if not self.input_dir.is_dir():
@@ -216,7 +216,7 @@ class Config:
       errors.append(f"Invalid max_size: {self.max_size}")
     if not self.extensions:
       errors.append("No extensions specified")
-    
+
     return errors
 
 def load_config() -> Config | None:
@@ -228,23 +228,23 @@ def load_config() -> Config | None:
     extensions=frozenset({'.txt', '.md'}),
     verbose=True,
   )
-  
+
   errors = cfg.validate()
   if errors:
     for err in errors:
       print(f"Config error: {err}")
     return None
-  
+
   return cfg
 
 def main() -> int:
   cfg = load_config()
   if cfg is None:
     return 1
-  
+
   if cfg.verbose:
     print(f"Processing: {cfg.input_dir}")
-  
+
   return 0
 ```
 
@@ -267,12 +267,12 @@ def retry_with_backoff(
   backoff_factor: float = 2.0,
 ) -> tuple[bool, T | None]:
   """Retry function with exponential backoff.
-  
+
   Returns:
     (success, result)
   """
   delay = initial_delay
-  
+
   for attempt in range(1, max_attempts + 1):
     try:
       result = func()
@@ -281,11 +281,11 @@ def retry_with_backoff(
       if attempt == max_attempts:
         print(f"Failed after {max_attempts} attempts: {e}")
         return False, None
-      
+
       print(f"Attempt {attempt} failed, retrying in {delay}s...")
       time.sleep(delay)
       delay *= backoff_factor
-  
+
   return False, None
 
 # Usage
@@ -321,16 +321,16 @@ def process_parallel(
   max_workers: int = 4,
 ) -> tuple[int, int]:
   """Process items in parallel.
-  
+
   Returns:
     (success_count, failure_count)
   """
   success = 0
   failed = 0
-  
+
   with ThreadPoolExecutor(max_workers=max_workers) as executor:
     futures = {executor.submit(func, item): item for item in items}
-    
+
     for future in as_completed(futures):
       item = futures[future]
       try:
@@ -341,7 +341,7 @@ def process_parallel(
       except Exception as e:
         print(f"Error processing {item}: {e}")
         failed += 1
-  
+
   return success, failed
 
 def process_file(path: Path) -> bool:

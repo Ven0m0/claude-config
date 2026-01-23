@@ -42,7 +42,7 @@ allowed-tools: Read, Write, Edit, Bash
 ### Three Array Types
 
 **1. Tabular** (uniform objects ≥5 items):
-```
+```json
 [2]{id,name,balance}:
   1,Alice,5420.50
   2,Bob,3210.75
@@ -64,17 +64,17 @@ tags[5]: javascript,react,node,express,api
 ### Three Delimiters
 
 **Comma** (default, most compact):
-```
+```json
 [2]{name,city}: Alice,NYC Bob,LA
 ```
 
 **Tab** (for data with commas):
-```
+```json
 [2\t]{name,address}: Alice	123 Main St, NYC
 ```
 
 **Pipe** (markdown-like):
-```
+```json
 [2|]{method,path}: GET|/api/users
 ```
 

@@ -199,7 +199,7 @@ gemini -p "query" -o json --allowed-tools web_search 2>/dev/null
 ### Context Segregation Example
 
 **Without Subagent (Direct Call):**
-```
+```json
 [Main context: 50k tokens]
 + Gemini CLI output: 5k tokens
 + Research artifacts: 3k tokens
@@ -207,7 +207,7 @@ gemini -p "query" -o json --allowed-tools web_search 2>/dev/null
 ```
 
 **With Subagent:**
-```
+```json
 [Main context: 50k tokens]
 [Subagent context: 8k tokens - separate]
 + Subagent summary: 500 tokens returned

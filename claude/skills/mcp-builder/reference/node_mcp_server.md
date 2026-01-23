@@ -59,7 +59,7 @@ The name should be:
 
 Create the following structure for Node/TypeScript MCP servers:
 
-```
+```json
 {service}-mcp-server/
 ├── package.json
 ├── tsconfig.json

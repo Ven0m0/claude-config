@@ -30,7 +30,7 @@ Your personal organization assistant for maintaining clean, logical file structu
 
 ### Downloads Cleanup
 ```
-Organize Downloads folder - move documents to Documents, images to Pictures, 
+Organize Downloads folder - move documents to Documents, images to Pictures,
 archive files older than 3 months
 ```
 

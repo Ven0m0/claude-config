@@ -21,7 +21,7 @@ Optimize database performance:
    SELECT pg_reload_conf();
 
    -- Analyze query performance
-   EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) 
+   EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)
    SELECT u.id, u.name, COUNT(o.id) as order_count
    FROM users u
    LEFT JOIN orders o ON u.id = o.user_id
@@ -43,7 +43,7 @@ Optimize database performance:
    SET GLOBAL log_queries_not_using_indexes = 'ON';
 
    -- Analyze query performance
-   EXPLAIN FORMAT=JSON 
+   EXPLAIN FORMAT=JSON
    SELECT p.*, c.name as category_name
    FROM products p
    JOIN categories c ON p.category_id = c.id
@@ -51,7 +51,7 @@ Optimize database performance:
    AND p.created_at > DATE_SUB(NOW(), INTERVAL 30 DAY);
 
    -- Add composite indexes
-   ALTER TABLE products 
+   ALTER TABLE products
    ADD INDEX idx_price_created (price, created_at),
    ADD INDEX idx_category_price (category_id, price);
    ```
@@ -62,35 +62,35 @@ Optimize database performance:
    **Index Analysis and Creation:**
    ```sql
    -- PostgreSQL index usage analysis
-   SELECT 
+   SELECT
      schemaname,
      tablename,
      indexname,
      idx_scan as index_scans,
      seq_scan as table_scans,
      idx_scan::float / (idx_scan + seq_scan + 1) as index_usage_ratio
-   FROM pg_stat_user_indexes 
+   FROM pg_stat_user_indexes
    ORDER BY index_usage_ratio ASC;
 
    -- Find missing indexes
-   SELECT 
+   SELECT
      query,
      calls,
      total_time,
      mean_time,
      rows
-   FROM pg_stat_statements 
+   FROM pg_stat_statements
    WHERE mean_time > 1000 -- queries taking > 1 second
    ORDER BY mean_time DESC;
 
    -- Create covering indexes for common query patterns
-   CREATE INDEX CONCURRENTLY idx_orders_covering 
-   ON orders(user_id, status, created_at) 
+   CREATE INDEX CONCURRENTLY idx_orders_covering
+   ON orders(user_id, status, created_at)
    INCLUDE (total_amount, discount);
 
    -- Partial indexes for selective conditions
-   CREATE INDEX CONCURRENTLY idx_active_users 
-   ON users(last_login) 
+   CREATE INDEX CONCURRENTLY idx_active_users
+   ON users(last_login)
    WHERE status = 'active';
    ```
 
@@ -103,18 +103,18 @@ Optimize database performance:
    class IndexAnalyzer {
      static async analyzeUnusedIndexes() {
        const query = `
-         SELECT 
+         SELECT
            schemaname,
            tablename,
            indexname,
            idx_scan,
            pg_size_pretty(pg_relation_size(indexrelid)) as size
-         FROM pg_stat_user_indexes 
+         FROM pg_stat_user_indexes
          WHERE idx_scan = 0
          AND schemaname = 'public'
          ORDER BY pg_relation_size(indexrelid) DESC;
        `;
-       
+
        const result = await pool.query(query);
        console.log('Unused indexes:', result.rows);
        return result.rows;
@@ -122,18 +122,18 @@ Optimize database performance:
 
      static async suggestIndexes() {
        const query = `
-         SELECT 
+         SELECT
            query,
            calls,
            total_time,
            mean_time
-         FROM pg_stat_statements 
+         FROM pg_stat_statements
          WHERE mean_time > 100
          AND query NOT LIKE '%pg_%'
          ORDER BY total_time DESC
          LIMIT 20;
        `;
-       
+
        const result = await pool.query(query);
        console.log('Slow queries needing indexes:', result.rows);
        return result.rows;
@@ -149,7 +149,7 @@ Optimize database performance:
    -- Denormalization example for read-heavy workloads
    -- Instead of joining multiple tables for product display
    CREATE TABLE product_display_cache AS
-   SELECT 
+   SELECT
      p.id,
      p.name,
      p.price,
@@ -166,13 +166,13 @@ Optimize database performance:
 
    -- Create materialized view for complex aggregations
    CREATE MATERIALIZED VIEW monthly_sales_summary AS
-   SELECT 
+   SELECT
      DATE_TRUNC('month', created_at) as month,
      category_id,
      COUNT(*) as order_count,
      SUM(total_amount) as total_revenue,
      AVG(total_amount) as avg_order_value
-   FROM orders 
+   FROM orders
    WHERE created_at >= DATE_TRUNC('year', CURRENT_DATE)
    GROUP BY DATE_TRUNC('month', created_at), category_id;
 
@@ -207,7 +207,7 @@ Optimize database performance:
    BEGIN
      partition_name := table_name || '_' || to_char(start_date, 'YYYY_MM');
      end_date := start_date + interval '1 month';
-     
+
      EXECUTE format('CREATE TABLE %I PARTITION OF %I FOR VALUES FROM (%L) TO (%L)',
        partition_name, table_name, start_date, end_date);
    END;
@@ -228,17 +228,17 @@ Optimize database performance:
      database: process.env.DB_NAME,
      password: process.env.DB_PASSWORD,
      port: process.env.DB_PORT,
-     
+
      // Connection pool settings
      max: 20, // Maximum connections
      idleTimeoutMillis: 30000, // 30 seconds
      connectionTimeoutMillis: 2000, // 2 seconds
      maxUses: 7500, // Max uses before connection refresh
-     
+
      // Performance settings
      statement_timeout: 30000, // 30 seconds
      query_timeout: 30000,
-     
+
      // SSL configuration
      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
    });
@@ -271,12 +271,12 @@ Optimize database performance:
          const start = Date.now();
          const result = await client.query(query, params);
          const duration = Date.now() - start;
-         
+
          // Log slow queries
          if (duration > 1000) {
            console.warn(`Slow query (${duration}ms):`, query);
          }
-         
+
          return result;
        } finally {
          client.release();
@@ -333,7 +333,7 @@ Optimize database performance:
        // Execute query and cache result
        result = await DatabaseManager.executeQuery(query, params);
        await this.set(query, params, result.rows, ttl);
-       
+
        return result;
      }
 
@@ -362,24 +362,24 @@ Optimize database performance:
          },
          {
            name: 'long_running_queries',
-           query: `SELECT pid, now() - pg_stat_activity.query_start AS duration, query 
-                   FROM pg_stat_activity 
+           query: `SELECT pid, now() - pg_stat_activity.query_start AS duration, query
+                   FROM pg_stat_activity
                    WHERE (now() - pg_stat_activity.query_start) > interval '5 minutes';`
          },
          {
            name: 'table_sizes',
-           query: `SELECT relname AS table_name, 
+           query: `SELECT relname AS table_name,
                           pg_size_pretty(pg_total_relation_size(relid)) AS size
-                   FROM pg_catalog.pg_statio_user_tables 
+                   FROM pg_catalog.pg_statio_user_tables
                    ORDER BY pg_total_relation_size(relid) DESC LIMIT 10;`
          },
          {
            name: 'index_usage',
-           query: `SELECT relname AS table_name, 
+           query: `SELECT relname AS table_name,
                           indexrelname AS index_name,
                           idx_scan AS index_scans,
                           seq_scan AS sequential_scans
-                   FROM pg_stat_user_indexes 
+                   FROM pg_stat_user_indexes
                    WHERE seq_scan > idx_scan;`
          }
        ];
@@ -400,9 +400,9 @@ Optimize database performance:
      static async alertOnSlowQueries() {
        const slowQueries = await pool.query(`
          SELECT query, calls, total_time, mean_time, stddev_time
-         FROM pg_stat_statements 
-         WHERE mean_time > 1000 
-         ORDER BY mean_time DESC 
+         FROM pg_stat_statements
+         WHERE mean_time > 1000
+         ORDER BY mean_time DESC
          LIMIT 10;
        `);
 
@@ -464,7 +464,7 @@ Optimize database performance:
 
      async executeQuery(query, params, forceWrite = false) {
        const isWriteQuery = /^\s*(INSERT|UPDATE|DELETE|CREATE|ALTER|DROP)/i.test(query);
-       
+
        if (isWriteQuery || forceWrite) {
          return await this.executeWrite(query, params);
        } else {
@@ -487,9 +487,9 @@ Optimize database performance:
    DECLARE
      rec RECORD;
    BEGIN
-     FOR rec IN 
-       SELECT schemaname, tablename 
-       FROM pg_tables 
+     FOR rec IN
+       SELECT schemaname, tablename
+       FROM pg_tables
        WHERE schemaname = 'public'
      LOOP
        EXECUTE 'VACUUM ANALYZE ' || quote_ident(rec.schemaname) || '.' || quote_ident(rec.tablename);
@@ -507,23 +507,23 @@ Optimize database performance:
    class MaintenanceMonitor {
      static async checkTableBloat() {
        const query = `
-         SELECT 
+         SELECT
            tablename,
            pg_size_pretty(pg_total_relation_size(tablename::regclass)) as size,
            n_dead_tup,
            n_live_tup,
-           CASE 
-             WHEN n_live_tup > 0 
-             THEN round(n_dead_tup::numeric / n_live_tup::numeric, 2) 
-             ELSE 0 
+           CASE
+             WHEN n_live_tup > 0
+             THEN round(n_dead_tup::numeric / n_live_tup::numeric, 2)
+             ELSE 0
            END as dead_ratio
-         FROM pg_stat_user_tables 
+         FROM pg_stat_user_tables
          WHERE n_dead_tup > 1000
          ORDER BY dead_ratio DESC;
        `;
 
        const result = await pool.query(query);
-       
+
        // Alert if dead tuple ratio is high
        result.rows.forEach(row => {
          if (row.dead_ratio > 0.2) {
@@ -536,8 +536,8 @@ Optimize database performance:
 
      static async reindexIfNeeded() {
        const bloatedIndexes = await pool.query(`
-         SELECT indexname, tablename 
-         FROM pg_stat_user_indexes 
+         SELECT indexname, tablename
+         FROM pg_stat_user_indexes
          WHERE idx_scan = 0 AND pg_relation_size(indexrelid) > 10485760; -- > 10MB
        `);
 
@@ -560,12 +560,12 @@ Optimize database performance:
     class DatabaseLoadTester {
       static async benchmarkQuery(query, params, iterations = 100) {
         const times = [];
-        
+
         for (let i = 0; i < iterations; i++) {
           const start = process.hrtime.bigint();
           await pool.query(query, params);
           const end = process.hrtime.bigint();
-          
+
           times.push(Number(end - start) / 1000000); // Convert to milliseconds
         }
 
@@ -580,7 +580,7 @@ Optimize database performance:
       static async stressTest(concurrency = 10, duration = 60000) {
         const startTime = Date.now();
         const results = { success: 0, errors: 0, totalTime: 0 };
-        
+
         const workers = Array(concurrency).fill().map(async () => {
           while (Date.now() - startTime < duration) {
             try {
@@ -595,10 +595,10 @@ Optimize database performance:
         });
 
         await Promise.all(workers);
-        
+
         results.qps = results.success / (duration / 1000);
         results.avgResponseTime = results.totalTime / results.success;
-        
+
         return results;
       }
     }
@@ -606,20 +606,20 @@ Optimize database performance:
     // Run benchmarks
     async function runBenchmarks() {
       console.log('Running database benchmarks...');
-      
+
       const simpleQuery = await DatabaseLoadTester.benchmarkQuery(
         'SELECT * FROM products LIMIT 10'
       );
       console.log('Simple query benchmark:', simpleQuery);
-      
+
       const complexQuery = await DatabaseLoadTester.benchmarkQuery(
-        `SELECT p.*, c.name as category 
-         FROM products p 
-         JOIN categories c ON p.category_id = c.id 
+        `SELECT p.*, c.name as category
+         FROM products p
+         JOIN categories c ON p.category_id = c.id
          ORDER BY p.created_at DESC LIMIT 50`
       );
       console.log('Complex query benchmark:', complexQuery);
-      
+
       const stressTest = await DatabaseLoadTester.stressTest(5, 30000);
       console.log('Stress test results:', stressTest);
     }
