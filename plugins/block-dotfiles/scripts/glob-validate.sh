@@ -37,8 +37,13 @@ else
     # No arguments, read JSON from stdin (Claude Code hook mode)
     INPUT=$(cat)
     # Extract pattern and path from JSON: {"tool_input": {"pattern": "...", "path": "..."}}
-    PATTERN=$(echo "$INPUT" | grep -o '"pattern"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/"pattern"[[:space:]]*:[[:space:]]*"\(.*\)"/\1/')
-    PATH_ARG=$(echo "$INPUT" | grep -o '"path"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/"path"[[:space:]]*:[[:space:]]*"\(.*\)"/\1/')
+    if command -v jq > /dev/null 2>&1; then
+        PATTERN=$(echo "$INPUT" | jq -r '.tool_input.pattern // ""')
+        PATH_ARG=$(echo "$INPUT" | jq -r '.tool_input.path // ""')
+    else
+        PATTERN=$(echo "$INPUT" | grep -o '"pattern"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/"pattern"[[:space:]]*:[[:space:]]*"\(.*\)"/\1/')
+        PATH_ARG=$(echo "$INPUT" | grep -o '"path"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/"path"[[:space:]]*:[[:space:]]*"\(.*\)"/\1/')
+    fi
 fi
 
 # Function to check if a file/directory name appears as a complete path component
