@@ -169,7 +169,8 @@ test-security:
 
 # Quality gates
 quality-gate: test
-	@if [ $$($(UV) run python -c "import json; data=json.load(open('.coverage')); coverage=data.get('totals', {}).get('percent_covered', 0); print(int(coverage))") -lt 85 ]; then \
+	@$(UV) run coverage json -o coverage.json
+	@if [ $$($(UV) run python -c "import json; data=json.load(open('coverage.json')); coverage=data.get('totals', {}).get('percent_covered', 0); print(int(coverage))") -lt 85 ]; then \
 		echo "ERROR: Coverage below 85% threshold"; \
 		exit 1; \
 	fi
