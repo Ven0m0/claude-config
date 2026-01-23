@@ -41,23 +41,23 @@ COVERAGE_FILE := .coverage
 
 # Run all tests with coverage
 test:
-	$(UV) run pytest $(TEST_DIR)/ --cov=scripts --cov-report=html --cov-report=term-missing -v
+	$(UV) run pytest $(TEST_DIR)/ --cov=hooks --cov-report=html --cov-report=term-missing -v
 
 # Run unit tests only
 test-unit:
-	$(UV) run pytest $(TEST_DIR)/unit/ -v --cov=scripts --cov-report=term-missing
+	$(UV) run pytest $(TEST_DIR)/unit/ -v --cov=hooks --cov-report=term-missing
 
 # Run integration tests only
 test-integration:
-	$(UV) run pytest $(TEST_DIR)/integration/ -v --cov=scripts --cov-report=term-missing
+	$(UV) run pytest $(TEST_DIR)/integration/ -v --cov=hooks --cov-report=term-missing
 
 # Run performance tests only
 test-performance:
-	$(UV) run pytest $(TEST_DIR)/performance/ -v --cov=scripts --cov-report=term-missing
+	$(UV) run pytest $(TEST_DIR)/performance/ -v --cov=hooks --cov-report=term-missing
 
 # Run tests with verbose output
 test-verbose:
-	$(UV) run pytest $(TEST_DIR)/ -vv --cov=scripts --cov-report=html
+	$(UV) run pytest $(TEST_DIR)/ -vv --cov=hooks --cov-report=html
 
 # Run tests without coverage (faster for development)
 test-quick:
