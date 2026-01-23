@@ -1,0 +1,82 @@
+{
+	"mcpServers": {
+		"serena": {
+			"command": "uvx",
+			"args": [
+				"--from",
+				"git+https://github.com/oraios/serena",
+				"serena",
+				"start-mcp-server"
+			],
+			"trust": true
+		},
+		"sequential-thinking": {
+			"command": "bunx",
+			"args": ["@modelcontextprotocol/server-sequential-thinking"],
+			"trust": true
+		},
+		"read-website-fast": {
+			"command": "bunx",
+			"args": ["@just-every/mcp-read-website-fast"],
+			"trust": true
+		}
+	},
+	"_disabledMcpServers": {},
+	"security": {
+		"auth": {
+			"selectedType": "oauth-personal"
+		},
+		"enablePermanentToolApproval": true,
+		"environmentVariableRedaction": {
+			"enabled": true
+		}
+	},
+	"general": {
+		"previewFeatures": true,
+		"sessionRetention": {
+			"enabled": true
+		},
+		"disableAutoUpdate": true,
+		"enablePromptCompletion": true
+	},
+	"ui": {
+		"hideBanner": true,
+		"hideTips": true,
+		"hideContextSummary": true,
+		"hideFooter": false,
+		"showLineNumbers": false,
+		"accessibility": {
+			"disableLoadingPhrases": true
+		},
+		"footer": {
+			"hideModelInfo": true
+		}
+	},
+	"model": {
+		"maxSessionTurns": -1,
+		"skipNextSpeakerCheck": true
+	},
+	"context": {
+		"discoveryMaxDirs": 200,
+		"loadMemoryFromIncludeDirectories": false
+	},
+	"tools": {
+		"shell": {
+			"showColor": true,
+			"enableShellOutputEfficiency": true
+		},
+		"autoAccept": true,
+		"useRipgrep": true,
+		"enableToolOutputTruncation": true,
+		"truncateToolOutputThreshold": 4000000,
+		"truncateToolOutputLines": 1000,
+		"enableHooks": true
+	},
+	"experimental": {
+		"skills": true,
+		"enableAgents": true,
+		"introspectionAgentSettings": {
+			"enabled": true
+		}
+	}
+}
