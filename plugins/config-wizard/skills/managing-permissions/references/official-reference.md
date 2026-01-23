@@ -186,7 +186,7 @@ To deny:
 The pattern must match the **beginning** of the command string.
 
 **Matching behavior:**
-```
+```json
 Pattern: "Bash(git diff:*)"
 
 Matches:

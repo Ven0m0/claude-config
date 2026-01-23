@@ -171,7 +171,7 @@ char s[8];
 
 ### CTF Binary Challenge
 
-```
+```json
 User: "I have a CTF binary that asks for a password. How do I approach this?"
 
 Response: Let me guide you through the analysis:
@@ -197,7 +197,7 @@ Response: Let me guide you through the analysis:
 
 ### Library Analysis
 
-```
+```json
 User: "I need to understand how this closed-source DLL handles authentication"
 
 Response: For authorized analysis of the DLL:

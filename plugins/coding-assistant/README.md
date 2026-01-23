@@ -20,17 +20,17 @@ This plugin includes automatic code formatting after edits:
 ## Usage Examples
 
 ### Code Review
-```
+```bash
 /code-review src/components/UserProfile.tsx
 ```
 
 ### Debug Issues
-```
+```json
 /debug "TypeError: Cannot read property 'map' of undefined in UserList component"
 ```
 
 ### Refactor Code
-```
+```bash
 /refactor src/utils/dataProcessing.js
 ```
 

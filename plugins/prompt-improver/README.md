@@ -207,7 +207,7 @@ Claude proceeds immediately without questions.
 
 **Manual Skill Invocation:**
 You can also invoke the skill manually without the hook:
-```
+```json
 Use the prompt-improver skill to research and clarify: "add authentication"
 ```
 

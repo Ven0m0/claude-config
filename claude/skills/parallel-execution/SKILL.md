@@ -70,7 +70,7 @@ run_in_background: true
 
 After launching, retrieve each result:
 
-```
+```json
 [Wait for completion, then retrieve]
 
 TaskOutput: task_1_id

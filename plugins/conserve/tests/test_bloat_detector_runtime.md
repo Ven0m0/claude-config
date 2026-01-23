@@ -8,7 +8,7 @@ Test that modules are actually loaded and used when the bloat-detector skill is 
 
 **Test:** Ask Claude about bloat detection WITHOUT referencing modules
 
-```
+```json
 Prompt: "What bloat detection patterns do you know about?"
 Expected: Generic knowledge, no specific tool/technique details
 ```
@@ -17,7 +17,7 @@ Expected: Generic knowledge, no specific tool/technique details
 
 **Test:** Ask Claude to use the bloat-detector skill
 
-```
+```json
 Prompt: "Use the bloat-detector skill to explain how to detect God classes"
 Expected:
 - Claude reads SKILL.md
@@ -37,7 +37,7 @@ Look for responses that include:
 
 **Test:** Ask for specific module content
 
-```
+```json
 Prompt: "What's the exact bash command for detecting large files in the quick-scan module?"
 Expected:
 - Claude reads modules/quick-scan.md
@@ -72,7 +72,7 @@ done | sort -rn
 
 **Test:** Ask for multi-module workflow
 
-```
+```json
 Prompt: "Walk me through running a Tier 2 bloat scan with focus on code patterns"
 Expected:
 - References SKILL.md for tier definitions
@@ -85,7 +85,7 @@ Expected:
 
 **Test:** Verify that cache directories are excluded from scans
 
-```
+```json
 Prompt: "Run a bloat scan on the conserve plugin. How many markdown files did you find?"
 Expected:
 - Should NOT count files in .venv/, node_modules/, .pytest_cache/, etc.

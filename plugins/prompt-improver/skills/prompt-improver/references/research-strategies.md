@@ -47,7 +47,7 @@ Research Plan for [Prompt Type]:
 ```
 
 **Example:**
-```
+```json
 Research Plan for "fix the bug":
 1. Check conversation history for error messages - Review recent messages
 2. Search for failing tests - Grep for "failing", "error", "TODO"
@@ -84,7 +84,7 @@ Use Task tool with subagent_type=Explore to:
 ```
 
 **Example:**
-```
+```json
 Prompt: "find the bug"
 
 Research:
@@ -116,7 +116,7 @@ Research:
 ```
 
 **Example:**
-```
+```json
 Prompt: "add tests"
 
 Research:
@@ -148,7 +148,7 @@ pattern: "process\.env|config\.|getConfig"
 ```
 
 **Example:**
-```
+```json
 Prompt: "improve error handling"
 
 Research:
@@ -169,7 +169,7 @@ Research:
 4. Read README.md and architecture docs
 
 **Example:**
-```
+```json
 Prompt: "refactor the API"
 
 Research:
@@ -202,7 +202,7 @@ git diff HEAD~5..HEAD --stat
 ```
 
 **Example:**
-```
+```json
 Prompt: "fix the recent regression"
 
 Research:
@@ -225,7 +225,7 @@ Research:
 6. API documentation (docs/api/)
 
 **Example:**
-```
+```json
 Prompt: "implement caching"
 
 Research:
@@ -245,7 +245,7 @@ Research:
 3. WebFetch official documentation if needed
 
 **Example:**
-```
+```json
 Prompt: "update the validation"
 
 Research:
@@ -272,7 +272,7 @@ pattern: "must|require|cannot|constraint"
 ```
 
 **Example:**
-```
+```json
 Prompt: "modify the database schema"
 
 Research:
@@ -307,7 +307,7 @@ Research:
 ```
 
 **Example:**
-```
+```json
 Prompt: "add authentication"
 
 Research:
@@ -340,7 +340,7 @@ https://prettier.io/docs/
 ```
 
 **Example:**
-```
+```json
 Prompt: "update the middleware"
 
 Research:
@@ -363,7 +363,7 @@ Research:
 ```
 
 **Example:**
-```
+```json
 Prompt: "refactor data access"
 
 Research:
@@ -430,12 +430,12 @@ Research:
 **When to use:** User viewing specific file
 
 **System messages indicate:**
-```
+```json
 [System: User opened src/api/auth.ts]
 ```
 
 **Example:**
-```
+```json
 [System: User opened src/components/LoginForm.tsx]
 User: "refactor this to use hooks"
 
@@ -527,7 +527,7 @@ Research:
 **When:** Simple ambiguity, limited scope
 
 **Example:**
-```
+```json
 Prompt: "add tests"
 
 Research:
@@ -545,7 +545,7 @@ Findings:
 **When:** Multiple unknowns, need pattern understanding
 
 **Example:**
-```
+```json
 Prompt: "improve error handling"
 
 Research:
@@ -566,7 +566,7 @@ Findings:
 **When:** Major feature, architectural decision, complex implementation
 
 **Example:**
-```
+```json
 Prompt: "add authentication"
 
 Research:

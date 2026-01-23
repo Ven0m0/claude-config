@@ -30,7 +30,7 @@ Error: Unexpected token
 ```
 
 **Test Failures:**
-```
+```json
 Test failed: "user authentication"
 → Spawns debugger agent
 → Analyzes failure cause

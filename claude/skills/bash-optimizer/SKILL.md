@@ -69,7 +69,7 @@ See `references/standards.md` for complete specification.
 - Legacy tool replacement opportunities
 
 **Standards:** Code quality
-- [ ] vs [[ ]] 
+- [ ] vs [[ ]]
 - echo vs printf
 - Indentation (2-space)
 - function syntax (prefer `fn(){}`)
@@ -168,7 +168,7 @@ If analyzing multiple related scripts:
 **Batch I/O:**
 ```bash
 # Before: while read line; do echo "prefix $line" >> out; done < in
-# After: 
+# After:
 output=()
 while read -r line; do output+=("prefix $line"); done < in
 printf '%s\n' "${output[@]}" > out
