@@ -55,6 +55,7 @@ NODE_MCP_SERVERS=(
     "@modelcontextprotocol/server-brave-search"
     "@modelcontextprotocol/server-memory"
     "gemini-mcp-tool"
+	"@upstash/context7-mcp"
 )
 
 for server in "${NODE_MCP_SERVERS[@]}"; do
