@@ -118,7 +118,7 @@ Intelligent prompt optimization using skill-based architecture. Enriches vague p
 - 31% token reduction through skill-based architecture
 - Uses AskUserQuestion tool for targeted clarification
 
-**Author:** severity1
+**Author:** [severity1](https://github.com/severity1)
 
 [View Plugin Documentation](./plugins/prompt-improver/README.md)
 
