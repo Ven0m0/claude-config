@@ -36,7 +36,11 @@ else
     # No arguments, read JSON from stdin (Claude Code hook mode)
     INPUT=$(cat)
     # Extract path from JSON: {"tool_input": {"path": "...", "pattern": "..."}}
-    PATH_ARG=$(echo "$INPUT" | grep -o '"path"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/"path"[[:space:]]*:[[:space:]]*"\(.*\)"/\1/')
+    if command -v jq > /dev/null 2>&1; then
+        PATH_ARG=$(echo "$INPUT" | jq -r '.tool_input.path // ""')
+    else
+        PATH_ARG=$(echo "$INPUT" | grep -o '"path"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/"path"[[:space:]]*:[[:space:]]*"\(.*\)"/\1/')
+    fi
 fi
 
 # Function to check if a file/directory name appears as a complete path component
