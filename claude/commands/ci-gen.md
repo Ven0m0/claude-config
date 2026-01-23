@@ -6,7 +6,6 @@ Generates or updates GitHub Actions CI workflow files based on project needs.
 
 ```
 /ci-gen
-/ci-gen --platform <github|gitlab|circleci>
 /ci-gen --template <basic|advanced|security>
 /ci-gen --update
 ```
