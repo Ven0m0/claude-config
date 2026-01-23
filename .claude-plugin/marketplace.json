@@ -86,7 +86,8 @@
       "description": "Blocks access to sensitive dotfiles and configuration files containing credentials",
       "version": "1.0.0",
       "author": {
-        "name": "wombat9000"
+        "name": "wombat9000",
+        "url": "https://github.com/wombat9000"
       },
       "homepage": "https://github.com/wombat9000/claude-plugins",
       "repository": "https://github.com/wombat9000/claude-plugins",
