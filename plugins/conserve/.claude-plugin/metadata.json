@@ -6,8 +6,8 @@
     "skills/context-optimization",
     "skills/mcp-code-execution",
     "skills/optimizing-large-skills",
-    "skills/performance-monitoring/cpu-gpu-performance",
-    "skills/resource-management/token-conservation"
+    "skills/cpu-gpu-performance",
+    "skills/token-conservation"
   ],
   "dependencies": {
     "abstract": ">=2.0.0"
