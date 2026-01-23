@@ -91,7 +91,7 @@ def assess_context_usage(usage: float) -> ContextAlert:
             recommendations=[
                 "Monitor context growth rate",
                 "Prepare optimization strategy",
-                "Invoke Skill(conservation:optimize-context)",
+                "Invoke Skill(conserve:context-optimization)",
             ],
         )
     return ContextAlert(
