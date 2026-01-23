@@ -8,6 +8,7 @@ import argparse
 import json
 import sys
 from datetime import datetime
+import math
 
 # Constants
 CONTROLLABLE_GROWTH_THRESHOLD = 0.10
