@@ -1,0 +1,7 @@
+{
+  "name": "config-wizard",
+  "description": "Interactive wizard to help create new Claude Code plugins",
+  "version": "1.0.0",
+  "commands": "./commands",
+  "skills": "./skills"
+}

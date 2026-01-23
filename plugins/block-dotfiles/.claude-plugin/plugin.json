@@ -1,0 +1,5 @@
+{
+  "name": "block-dotfiles",
+  "description": "Blocks access to sensitive dotfiles and configuration files containing credentials",
+  "version": "1.0.0"
+}
