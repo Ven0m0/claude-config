@@ -76,6 +76,7 @@
   "spinnerTipsEnabled": false,
   "alwaysThinkingEnabled": true,
   "hooks": {},
+  "customInstructions": "Follow the project's CLAUDE.md guidelines. Use concurrent execution for all operations."
   "statusLine": {
     "type": "command",
     "command": "node \"$HOME/.claude/hooks/statusline.js\""
