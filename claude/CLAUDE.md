@@ -36,3 +36,9 @@
   - Bad: "Successfully implemented feature X, ready for testing"
   - Good: "Implemented feature X, ready for testing"
   - Good: "Ran tests for feature X, they all completed successfully"
+
+## Progressive Disclosure
+*Keep context lean and focused*
+- Keep this file short and focused on high-frequency rules
+- Move detailed workflows to SKILL.md files or references
+- Prefer pointers to supporting docs over long code blocks

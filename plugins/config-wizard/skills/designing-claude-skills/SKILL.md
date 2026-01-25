@@ -9,7 +9,8 @@ description: >
   skill architecture, anatomy, and design patterns, (5) Troubleshooting skill
   loading, triggering, or packaging issues, (6) Learning how to effectively use
   bundled resources like scripts, references, and assets, (7) Planning what type
-  of skill structure is appropriate for a given use case.
+  of skill structure is appropriate for a given use case. Trigger with phrases
+  like "design skill", "skill review", "SKILL.md", or "skill structure".
 ---
 
 # Designing Claude Skills
@@ -195,6 +196,11 @@ Claude reads REDLINING.md or OOXML.md only when the user needs those features.
 - **Avoid deeply nested references** - Keep references one level deep from SKILL.md. All reference files should link directly from SKILL.md.
 - **Structure longer reference files** - For files longer than 100 lines, include a table of contents at the top so Claude can see the full scope when previewing.
 
+## Progressive Details
+
+Use the skill creation workflow below when you need step-by-step execution guidance.
+
+<!-- progressive: skill-creation -->
 ## Skill Creation Process
 
 Skill creation involves these steps:
@@ -358,3 +364,4 @@ After testing the skill, users may request improvements. Often this happens righ
 2. Notice struggles or inefficiencies
 3. Identify how SKILL.md or bundled resources should be updated
 4. Implement changes and test again
+<!-- /progressive -->

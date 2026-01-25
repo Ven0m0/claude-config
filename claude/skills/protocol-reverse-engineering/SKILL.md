@@ -1,12 +1,27 @@
 ---
 name: protocol-reverse-engineering
-description: Master network protocol reverse engineering including packet analysis, protocol dissection, and custom protocol documentation. Use when analyzing network traffic, understanding proprietary protocols, or debugging network communication.
+description: Master network protocol reverse engineering including packet analysis, protocol dissection, and custom protocol documentation. Use when analyzing network traffic, understanding proprietary protocols, or debugging network communication. Trigger with phrases like "pcap", "packet capture", "protocol analysis", or "wireshark".
 ---
 
 # Protocol Reverse Engineering
 
 Comprehensive techniques for capturing, analyzing, and documenting network protocols for security research, interoperability, and debugging.
 
+## Overview
+
+Focus on repeatable capture, structured analysis, and clear documentation so findings are usable by others.
+
+## Quick Start
+
+1. Capture traffic with tcpdump or Wireshark and export a clean pcap.
+2. Identify protocol boundaries, message types, and state transitions.
+3. Document message formats, fields, and validation rules.
+
+## Progressive Details
+
+Use the detailed sections below for full workflows, templates, and advanced techniques.
+
+<!-- progressive: protocol-playbook -->
 ## Traffic Capture
 
 ### Wireshark Capture
@@ -518,3 +533,4 @@ for pkt in packets:
 - Checksums/CRCs for integrity
 - Timestamps for timing
 - Session/connection identifiers
+<!-- /progressive -->

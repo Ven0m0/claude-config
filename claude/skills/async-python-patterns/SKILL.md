@@ -1,6 +1,6 @@
 ---
 name: async-python-patterns
-description: Master Python asyncio, concurrent programming, and async/await patterns for high-performance applications. Use when building async APIs, concurrent systems, or I/O-bound applications requiring non-blocking operations.
+description: Master Python asyncio, concurrent programming, and async/await patterns for high-performance applications. Use when building async APIs, concurrent systems, or I/O-bound applications requiring non-blocking operations. Trigger with phrases like "asyncio", "await", "concurrency", or "non-blocking".
 ---
 
 # Async Python Patterns
@@ -73,6 +73,11 @@ async def main():
 asyncio.run(main())
 ```
 
+## Progressive Details
+
+Use the advanced sections below for pattern catalogs, real-world examples, and performance guidance.
+
+<!-- progressive: async-patterns -->
 ## Fundamental Patterns
 
 ### Pattern 1: Basic Async/Await
@@ -700,3 +705,4 @@ async def test_with_timeout():
 8. **Use semaphores** for rate limiting
 9. **Handle task cancellation** properly
 10. **Test async code** with pytest-asyncio
+<!-- /progressive -->

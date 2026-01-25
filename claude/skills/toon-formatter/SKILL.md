@@ -1,6 +1,6 @@
 ---
 name: toon-formatter
-description: AGGRESSIVELY use TOON v2.0 format for biggish regular data (≥5 items, ≥60% uniform). Auto-applies to tables, logs, events, transactions, analytics, API responses, database results. Supports 3 array types (inline, tabular, expanded), 3 delimiters (comma, tab, pipe), key folding for nested objects. Triggers on structured data, arrays, repeated patterns. Use TOON by default when tokens matter - RAG pipelines, tool calls, agents, benchmarks. Keywords "data", "array", "list", "table", "log", "transaction", "metric", "analytics", "API", "database", "query", "TOON".
+description: Use TOON v2.0 formatting for structured data to minimize tokens while preserving readability. Use when outputs include tables, logs, events, transactions, or repeated records and token budgets matter. Trigger with phrases like "format table", "structured data", "large list", or "TOON".
 allowed-tools: Read, Write, Edit, Bash
 ---
 
@@ -87,6 +87,11 @@ server.port: 8080
 database.host: db.example.com
 ```
 
+## Progressive Details
+
+Use the process and examples below when you need full TOON application workflows.
+
+<!-- progressive: toon-process -->
 ## Process
 
 ### 1. Detect Suitable Data
@@ -337,3 +342,4 @@ Track TOON usage effectiveness:
 - Accuracy improvement: +3-5% (per official benchmarks)
 - Context window freed: 15K+ tokens on large datasets
 - User satisfaction: Faster responses, more context available
+<!-- /progressive -->

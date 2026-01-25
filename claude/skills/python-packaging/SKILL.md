@@ -1,6 +1,6 @@
 ---
 name: python-packaging
-description: Create distributable Python packages with proper project structure, setup.py/pyproject.toml, and publishing to PyPI. Use when packaging Python libraries, creating CLI tools, or distributing Python code.
+description: Create distributable Python packages with proper project structure, setup.py/pyproject.toml, and publishing to PyPI. Use when packaging Python libraries, creating CLI tools, or distributing Python code. Trigger with phrases like "package", "pyproject", "publish to PyPI", or "build wheel".
 ---
 
 # Python Packaging
@@ -90,6 +90,11 @@ dev = [
 ]
 ```
 
+## Progressive Details
+
+Use the advanced sections below for full templates, publishing workflows, and checklists.
+
+<!-- progressive: patterns-and-templates -->
 ## Package Structure Patterns
 
 ### Pattern 1: Source Layout (Recommended)
@@ -886,3 +891,4 @@ recursive-exclude * *.py[co]
 8. **Document thoroughly** with README and docstrings
 9. **Include LICENSE** file
 10. **Automate publishing** with CI/CD
+<!-- /progressive -->
