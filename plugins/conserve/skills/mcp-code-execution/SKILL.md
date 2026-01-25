@@ -1,8 +1,7 @@
 ---
 name: mcp-code-execution
 description: |
-
-Triggers: execution, code
+  Triggers: execution, code
   Transform tool-heavy workflows into MCP code execution patterns for token savings and optimized processing.
 
   Triggers: MCP, code execution, tool chain, data pipeline, tool transformation, batch processing, workflow optimization

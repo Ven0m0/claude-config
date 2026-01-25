@@ -1,8 +1,7 @@
 ---
 name: token-conservation
 description: |
-
-Triggers: token, conservation
+  Triggers: token, conservation
   Minimize token usage through conservative prompting, work delegation,
   and quota tracking.
 
