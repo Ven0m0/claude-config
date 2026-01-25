@@ -1,6 +1,6 @@
 ---
 name: designing-claude-skills
-description: >
+description: |
   Comprehensive guide for creating, reviewing, and improving skills that extend
   Claude's capabilities with specialized knowledge, workflows, and tool
   integrations. Use this skill when: (1) Creating a new skill from scratch, (2)

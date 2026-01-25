@@ -1,6 +1,6 @@
 ---
 name: managing-permissions
-description: >
+description: |
   Guide for configuring Claude Code permissions in settings.json with security
   best practices for allow, ask, and deny rules. Use when: (1) Setting up or
   modifying permissions in settings.json, (2) Discussing tool permissions, access
