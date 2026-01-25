@@ -57,7 +57,7 @@
 		"skipNextSpeakerCheck": true
 	},
 	"context": {
-		"discoveryMaxDirs": 200,
+		"discoveryMaxDirs": 120,
 		"loadMemoryFromIncludeDirectories": false
 	},
 	"tools": {
@@ -68,8 +68,8 @@
 		"autoAccept": true,
 		"useRipgrep": true,
 		"enableToolOutputTruncation": true,
-		"truncateToolOutputThreshold": 4000000,
-		"truncateToolOutputLines": 1000,
+		"truncateToolOutputThreshold": 2000000,
+		"truncateToolOutputLines": 400,
 		"enableHooks": true
 	},
 	"experimental": {
