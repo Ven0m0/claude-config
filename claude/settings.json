@@ -30,6 +30,7 @@
   },
   "includeCoAuthoredBy": false,
   "cleanupPeriodDays": 90,
+  "enableAllProjectMcpServers": true,
   "permissions": {
     "allow": [
       "Bash",
