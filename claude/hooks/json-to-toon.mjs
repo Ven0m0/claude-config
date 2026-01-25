@@ -193,7 +193,9 @@ function generateToonTable(headers, rows) {
 			str.includes("-") ||
 			/^(true|false|\d+)$/i.test(str.trim())
 		) {
-			return `"${str.replace(/"/g, '\\"')}"`;
+			// Escape backslashes first, then double quotes for TOON format
+			const escaped = str.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+			return `"${escaped}"`;
 		}
 		return str;
 	};
