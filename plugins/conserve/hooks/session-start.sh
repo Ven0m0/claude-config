@@ -136,7 +136,7 @@ escape_for_json() {
     local output=""
     local i char
     for ((i = 0; i < ${#input}; i++)); do
-      char="${input:i:1}"
+      char="${input:$i:1}"
       case "$char" in
         '\'$'\\') output+='\\\\' ;;
         '"') output+='\\"' ;;
