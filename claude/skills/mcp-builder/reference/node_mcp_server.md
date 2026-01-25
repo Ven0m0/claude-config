@@ -861,16 +861,16 @@ Always build your TypeScript code before running:
 
 ```bash
 # Build the project
-npm run build
+bun run build
 
 # Run the server
-npm start
+bun start
 
 # Development with auto-reload
-npm run dev
+bun run dev
 ```
 
-Always ensure `npm run build` completes successfully before considering the implementation complete.
+Always ensure `bun run build` completes successfully before considering the implementation complete.
 
 ## Quality Checklist
 
@@ -930,7 +930,7 @@ Before finalizing your Node/TypeScript MCP server implementation, ensure:
 
 ### Testing and Build
 
-- [ ] `npm run build` completes successfully without errors
+- [ ] `bun run build` completes successfully without errors
 - [ ] dist/index.js created and executable
 - [ ] Server runs: `node dist/index.js --help`
 - [ ] All imports resolve correctly

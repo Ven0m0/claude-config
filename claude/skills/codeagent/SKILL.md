@@ -233,7 +233,7 @@ Note: Global --backend is required; per-task backend is optional
 1. **Check process without killing**:
 
    ```bash
-   ps aux | grep codeagent-wrapper | grep -v grep
+   ps aux | grep codeagent-wrapper | rg -v grep
    ```
 
 **Why:** codeagent tasks often take 2-10 minutes. Killing them wastes API costs and loses progress.

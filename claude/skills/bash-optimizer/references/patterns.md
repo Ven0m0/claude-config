@@ -103,7 +103,7 @@ has jq || die "jq not found"
 ### rg over grep
 
 ```bash
-# Old: grep -r "pattern" .
+# Old: rg "pattern" .
 # New: rg "pattern"
 # Benefit: 10x+ faster, respects .gitignore
 ```

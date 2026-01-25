@@ -128,10 +128,10 @@ echo "=== Testing bloat-detector runtime module loading ==="
 
 # Test 1: Verify SKILL.md references modules
 echo "\n[Test 1] Checking SKILL.md module references..."
-grep -q "modules/quick-scan" skills/bloat-detector/SKILL.md && \
+rg -q "modules/quick-scan" skills/bloat-detector/SKILL.md && \
   echo "✓ quick-scan referenced" || echo "✗ quick-scan NOT referenced"
 
-grep -q "modules/code-bloat-patterns" skills/bloat-detector/SKILL.md && \
+rg -q "modules/code-bloat-patterns" skills/bloat-detector/SKILL.md && \
   echo "✓ code-bloat-patterns referenced" || echo "✗ NOT referenced"
 
 # Test 2: Verify modules are readable
@@ -157,15 +157,15 @@ done
 
 # Test 4: Check for unique content in modules
 echo "\n[Test 4] Verifying modules have unique content..."
-if grep -q "God Class" skills/bloat-detector/modules/code-bloat-patterns.md; then
+if rg -q "God Class" skills/bloat-detector/modules/code-bloat-patterns.md; then
   echo "✓ code-bloat-patterns has unique God Class content"
 fi
 
-if grep -q "Flesch" skills/bloat-detector/modules/documentation-bloat.md; then
+if rg -q "Flesch" skills/bloat-detector/modules/documentation-bloat.md; then
   echo "✓ documentation-bloat has unique readability metrics"
 fi
 
-if grep -q "staleness_score" skills/bloat-detector/modules/git-history-analysis.md; then
+if rg -q "staleness_score" skills/bloat-detector/modules/git-history-analysis.md; then
   echo "✓ git-history-analysis has unique scoring logic"
 fi
 
@@ -243,7 +243,7 @@ Progressive loading saves ~250 tokens when not all modules are needed.
 grep "modules/quick-scan" skills/bloat-detector/SKILL.md
 
 # 2. Check module file exists and is readable
-ls -la skills/bloat-detector/modules/quick-scan.md
+eza -la skills/bloat-detector/modules/quick-scan.md
 
 # 3. Verify frontmatter
 head -10 skills/bloat-detector/modules/quick-scan.md

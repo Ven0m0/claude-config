@@ -48,7 +48,7 @@ curl https://api.anthropic.com/v1/messages \
 python examples/example_usage.py
 
 # Or use directly with the anthropic CLI
-pip install anthropic
+uv pip install anthropic
 python -c "
 import anthropic
 import json
@@ -74,7 +74,7 @@ print(message.content)
 node examples/example_usage.js
 
 # Or use directly
-npm install @anthropic-ai/sdk
+bun install @anthropic-ai/sdk
 node -e "
 const Anthropic = require('@anthropic-ai/sdk');
 const fs = require('fs');
@@ -110,7 +110,7 @@ jq '.' .claude/config.json
 ### List available prompts
 
 ```bash
-ls -1 .claude/prompts/
+eza -1 .claude/prompts/
 ```
 
 ### View a specific prompt

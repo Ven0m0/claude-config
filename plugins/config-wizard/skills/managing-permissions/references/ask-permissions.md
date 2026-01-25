@@ -39,9 +39,9 @@ Installing or removing dependencies:
 ```json
 {
   "ask": [
-    "Bash(npm install:*)",
-    "Bash(npm uninstall:*)",
-    "Bash(pip install:*)",
+    "Bash(bun install:*)",
+    "Bash(bun uninstall:*)",
+    "Bash(uv pip install:*)",
     "Bash(cargo add:*)"
   ]
 }
@@ -101,11 +101,11 @@ Don't ask for operations that happen frequently:
   "allow": [
     "Read(src/**)",
     "Edit(src/**)",
-    "Bash(npm run:*)"
+    "Bash(bun run:*)"
   ],
   "ask": [
     "Bash(/usr/bin/git commit:*)",    // Once per commit
-    "Bash(npm install:*)"  // Occasional
+    "Bash(bun install:*)"  // Occasional
   ]
 }
 ```

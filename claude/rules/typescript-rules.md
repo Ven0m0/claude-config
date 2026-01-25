@@ -68,9 +68,9 @@ export function calculateDiscount(price: number, rate: number): number { ... }
 
 ```bash
 # Jest/Vitest - USE MINIMAL OUTPUT
-npm test -- --silent                    # Suppress console.log output
-npm test -- --reporters=dot             # Minimal dot reporter
-npm test -- --bail                      # Stop on first failure
+bun test -- --silent                    # Suppress console.log output
+bun test -- --reporters=dot             # Minimal dot reporter
+bun test -- --bail                      # Stop on first failure
 
 # AVOID these verbose flags unless actively debugging:
 # --verbose, --expand, --debug
@@ -120,8 +120,8 @@ Verify:
 
 | Task        | npm                  | yarn                | pnpm                | bun                 |
 | ----------- | -------------------- | ------------------- | ------------------- | ------------------- |
-| Install all | `npm install`        | `yarn`              | `pnpm install`      | `bun install`       |
-| Add package | `npm install pkg`    | `yarn add pkg`      | `pnpm add pkg`      | `bun add pkg`       |
-| Add dev dep | `npm install -D pkg` | `yarn add -D pkg`   | `pnpm add -D pkg`   | `bun add -D pkg`    |
-| Run script  | `npm run script`     | `yarn script`       | `pnpm script`       | `bun script`        |
-| Type check  | `npx tsc --noEmit`   | `yarn tsc --noEmit` | `pnpm tsc --noEmit` | `bunx tsc --noEmit` |
+| Install all | `bun install`        | `yarn`              | `pnpm install`      | `bun install`       |
+| Add package | `bun install pkg`    | `yarn add pkg`      | `pnpm add pkg`      | `bun add pkg`       |
+| Add dev dep | `bun install -D pkg` | `yarn add -D pkg`   | `pnpm add -D pkg`   | `bun add -D pkg`    |
+| Run script  | `bun run script`     | `yarn script`       | `pnpm script`       | `bun script`        |
+| Type check  | `bunx tsc --noEmit`   | `yarn tsc --noEmit` | `pnpm tsc --noEmit` | `bunx tsc --noEmit` |

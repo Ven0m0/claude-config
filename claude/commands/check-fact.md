@@ -54,11 +54,11 @@ Provide evidence: file paths, code snippets, notes explaining verdict.
 
 ```bash
 # Check dependencies
-ls -la && find . -name "pubspec.yaml" -exec cat {} \;
+eza -la && find . -name "pubspec.yaml" -exec cat {} \;
 /check-fact "The main dependencies used in this project are..."
 
 # Check how something is built
-grep -r "authentication" . --include="*.dart"
+rg "authentication" . --include="*.dart"
 /check-fact "Authentication is custom built, not using third-party auth"
 
 # Check if docs match reality

@@ -43,8 +43,8 @@ The auto-format hook runs after every Write or Edit operation. To use it:
 
 1. Install the appropriate formatter for your language:
 
-   - JavaScript/TypeScript: `npm install -g @biomejs/biome`
-   - Python: `pip install uv` (ruff auto-installs via uvx) or `pip install ruff`
+   - JavaScript/TypeScript: `bun install -g @biomejs/biome`
+   - Python: `uv pip install uv` (ruff auto-installs via uvx) or `uv pip install ruff`
    - Go: Included with Go installation
    - Rust: `rustup component add rustfmt`
 
@@ -60,8 +60,8 @@ The auto-format hook runs after every Write or Edit operation. To use it:
 
 ### For Auto-formatting (optional)
 
-- **JavaScript/TypeScript**: Biome (`npm install -g @biomejs/biome`)
-- **Python**: ruff (`pip install uv` or `pip install ruff`)
+- **JavaScript/TypeScript**: Biome (`bun install -g @biomejs/biome`)
+- **Python**: ruff (`uv pip install uv` or `uv pip install ruff`)
 - **Go**: gofmt (comes with Go)
 - **Rust**: rustfmt (`rustup component add rustfmt`)
 

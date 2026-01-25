@@ -367,7 +367,7 @@ my-tool = "my_package.cli:main"
 **Usage:**
 
 ```bash
-pip install -e .
+uv pip install -e .
 my-tool greet World
 my-tool greet Alice --greeting="Hi"
 my-tool repeat --count=3
@@ -426,7 +426,7 @@ if __name__ == "__main__":
 
 ```bash
 # Install build tools
-pip install build twine
+uv pip install build twine
 
 # Build distribution
 python -m build
@@ -444,13 +444,13 @@ twine check dist/*
 
 ```bash
 # Install publishing tools
-pip install twine
+uv pip install twine
 
 # Test on TestPyPI first
 twine upload --repository testpypi dist/*
 
 # Install from TestPyPI to test
-pip install --index-url https://test.pypi.org/simple/ my-package
+uv pip install --index-url https://test.pypi.org/simple/ my-package
 
 # If all good, publish to PyPI
 twine upload dist/*
@@ -498,7 +498,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install build twine
+          uv pip install build twine
 
       - name: Build package
         run: python -m build
@@ -675,11 +675,11 @@ local_scheme = "dirty-tag"
 
 ```bash
 # Install in development mode
-pip install -e .
+uv pip install -e .
 
 # With optional dependencies
-pip install -e ".[dev]"
-pip install -e ".[dev,docs]"
+uv pip install -e ".[dev]"
+uv pip install -e ".[dev,docs]"
 
 # Now changes to source code are immediately reflected
 ```
@@ -693,7 +693,7 @@ source test-env/bin/activate  # Linux/Mac
 # test-env\Scripts\activate  # Windows
 
 # Install package
-pip install dist/my_package-1.0.0-py3-none-any.whl
+uv pip install dist/my_package-1.0.0-py3-none-any.whl
 
 # Test it works
 python -c "import my_package; print(my_package.__version__)"
@@ -722,7 +722,7 @@ Brief description of your package.
 ## Installation
 
 ```bash
-pip install my-package
+uv pip install my-package
 ```
 ````
 
@@ -749,7 +749,7 @@ Full documentation: https://my-package.readthedocs.io
 ```bash
 git clone https://github.com/username/my-package.git
 cd my-package
-pip install -e ".[dev]"
+uv pip install -e ".[dev]"
 pytest
 ```
 
@@ -792,7 +792,7 @@ jobs:
 
 ```bash
 # Install from private index
-pip install my-package --index-url https://private.pypi.org/simple/
+uv pip install my-package --index-url https://private.pypi.org/simple/
 
 # Or add to pip.conf
 [global]

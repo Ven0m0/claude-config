@@ -87,7 +87,7 @@ grep -rn "^//.*function \|^//.*class \|^//.*import " --include="*.js" --include=
 ```bash
 # Find TODOs with dates > 3 months old
 grep -rn "TODO\|FIXME\|HACK" --include="*.py" --include="*.js" --include="*.ts" --include="*.md" . | \
-  grep -E "[0-9]{4}-[0-9]{2}" | \
+  rg -E "[0-9]{4}-[0-9]{2}" | \
   while read line; do
     # Extract date and compare (simplified - actual implementation would parse dates)
     echo "$line"

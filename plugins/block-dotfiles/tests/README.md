@@ -27,7 +27,7 @@ brew install bats-core
 sudo apt-get install bats
 
 # npm
-npm install -g bats
+bun install -g bats
 ```
 
 ### Run All Tests

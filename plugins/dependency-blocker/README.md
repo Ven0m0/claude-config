@@ -220,7 +220,7 @@ When Claude attempts to access a blocked directory, the hook will:
 
 ```bash
 find node_modules -name "*.js"
-ls -la .git/objects
+eza -la .git/objects
 cat dist/bundle.min.js
 ```
 
@@ -239,7 +239,7 @@ Blocked with: `Blocked: Cannot navigate to excluded directory 'node_modules'.`
 
 ```bash
 echo $(cat node_modules/package.json)
-cat <(grep -r "test" node_modules/)
+cat <(rg "test" node_modules/)
 DIR=node_modules && ls $DIR
 ```
 
@@ -257,7 +257,7 @@ Blocked with: `Blocked: Glob pattern 'node_modules/**/*.js' targets excluded dir
 **Grep search:**
 
 ```bash
-grep -r "import" node_modules/
+rg "import" node_modules/
 ```
 
 Blocked with: `Blocked: Cannot grep in path 'node_modules/' - it's inside excluded directory 'node_modules'.`
@@ -275,11 +275,11 @@ Blocked via Read hook with: `Blocked: Cannot read file 'node_modules/react/packa
 **Trusted tool invocations:**
 
 ```bash
-npm install
-npm run build
+bun install
+bun run build
 cargo build
 make test
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 ```
 
 These are always allowed as they manage their own directories internally.
@@ -297,8 +297,8 @@ Navigation commands are allowed (except `cd` to excluded directories).
 **Command chains with trusted tools:**
 
 ```bash
-cd src && npm run build
-npm install && npm test
+cd src && bun run build
+bun install && bun test
 ```
 
 Allowed because npm is a trusted tool and cd is navigating to a non-excluded directory.
@@ -326,7 +326,7 @@ brew install bats-core
 sudo apt-get install bats
 
 # npm
-npm install -g bats
+bun install -g bats
 ```
 
 ### Running Tests

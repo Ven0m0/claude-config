@@ -157,7 +157,7 @@ df -h / | tail -1 | awk '{print "After maximum cleanup: " $4 " free"}'
 
 All cleaned caches are temporary and will rebuild automatically:
 
-- **npm/Yarn**: Rebuilds on next `npm install`
+- **npm/Yarn**: Rebuilds on next `bun install`
 - **Homebrew**: Downloaded on next `brew install`
 - **Browsers**: Rebuilds on next browsing session
 - **Python/ML**: Re-downloads models on next use

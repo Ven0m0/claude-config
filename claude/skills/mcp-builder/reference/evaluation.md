@@ -423,13 +423,13 @@ After creating your evaluation file, you can use the provided evaluation harness
 1. **Install Dependencies**
 
    ```bash
-   pip install -r scripts/requirements.txt
+   uv pip install -r scripts/requirements.txt
    ```
 
    Or install manually:
 
    ```bash
-   pip install anthropic mcp
+   uv pip install anthropic mcp
    ```
 
 1. **Set API Key**
@@ -597,7 +597,7 @@ Here's a complete example of creating and running an evaluation:
 2. **Install dependencies**:
 
 ```bash
-pip install -r scripts/requirements.txt
+uv pip install -r scripts/requirements.txt
 export ANTHROPIC_API_KEY=your_api_key
 ```
 

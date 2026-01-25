@@ -175,11 +175,11 @@ For efficient discovery, we recommend a three-tier approach. First, utilize the 
 
 | Command Type    | Avoid                 | Use Instead                                      |
 | --------------- | --------------------- | ------------------------------------------------ |
-| Package install | `npm install`         | `npm install --silent` or `npm install --quiet`  |
-| Python install  | `pip install package` | `pip install --quiet package`                    |
+| Package install | `bun install`         | `bun install --silent` or `bun install --quiet`  |
+| Python install  | `uv pip install package` | `uv pip install --quiet package`                    |
 | Git logs        | `git log`             | `git log --oneline -10`                          |
 | Git diffs       | `git diff`            | `git diff --stat` (or `-U1` for minimal context) |
-| File listing    | `ls -la`              | `ls -1 \| head -20`                              |
+| File listing    | `eza -la`              | `eza -1 \| head -20`                              |
 | Search results  | `find .`              | `find . -name "*.py" \| head -10`                |
 | Docker builds   | `docker build .`      | `docker build --quiet .`                         |
 | Test runs       | `pytest`              | `pytest --quiet` or `pytest -q`                  |

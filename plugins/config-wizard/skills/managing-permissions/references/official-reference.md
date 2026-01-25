@@ -85,7 +85,7 @@ Specific patterns for fine-grained control:
 {
   "allow": [
     "Bash(git status)",          // Exact command
-    "Bash(npm run:*)",           // Prefix with wildcard
+    "Bash(bun run:*)",           // Prefix with wildcard
     "Read(src/**)",              // Glob pattern
     "Edit(*.txt)"                // File extension glob
   ]
@@ -104,8 +104,8 @@ Specific patterns for fine-grained control:
 
 ```json
 "Bash(git diff:*)"              // Allows: git diff, git diff file.txt
-"Bash(npm run:*)"               // Allows: npm run test, npm run build
-"Bash(ls)"                      // Allows: ls, ls -la, ls /tmp
+"Bash(bun run:*)"               // Allows: bun run test, bun run build
+"Bash(ls)"                      // Allows: ls, eza -la, ls /tmp
 ```
 
 **Security note:** Bash patterns can be bypassed with command chaining (`cd /secret && cat file`). Combine with file-level denies for sensitive data.

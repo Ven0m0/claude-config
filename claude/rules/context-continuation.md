@@ -56,7 +56,7 @@ uv run basedpyright installer/
 
 ```bash
 # Check for non-VERIFIED plans (most recent first by filename)
-ls -1 docs/plans/*.md 2>/dev/null | sort -r | head -5
+eza -1 docs/plans/*.md 2>/dev/null | sort -r | head -5
 ```
 
 Then check the Status field in the most recent plan file(s). An **active plan** is any plan with `Status: PENDING` or `Status: COMPLETE` (not `VERIFIED`).

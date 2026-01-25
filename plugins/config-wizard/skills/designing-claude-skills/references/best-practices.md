@@ -356,9 +356,9 @@ bigquery-skill/
 Find specific metrics using grep:
 
 ```bash
-grep -i "revenue" reference/finance.md
-grep -i "pipeline" reference/sales.md
-grep -i "api usage" reference/product.md
+rg -i "revenue" reference/finance.md
+rg -i "pipeline" reference/sales.md
+rg -i "api usage" reference/product.md
 ```
 ````
 
@@ -1112,7 +1112,7 @@ Don't assume packages are available:
 "Use the pdf library to process the file."
 
 **Good example: Explicit about dependencies**:
-"Install required package: `pip install pypdf`
+"Install required package: `uv pip install pypdf`
 
 Then use it:
 ```python

@@ -54,7 +54,7 @@ def analyze_git_patterns(repo_path):
     # Massive single commits (vibe coding signature)
     massive_commits = bash("""
         git log --oneline --shortstat |
-        grep -E '[0-9]{3,} insertion' |
+        rg -E '[0-9]{3,} insertion' |
         head -20
     """)
     if massive_commits:
@@ -137,7 +137,7 @@ def verify_dependencies(project_path):
                     'type': 'hallucinated_dependency',
                     'severity': 'HIGH',
                     'package': pkg,
-                    'recommendation': f'Verify {pkg} exists: pip show {pkg}'
+                    'recommendation': f'Verify {pkg} exists: uv pip show {pkg}'
                 })
 
     # JavaScript

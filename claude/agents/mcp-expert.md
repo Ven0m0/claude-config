@@ -255,7 +255,7 @@ When creating new MCP integrations:
 After creating the MCP, users can install it with:
 
 ```bash
-npx claude-code-templates@latest --mcp="stripe-integration" --yes
+bunx claude-code-templates@latest --mcp="stripe-integration" --yes
 ```
 
 This will:

@@ -1,6 +1,6 @@
 ---
 name: modern-tool-substitution
-description: Automatically substitute modern performant tools in generated code. Triggers on npm, find, pip, grep, wget, curl, jq, eslint, black, coreutils, sudo. Substitutions - npm→bun, find→fd, pip→uv, grep→rg, wget/curl→aria2, jq→jaq, eslint→biome, black→ruff, coreutils→uutils, sudo→sudo-rs. Adapts flags and syntax. Skip only when user explicitly requests legacy tool.
+description: Automatically substitute modern performant tools in generated code. Triggers on npm, find, pip, grep, wget, curl, jq, eslint, black, coreutils, sudo, ls. Substitutions - npm→bun, find→fd, pip→uv, grep→rg, wget/curl→aria2, jq→jaq, eslint→biome, black→ruff, coreutils→uutils, sudo→sudo-rs, ls→eza. Adapts flags and syntax. Skip only when user explicitly requests legacy tool.
 ---
 
 # Modern Tool Substitution
@@ -90,6 +90,16 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 - Drop-in replacement; identical flags
 - Rust rewrite; memory-safe vs C sudo
 
+**ls → eza**
+
+- `ls -la` → `eza -la`
+- `ls -lah` → `eza -lah`
+- `ls -1` → `eza -1`
+- `ls --tree` → `eza --tree`
+- Git-aware, colorful, faster on large dirs
+- Icons: `eza --icons`
+- Tree view: `eza -T` or `eza --tree`
+
 ## Flag Adaptations
 
 **fd syntax:**
@@ -163,7 +173,7 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 
 **uv limitations:**
 
-- Not for editable installs: `pip install -e .` → keep pip
+- Not for editable installs: `uv pip install -e .` → keep pip
 - Poetry/pipenv → keep; uv is pip replacement only
 
 **rg vs grep:**
@@ -218,8 +228,8 @@ Skip substitution when:
 
 ```bash
 # Package management
-npm install pkg          → bun install pkg
-pip install pandas       → uv pip install pandas
+bun install pkg          → bun install pkg
+uv pip install pandas       → uv pip install pandas
 
 # File operations
 find . -name '*.rs'      → fd -e rs
@@ -240,8 +250,8 @@ cat large.txt            → uu-cat large.txt
 sudo systemctl restart   → sudo-rs systemctl restart
 
 # Combined workflows
-npm i && eslint --fix    → bun i && biome check --write .
-pip install -r req.txt   → uv pip install -r req.txt
+bun i && eslint --fix    → bun i && biome check --write .
+uv pip install -r req.txt   → uv pip install -r req.txt
 grep -r TODO | jaq       → rg TODO | jaq
 find . -name '*.py'      → fd -e py
 ```

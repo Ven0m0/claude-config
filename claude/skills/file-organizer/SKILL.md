@@ -80,7 +80,7 @@ Ask clarifying questions:
 
 ```bash
 # Overview
-ls -la [target]
+eza -la [target]
 
 # File types and sizes
 find [target] -type f -exec file {} \; | head -20

@@ -44,7 +44,7 @@ grep -rn "^def " --include="*.py" . | cut -d: -f2 | sort | uniq -c | sort -rn | 
 
 ```bash
 # Find vibe coding commits
-git log --oneline --shortstat | grep -E "[0-9]{3,} insertion" | head -20
+git log --oneline --shortstat | rg -E "[0-9]{3,} insertion" | head -20
 
 # Commits with high insertion:deletion ratio (adding without cleanup)
 git log --shortstat --pretty=format:"%h %s" | awk '/insertion|deletion/ {
@@ -63,12 +63,12 @@ git log --shortstat --pretty=format:"%h %s" | awk '/insertion|deletion/ {
 
 ```bash
 # Python: Check for uninstallable packages
-pip freeze > /tmp/installed.txt
+uv pip freeze > /tmp/installed.txt
 grep -rh "^import \|^from " --include="*.py" . | \
   sed 's/^import //;s/^from //;s/ import.*//' | \
   sort -u | while read pkg; do
     root=$(echo $pkg | cut -d. -f1)
-    grep -q "^$root" /tmp/installed.txt || echo "HALLUCINATED?: $pkg"
+    rg -q "^$root" /tmp/installed.txt || echo "HALLUCINATED?: $pkg"
   done
 
 # JavaScript: Check for phantom packages

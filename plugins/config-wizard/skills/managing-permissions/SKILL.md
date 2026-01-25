@@ -121,7 +121,7 @@ When setting up permissions:
       "Bash(npm publish:*)"
     ],
     "allow": [
-      "Bash(npm run test:*)",
+      "Bash(bun run test:*)",
       "Bash(git status)",
       "Bash(git diff:*)",
       "Read(src/**)",
@@ -129,7 +129,7 @@ When setting up permissions:
     ],
     "ask": [
       "Bash(git push:*)",
-      "Bash(npm install:*)"
+      "Bash(bun install:*)"
     ]
   }
 }

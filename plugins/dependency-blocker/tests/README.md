@@ -23,7 +23,7 @@ sudo apt-get install bats
 **Using npm:**
 
 ```bash
-npm install -g bats
+bun install -g bats
 ```
 
 **From source:**
@@ -217,7 +217,7 @@ To run these tests in CI, ensure BATS is installed and add to your CI config:
 ```yaml
 # Example GitHub Actions
 - name: Install BATS
-  run: npm install -g bats
+  run: bun install -g bats
 
 - name: Run tests
   run: bats plugins/dependency-blocker/tests/*.bats

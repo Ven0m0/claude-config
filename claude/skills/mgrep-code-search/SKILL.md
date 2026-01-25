@@ -112,7 +112,7 @@ Configure defaults via environment variables:
 
 ## Important Notes
 
-- Always use `bunx @mixedbread/mgrep` to run commands (not npm/npx or direct installation)
+- Always use `bunx @mixedbread/mgrep` to run commands (not npm/bunx or direct installation)
 - Run `bunx @mixedbread/mgrep watch` before searching to ensure the index is current
 - mgrep respects `.gitignore` patterns automatically
 - Create `.mgrepignore` for additional exclusions

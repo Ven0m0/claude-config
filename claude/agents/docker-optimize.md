@@ -357,15 +357,15 @@ USER nodejs
 
 # Copy package files and install dependencies
 COPY --chown=nodejs:nodejs package*.json ./
-RUN npm ci --only=production --no-audit --no-fund && npm cache clean --force
+RUN bun ci --only=production --no-audit --no-fund && npm cache clean --force
 
 # Build stage
 FROM node:{node_version}-alpine AS build
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --no-audit --no-fund
+RUN bun ci --no-audit --no-fund
 COPY . .
-RUN npm run build && npm run test
+RUN bun run build && bun run test
 
 # Production stage
 FROM node:{node_version}-alpine AS production
@@ -406,7 +406,7 @@ CMD ["node", "dist/index.js"]
 FROM python:{python_version}-slim AS base
 
 # Install uv - the fastest Python package manager
-RUN pip install uv
+RUN uv pip install uv
 
 # Build dependencies
 FROM base AS build
@@ -467,8 +467,8 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 # Install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \\
-    pip install --no-cache-dir -r requirements.txt
+RUN uv pip install --no-cache-dir --upgrade pip && \\
+    uv pip install --no-cache-dir -r requirements.txt
 
 # Production stage
 FROM python:{python_version}-slim AS production
@@ -660,7 +660,7 @@ ENTRYPOINT ["/app"]
             'pip': {
                 'install_pattern': r'RUN.*pip.*install',
                 'cleanup_pattern': r'--no-cache-dir|pip\s+cache\s+purge',
-                'recommended_pattern': 'RUN pip install --no-cache-dir <packages>'
+                'recommended_pattern': 'RUN uv pip install --no-cache-dir <packages>'
             }
         }
         
@@ -702,13 +702,13 @@ ENTRYPOINT ["/app"]
                 'issue': 'Missing BuildKit cache mounts',
                 'impact': 'Slower builds, no dependency caching',
                 'fix': 'Use BuildKit cache mounts for package managers',
-                'example': 'RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt',
+                'example': 'RUN --mount=type=cache,target=/root/.cache/pip uv pip install -r requirements.txt',
                 'note': 'Requires DOCKER_BUILDKIT=1'
             })
         
         # Check for multi-stage build opportunities
         from_statements = re.findall(r'FROM\s+([^\s]+)', content)
-        if len(from_statements) == 1 and any(keyword in content.lower() for keyword in ['build', 'compile', 'npm install', 'pip install']):
+        if len(from_statements) == 1 and any(keyword in content.lower() for keyword in ['build', 'compile', 'bun install', 'uv pip install']):
             analysis['size_impact'].append({
                 'issue': 'Single-stage build with development dependencies',
                 'impact': '100-500MB from build tools and dev dependencies',
@@ -786,7 +786,7 @@ CMD ["node", "dist/index.js"]
 FROM python:3.11-slim AS base
 
 # Install UV - next generation Python package manager
-RUN pip install uv
+RUN uv pip install uv
 
 # Stage 1: Dependency resolution with UV
 FROM base AS deps
@@ -1044,7 +1044,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 # Install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN uv pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Runtime
 FROM python:3.11-slim AS runtime
@@ -1226,13 +1226,13 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies (cached if package files haven't changed)
-RUN npm ci --only=production
+RUN bun ci --only=production
 
 # Copy source code (changes frequently)
 COPY . .
 
 # Build application
-RUN npm run build
+RUN bun run build
 
 # Use BuildKit cache mounts
 FROM node:18-alpine AS builder
@@ -1240,11 +1240,11 @@ WORKDIR /app
 
 # Mount cache for package manager
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci --only=production
+    bun ci --only=production
 
 # Mount cache for build artifacts
 RUN --mount=type=cache,target=/app/.cache \
-    npm run build
+    bun run build
 ```
 
 ### 5. Security Hardening
@@ -1689,7 +1689,7 @@ class IntegratedContainerConfig:
                 'base': 'python:3.11-slim-bookworm',
                 'actions': [
                     'COPY requirements.txt .',
-                    'RUN pip install --no-cache-dir --user -r requirements.txt'
+                    'RUN uv pip install --no-cache-dir --user -r requirements.txt'
                 ]
             },
             'security_stage': {
@@ -1735,11 +1735,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Copy and install Python dependencies
 COPY requirements.txt .
-RUN pip install --user --no-warn-script-location -r requirements.txt
+RUN uv pip install --user --no-warn-script-location -r requirements.txt
 
 # Stage 2: Security scanning
 FROM dependencies AS security-scan
-RUN pip install --user pip-audit safety bandit
+RUN uv pip install --user pip-audit safety bandit
 
 # Copy source code for security scanning
 COPY . .
@@ -1751,7 +1751,7 @@ RUN python -m pip_audit --format=json --output=/tmp/pip-audit-report.json || tru
 
 # Stage 3: Testing (optional, can be skipped in production builds)
 FROM security-scan AS testing
-RUN pip install --user pytest pytest-cov
+RUN uv pip install --user pytest pytest-cov
 
 # Run tests during build (from /test-harness integration)
 RUN python -m pytest tests/ --cov=src --cov-report=json --cov-report=term
@@ -1855,7 +1855,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies with optimization
-RUN npm ci --only=production --silent
+RUN bun ci --only=production --silent
 
 # Stage 2: Build application
 FROM base AS build
@@ -1868,7 +1868,7 @@ COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
 
 # Build application with optimizations from /frontend-optimize
-RUN npm run build
+RUN bun run build
 
 # Run security audit
 RUN npm audit --audit-level high --production
@@ -1877,7 +1877,7 @@ RUN npm audit --audit-level high --production
 FROM build AS security-scan
 
 # Install security scanning tools
-RUN npm install -g retire snyk
+RUN bun install -g retire snyk
 
 # Run security scans
 RUN retire --outputformat json --outputpath /tmp/retire-report.json || true

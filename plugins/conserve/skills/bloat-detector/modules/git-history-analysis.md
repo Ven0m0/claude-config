@@ -49,7 +49,7 @@ def staleness_score(months_since_change):
 # For each file, count references in codebase
 git ls-files | while read file; do
   filename=$(basename "$file")
-  refs=$(git grep -l "$filename" | wc -l)
+  refs=$(git rg -l "$filename" | wc -l)
   if [ $refs -eq 1 ]; then  # Only self-reference
     echo "0 $file"
   else

@@ -89,7 +89,7 @@ Check for compaction events in agent logs:
 
 ```bash
 # Look for compaction boundaries in recent logs
-grep -r "compact_boundary" ~/.claude/projects/*/agent_*.log | tail -5
+rg "compact_boundary" ~/.claude/projects/*/agent_*.log | tail -5
 ```
 
 ## Critical: Subagent Overhead Reality

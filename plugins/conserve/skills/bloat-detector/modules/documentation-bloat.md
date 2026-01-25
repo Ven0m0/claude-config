@@ -59,7 +59,7 @@ grep -c '\.' file.md  # Approximate sentences
 
 ```bash
 # Find stale docs
-git log -1 --format="%ar" -- docs/*.md | grep -E "year|months"
+git log -1 --format="%ar" -- docs/*.md | rg -E "year|months"
 ```
 
 ### 4. Missing/Outdated References

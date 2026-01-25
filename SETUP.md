@@ -71,12 +71,12 @@ claude
 
 ```bash
 # JavaScript/TypeScript
-npm install -g @biomejs/biome
+bun install -g @biomejs/biome
 
 # Python (via uv - auto-installs on first use)
-pip install uv
+uv pip install uv
 # or install ruff directly
-pip install ruff
+uv pip install ruff
 
 # Go (included with Go installation)
 # Rust
@@ -94,19 +94,19 @@ rustup component add rustfmt
 **Required for analysis:**
 
 ```bash
-pip install pandas numpy matplotlib seaborn
+uv pip install pandas numpy matplotlib seaborn
 ```
 
 **Optional (for visualizations):**
 
 ```bash
-pip install plotly
+uv pip install plotly
 ```
 
 **Optional (for MCP database server):**
 
 ```bash
-pip install uvx
+uv pip install uvx
 uvx mcp-server-sqlite
 ```
 
@@ -226,7 +226,7 @@ cd ~/.claude/plugins/data-analyst
 
 **Solution:**
 
-1. Install uvx: `pip install uvx`
+1. Install uvx: `uv pip install uvx`
 1. Verify mcp-server-sqlite: `uvx mcp-server-sqlite --help`
 1. Check database path in `.mcp.json`
 1. Create database directory if needed: `mkdir -p ~/.claude/plugins/data-analyst/data`

@@ -63,7 +63,7 @@ Results: 3 TODOs, 1 FIXME in auth.ts:89
 
 # Step 2
 Glob: "**/*.test.ts"
-Bash: npm test
+Bash: bun test
 Results: 2 tests failing in test_auth.test.ts
 
 # Step 3

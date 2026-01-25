@@ -19,11 +19,11 @@ Keep context pressure under 50% for quality responses.
 
 | Avoid             | Use Instead                       |
 | ----------------- | --------------------------------- |
-| `npm install`     | `npm install --silent`            |
-| `pip install pkg` | `pip install --quiet pkg`         |
+| `bun install`     | `bun install --silent`            |
+| `uv pip install pkg` | `uv pip install --quiet pkg`         |
 | `git log`         | `git log --oneline -10`           |
 | `git diff`        | `git diff --stat`                 |
-| `ls -la`          | `ls -1 \| head -20`               |
+| `eza -la`          | `eza -1 \| head -20`               |
 | `find .`          | `find . -name "*.py" \| head -10` |
 | `pytest`          | `pytest --quiet`                  |
 

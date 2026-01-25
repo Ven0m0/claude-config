@@ -21,7 +21,7 @@ cat error.log
 "What's causing this error and how do I fix it?"
 
 # Resolve test failures
-npm test 2>&1
+bun test 2>&1
 /fix-error --quick
 "These tests are failing - need a quick fix"
 
@@ -31,7 +31,7 @@ python script.py 2>&1
 "Dig into this stack trace and check for environment issues"
 
 # Handle multiple errors
-grep -E "ERROR|WARN" app.log | tail -20
+rg -E "ERROR|WARN" app.log | tail -20
 /fix-error
 "Sort these by priority and tell me how to fix each one"
 ```
@@ -83,7 +83,7 @@ Common Errors and Immediate Solutions
 📊 "Module not found" / "Cannot resolve" (Frequency: High)
 ├─ Primary cause: Package not installed, incorrect path
 ├─ Resolution time: 2-5 minutes
-└─ Solution: Run npm install, check relative paths
+└─ Solution: Run bun install, check relative paths
 
 📊 "Unexpected token" / "SyntaxError" (Frequency: Medium)
 ├─ Primary cause: Bracket/quote mismatch, reserved word usage

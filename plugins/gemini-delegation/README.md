@@ -45,7 +45,7 @@ You must have the [Gemini CLI](https://github.com/google/generative-ai-cli) inst
 
 ```bash
 # Install Gemini CLI
-npm install -g @google/generative-ai-cli
+bun install -g @google/generative-ai-cli
 
 # Configure with your API key
 gemini auth login
@@ -301,7 +301,7 @@ Ensure Gemini CLI is installed:
 
 ```bash
 which gemini
-npm install -g @google/generative-ai-cli
+bun install -g @google/generative-ai-cli
 ```
 
 ### Authentication Errors

@@ -112,12 +112,12 @@ Use **specific allows** instead of wildcards:
 // ✅ SAFE: Specific commands only
 {
   "allow": [
-    "Bash(npm run test)",       // Specific script you've reviewed
-    "Bash(npm run build)",      // Specific script you've reviewed
+    "Bash(bun run test)",       // Specific script you've reviewed
+    "Bash(bun run build)",      // Specific script you've reviewed
     "Bash(make test)"           // Specific script you've reviewed
   ],
   "ask": [
-    "Bash(npm install:*)",      // Review dependency changes
+    "Bash(bun install:*)",      // Review dependency changes
     "Edit(package.json)"        // Review config changes
   ]
 }

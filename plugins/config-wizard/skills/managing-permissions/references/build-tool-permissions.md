@@ -12,8 +12,8 @@ Allow specific commands you've reviewed and trust. Avoid wildcards that could ex
 // ✅ GOOD: Explicit commands
 {
   "allow": [
-    "Bash(npm run test)",
-    "Bash(npm run build)",
+    "Bash(bun run test)",
+    "Bash(bun run build)",
     "Bash(make build)",
     "Bash(cargo check)"
   ]
@@ -22,7 +22,7 @@ Allow specific commands you've reviewed and trust. Avoid wildcards that could ex
 // ❌ BAD: Wildcards
 {
   "allow": [
-    "Bash(npm run:*)",
+    "Bash(bun run:*)",
     "Bash(make:*)",
     "Bash(cargo:*)"
   ]
@@ -38,11 +38,11 @@ When you need flexibility, use `ask` instead of `allow`. This lets you review co
 ```json
 {
   "allow": [
-    "Bash(npm run test)",      // Common commands auto-approved
-    "Bash(npm run build)"
+    "Bash(bun run test)",      // Common commands auto-approved
+    "Bash(bun run build)"
   ],
   "ask": [
-    "Bash(npm run:*)",         // Other commands require review
+    "Bash(bun run:*)",         // Other commands require review
     "Edit(package.json)"       // Config edits require review
   ]
 }
@@ -58,7 +58,7 @@ Never allow both wildcard execution AND config file editing without review.
 // ❌ EXTREMELY DANGEROUS
 {
   "allow": [
-    "Bash(npm run:*)",         // Any script
+    "Bash(bun run:*)",         // Any script
     "Edit(package.json)"       // Can modify scripts
   ]
 }
@@ -75,11 +75,11 @@ Never allow both wildcard execution AND config file editing without review.
 ```json
 {
   "allow": [
-    "Bash(npm run test)",
-    "Bash(npm run build)"
+    "Bash(bun run test)",
+    "Bash(bun run build)"
   ],
   "ask": [
-    "Bash(npm run:*)",
+    "Bash(bun run:*)",
     "Edit(package.json)"
   ]
 }
@@ -93,8 +93,8 @@ Configure build tool permissions at the **project level** (`.claude/settings.jso
 // .claude/settings.json (commit to repo)
 {
   "permissions": {
-    "allow": ["Bash(npm run test)", "Bash(npm run build)"],
-    "ask": ["Bash(npm run:*)", "Edit(package.json)"]
+    "allow": ["Bash(bun run test)", "Bash(bun run build)"],
+    "ask": ["Bash(bun run:*)", "Edit(package.json)"]
   }
 }
 ```
@@ -114,11 +114,11 @@ Layer multiple protections together: specific allows, ask for important operatio
 ```json
 {
   "allow": [
-    "Bash(npm run test)",
-    "Bash(npm run build)"
+    "Bash(bun run test)",
+    "Bash(bun run build)"
   ],
   "ask": [
-    "Bash(npm run:*)",
+    "Bash(bun run:*)",
     "Edit(package.json)",
     "Edit(Makefile)",
     "Edit(build.gradle)",
@@ -140,14 +140,14 @@ Use this framework to decide which permission level to use:
 
 **✅ Generally safe to allow:**
 
-1. **Tests** - Commands that run existing test suites (`npm run test`, `cargo test`)
-1. **Builds** - Compilation/bundling of existing code (`npm run build`, `make build`)
-1. **Linting/Formatting** - Code quality checks (`npm run lint`, `cargo fmt`)
+1. **Tests** - Commands that run existing test suites (`bun run test`, `cargo test`)
+1. **Builds** - Compilation/bundling of existing code (`bun run build`, `make build`)
+1. **Linting/Formatting** - Code quality checks (`bun run lint`, `cargo fmt`)
 1. **Read-only operations** - Status checks, info commands (`npm list`, `cargo tree`)
 
 **⚠️ Use `ask` for:**
 
-1. **Wildcards** - Any pattern like `npm run:*` or `make:*`
+1. **Wildcards** - Any pattern like `bun run:*` or `make:*`
 1. **Config edits** - Modifications to build files (`Edit(package.json)`, `Edit(Makefile)`)
 1. **Custom scripts** - User-defined scripts you haven't reviewed
 1. **Publishing** - Anything that publishes packages or deploys
@@ -164,7 +164,7 @@ Use this framework to decide which permission level to use:
 
 Build tools execute scripts defined in configuration files. When you combine:
 
-1. **Wildcard permissions** to run any script/task (e.g., `npm run:*`, `gradle:*`, `make:*`)
+1. **Wildcard permissions** to run any script/task (e.g., `bun run:*`, `gradle:*`, `make:*`)
 1. **Edit permissions** to configuration files (e.g., `package.json`, `build.gradle`, `Makefile`)
 
 You create an **arbitrary code execution vulnerability**.
@@ -176,7 +176,7 @@ You create an **arbitrary code execution vulnerability**.
 ```json
 {
   "allow": [
-    "Bash(npm run:*)",         // Executes ANY script in package.json
+    "Bash(bun run:*)",         // Executes ANY script in package.json
     "Edit(package.json)"       // Can modify scripts
   ]
 }
@@ -201,7 +201,7 @@ Any build tool that executes user-defined scripts from configuration files:
 
 | Build Tool           | Config File(s)                     | Vulnerable Pattern                             |
 | -------------------- | ---------------------------------- | ---------------------------------------------- |
-| npm, yarn, pnpm, bun | `package.json`                     | `Bash(npm run:*)`                              |
+| npm, yarn, pnpm, bun | `package.json`                     | `Bash(bun run:*)`                              |
 | Make                 | `Makefile`                         | `Bash(make:*)`                                 |
 | Gradle               | `build.gradle`, `build.gradle.kts` | `Bash(gradle:*)`, `Bash(./gradlew:*)`          |
 | Maven                | `pom.xml`                          | `Bash(mvn:*)`                                  |
@@ -214,7 +214,7 @@ Any build tool that executes user-defined scripts from configuration files:
 
 **Core approach:**
 
-1. **Allow specific commands** you've reviewed and trust (`npm run test`, `make build`)
+1. **Allow specific commands** you've reviewed and trust (`bun run test`, `make build`)
 1. **Use `ask` for flexibility** - wildcards and config edits require review
 1. **Never combine** wildcards + config edits in allow rules
 1. **Configure at project level** for team consistency

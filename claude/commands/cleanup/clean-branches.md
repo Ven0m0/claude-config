@@ -46,10 +46,10 @@ Follow this systematic approach to clean up git branches: **$ARGUMENTS**
 
    ```bash
    # List merged local branches
-   git branch --merged main | grep -v "main\\|master\\|develop\\|\\*"
+   git branch --merged main | rg -v "main\\|master\\|develop\\|\\*"
 
    # List merged remote branches
-   git branch -r --merged main | grep -v "main\\|master\\|develop\\|HEAD"
+   git branch -r --merged main | rg -v "main\\|master\\|develop\\|HEAD"
    ```
 
 1. **Identify Stale Branches**
@@ -103,7 +103,7 @@ Follow this systematic approach to clean up git branches: **$ARGUMENTS**
 
    ```bash
    # Delete merged branches (interactive)
-   git branch --merged main | grep -v "main\\|master\\|develop\\|\\*" | xargs -n 1 -p git branch -d
+   git branch --merged main | rg -v "main\\|master\\|develop\\|\\*" | xargs -n 1 -p git branch -d
 
    # Force delete if needed (use with caution)
    git branch -D branch-name
@@ -157,7 +157,7 @@ Follow this systematic approach to clean up git branches: **$ARGUMENTS**
 
    # Clean up merged branches
    echo "Cleaning up merged branches..."
-   merged_branches=$(git branch --merged $MAIN_BRANCH | grep -v "\\*\\|$MAIN_BRANCH")
+   merged_branches=$(git branch --merged $MAIN_BRANCH | rg -v "\\*\\|$MAIN_BRANCH")
 
    for branch in $merged_branches; do
        if ! is_protected "$branch"; then
@@ -238,13 +238,13 @@ Follow this systematic approach to clean up git branches: **$ARGUMENTS**
 
 ```bash
 # Clean up all merged branches except protected ones
-git branch --merged main | grep -E "^  (feature|hotfix|bugfix)/" | xargs -n 1 git branch -d
+git branch --merged main | rg -E "^  (feature|hotfix|bugfix)/" | xargs -n 1 git branch -d
 
 # Interactive cleanup with confirmation
-git branch --merged main | grep -v "main\|master\|develop" | xargs -n 1 -p git branch -d
+git branch --merged main | rg -v "main\|master\|develop" | xargs -n 1 -p git branch -d
 
 # Batch delete remote branches
-git branch -r --merged main | grep origin | grep -v "main\|master\|develop\|HEAD" | cut -d/ -f2- | xargs -n 1 git push origin --delete
+git branch -r --merged main | grep origin | rg -v "main\|master\|develop\|HEAD" | cut -d/ -f2- | xargs -n 1 git push origin --delete
 
 # Clean up branches older than specific date
 git for-each-ref --format='%(refname:short) %(committerdate:short)' refs/heads | awk '$2 < "2023-01-01"' | cut -d' ' -f1 | xargs -n 1 git branch -D

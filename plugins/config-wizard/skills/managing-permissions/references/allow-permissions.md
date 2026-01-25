@@ -46,8 +46,8 @@ Operations that don't modify source or publish anything:
 ```json
 {
   "allow": [
-    "Bash(npm run test)",
-    "Bash(npm run build)",
+    "Bash(bun run test)",
+    "Bash(bun run build)",
     "Bash(cargo test)",
     "Bash(make test)"
   ]
@@ -90,7 +90,7 @@ Use `ask` instead of `allow`:
   "ask": [
     "Bash(/usr/bin/git push:*)",
     "Bash(/usr/bin/git commit:*)",
-    "Bash(npm install:*)",
+    "Bash(bun install:*)",
     "Bash(npm publish:*)"
   ]
 }
