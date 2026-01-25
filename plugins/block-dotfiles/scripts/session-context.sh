@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 # This script provides context to Claude at session start about the block-dotfiles plugin.
 # It informs Claude proactively about sensitive files that are blocked for security reasons.

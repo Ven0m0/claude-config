@@ -3,6 +3,7 @@
 ## Externalization Pattern
 
 **Move heavy implementations to tools with CLI interfaces:**
+
 - Functions >20 lines → dedicated tool files
 - Always include `argparse` CLI interface
 - Add `if __name__ == "__main__"` execution block
@@ -79,6 +80,7 @@ def analyze_files(path, language):
 ```
 
 **Benefits:**
+
 - 60-80% reduction in code duplication
 - Single source of truth for logic
 - Easier to maintain and extend
@@ -137,12 +139,12 @@ skill-name/
 
 ### Size Targets
 
-| File Type | Target Size | Maximum Size |
-|-----------|-------------|--------------|
-| SKILL.md | 150-200 lines | 300 lines |
-| modules/*.md | 100-150 lines | 250 lines |
-| tools/*.py | Any size | No limit (with CLI) |
-| examples/*.py | 20-50 lines | 100 lines |
+| File Type      | Target Size   | Maximum Size        |
+| -------------- | ------------- | ------------------- |
+| SKILL.md       | 150-200 lines | 300 lines           |
+| modules/\*.md  | 100-150 lines | 250 lines           |
+| tools/\*.py    | Any size      | No limit (with CLI) |
+| examples/\*.py | 20-50 lines   | 100 lines           |
 
 ## Analysis & Planning
 
@@ -161,18 +163,21 @@ python skills/optimizing-large-skills/tools/optimization-patterns.py \
 ### Manual Analysis Checklist
 
 **Phase 1: Identification**
+
 - [ ] Identify files >300 lines
 - [ ] Count code blocks and functions
 - [ ] Measure inline code vs documentation ratio
 - [ ] Find repeated patterns and similar functions
 
 **Phase 2: Categorization**
+
 - [ ] Mark heavy implementations (>20 lines) for externalization
 - [ ] Group similar functions for consolidation
 - [ ] Identify non-essential content for progressive loading
 - [ ] List structured data that can replace code
 
 **Phase 3: Prioritization**
+
 - [ ] Externalize first (highest impact: 60-70% reduction)
 - [ ] Consolidate second (medium impact: 15-20% reduction)
 - [ ] Progressive loading third (low impact: 5-10% reduction)
@@ -182,6 +187,7 @@ python skills/optimizing-large-skills/tools/optimization-patterns.py \
 ### Post-Optimization Checklist
 
 **Phase 4: Implementation**
+
 - [ ] Move heavy implementations (>20 lines) to separate files
 - [ ] Add CLI interfaces to externalized tools
 - [ ] Create tool directory structure
@@ -192,7 +198,8 @@ python skills/optimizing-large-skills/tools/optimization-patterns.py \
 - [ ] Add usage examples for each tool
 
 **Phase 5: Verification**
-- [ ] Verify line count <300 (target: 150-200)
+
+- [ ] Verify line count \<300 (target: 150-200)
 - [ ] Test all externalized tools work correctly
 - [ ] Confirm progressive loading functions
 - [ ] Run skills-eval validation to verify size reduction

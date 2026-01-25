@@ -1,14 +1,12 @@
 ---
 name: uv
-description:
-  Guide for using uv, the Python package and project manager. Use this when
-  working with Python projects, scripts, packages, or tools.
+description: Guide for using uv, the Python package and project manager. Use this when working with Python projects, scripts, packages, or tools.
 ---
 
 # uv
 
 uv is an extremely fast Python package and project manager. It replaces pip,
-pip-tools, pipx, pyenv, virtualenv, poetry, etc.
+pip-tools, uvx, pyenv, virtualenv, poetry, etc.
 
 ## When to use uv
 
@@ -104,21 +102,21 @@ pyenv local 3.12         → uv python pin 3.12
 pyenv global 3.12        → uv python install 3.12 --default
 ```
 
-### pipx → uvx
+### uvx → uvx
 
 ```bash
-pipx run ruff            → uvx ruff
-pipx install ruff        → uv tool install ruff
-pipx upgrade ruff        → uv tool upgrade ruff
-pipx list                → uv tool list
+uvx run ruff            → uvx ruff
+uvx install ruff        → uv tool install ruff
+uvx upgrade ruff        → uv tool upgrade ruff
+uvx list                → uv tool list
 ```
 
 ### pip and pip-tools → uv pip
 
 ```bash
-pip install package      → uv pip install package
-pip install -r req.txt   → uv pip install -r req.txt
-pip freeze               → uv pip freeze
+uv pip install package      → uv pip install package
+uv pip install -r req.txt   → uv pip install -r req.txt
+uv pip freeze               → uv pip freeze
 pip-compile req.in       → uv pip compile req.in
 pip-sync req.txt         → uv pip sync req.txt
 virtualenv .venv         → uv venv
@@ -130,7 +128,7 @@ virtualenv .venv         → uv venv
 
 ```bash
 # Bad
-pip install requests
+uv pip install requests
 
 # Good
 uv add requests

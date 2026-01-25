@@ -27,6 +27,7 @@ Read the existing file to understand what's currently documented.
 Launch 4 exploration agents concurrently using the Task tool with `subagent_type='Explore'`:
 
 ## Agent 1: Repository Structure
+
 ```
 Verify all file/directory claims in CLAUDE.md:
 - Do documented paths exist?
@@ -36,6 +37,7 @@ Output: List of ✅ accurate, 🟡 stale, ❌ missing items
 ```
 
 ## Agent 2: Tech Stack & Dependencies
+
 ```
 Analyze actual tech stack vs documented:
 - Check package files (package.json, Cargo.toml, go.mod, flake.nix, pyproject.toml, etc.)
@@ -45,6 +47,7 @@ Output: Accurate stack summary with discrepancies noted
 ```
 
 ## Agent 3: Commands & Workflows
+
 ```
 Verify documented commands work:
 - Check Makefile, justfile, package.json scripts, etc.
@@ -54,6 +57,7 @@ Output: Validated command reference
 ```
 
 ## Agent 4: Patterns & Conventions
+
 ```
 Identify actual patterns in the codebase:
 - Code organization patterns
@@ -124,11 +128,11 @@ format:  <command>
 ## Content Guidelines
 
 1. **Be concise**: Prefer tables and bullet points over prose
-2. **Be specific**: "Run `make test`" not "run the tests"
-3. **Be current**: Only document what actually exists
-4. **Be actionable**: Include copy-pasteable commands
-5. **Omit the obvious**: Don't document standard language features
-6. **Link, don't duplicate**: Reference files instead of copying content
+1. **Be specific**: "Run `make test`" not "run the tests"
+1. **Be current**: Only document what actually exists
+1. **Be actionable**: Include copy-pasteable commands
+1. **Omit the obvious**: Don't document standard language features
+1. **Link, don't duplicate**: Reference files instead of copying content
 
 ## Anti-Patterns to Avoid
 
@@ -143,10 +147,11 @@ format:  <command>
 Present to the user:
 
 1. **Staleness Report**: Summary of what's accurate/stale/missing
-2. **Proposed CLAUDE.md**: The refreshed content
-3. **Diff Summary**: Key changes from current version
+1. **Proposed CLAUDE.md**: The refreshed content
+1. **Diff Summary**: Key changes from current version
 
 Ask the user if they want to:
+
 - Apply the changes (write the file)
 - Modify specific sections first
 - Keep certain existing content
@@ -162,6 +167,7 @@ Ask the user if they want to:
 # Best Practices for Ongoing Freshness
 
 Remind the user:
+
 - Use `#` command during sessions to add notes Claude will incorporate
 - Run this audit after major refactors or dependency updates
 - Keep CLAUDE.md in version control

@@ -16,6 +16,7 @@ Parallel execution spawns multiple subagents simultaneously using the Task tool 
 ### Step 1: Identify Parallelizable Tasks
 
 Before spawning, verify tasks are independent:
+
 - No task depends on another's output
 - Tasks target different files or concerns
 - Can run simultaneously without conflicts
@@ -81,6 +82,7 @@ TaskOutput: task_3_id
 ### Step 5: Synthesize Results
 
 Combine all subagent outputs into unified result:
+
 - Merge related findings
 - Resolve conflicts between recommendations
 - Prioritize by severity/importance
@@ -163,6 +165,7 @@ todos = [
 ## When to Use Parallel Execution
 
 **Good candidates:**
+
 - Multiple independent analyses (code review, security, tests)
 - Multi-file processing where files are independent
 - Exploratory tasks with different perspectives
@@ -170,6 +173,7 @@ todos = [
 - Feature implementation with independent components
 
 **Avoid parallelization when:**
+
 - Tasks have dependencies (Task B needs Task A's output)
 - Sequential workflows are required (commit -> push -> PR)
 - Tasks modify the same files (risk of conflicts)
@@ -177,10 +181,10 @@ todos = [
 
 ## Performance Benefits
 
-| Approach | 5 Tasks @ 30s each | Total Time |
-|----------|-------------------|------------|
-| Sequential | 30s + 30s + 30s + 30s + 30s | ~150s |
-| Parallel | All 5 run simultaneously | ~30s |
+| Approach   | 5 Tasks @ 30s each          | Total Time |
+| ---------- | --------------------------- | ---------- |
+| Sequential | 30s + 30s + 30s + 30s + 30s | ~150s      |
+| Parallel   | All 5 run simultaneously    | ~30s       |
 
 Parallel execution is approximately Nx faster where N is the number of independent tasks.
 
@@ -189,13 +193,15 @@ Parallel execution is approximately Nx faster where N is the number of independe
 **User request**: "Implement user authentication with login, registration, and password reset"
 
 **Orchestrator creates plan**:
+
 1. Implement login endpoint
-2. Implement registration endpoint
-3. Implement password reset endpoint
-4. Add authentication middleware
-5. Write integration tests
+1. Implement registration endpoint
+1. Implement password reset endpoint
+1. Add authentication middleware
+1. Write integration tests
 
 **Parallel execution**:
+
 ```
 Launching 5 subagents in parallel:
 
@@ -215,13 +221,16 @@ All tasks run simultaneously...
 ## Troubleshooting
 
 **Tasks running sequentially?**
+
 - Verify ALL Task calls are in SINGLE message
 - Check `run_in_background: true` is set for each
 
 **Results not available?**
+
 - Use TaskOutput with correct task IDs
 - Wait for tasks to complete before retrieving
 
 **Conflicts in output?**
+
 - Ensure tasks don't modify same files
 - Add conflict resolution in synthesis step

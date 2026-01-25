@@ -5,7 +5,7 @@ usage: /bloat-scan [--level 1|2|3] [--focus code|docs|deps] [--report FILE] [--d
 # Claude Code 2.1.0+ lifecycle hooks
 hooks:
   PreToolUse:
-    - matcher: "Task"
+    - matcher: Task
       command: |
         # Log scan initiation with parameters
         echo "[cmd:bloat-scan] 🔍 Bloat scan started at $(date) | User: ${USER:-unknown}" >> ${CLAUDE_CODE_TMPDIR:-/tmp}/command-audit.log
@@ -21,7 +21,7 @@ hooks:
         fi
       once: true
   Stop:
-    - command: |
+    - command: |-
         echo "[cmd:bloat-scan] === Scan completed at $(date) ===" >> ${CLAUDE_CODE_TMPDIR:-/tmp}/command-audit.log
         # Track: bloat scan frequency = technical debt awareness metric
 ---
@@ -50,13 +50,13 @@ Execute progressive bloat detection across code, documentation, and dependencies
 
 ## Options
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--level <1|2|3>` | Scan tier: 1=quick, 2=targeted, 3=deep | `1` |
-| `--focus <type>` | Focus area: `code`, `docs`, `deps`, or `all` | `all` |
-| `--report <file>` | Save report to file | stdout |
-| `--dry-run` | Preview findings without taking action | false |
-| `--exclude <pattern>` | Additional exclude patterns beyond defaults | `.bloat-ignore` |
+| Option                | Description                                  | Default         |
+| --------------------- | -------------------------------------------- | --------------- |
+| \`--level \<1         | 2                                            | 3>\`            |
+| `--focus <type>`      | Focus area: `code`, `docs`, `deps`, or `all` | `all`           |
+| `--report <file>`     | Save report to file                          | stdout          |
+| `--dry-run`           | Preview findings without taking action       | false           |
+| `--exclude <pattern>` | Additional exclude patterns beyond defaults  | `.bloat-ignore` |
 
 **Note**: Cache directories (`.venv/`, `node_modules/`, `.pytest_cache/`, etc.) are automatically excluded from all scans.
 
@@ -65,6 +65,7 @@ Execute progressive bloat detection across code, documentation, and dependencies
 ### Tier 1: Quick Scan (2-5 min)
 
 **Detects:**
+
 - Large files (> 500 lines)
 - Stale files (unchanged 6+ months)
 - Commented code blocks
@@ -76,6 +77,7 @@ Execute progressive bloat detection across code, documentation, and dependencies
 ### Tier 2: Targeted Analysis (10-20 min)
 
 **Detects:**
+
 - Dead code (static analysis)
 - Duplicate patterns
 - Import bloat
@@ -87,6 +89,7 @@ Execute progressive bloat detection across code, documentation, and dependencies
 ### Tier 3: Deep Audit (30-60 min)
 
 **Detects:**
+
 - All Tier 1 + Tier 2
 - Cyclomatic complexity
 - Dependency graphs
@@ -98,16 +101,19 @@ Execute progressive bloat detection across code, documentation, and dependencies
 ## Workflow
 
 1. **Invoke Command**
+
    ```
    /bloat-scan --level 2 --focus code
    ```
 
-2. **Agent Executes Scan**
+1. **Agent Executes Scan**
+
    - Dispatches `bloat-auditor` agent
    - Loads `bloat-detector` skill modules
    - Runs detection algorithms
 
-3. **Generate Report**
+1. **Generate Report**
+
    ```yaml
    === Bloat Detection Report ===
 
@@ -129,7 +135,8 @@ Execute progressive bloat detection across code, documentation, and dependencies
      Context reduction: ~12%
    ```
 
-4. **Review & Approve Actions**
+1. **Review & Approve Actions**
+
    - User reviews high-priority findings
    - Approves deletions/refactorings
    - Agent executes approved changes
@@ -172,7 +179,7 @@ NEXT STEPS:
 
 ### Report File (--report)
 
-```markdown
+````markdown
 # Bloat Detection Report
 
 **Scan Date:** 2025-12-31
@@ -219,18 +226,19 @@ git commit -m "Backup before deletion"
 git checkout main
 git rm src/deprecated/old_handler.py
 git commit -m "Remove deprecated handler (bloat scan #1)"
-```
+````
 
 [... more findings ...]
 
 ## Next Steps
 
 1. ✅ Review all HIGH priority findings
-2. ⏳ Create cleanup branch
-3. ⏳ Process deletions (safest first)
-4. ⏳ Run tests after each change
-5. ⏳ Create PR with detailed rationale
-```
+1. ⏳ Create cleanup branch
+1. ⏳ Process deletions (safest first)
+1. ⏳ Run tests after each change
+1. ⏳ Create PR with detailed rationale
+
+````
 
 ## Integration
 
@@ -241,7 +249,7 @@ git commit -m "Remove deprecated handler (bloat scan #1)"
 /context-status  # Shows 45% utilization
 /bloat-scan --level 2
 # "Found 12% bloat, can reduce context to 33%"
-```
+````
 
 ### With Git Workflows
 

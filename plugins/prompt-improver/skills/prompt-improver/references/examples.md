@@ -16,23 +16,25 @@ This reference provides real-world examples showing the complete flow from vague
 Each example follows this structure:
 
 1. **Original Prompt**: What the user said
-2. **Evaluation**: Clarity assessment
-3. **Research Plan** (if vague): What to investigate
-4. **Research Findings** (if vague): What was discovered
-5. **Questions Asked** (if vague): AskUserQuestion tool call
-6. **User Answers** (if vague): What user selected
-7. **Execution**: How the request was fulfilled
+1. **Evaluation**: Clarity assessment
+1. **Research Plan** (if vague): What to investigate
+1. **Research Findings** (if vague): What was discovered
+1. **Questions Asked** (if vague): AskUserQuestion tool call
+1. **User Answers** (if vague): What user selected
+1. **Execution**: How the request was fulfilled
 
 ## Vague Prompts (Research Required)
 
 ### Example 1: Generic Bug Fix
 
 **Original Prompt:**
+
 ```
 fix the bug
 ```
 
 **Evaluation:**
+
 - Target: ❌ (no file, function, or bug specified)
 - Action: ❌ (what needs fixing?)
 - Criteria: ~ (bug fixed, but which bug?)
@@ -44,6 +46,7 @@ No recent error messages, no file viewing context.
 **Decision:** RESEARCH REQUIRED
 
 **Research Plan:**
+
 ```
 1. Search for TODO/FIXME comments indicating known bugs
 2. Check for failing tests
@@ -52,6 +55,7 @@ No recent error messages, no file viewing context.
 ```
 
 **Research Execution:**
+
 ```bash
 # Step 1
 Grep: "TODO|FIXME|BUG"
@@ -59,7 +63,7 @@ Results: 3 TODOs, 1 FIXME in auth.ts:89
 
 # Step 2
 Glob: "**/*.test.ts"
-Bash: npm test
+Bash: bun test
 Results: 2 tests failing in test_auth.test.ts
 
 # Step 3
@@ -72,12 +76,14 @@ Results: Error logged in auth.ts:145 "Invalid token"
 ```
 
 **Research Findings:**
+
 - FIXME in auth.ts:89: "FIXME: Token validation is broken"
 - 2 failing tests related to token validation
 - Recent fix attempt for login redirect
 - Error logging at auth.ts:145 for invalid tokens
 
 **Questions Asked:**
+
 ```json
 {
   "questions": [
@@ -110,16 +116,18 @@ Results: Error logged in auth.ts:145 "Invalid token"
 **Execution:**
 Fix token validation in auth.ts:89, run tests to verify fix resolves the 2 failing tests.
 
----
+______________________________________________________________________
 
 ### Example 2: Generic Refactoring Request
 
 **Original Prompt:**
+
 ```
 refactor the code to be better
 ```
 
 **Evaluation:**
+
 - Target: ❌ (what code?)
 - Action: ❌ ("better" is subjective)
 - Criteria: ❌ (what defines "better"?)
@@ -129,6 +137,7 @@ refactor the code to be better
 User recently opened src/api/users.ts
 
 **Research Plan:**
+
 ```
 1. Read src/api/users.ts to understand current state
 2. Search for code quality issues (long functions, duplication)
@@ -137,6 +146,7 @@ User recently opened src/api/users.ts
 ```
 
 **Research Execution:**
+
 ```bash
 # Step 1
 Read: src/api/users.ts
@@ -162,12 +172,14 @@ Finding: Service layer pattern, repository pattern common
 ```
 
 **Research Findings:**
+
 - users.ts is 450 lines, all logic in one file
 - Other APIs (products) use service layer separation
 - Industry pattern: Controller → Service → Repository
 - Current code mixes validation, business logic, data access
 
 **Questions Asked:**
+
 ```json
 {
   "questions": [
@@ -210,28 +222,32 @@ Finding: Service layer pattern, repository pattern common
 ```
 
 **User Answers:**
+
 1. "Extract service layer"
-2. "Yes, match ProductService"
+1. "Yes, match ProductService"
 
 **Execution:**
 Extract UserService class following ProductService pattern, move business logic from users.ts to service/UserService.ts, keep controller thin.
 
----
+______________________________________________________________________
 
 ### Example 3: Ambiguous Feature Request
 
 **Original Prompt:**
+
 ```
 add authentication
 ```
 
 **Evaluation:**
+
 - Target: ~ (app-wide feature)
 - Action: ✅ (add authentication)
 - Criteria: ❌ (what type? what approach?)
 - Context: Check project state
 
 **Research Plan:**
+
 ```
 1. Check if any auth exists currently
 2. Review package.json for auth libraries
@@ -241,6 +257,7 @@ add authentication
 ```
 
 **Research Execution:**
+
 ```bash
 # Step 1
 Grep: "auth|login|session|jwt"
@@ -265,6 +282,7 @@ Findings: "Must support mobile app" mentioned
 ```
 
 **Research Findings:**
+
 - No existing authentication
 - Express.js backend with REST API
 - MongoDB database available
@@ -273,6 +291,7 @@ Findings: "Must support mobile app" mentioned
 - JWT is industry standard for this stack
 
 **Questions Asked:**
+
 ```json
 {
   "questions": [
@@ -342,25 +361,28 @@ Findings: "Must support mobile app" mentioned
 ```
 
 **User Answers:**
+
 1. "JWT with refresh tokens"
-2. "Both (web and mobile)"
-3. ["Login/register endpoints", "Role-based access control"]
+1. "Both (web and mobile)"
+1. ["Login/register endpoints", "Role-based access control"]
 
 **Execution:**
 Implement JWT authentication with refresh tokens, support both HttpOnly cookies (web) and Authorization header (mobile), create login/register endpoints with role-based access control.
 
----
+______________________________________________________________________
 
 ## Clear Prompts (Proceed Immediately)
 
 ### Example 4: Specific File and Action
 
 **Original Prompt:**
+
 ```javascript
 Refactor the getUserById function in src/api/users.ts to use async/await instead of promise chains
 ```
 
 **Evaluation:**
+
 - Target: ✅ (getUserById in src/api/users.ts)
 - Action: ✅ (refactor to async/await)
 - Criteria: ✅ (no promise chains, use async/await)
@@ -369,6 +391,7 @@ Refactor the getUserById function in src/api/users.ts to use async/await instead
 **Decision:** PROCEED IMMEDIATELY (no research or questions)
 
 **Execution:**
+
 ```javascript
 // Before
 function getUserById(id) {
@@ -395,16 +418,18 @@ async function getUserById(id) {
 }
 ```
 
----
+______________________________________________________________________
 
 ### Example 5: Specific Bug with Context
 
 **Original Prompt:**
+
 ```
 Fix the TypeError at line 145 in src/auth/login.ts where user.profile.name is undefined
 ```
 
 **Evaluation:**
+
 - Target: ✅ (login.ts:145)
 - Action: ✅ (fix TypeError for user.profile.name)
 - Criteria: ✅ (no TypeError, safe access)
@@ -413,6 +438,7 @@ Fix the TypeError at line 145 in src/auth/login.ts where user.profile.name is un
 **Decision:** PROCEED IMMEDIATELY
 
 **Execution:**
+
 ```typescript
 // Before (line 145)
 const displayName = user.profile.name;
@@ -421,11 +447,12 @@ const displayName = user.profile.name;
 const displayName = user?.profile?.name ?? 'Anonymous';
 ```
 
----
+______________________________________________________________________
 
 ### Example 6: Clear Feature with Details
 
 **Original Prompt:**
+
 ```
 Add input validation to the registration form using Joi schema. Validate:
 - Email (required, valid format)
@@ -434,6 +461,7 @@ Add input validation to the registration form using Joi schema. Validate:
 ```
 
 **Evaluation:**
+
 - Target: ✅ (registration form)
 - Action: ✅ (add Joi validation)
 - Criteria: ✅ (specific validation rules listed)
@@ -442,6 +470,7 @@ Add input validation to the registration form using Joi schema. Validate:
 **Decision:** PROCEED IMMEDIATELY
 
 **Execution:**
+
 ```javascript
 const Joi = require('joi');
 
@@ -478,13 +507,14 @@ const registrationSchema = Joi.object({
 });
 ```
 
----
+______________________________________________________________________
 
 ## Bypass Prompts (Pass Through)
 
 ### Example 7: Asterisk Bypass
 
 **Original Prompt:**
+
 ```javascript
 * just add a quick comment explaining this function
 ```
@@ -498,11 +528,12 @@ Strip `*`, pass through as: "just add a quick comment explaining this function"
 **Execution:**
 Add comment without any evaluation or questions.
 
----
+______________________________________________________________________
 
 ### Example 8: Slash Command
 
 **Original Prompt:**
+
 ```
 /commit
 ```
@@ -516,11 +547,12 @@ Pass through to slash command system unchanged
 **Execution:**
 Slash command system handles the request.
 
----
+______________________________________________________________________
 
 ### Example 9: Hash Prefix (Memory)
 
 **Original Prompt:**
+
 ```
 # remember to use TypeScript strict mode for all new files
 ```
@@ -534,23 +566,26 @@ Pass through to memory system unchanged
 **Execution:**
 Memory system stores the note.
 
----
+______________________________________________________________________
 
 ## Context-Dependent Prompts
 
 ### Example 10: File Viewing Context Makes Clear
 
 **Context:**
+
 ```json
 [System: User opened src/components/LoginForm.tsx]
 ```
 
 **Prompt:**
+
 ```
 refactor this to use hooks
 ```
 
 **Evaluation:**
+
 - Target: ✅ (LoginForm.tsx from file view context)
 - Action: ✅ (refactor to hooks)
 - Criteria: ✅ (convert class component to hooks)
@@ -561,22 +596,25 @@ refactor this to use hooks
 **Execution:**
 Refactor LoginForm.tsx from class component to functional component with hooks.
 
----
+______________________________________________________________________
 
 ### Example 11: Recent Error Provides Context
 
 **Previous Message:**
+
 ```
 Error: ECONNREFUSED: Connection refused at 127.0.0.1:5432
   at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1148:16)
 ```
 
 **Current Prompt:**
+
 ```
 fix this connection error
 ```
 
 **Evaluation:**
+
 - Target: ✅ (database connection from error)
 - Action: ✅ (fix connection refused)
 - Criteria: ✅ (successful connection to localhost:5432)
@@ -585,17 +623,19 @@ fix this connection error
 **Decision:** PROCEED IMMEDIATELY
 
 **Research (quick check):**
+
 - Port 5432 is PostgreSQL standard port
 - ECONNREFUSED means service not running or wrong config
 
 **Execution:**
 Check if PostgreSQL is running, verify connection config, start service if needed.
 
----
+______________________________________________________________________
 
 ### Example 12: Ongoing Discussion Provides Context
 
 **Message History:**
+
 ```json
 User: "Should I use Prisma or TypeORM for the database?"
 Assistant: "Prisma has better TypeScript support and migration tooling..."
@@ -603,11 +643,13 @@ User: "ok let's go with Prisma"
 ```
 
 **Current Prompt:**
+
 ```
 set it up
 ```
 
 **Evaluation:**
+
 - Target: ~ (Prisma setup)
 - Action: ✅ (set up Prisma)
 - Criteria: ~ (working Prisma configuration)
@@ -618,24 +660,27 @@ set it up
 **Execution:**
 Install Prisma, initialize, configure database connection, create initial schema.
 
----
+______________________________________________________________________
 
 ## Complex Multi-Question Scenarios
 
 ### Example 13: Major Feature with Multiple Unknowns
 
 **Original Prompt:**
+
 ```
 implement caching
 ```
 
 **Evaluation:**
+
 - Target: ❌ (cache what?)
 - Action: ❌ (how to cache?)
 - Criteria: ❌ (what performance target?)
 - Context: Check project
 
 **Research Plan:**
+
 ```
 1. Explore current performance bottlenecks
 2. Check for existing caching
@@ -645,6 +690,7 @@ implement caching
 ```
 
 **Research Findings:**
+
 - No current caching
 - Slow endpoints: /api/products (500ms avg), /api/users (200ms avg)
 - Redis installed but not configured
@@ -652,6 +698,7 @@ implement caching
 - User data changes frequently (poor cache candidate)
 
 **Questions Asked:**
+
 ```json
 {
   "questions": [
@@ -717,18 +764,20 @@ implement caching
 ```
 
 **User Answers:**
+
 1. ["Product catalog (/api/products)", "User profiles (/api/users/:id)"]
-2. "Redis with TTL"
-3. "1 minute"
+1. "Redis with TTL"
+1. "1 minute"
 
 **Execution:**
 Implement Redis caching for product catalog and user profiles with 1-minute TTL, configure Redis connection, add cache middleware to those endpoints.
 
----
+______________________________________________________________________
 
 ## Summary: Decision Patterns
 
 ### Proceed Immediately If:
+
 - Specific file and function mentioned with clear action
 - Error message provides full context
 - File viewing context clarifies ambiguous "this"
@@ -736,6 +785,7 @@ Implement Redis caching for product catalog and user profiles with 1-minute TTL,
 - All 4 evaluation criteria pass
 
 ### Research and Ask If:
+
 - Generic action verbs ("fix", "improve", "refactor") without target
 - No file or component mentioned
 - Multiple valid approaches
@@ -743,6 +793,7 @@ Implement Redis caching for product catalog and user profiles with 1-minute TTL,
 - Configuration choices required
 
 ### Pass Through If:
+
 - Bypass prefix detected (`*`, `/`, `#`)
 - User explicitly opted out of evaluation
 

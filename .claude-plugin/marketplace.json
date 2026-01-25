@@ -1,142 +1,154 @@
 {
-  "name": "claude-config-marketplace",
-  "owner": {
-    "name": "Ven0m0",
-    "email": "ven0m0@users.noreply.github.com"
-  },
-  "metadata": {
-    "description": "A curated collection of Claude Code plugins, skills, and tools for enhanced productivity",
-    "version": "1.0.0",
-    "pluginRoot": "./plugins"
-  },
-  "plugins": [
-    {
-      "name": "coding-assistant",
-      "description": "Advanced coding assistant with code review, refactoring, and best practices",
-      "version": "1.0.0",
-      "author": {
-        "name": "Ven0m0"
-      },
-      "homepage": "https://github.com/Ven0m0/claude-config",
-      "repository": "https://github.com/Ven0m0/claude-config",
-      "license": "MIT",
-      "source": "coding-assistant",
-      "keywords": ["coding", "development", "code-review", "refactoring"],
-      "category": "productivity"
-    },
-    {
-      "name": "technical-writer",
-      "description": "Technical documentation and API documentation writer",
-      "version": "1.0.0",
-      "author": {
-        "name": "Ven0m0"
-      },
-      "homepage": "https://github.com/Ven0m0/claude-config",
-      "repository": "https://github.com/Ven0m0/claude-config",
-      "license": "MIT",
-      "source": "technical-writer",
-      "keywords": ["documentation", "technical-writing", "api-docs"],
-      "category": "productivity"
-    },
-    {
-      "name": "data-analyst",
-      "description": "Data analysis and visualization assistant",
-      "version": "1.0.0",
-      "author": {
-        "name": "Ven0m0"
-      },
-      "homepage": "https://github.com/Ven0m0/claude-config",
-      "repository": "https://github.com/Ven0m0/claude-config",
-      "license": "MIT",
-      "source": "data-analyst",
-      "keywords": ["data-analysis", "visualization", "statistics"],
-      "category": "productivity"
-    },
-    {
-      "name": "conserve",
-      "description": "Resource optimization and performance monitoring toolkit for efficient Claude Code workflows",
-      "version": "1.3.0",
-      "author": {
-        "name": "Alex Thola",
-        "url": "https://github.com/athola"
-      },
-      "homepage": "https://github.com/athola/claude-night-market",
-      "repository": "https://github.com/athola/claude-night-market",
-      "license": "MIT",
-      "source": "conserve",
-      "keywords": ["performance", "resource-management", "token-optimization", "context-optimization", "efficiency", "bloat-detection"],
-      "category": "productivity"
-    },
-    {
-      "name": "prompt-improver",
-      "description": "Intelligent prompt optimization using skill-based architecture. Enriches vague prompts with research-based clarifying questions before Claude Code executes them",
-      "version": "0.5.0",
-      "author": {
-        "name": "severity1"
-      },
-      "homepage": "https://github.com/severity1/claude-code-prompt-improver",
-      "repository": "https://github.com/severity1/claude-code-prompt-improver",
-      "license": "MIT",
-      "source": "prompt-improver",
-      "keywords": ["prompt", "optimization", "clarification", "user-experience"],
-      "category": "productivity"
-    },
-    {
-      "name": "block-dotfiles",
-      "description": "Blocks access to sensitive dotfiles and configuration files containing credentials",
-      "version": "1.0.0",
-      "author": {
-        "name": "wombat9000",
-        "url": "https://github.com/wombat9000"
-      },
-      "homepage": "https://github.com/wombat9000/claude-plugins",
-      "repository": "https://github.com/wombat9000/claude-plugins",
-      "license": "MIT",
-      "source": "block-dotfiles",
-      "keywords": ["security", "dotfiles", "credentials", "protection"],
-      "category": "security"
-    },
-    {
-      "name": "config-wizard",
-      "description": "Interactive wizard to help create new Claude Code plugins",
-      "version": "1.0.0",
-      "author": {
-        "name": "wombat9000"
-      },
-      "homepage": "https://github.com/wombat9000/claude-plugins",
-      "repository": "https://github.com/wombat9000/claude-plugins",
-      "license": "MIT",
-      "source": "config-wizard",
-      "keywords": ["wizard", "configuration", "plugin-development", "skills"],
-      "category": "utilities"
-    },
-    {
-      "name": "dependency-blocker",
-      "description": "Prevents Claude from accessing dependency directories to save tokens",
-      "version": "1.0.0",
-      "author": {
-        "name": "wombat9000"
-      },
-      "homepage": "https://github.com/wombat9000/claude-plugins",
-      "repository": "https://github.com/wombat9000/claude-plugins",
-      "license": "MIT",
-      "source": "dependency-blocker",
-      "keywords": ["performance", "token-saving", "dependencies"],
-      "category": "utilities"
-    },
-    {
-      "name": "gemini-delegation",
-      "description": "Delegate research and web search tasks to Gemini AI via CLI",
-      "version": "1.0.0",
-      "author": {
-        "name": "wombat9000"
-      },
-      "homepage": "https://github.com/wombat9000/claude-plugins",
-      "repository": "https://github.com/wombat9000/claude-plugins",
-      "license": "MIT",
-      "source": "gemini-delegation",
-      "keywords": ["gemini", "delegation", "research", "web-search"],
-      "category": "utilities"
-    }
-  ]
+	"name": "claude-config-marketplace",
+	"owner": {
+		"name": "Ven0m0",
+		"email": "ven0m0@users.noreply.github.com"
+	},
+	"metadata": {
+		"description": "A curated collection of Claude Code plugins, skills, and tools for enhanced productivity",
+		"version": "1.0.0",
+		"pluginRoot": "./plugins"
+	},
+	"plugins": [
+		{
+			"name": "coding-assistant",
+			"description": "Advanced coding assistant with code review, refactoring, and best practices",
+			"version": "1.0.0",
+			"author": {
+				"name": "Ven0m0"
+			},
+			"homepage": "https://github.com/Ven0m0/claude-config",
+			"repository": "https://github.com/Ven0m0/claude-config",
+			"license": "MIT",
+			"source": "coding-assistant",
+			"keywords": ["coding", "development", "code-review", "refactoring"],
+			"category": "productivity"
+		},
+		{
+			"name": "technical-writer",
+			"description": "Technical documentation and API documentation writer",
+			"version": "1.0.0",
+			"author": {
+				"name": "Ven0m0"
+			},
+			"homepage": "https://github.com/Ven0m0/claude-config",
+			"repository": "https://github.com/Ven0m0/claude-config",
+			"license": "MIT",
+			"source": "technical-writer",
+			"keywords": ["documentation", "technical-writing", "api-docs"],
+			"category": "productivity"
+		},
+		{
+			"name": "data-analyst",
+			"description": "Data analysis and visualization assistant",
+			"version": "1.0.0",
+			"author": {
+				"name": "Ven0m0"
+			},
+			"homepage": "https://github.com/Ven0m0/claude-config",
+			"repository": "https://github.com/Ven0m0/claude-config",
+			"license": "MIT",
+			"source": "data-analyst",
+			"keywords": ["data-analysis", "visualization", "statistics"],
+			"category": "productivity"
+		},
+		{
+			"name": "conserve",
+			"description": "Resource optimization and performance monitoring toolkit for efficient Claude Code workflows",
+			"version": "1.3.0",
+			"author": {
+				"name": "Alex Thola",
+				"url": "https://github.com/athola"
+			},
+			"homepage": "https://github.com/athola/claude-night-market",
+			"repository": "https://github.com/athola/claude-night-market",
+			"license": "MIT",
+			"source": "conserve",
+			"keywords": [
+				"performance",
+				"resource-management",
+				"token-optimization",
+				"context-optimization",
+				"efficiency",
+				"bloat-detection"
+			],
+			"category": "productivity"
+		},
+		{
+			"name": "prompt-improver",
+			"description": "Intelligent prompt optimization using skill-based architecture. Enriches vague prompts with research-based clarifying questions before Claude Code executes them",
+			"version": "0.5.0",
+			"author": {
+				"name": "severity1"
+			},
+			"homepage": "https://github.com/severity1/claude-code-prompt-improver",
+			"repository": "https://github.com/severity1/claude-code-prompt-improver",
+			"license": "MIT",
+			"source": "prompt-improver",
+			"keywords": [
+				"prompt",
+				"optimization",
+				"clarification",
+				"user-experience"
+			],
+			"category": "productivity"
+		},
+		{
+			"name": "block-dotfiles",
+			"description": "Blocks access to sensitive dotfiles and configuration files containing credentials",
+			"version": "1.0.0",
+			"author": {
+				"name": "wombat9000",
+				"url": "https://github.com/wombat9000"
+			},
+			"homepage": "https://github.com/wombat9000/claude-plugins",
+			"repository": "https://github.com/wombat9000/claude-plugins",
+			"license": "MIT",
+			"source": "block-dotfiles",
+			"keywords": ["security", "dotfiles", "credentials", "protection"],
+			"category": "security"
+		},
+		{
+			"name": "config-wizard",
+			"description": "Interactive wizard to help create new Claude Code plugins",
+			"version": "1.0.0",
+			"author": {
+				"name": "wombat9000"
+			},
+			"homepage": "https://github.com/wombat9000/claude-plugins",
+			"repository": "https://github.com/wombat9000/claude-plugins",
+			"license": "MIT",
+			"source": "config-wizard",
+			"keywords": ["wizard", "configuration", "plugin-development", "skills"],
+			"category": "utilities"
+		},
+		{
+			"name": "dependency-blocker",
+			"description": "Prevents Claude from accessing dependency directories to save tokens",
+			"version": "1.0.0",
+			"author": {
+				"name": "wombat9000"
+			},
+			"homepage": "https://github.com/wombat9000/claude-plugins",
+			"repository": "https://github.com/wombat9000/claude-plugins",
+			"license": "MIT",
+			"source": "dependency-blocker",
+			"keywords": ["performance", "token-saving", "dependencies"],
+			"category": "utilities"
+		},
+		{
+			"name": "gemini-delegation",
+			"description": "Delegate research and web search tasks to Gemini AI via CLI",
+			"version": "1.0.0",
+			"author": {
+				"name": "wombat9000"
+			},
+			"homepage": "https://github.com/wombat9000/claude-plugins",
+			"repository": "https://github.com/wombat9000/claude-plugins",
+			"license": "MIT",
+			"source": "gemini-delegation",
+			"keywords": ["gemini", "delegation", "research", "web-search"],
+			"category": "utilities"
+		}
+	]
 }

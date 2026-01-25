@@ -1,0 +1,12 @@
+wrap = "keep"
+number = false 
+end_of_line = "lf"
+validate = true
+exclude = [
+    # recursively exclude a root level directory
+    "venv/**",
+    # recursively exclude a directory at any level
+    "**/node_modules/**",
+    # exclude all files that are not suffixed .md
+    "**/?", "**/??", "**/???", "**/*[!.]??", "**/*[!m]?", "**/*[!d]",
+]

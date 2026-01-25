@@ -43,11 +43,13 @@ Brief description of the changes being reviewed.
 ### File: `path/to/file.js`
 
 **Line X-Y:**
+
 ```javascript
 // Current code
 ```
 
 **Suggestion:**
+
 ```javascript
 // Improved code
 ```
@@ -93,5 +95,5 @@ Overall impression and final recommendations.
 ### Next Steps
 
 1. Action items for the developer
-2. Follow-up tasks
-3. Additional review requirements
+1. Follow-up tasks
+1. Additional review requirements

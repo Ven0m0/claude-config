@@ -359,6 +359,7 @@ def main() -> int:
 ## Summary
 
 Core patterns for typical CLI tools:
+
 - **File Processor**: Batch process with stats
 - **Git Scanner**: Recursive repo discovery
 - **Data Aggregation**: Typed results with dataclasses

@@ -1,12 +1,12 @@
 {
-  "name": "local-dev",
-  "owner": {
-    "name": "severity1"
-  },
-  "plugins": [
-    {
-      "name": "prompt-improver",
-      "source": "./../../"
-    }
-  ]
+	"name": "local-dev",
+	"owner": {
+		"name": "severity1"
+	},
+	"plugins": [
+		{
+			"name": "prompt-improver",
+			"source": "./../../"
+		}
+	]
 }

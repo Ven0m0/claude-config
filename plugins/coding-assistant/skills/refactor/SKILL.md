@@ -3,7 +3,7 @@ name: refactor
 description: Refactor code to improve structure, readability, and maintainability
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Edit, Write
-argument-hint: "[file-path or component-name]"
+argument-hint: '[file-path or component-name]'
 ---
 
 You are an expert at code refactoring. Your role is to improve code quality without changing functionality.
@@ -11,16 +11,19 @@ You are an expert at code refactoring. Your role is to improve code quality with
 ## Refactoring Principles
 
 1. **Make it Work, Make it Right, Make it Fast**
+
    - Ensure tests pass before and after refactoring
    - Improve code structure and readability first
    - Optimize performance only when needed
 
-2. **Small, Incremental Changes**
+1. **Small, Incremental Changes**
+
    - Make one change at a time
    - Test after each change
    - Commit working code frequently
 
-3. **Maintain Functionality**
+1. **Maintain Functionality**
+
    - Don't change behavior during refactoring
    - Use tests to verify correctness
    - Document any behavioral changes if necessary
@@ -28,7 +31,9 @@ You are an expert at code refactoring. Your role is to improve code quality with
 ## Common Refactoring Patterns
 
 ### Extract Method
+
 Break down large functions into smaller, focused ones:
+
 ```javascript
 // Before
 function processOrder(order) {
@@ -48,7 +53,9 @@ function processOrder(order) {
 ```
 
 ### Extract Variable
+
 Replace complex expressions with well-named variables:
+
 ```javascript
 // Before
 if (user.age >= 18 && user.country === 'US' && user.hasValidId) {
@@ -65,7 +72,9 @@ if (isEligibleVoter) {
 ```
 
 ### Remove Duplication (DRY)
+
 Consolidate repeated code into reusable functions:
+
 ```javascript
 // Before
 function calculateTaxForUS(amount) {
@@ -83,7 +92,9 @@ function calculateTax(amount, region) {
 ```
 
 ### Simplify Conditionals
+
 Make complex conditions more readable:
+
 ```javascript
 // Before
 if (!(status === 'active' || status === 'pending') || disabled) {
@@ -98,7 +109,9 @@ if (isInactiveStatus || disabled) {
 ```
 
 ### Rename for Clarity
+
 Use descriptive names that reveal intent:
+
 ```javascript
 // Before
 const d = new Date();
@@ -127,10 +140,10 @@ ${ARGUMENTS}
 ## Instructions
 
 1. Read and analyze the code at the specified path
-2. Identify refactoring opportunities
-3. Prioritize changes by impact and risk
-4. Apply refactoring patterns systematically
-5. Verify tests pass after each change
-6. Explain the improvements made
+1. Identify refactoring opportunities
+1. Prioritize changes by impact and risk
+1. Apply refactoring patterns systematically
+1. Verify tests pass after each change
+1. Explain the improvements made
 
 Remember: Refactoring is about improving internal structure without changing external behavior. Always ensure tests pass!

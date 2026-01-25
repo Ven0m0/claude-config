@@ -37,6 +37,7 @@ Document templates are now stored as reference guides:
 ### Configuration Settings
 
 Legacy API configuration settings:
+
 - Model selection, token limits, temperature → Now configured in `claude/settings.json`
 - Conversation settings → Handled by Claude Code CLI automatically
 
@@ -84,15 +85,16 @@ For reference, the legacy config.json contained:
 1. **Model Selection**: via `claude/settings.json` or environment variables:
 
 1. **Model Selection**: `claude/settings.json` env variables:
+
    - `ANTHROPIC_DEFAULT_OPUS_MODEL`
    - `ANTHROPIC_DEFAULT_SONNET_MODEL`
    - `ANTHROPIC_MODEL`
 
-2. **Prompts**: Built into plugin skill definitions (SKILL.md files)
+1. **Prompts**: Built into plugin skill definitions (SKILL.md files)
 
-3. **Templates**: Reference documentation in plugin directories
+1. **Templates**: Reference documentation in plugin directories
 
-4. **Conversation Management**: Automatic via Claude Code CLI
+1. **Conversation Management**: Automatic via Claude Code CLI
 
 ## See Also
 

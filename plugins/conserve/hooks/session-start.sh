@@ -20,20 +20,20 @@ set -euo pipefail
 HOOK_INPUT=""
 AGENT_TYPE=""
 if read -t 0.1 -r HOOK_INPUT 2>/dev/null; then
-    # Extract agent_type using jq if available, otherwise grep
-    if command -v jq >/dev/null 2>&1; then
-        AGENT_TYPE=$(echo "$HOOK_INPUT" | jq -r '.agent_type // empty' 2>/dev/null || echo "")
-    else
-        # Fallback: simple pattern extraction
-        AGENT_TYPE=$(echo "$HOOK_INPUT" | grep -oP '"agent_type"\s*:\s*"\K[^"]+' 2>/dev/null || echo "")
-    fi
+  # Extract agent_type using jq if available, otherwise grep
+  if command -v jq >/dev/null 2>&1; then
+    AGENT_TYPE=$(echo "$HOOK_INPUT" | jq -r '.agent_type // empty' 2>/dev/null || echo "")
+  else
+    # Fallback: simple pattern extraction
+    AGENT_TYPE=$(echo "$HOOK_INPUT" | grep -oP '"agent_type"\s*:\s*"\K[^"]+' 2>/dev/null || echo "")
+  fi
 fi
 
 # Lightweight agents that get abbreviated guidance
 case "$AGENT_TYPE" in
-    code-reviewer|architecture-reviewer|rust-auditor|bloat-auditor)
-        # Review agents: minimal conservation context
-        cat <<EOF
+  code-reviewer | architecture-reviewer | rust-auditor | bloat-auditor)
+    # Review agents: minimal conservation context
+    cat <<EOF
 {
   "hookSpecificOutput": {
     "hookEventName": "SessionStart",
@@ -41,8 +41,8 @@ case "$AGENT_TYPE" in
   }
 }
 EOF
-        exit 0
-        ;;
+    exit 0
+    ;;
 esac
 
 # Determine plugin root directory
@@ -54,9 +54,9 @@ CONSERVATION_MODE="${CONSERVATION_MODE:-normal}"
 
 # Handle bypass modes
 case "$CONSERVATION_MODE" in
-    quick)
-        # Quick mode: minimal overhead, skip conservation guidance
-        cat <<EOF
+  quick)
+    # Quick mode: minimal overhead, skip conservation guidance
+    cat <<EOF
 {
   "hookSpecificOutput": {
     "hookEventName": "SessionStart",
@@ -64,16 +64,16 @@ case "$CONSERVATION_MODE" in
   }
 }
 EOF
-        exit 0
-        ;;
-    deep)
-        # Deep mode: allow more resources, provide abbreviated guidance
-        deep_mode_msg="Conservation mode: DEEP ANALYSIS - Extended resource usage permitted for thorough analysis. Monitor context usage but prioritize completeness over conservation."
-        ;;
-    *)
-        # Normal mode: full conservation guidance
-        deep_mode_msg=""
-        ;;
+    exit 0
+    ;;
+  deep)
+    # Deep mode: allow more resources, provide abbreviated guidance
+    deep_mode_msg="Conservation mode: DEEP ANALYSIS - Extended resource usage permitted for thorough analysis. Monitor context usage but prioritize completeness over conservation."
+    ;;
+  *)
+    # Normal mode: full conservation guidance
+    deep_mode_msg=""
+    ;;
 esac
 
 # Build conservation skills summary for session context injection
@@ -118,36 +118,36 @@ Set `CONSERVATION_MODE` environment variable:
 - `normal` - Default, full conservation guidance'
 
 # Add deep mode notice if applicable
-if [ -n "$deep_mode_msg" ]; then
-    conservation_summary="$deep_mode_msg
+if [ "$deep_mode_msg" != "" ]; then
+  conservation_summary="$deep_mode_msg
 
 $conservation_summary"
 fi
 
 # Escape outputs for JSON - uses jq when available, falls back to pure bash
 escape_for_json() {
-    local input="$1"
-    # Prefer jq for production-grade JSON escaping (handles unicode, control chars)
-    if command -v jq >/dev/null 2>&1; then
-        printf '%s' "$input" | jq -Rs '.[:-1] // ""' | sed 's/^"//;s/"$//'
-    else
-        # Pure bash fallback - less production-grade but functional
-        echo "[conservation:session-start] Warning: jq not found, using bash fallback for JSON escaping" >&2
-        local output=""
-        local i char
-        for (( i=0; i<${#input}; i++ )); do
-            char="${input:$i:1}"
-            case "$char" in
-                '\'$'\\') output+='\\\\' ;;
-                '"') output+='\\"' ;;
-                $'\n') output+='\\n' ;;
-                $'\r') output+='\\r' ;;
-                $'\t') output+='\\t' ;;
-                *) output+="$char" ;;
-            esac
-        done
-        printf '%s' "$output"
-    fi
+  local input="$1"
+  # Prefer jq for production-grade JSON escaping (handles unicode, control chars)
+  if command -v jq >/dev/null 2>&1; then
+    printf '%s' "$input" | jq -Rs '.[:-1] // ""' | sed 's/^"//;s/"$//'
+  else
+    # Pure bash fallback - less production-grade but functional
+    echo "[conservation:session-start] Warning: jq not found, using bash fallback for JSON escaping" >&2
+    local output=""
+    local i char
+    for ((i = 0; i < ${#input}; i++)); do
+      char="${input:$i:1}"
+      case "$char" in
+        '\'$'\\') output+='\\\\' ;;
+        '"') output+='\\"' ;;
+        $'\n') output+='\\n' ;;
+        $'\r') output+='\\r' ;;
+        $'\t') output+='\\t' ;;
+        *) output+="$char" ;;
+      esac
+    done
+    printf '%s' "$output"
+  fi
 }
 
 summary_escaped=$(escape_for_json "$conservation_summary")

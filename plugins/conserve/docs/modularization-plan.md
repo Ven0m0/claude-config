@@ -7,32 +7,34 @@ This plan addresses DRY violations and modularization opportunities identified t
 ## Current State Analysis
 
 ### Plugin Validation Results
+
 - **Status**: Valid plugin structure
 - **Recommendation**: Add `claude` configuration object for enhanced metadata
 
 ### Skills Evaluation Summary
 
-| Skill | Tokens | Status | Recommendation |
-|-------|--------|--------|----------------|
-| `context-optimization/SKILL.md` | 613 |  Optimal | Hub pattern - exemplary |
-| `mcp-code-execution/SKILL.md` | 1,528 |  Good | Extract code to scripts |
-| `optimizing-large-skills/SKILL.md` | 2,007 | [WARN] Moderate | Consider modularization |
-| `cpu-gpu-performance/SKILL.md` | 882 |  Good | No changes needed |
-| `token-conservation/SKILL.md` | 745 |  Optimal | No changes needed |
+| Skill                              | Tokens | Status          | Recommendation          |
+| ---------------------------------- | ------ | --------------- | ----------------------- |
+| `context-optimization/SKILL.md`    | 613    | Optimal         | Hub pattern - exemplary |
+| `mcp-code-execution/SKILL.md`      | 1,528  | Good            | Extract code to scripts |
+| `optimizing-large-skills/SKILL.md` | 2,007  | [WARN] Moderate | Consider modularization |
+| `cpu-gpu-performance/SKILL.md`     | 882    | Good            | No changes needed       |
+| `token-conservation/SKILL.md`      | 745    | Optimal         | No changes needed       |
 
 ### Hooks Evaluation
+
 - **No hooks directory** - Conservation has no hooks, which is appropriate for a resource management plugin
 
 ### Module Quality Assessment
 
-| Module Path | Lines | Quality |
-|-------------|-------|---------|
-| `context-optimization/modules/mecw-principles.md` | 102 |  Excellent |
-| `context-optimization/modules/mecw-assessment.md` | ~80 |  Good |
-| `context-optimization/modules/subagent-coordination.md` | ~90 |  Good |
-| `mcp-code-execution/modules/mcp-patterns.md` | 183 | [WARN] Repetitive bash blocks |
-| `mcp-code-execution/modules/mcp-subagents.md` | 253 | [WARN] Heavy code |
-| `mcp-code-execution/modules/mcp-validation.md` | ~100 |  Good |
+| Module Path                                             | Lines | Quality                       |
+| ------------------------------------------------------- | ----- | ----------------------------- |
+| `context-optimization/modules/mecw-principles.md`       | 102   | Excellent                     |
+| `context-optimization/modules/mecw-assessment.md`       | ~80   | Good                          |
+| `context-optimization/modules/subagent-coordination.md` | ~90   | Good                          |
+| `mcp-code-execution/modules/mcp-patterns.md`            | 183   | [WARN] Repetitive bash blocks |
+| `mcp-code-execution/modules/mcp-subagents.md`           | 253   | [WARN] Heavy code             |
+| `mcp-code-execution/modules/mcp-validation.md`          | ~100  | Good                          |
 
 ## DRY Violations Identified
 
@@ -43,10 +45,12 @@ This plan addresses DRY violations and modularization opportunities identified t
 **Issue**: Duplicates functionality from `abstract/scripts/token_estimator.py`
 
 **Analysis**:
+
 - Conservation's token-estimator: Simple character-based heuristics
 - Abstract's token_estimator: Uses `abstract.tokens.TokenAnalyzer` with sophisticated analysis
 
 **Code Comparison**:
+
 ```python
 # Conservation (simple)
 CHARS_PER_TOKEN = 4
@@ -70,6 +74,7 @@ analysis = TokenAnalyzer.analyze_content(content)
 **Location**: `mcp-code-execution/modules/mcp-patterns.md`
 
 **Issue**: Same bash block repeated 8 times:
+
 ```bash
 # Basic usage
 python tools/extracted_tool.py --input data.json --output results.json
@@ -80,12 +85,14 @@ python tools/extracted_tool.py --input data.json --output results.json
 ### Phase 1: Remove Token Estimator Duplication (Priority: High)
 
 **Task 1.1**: Update pyproject.toml to depend on abstract
+
 ```toml
 [project.dependencies]
 abstract = {path = "../abstract", develop = true}
 ```
 
 **Task 1.2**: Refactor token-estimator to use abstract's TokenAnalyzer
+
 ```python
 # New implementation
 from abstract.tokens import TokenAnalyzer
@@ -97,6 +104,7 @@ class ConservationTokenEstimator(AbstractCLI):
 ```
 
 **Task 1.3**: Update Makefile targets to use abstract's token-estimator
+
 ```makefile
 token-estimate:
     cd ../abstract && uv run python scripts/token_estimator.py $(ARGS)
@@ -107,6 +115,7 @@ token-estimate:
 ### Phase 2: Extract MECW Utilities to Leyline (Priority: Medium)
 
 **Task 2.1**: Create `leyline/src/leyline/mecw.py`
+
 ```python
 """MECW (Maximum Effective Context Window) utilities."""
 
@@ -142,6 +151,7 @@ def check_mecw_compliance(current_tokens: int, max_tokens: int = 200000) -> dict
 ```
 
 **Task 2.2**: Update conservation modules to reference leyline
+
 ```yaml
 # In mecw-principles.md frontmatter
 dependencies:
@@ -153,15 +163,17 @@ dependencies:
 ### Phase 3: Clean Up mcp-patterns.md (Priority: Low)
 
 **Task 3.1**: Extract repeated bash blocks to a single reference
-```markdown
+
+````markdown
 ## Tool Reference
 All transformation patterns use the standard tool interface:
 ```bash
 python tools/extracted_tool.py --input data.json --output results.json [--verbose]
-```
+````
 
 See `tools/extracted_tool.py --help` for full options.
-```
+
+````
 
 **Task 3.2**: Reduce module from 183 lines to ~100 lines
 
@@ -174,7 +186,7 @@ See `tools/extracted_tool.py --help` for full options.
   "leyline": ">=1.0.0",
   "abstract": ">=1.0.0"
 }
-```
+````
 
 **Task 4.2**: Update README with integration documentation
 
@@ -183,6 +195,7 @@ See `tools/extracted_tool.py --help` for full options.
 Execute using parallel subagents:
 
 ### Agent 1: Token Estimator Migration
+
 ```
 Scope: conservation/skills/resource-management/token-estimator
        conservation/pyproject.toml
@@ -192,6 +205,7 @@ Est. Changes: 1 file deleted, 2 files modified
 ```
 
 ### Agent 2: MECW Extraction to Leyline
+
 ```
 Scope: leyline/src/leyline/mecw.py (new)
        leyline/src/leyline/__init__.py
@@ -201,6 +215,7 @@ Est. Changes: 2 files created, 3 files modified
 ```
 
 ### Agent 3: mcp-patterns Cleanup
+
 ```
 Scope: conservation/skills/mcp-code-execution/modules/mcp-patterns.md
 Tasks: 3.1, 3.2
@@ -210,14 +225,17 @@ Est. Changes: 1 file modified (significant reduction)
 ## Expected Outcomes
 
 ### Code Reduction
+
 - Token estimator: 247 lines → 0 (use abstract)
 - mcp-patterns.md: 183 lines → ~100 lines
 - Total: ~330 lines removed
 
 ### New Shared Infrastructure
+
 - `leyline/src/leyline/mecw.py`: ~50 lines (reusable by all plugins)
 
 ### Improved Architecture
+
 - Single source of truth for token estimation (abstract)
 - MECW utilities available to all plugins (leyline)
 - Cleaner, more focused conservation skills
@@ -225,6 +243,7 @@ Est. Changes: 1 file modified (significant reduction)
 ## Verification Checklist
 
 After implementation:
+
 - [ ] `uv run python ../abstract/scripts/validate-plugin.py .` passes
 - [ ] `make test` passes (conservation tests)
 - [ ] Token estimator CLI still works via abstract
@@ -235,6 +254,7 @@ After implementation:
 ## Dependencies
 
 This plan assumes:
+
 1. leyline package has been set up (from conjure modularization)
-2. abstract package exports `TokenAnalyzer` from `abstract.tokens`
-3. Cross-plugin imports are supported via uv workspaces or relative paths
+1. abstract package exports `TokenAnalyzer` from `abstract.tokens`
+1. Cross-plugin imports are supported via uv workspaces or relative paths

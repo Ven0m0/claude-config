@@ -1,6 +1,6 @@
 ---
 name: managing-permissions
-description: |
+description: |-
   Guide for configuring Claude Code permissions in settings.json with security
   best practices for allow, ask, and deny rules. Use when: (1) Setting up or
   modifying permissions in settings.json, (2) Discussing tool permissions, access
@@ -23,11 +23,12 @@ Permissions are configured in `settings.json` using three groups: **allow**, **a
 **Rule precedence**: Deny > Ask > Allow
 
 **Configuration hierarchy** (highest to lowest):
+
 1. Managed settings (enterprise policies)
-2. Command-line arguments
-3. Local project settings (`.claude/settings.local.json`)
-4. Shared project settings (`.claude/settings.json`)
-5. User global settings (`~/.claude/settings.json`)
+1. Command-line arguments
+1. Local project settings (`.claude/settings.local.json`)
+1. Shared project settings (`.claude/settings.json`)
+1. User global settings (`~/.claude/settings.json`)
 
 ## Permission Groups
 
@@ -58,6 +59,7 @@ Explicitly blocks tool use. Takes precedence over allow and ask rules.
 **⚠️ Important:** Deny rules are workflow controls, NOT security mechanisms. They have significant limitations (tool-specific, easily bypassed, prefix-only matching for Bash).
 
 **When to use:**
+
 - Resource management (blocking node_modules, build artifacts to save tokens)
 - Workflow guardrails (preventing accidental git push to main)
 - Focus management (avoiding deprecated/legacy code)
@@ -79,6 +81,7 @@ ToolName(pattern)
 **Most common:** Bash, Read, Edit, Write, Glob, Grep, WebFetch
 
 **Pattern types:**
+
 - **Bash**: Prefix matching - `Bash(git status)` matches "git status", "git status file.txt"
 - **File tools**: Glob matching - `Read(src/**)` matches all files in src/ recursively
 
@@ -91,11 +94,11 @@ See **[references/official-reference.md](references/official-reference.md)** for
 When setting up permissions:
 
 1. **For security: Use hooks** - Protect secrets with PreToolUse hooks (deny rules aren't sufficient for security)
-2. **Add deny rules** - Block large files (node_modules, build artifacts) to save tokens, prevent workflow mistakes
-3. **Add allow rules** - Enable routine safe operations
-4. **Add ask rules** - Require confirmation for important operations
-5. **Test configuration** - Verify typical workflows work correctly
-6. **Iterate** - Add rules as needed based on actual usage
+1. **Add deny rules** - Block large files (node_modules, build artifacts) to save tokens, prevent workflow mistakes
+1. **Add allow rules** - Enable routine safe operations
+1. **Add ask rules** - Require confirmation for important operations
+1. **Test configuration** - Verify typical workflows work correctly
+1. **Iterate** - Add rules as needed based on actual usage
 
 ## Getting Started
 
@@ -118,7 +121,7 @@ When setting up permissions:
       "Bash(npm publish:*)"
     ],
     "allow": [
-      "Bash(npm run test:*)",
+      "Bash(bun run test:*)",
       "Bash(git status)",
       "Bash(git diff:*)",
       "Read(src/**)",
@@ -126,7 +129,7 @@ When setting up permissions:
     ],
     "ask": [
       "Bash(git push:*)",
-      "Bash(npm install:*)"
+      "Bash(bun install:*)"
     ]
   }
 }

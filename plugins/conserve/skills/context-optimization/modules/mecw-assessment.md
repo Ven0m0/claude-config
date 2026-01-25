@@ -33,21 +33,22 @@ def analyze_context_usage(conversation):
 ### Identifying Heavy Consumers
 
 Common context-heavy patterns:
+
 1. **Large file reads**: Reading entire files vs. targeted sections
-2. **Verbose tool output**: Full command output vs. summaries
-3. **Accumulated history**: Long conversation without compression
-4. **Redundant includes**: Same information loaded multiple times
+1. **Verbose tool output**: Full command output vs. summaries
+1. **Accumulated history**: Long conversation without compression
+1. **Redundant includes**: Same information loaded multiple times
 
 ## Risk Identification
 
 ### Risk Levels
 
-| Risk Level | Indicators | Action Required |
-|------------|------------|-----------------|
-| Low | < 30% usage, stable growth | Continue monitoring |
-| Medium | 30-45% usage, moderate growth | Plan optimization |
-| High | 45-55% usage, rapid growth | Implement optimization |
-| Critical | > 55% usage | Immediate intervention |
+| Risk Level | Indicators                    | Action Required        |
+| ---------- | ----------------------------- | ---------------------- |
+| Low        | < 30% usage, stable growth    | Continue monitoring    |
+| Medium     | 30-45% usage, moderate growth | Plan optimization      |
+| High       | 45-55% usage, rapid growth    | Implement optimization |
+| Critical   | > 55% usage                   | Immediate intervention |
 
 ### Risk Detection
 
@@ -80,9 +81,9 @@ def identify_context_risks(usage_analysis):
 ### Content Strategies
 
 1. **Chunking**: Process large files in segments
-2. **Filtering**: Extract only relevant sections
-3. **Summarization**: Compress completed work
-4. **Deduplication**: Remove redundant information
+1. **Filtering**: Extract only relevant sections
+1. **Summarization**: Compress completed work
+1. **Deduplication**: Remove redundant information
 
 ### Implementation Patterns
 
@@ -161,9 +162,9 @@ def generate_compliance_report(session):
 ### Preemptive Actions
 
 1. **At 30%**: Enable monitoring mode
-2. **At 40%**: Start planning optimization
-3. **At 45%**: Begin active compression
-4. **At 50%**: Trigger emergency protocols
+1. **At 40%**: Start planning optimization
+1. **At 45%**: Begin active compression
+1. **At 50%**: Trigger emergency protocols
 
 ## Integration
 

@@ -42,9 +42,11 @@ def get_git_state(cwd: str | None = None) -> dict:
             capture_output=True,
             text=True,
             cwd=cwd,
-            timeout=5
+            timeout=5,
         )
-        branch = branch_result.stdout.strip() if branch_result.returncode == 0 else "unknown"
+        branch = (
+            branch_result.stdout.strip() if branch_result.returncode == 0 else "unknown"
+        )
 
         # Check for uncommitted changes
         status_result = subprocess.run(
@@ -52,9 +54,13 @@ def get_git_state(cwd: str | None = None) -> dict:
             capture_output=True,
             text=True,
             cwd=cwd,
-            timeout=5
+            timeout=5,
         )
-        has_changes = bool(status_result.stdout.strip()) if status_result.returncode == 0 else False
+        has_changes = (
+            bool(status_result.stdout.strip())
+            if status_result.returncode == 0
+            else False
+        )
 
         # Get staged files
         staged_result = subprocess.run(
@@ -62,22 +68,22 @@ def get_git_state(cwd: str | None = None) -> dict:
             capture_output=True,
             text=True,
             cwd=cwd,
-            timeout=5
+            timeout=5,
         )
-        staged_files = staged_result.stdout.strip().split("\n") if staged_result.stdout.strip() else []
+        staged_files = (
+            staged_result.stdout.strip().split("\n")
+            if staged_result.stdout.strip()
+            else []
+        )
 
         return {
             "branch": branch,
             "uncommitted_changes": has_changes,
-            "staged_files": staged_files[:10]
+            "staged_files": staged_files[:10],
         }
     except Exception as e:
         log_debug(f"get_git_state failed: {e}")
-        return {
-            "branch": "unknown",
-            "uncommitted_changes": False,
-            "staged_files": []
-        }
+        return {"branch": "unknown", "uncommitted_changes": False, "staged_files": []}
 
 
 def get_recent_files(cwd: str | None = None, limit: int = 10) -> list[str]:
@@ -88,7 +94,7 @@ def get_recent_files(cwd: str | None = None, limit: int = 10) -> list[str]:
             capture_output=True,
             text=True,
             cwd=cwd,
-            timeout=5
+            timeout=5,
         )
         if result.returncode == 0 and result.stdout.strip():
             files = result.stdout.strip().split("\n")
@@ -112,10 +118,12 @@ def format_context(
     git_state: dict,
     recent_files: list[str],
     todos: list[dict],
-    timestamp: str
+    timestamp: str,
 ) -> str:
     """Format preserved context for injection."""
-    files_str = "\n".join(f"  - {f}" for f in recent_files) if recent_files else "  (none)"
+    files_str = (
+        "\n".join(f"  - {f}" for f in recent_files) if recent_files else "  (none)"
+    )
 
     todo_str = ""
     if todos:
@@ -132,8 +140,8 @@ def format_context(
 ## Session State Preserved
 
 Mode: {mode}
-Branch: {git_state.get('branch', 'unknown')}
-Uncommitted Changes: {'Yes' if git_state.get('uncommitted_changes') else 'No'}
+Branch: {git_state.get("branch", "unknown")}
+Uncommitted Changes: {"Yes" if git_state.get("uncommitted_changes") else "No"}
 Staged Files: {staged_str}
 
 ### Recent Files Modified

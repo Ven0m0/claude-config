@@ -12,8 +12,9 @@ Detect bloat patterns specific to AI-assisted coding: vibe coding artifacts, slo
 ## Why This Module Exists
 
 AI coding has created qualitatively different bloat than traditional development:
+
 - **2024**: First year copy/pasted lines exceeded refactored lines (GitClear)
-- **Refactoring**: Dropped from 25% (2021) to <10% (2024), predicted 3% (2025)
+- **Refactoring**: Dropped from 25% (2021) to \<10% (2024), predicted 3% (2025)
 - **Duplication**: 8x increase in 5+ line code blocks
 
 ## AI Bloat Patterns
@@ -43,7 +44,7 @@ grep -rn "^def " --include="*.py" . | cut -d: -f2 | sort | uniq -c | sort -rn | 
 
 ```bash
 # Find vibe coding commits
-git log --oneline --shortstat | grep -E "[0-9]{3,} insertion" | head -20
+git log --oneline --shortstat | rg -E "[0-9]{3,} insertion" | head -20
 
 # Commits with high insertion:deletion ratio (adding without cleanup)
 git log --shortstat --pretty=format:"%h %s" | awk '/insertion|deletion/ {
@@ -62,12 +63,12 @@ git log --shortstat --pretty=format:"%h %s" | awk '/insertion|deletion/ {
 
 ```bash
 # Python: Check for uninstallable packages
-pip freeze > /tmp/installed.txt
+uv pip freeze > /tmp/installed.txt
 grep -rh "^import \|^from " --include="*.py" . | \
   sed 's/^import //;s/^from //;s/ import.*//' | \
   sort -u | while read pkg; do
     root=$(echo $pkg | cut -d. -f1)
-    grep -q "^$root" /tmp/installed.txt || echo "HALLUCINATED?: $pkg"
+    rg -q "^$root" /tmp/installed.txt || echo "HALLUCINATED?: $pkg"
   done
 
 # JavaScript: Check for phantom packages
@@ -209,9 +210,9 @@ rationale: "Vibe coding signature - large addition without tests or abstraction"
 When AI bloat is detected, recommend:
 
 1. **Refactoring Budget**: Add 25 lines of refactoring for every 100 lines added
-2. **Test Requirement**: No merge without proportional test coverage
-3. **Understanding Gate**: Require explanation of non-trivial changes
-4. **24-Hour Rule**: Sleep before adopting new AI-suggested patterns
+1. **Test Requirement**: No merge without proportional test coverage
+1. **Understanding Gate**: Require explanation of non-trivial changes
+1. **24-Hour Rule**: Sleep before adopting new AI-suggested patterns
 
 ## Related
 

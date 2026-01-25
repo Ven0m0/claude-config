@@ -15,6 +15,7 @@ Editing files is normal development work. The rule only restricts git commands t
 ### ⛔ CRITICAL: User Approval Required for Git Commands
 
 **NEVER execute these git commands without the user explicitly saying "commit", "push", etc.:**
+
 - `git add` / `git commit` / `git commit --amend`
 - `git push` / `git push --force`
 - `git pull` / `git fetch` / `git merge` / `git rebase`
@@ -41,6 +42,7 @@ git branch -r           # Remote branches
 ```
 
 Use these to:
+
 - Understand what files changed
 - Check current branch
 - Review recent commits
@@ -74,16 +76,18 @@ git submodule           # Submodule operations
 ### When User Gives Explicit Permission
 
 When user explicitly says "commit", "push", "commit and push", etc.:
+
 1. **Execute the command** - don't ask for confirmation again
-2. **Use appropriate commit message format** (see custom/git-commits.md)
+1. **Use appropriate commit message format** (see custom/git-commits.md)
 
 ### When User Hasn't Mentioned Git
 
 If user asks you to fix/change code but doesn't mention committing:
+
 1. **Make the code changes**
-2. **Run tests to verify**
-3. **STOP and report completion**
-4. **Wait for user to say "commit" or "push"**
+1. **Run tests to verify**
+1. **STOP and report completion**
+1. **Wait for user to say "commit" or "push"**
 
 **Do NOT assume the user wants you to commit.**
 
@@ -112,6 +116,7 @@ git diff                # Review actual changes
 ```
 
 This helps you:
+
 - Confirm changes were applied correctly
 - Identify unintended modifications
 - Verify no files were accidentally created/deleted

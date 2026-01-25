@@ -78,6 +78,7 @@ asyncio.run(main())
 Use the advanced sections below for pattern catalogs, real-world examples, and performance guidance.
 
 <!-- progressive: async-patterns -->
+
 ## Fundamental Patterns
 
 ### Pattern 1: Basic Async/Await
@@ -696,13 +697,14 @@ async def test_with_timeout():
 ## Best Practices Summary
 
 1. **Use asyncio.run()** for entry point (Python 3.7+)
-2. **Always await coroutines** to execute them
-3. **Use gather() for concurrent execution** of multiple tasks
-4. **Implement proper error handling** with try/except
-5. **Use timeouts** to prevent hanging operations
-6. **Pool connections** for better performance
-7. **Avoid blocking operations** in async code
-8. **Use semaphores** for rate limiting
-9. **Handle task cancellation** properly
-10. **Test async code** with pytest-asyncio
+1. **Always await coroutines** to execute them
+1. **Use gather() for concurrent execution** of multiple tasks
+1. **Implement proper error handling** with try/except
+1. **Use timeouts** to prevent hanging operations
+1. **Pool connections** for better performance
+1. **Avoid blocking operations** in async code
+1. **Use semaphores** for rate limiting
+1. **Handle task cancellation** properly
+1. **Test async code** with pytest-asyncio
+
 <!-- /progressive -->

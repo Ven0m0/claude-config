@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 # Stop Hook (Session End) - Persist learnings when session ends
 #
 # Runs when Claude session ends. Creates/updates session log file
@@ -24,14 +25,14 @@ SESSION_FILE="${SESSIONS_DIR}/${TODAY}-session.tmp"
 mkdir -p "$SESSIONS_DIR"
 
 # If session file exists for today, update the end time
-if [ -f "$SESSION_FILE" ]; then
+if [[ -f $SESSION_FILE ]]; then
   # Update Last Updated timestamp
-  sed -i '' "s/\*\*Last Updated:\*\*.*/\*\*Last Updated:\*\* $(date '+%H:%M')/" "$SESSION_FILE" 2>/dev/null || \
-  sed -i "s/\*\*Last Updated:\*\*.*/\*\*Last Updated:\*\* $(date '+%H:%M')/" "$SESSION_FILE" 2>/dev/null
+  sed -i '' "s/\*\*Last Updated:\*\*.*/\*\*Last Updated:\*\* $(date '+%H:%M')/" "$SESSION_FILE" 2>/dev/null \
+    || sed -i "s/\*\*Last Updated:\*\*.*/\*\*Last Updated:\*\* $(date '+%H:%M')/" "$SESSION_FILE" 2>/dev/null
   echo "[SessionEnd] Updated session file: $SESSION_FILE" >&2
 else
   # Create new session file with template
-  cat > "$SESSION_FILE" << EOF
+  cat >"$SESSION_FILE" <<EOF
 # Session: $(date '+%Y-%m-%d')
 **Date:** $TODAY
 **Started:** $(date '+%H:%M')

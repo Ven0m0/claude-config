@@ -20,41 +20,47 @@ Your personal organization assistant for maintaining clean, logical file structu
 ## Core Capabilities
 
 1. **Analyze Structure**: Review folders and understand content
-2. **Find Duplicates**: Identify duplicate files across system
-3. **Suggest Organization**: Propose logical folder structures
-4. **Automate Cleanup**: Move, rename, organize with approval
-5. **Context-Aware**: Smart decisions based on type, date, content
-6. **Reduce Clutter**: Identify old unused files
+1. **Find Duplicates**: Identify duplicate files across system
+1. **Suggest Organization**: Propose logical folder structures
+1. **Automate Cleanup**: Move, rename, organize with approval
+1. **Context-Aware**: Smart decisions based on type, date, content
+1. **Reduce Clutter**: Identify old unused files
 
 ## Quick Commands
 
 ### Downloads Cleanup
+
 ```
 Organize Downloads folder - move documents to Documents, images to Pictures,
 archive files older than 3 months
 ```
 
 ### Find Duplicates
+
 ```
 Find duplicate files in Documents and help me decide which to keep
 ```
 
 ### Project Organization
+
 ```
 Review Projects folder and separate active from archived projects
 ```
 
 ### Desktop Cleanup
+
 ```
 Desktop is covered in files - organize into Documents properly
 ```
 
 ### Photo Organization
+
 ```
 Organize photos by date (year/month) based on EXIF data
 ```
 
 ### Work/Personal Separation
+
 ```
 Separate work files from personal files in Documents
 ```
@@ -64,6 +70,7 @@ Separate work files from personal files in Documents
 ### 1. Understand Scope
 
 Ask clarifying questions:
+
 - Which directory? (Downloads, Documents, home?)
 - Main problem? (Can't find, duplicates, messy, no structure?)
 - Files to avoid? (Current projects, sensitive data?)
@@ -73,7 +80,7 @@ Ask clarifying questions:
 
 ```bash
 # Overview
-ls -la [target]
+eza -la [target]
 
 # File types and sizes
 find [target] -type f -exec file {} \; | head -20
@@ -86,6 +93,7 @@ find [target] -type f | sed 's/.*\.//' | sort | uniq -c | sort -rn
 ```
 
 Summarize:
+
 - Total files/folders
 - File type breakdown
 - Size distribution
@@ -95,6 +103,7 @@ Summarize:
 ### 3. Identify Patterns
 
 **By Type:**
+
 - Documents (PDF, DOCX, TXT)
 - Images (JPG, PNG, SVG)
 - Videos (MP4, MOV)
@@ -103,6 +112,7 @@ Summarize:
 - Spreadsheets (XLSX, CSV)
 
 **By Purpose:**
+
 - Work vs. Personal
 - Active vs. Archive
 - Project-specific
@@ -110,6 +120,7 @@ Summarize:
 - Temporary/scratch
 
 **By Date:**
+
 - Current year/month
 - Previous years
 - Old (archive candidates)
@@ -128,6 +139,7 @@ find [dir] -type f -printf '%s %p\n' | sort -n
 ```
 
 For each duplicate set:
+
 - Show all paths
 - Display sizes and dates
 - Recommend which to keep (newest or best-named)
@@ -182,6 +194,7 @@ mv "old/path/file" "new/path/file"
 ```
 
 **Rules:**
+
 - Confirm before deleting
 - Log all moves for undo
 - Preserve modification dates
@@ -219,18 +232,21 @@ find . -type f -mtime -7
 ## Best Practices
 
 ### Folder Naming
+
 - Clear, descriptive names
 - No spaces (use hyphens/underscores)
 - Be specific: "client-proposals" not "docs"
 - Use prefixes: "01-current", "02-archive"
 
 ### File Naming
+
 - Include dates: "2024-10-17-meeting-notes.md"
 - Be descriptive: "q3-financial-report.xlsx"
 - Avoid versions (use version control)
 - Clean downloads: "doc-final-v2(1).pdf" → "document.pdf"
 
 ### When to Archive
+
 - Not touched in 6+ months
 - Completed work for reference
 - Old versions after migration
@@ -239,8 +255,8 @@ find . -type f -mtime -7
 ## Pro Tips
 
 1. Start small (one folder at a time)
-2. Run weekly cleanup on Downloads
-3. Use consistent naming: "YYYY-MM-DD - Description"
-4. Archive aggressively (don't delete)
-5. Keep active work separate from archives
-6. Let Claude handle cognitive load
+1. Run weekly cleanup on Downloads
+1. Use consistent naming: "YYYY-MM-DD - Description"
+1. Archive aggressively (don't delete)
+1. Keep active work separate from archives
+1. Let Claude handle cognitive load

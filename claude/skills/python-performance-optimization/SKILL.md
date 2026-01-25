@@ -76,6 +76,7 @@ print(f"Average time: {execution_time/100:.6f} seconds")
 Use the advanced sections below when you need tooling guidance, deeper pattern catalogs, and checklists.
 
 <!-- progressive: profiling-and-optimization -->
+
 ## Profiling Tools
 
 ### Pattern 1: cProfile - CPU Profiling
@@ -136,7 +137,7 @@ python -m pstats output.prof
 ### Pattern 2: line_profiler - Line-by-Line Profiling
 
 ```python
-# Install: pip install line-profiler
+# Install: uv pip install line-profiler
 
 # Add @profile decorator (line_profiler provides this)
 @profile
@@ -180,7 +181,7 @@ if __name__ == "__main__":
 ### Pattern 3: memory_profiler - Memory Usage
 
 ```python
-# Install: pip install memory-profiler
+# Install: uv pip install memory-profiler
 
 from memory_profiler import profile
 
@@ -208,7 +209,7 @@ if __name__ == "__main__":
 ### Pattern 4: py-spy - Production Profiling
 
 ```bash
-# Install: pip install py-spy
+# Install: uv pip install py-spy
 
 # Profile a running Python process
 py-spy top --pid 12345
@@ -816,7 +817,7 @@ result = slow_function()
 ### Performance Testing with pytest-benchmark
 
 ```python
-# Install: pip install pytest-benchmark
+# Install: uv pip install pytest-benchmark
 
 def test_list_comprehension(benchmark):
     """Benchmark list comprehension."""
@@ -834,15 +835,15 @@ def test_map_function(benchmark):
 ## Best Practices
 
 1. **Profile before optimizing** - Measure to find real bottlenecks
-2. **Focus on hot paths** - Optimize code that runs most frequently
-3. **Use appropriate data structures** - Dict for lookups, set for membership
-4. **Avoid premature optimization** - Clarity first, then optimize
-5. **Use built-in functions** - They're implemented in C
-6. **Cache expensive computations** - Use lru_cache
-7. **Batch I/O operations** - Reduce system calls
-8. **Use generators** for large datasets
-9. **Consider NumPy** for numerical operations
-10. **Profile production code** - Use py-spy for live systems
+1. **Focus on hot paths** - Optimize code that runs most frequently
+1. **Use appropriate data structures** - Dict for lookups, set for membership
+1. **Avoid premature optimization** - Clarity first, then optimize
+1. **Use built-in functions** - They're implemented in C
+1. **Cache expensive computations** - Use lru_cache
+1. **Batch I/O operations** - Reduce system calls
+1. **Use generators** for large datasets
+1. **Consider NumPy** for numerical operations
+1. **Profile production code** - Use py-spy for live systems
 
 ## Common Pitfalls
 
@@ -877,4 +878,5 @@ def test_map_function(benchmark):
 - [ ] Minimized function call overhead in hot loops
 - [ ] Checked for memory leaks
 - [ ] Benchmarked before and after optimization
+
 <!-- /progressive -->

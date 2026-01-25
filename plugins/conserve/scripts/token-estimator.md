@@ -7,6 +7,7 @@ The token-estimator implementation has been moved to the **abstract** plugin for
 ## Usage
 
 ### Via Makefile (Recommended)
+
 ```bash
 # From the conservation directory
 make token-estimate --file skills/resource-management/token-conservation/SKILL.md
@@ -14,6 +15,7 @@ make token-estimate --directory skills/ --include-dependencies
 ```
 
 ### Direct Execution
+
 ```bash
 # From the abstract directory
 cd ../abstract
@@ -25,6 +27,7 @@ uv run python scripts/token_estimator.py --file SKILL.md --include-dependencies
 ## Why the Change?
 
 The abstract plugin provides a more sophisticated implementation using:
+
 - Centralized `TokenAnalyzer` class for consistent token counting
 - Better CLI framework with structured output
 - Enhanced dependency resolution

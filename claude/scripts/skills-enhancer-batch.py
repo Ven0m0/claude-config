@@ -16,7 +16,6 @@ Author: Intent Solutions IO
 """
 
 import json
-import os
 import sys
 import sqlite3
 import time
@@ -28,7 +27,7 @@ from typing import Optional, Dict, Any, List
 
 # Vertex AI SDK
 import vertexai
-from vertexai.generative_models import GenerativeModel, SafetySetting, Part
+from vertexai.generative_models import GenerativeModel
 
 # Configuration
 PROJECT_ID = "ccpi-web-app-prod"
@@ -36,16 +35,35 @@ LOCATION = "us-central1"
 RATE_LIMIT_DELAY = 45.0  # 45 seconds base delay (conservative but faster)
 RATE_LIMIT_RANDOMNESS = 15.0  # Add 0-15 seconds random variation
 MAX_RETRIES = 3
-BACKUP_DIR = Path(__file__).parent.parent / 'backups' / 'plugin-enhancements'
-DB_PATH = BACKUP_DIR / 'enhancements.db'
-STANDARDS_DOC = Path(__file__).parent.parent / 'claudes-docs' / 'anthropic-skills-comparison-2025-10-19.md'
+BACKUP_DIR = Path(__file__).parent.parent / "backups" / "plugin-enhancements"
+DB_PATH = BACKUP_DIR / "enhancements.db"
+STANDARDS_DOC = (
+    Path(__file__).parent.parent
+    / "claudes-docs"
+    / "anthropic-skills-comparison-2025-10-19.md"
+)
 
 # Plugin categories to process (ALL CATEGORIES - 236 plugins)
 CATEGORIES = [
-    'productivity', 'security', 'testing', 'packages', 'examples', 'community', 'mcp',
-    'ai-agency', 'ai-ml', 'api-development', 'crypto', 'database', 'devops',
-    'fairdb-operations-kit', 'finance', 'performance', 'skill-enhancers'
+    "productivity",
+    "security",
+    "testing",
+    "packages",
+    "examples",
+    "community",
+    "mcp",
+    "ai-agency",
+    "ai-ml",
+    "api-development",
+    "crypto",
+    "database",
+    "devops",
+    "fairdb-operations-kit",
+    "finance",
+    "performance",
+    "skill-enhancers",
 ]
+
 
 class PluginEnhancer:
     def __init__(self):
@@ -72,7 +90,7 @@ class PluginEnhancer:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
 
-        cursor.execute('''
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS enhancements (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp TEXT NOT NULL,
@@ -85,9 +103,9 @@ class PluginEnhancer:
                 error_message TEXT,
                 processing_time_seconds REAL
             )
-        ''')
+        """)
 
-        cursor.execute('''
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS quality_scores (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp TEXT NOT NULL,
@@ -96,7 +114,7 @@ class PluginEnhancer:
                 score_after INTEGER,
                 improvements TEXT
             )
-        ''')
+        """)
 
         conn.commit()
         conn.close()
@@ -108,7 +126,7 @@ class PluginEnhancer:
             print(f"❌ Standards document not found: {STANDARDS_DOC}")
             sys.exit(1)
 
-        with open(STANDARDS_DOC, 'r') as f:
+        with open(STANDARDS_DOC, "r") as f:
             self.standards = f.read()
 
         print(f"✅ Loaded standards document ({len(self.standards)} chars)")
@@ -116,7 +134,7 @@ class PluginEnhancer:
     def find_all_plugins(self) -> List[Dict[str, Any]]:
         """Find all plugins in the repository"""
         plugins = []
-        plugins_dir = Path(__file__).parent.parent / 'plugins'
+        plugins_dir = Path(__file__).parent.parent / "plugins"
 
         for category in CATEGORIES:
             category_dir = plugins_dir / category
@@ -127,72 +145,78 @@ class PluginEnhancer:
                 if not plugin_dir.is_dir():
                     continue
 
-                plugin_json = plugin_dir / '.claude-plugin' / 'plugin.json'
+                plugin_json = plugin_dir / ".claude-plugin" / "plugin.json"
                 if not plugin_json.exists():
                     continue
 
-                with open(plugin_json, 'r') as f:
+                with open(plugin_json, "r") as f:
                     metadata = json.load(f)
 
-                plugins.append({
-                    'name': metadata.get('name', plugin_dir.name),
-                    'path': str(plugin_dir),
-                    'category': category,
-                    'metadata': metadata
-                })
+                plugins.append(
+                    {
+                        "name": metadata.get("name", plugin_dir.name),
+                        "path": str(plugin_dir),
+                        "category": category,
+                        "metadata": metadata,
+                    }
+                )
 
         print(f"✅ Found {len(plugins)} plugins")
         return plugins
 
     def analyze_plugin(self, plugin: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze a plugin against Anthropic standards"""
-        plugin_path = Path(plugin['path'])
+        plugin_path = Path(plugin["path"])
 
         # Read plugin structure
         structure = {
-            'has_readme': (plugin_path / 'README.md').exists(),
-            'has_plugin_json': (plugin_path / '.claude-plugin' / 'plugin.json').exists(),
-            'has_commands': (plugin_path / 'commands').exists(),
-            'has_agents': (plugin_path / 'agents').exists(),
-            'has_skills': (plugin_path / 'skills' / 'skill-adapter').exists(),
-            'has_scripts': (plugin_path / 'scripts').exists(),
-            'has_hooks': (plugin_path / 'hooks').exists(),
-            'has_mcp': (plugin_path / 'mcp').exists(),
+            "has_readme": (plugin_path / "README.md").exists(),
+            "has_plugin_json": (
+                plugin_path / ".claude-plugin" / "plugin.json"
+            ).exists(),
+            "has_commands": (plugin_path / "commands").exists(),
+            "has_agents": (plugin_path / "agents").exists(),
+            "has_skills": (plugin_path / "skills" / "skill-adapter").exists(),
+            "has_scripts": (plugin_path / "scripts").exists(),
+            "has_hooks": (plugin_path / "hooks").exists(),
+            "has_mcp": (plugin_path / "mcp").exists(),
         }
 
         # Check for Agent Skill
-        skill_md = plugin_path / 'skills' / 'skill-adapter' / 'SKILL.md'
+        skill_md = plugin_path / "skills" / "skill-adapter" / "SKILL.md"
         skill_analysis = None
 
         if skill_md.exists():
-            with open(skill_md, 'r') as f:
+            with open(skill_md, "r") as f:
                 skill_content = f.read()
 
             skill_analysis = {
-                'exists': True,
-                'size': len(skill_content),
-                'has_frontmatter': skill_content.startswith('---'),
-                'has_bundled_resources': any([
-                    'scripts/' in skill_content.lower(),
-                    'references/' in skill_content.lower(),
-                    'assets/' in skill_content.lower()
-                ]),
-                'content': skill_content[:500]  # First 500 chars for context
+                "exists": True,
+                "size": len(skill_content),
+                "has_frontmatter": skill_content.startswith("---"),
+                "has_bundled_resources": any(
+                    [
+                        "scripts/" in skill_content.lower(),
+                        "references/" in skill_content.lower(),
+                        "assets/" in skill_content.lower(),
+                    ]
+                ),
+                "content": skill_content[:500],  # First 500 chars for context
             }
         else:
-            skill_analysis = {'exists': False}
+            skill_analysis = {"exists": False}
 
         # Read README for context
         readme_content = ""
-        if structure['has_readme']:
-            with open(plugin_path / 'README.md', 'r') as f:
+        if structure["has_readme"]:
+            with open(plugin_path / "README.md", "r") as f:
                 readme_content = f.read()[:2000]  # First 2000 chars
 
         return {
-            'structure': structure,
-            'skill_analysis': skill_analysis,
-            'readme_excerpt': readme_content,
-            'metadata': plugin['metadata']
+            "structure": structure,
+            "skill_analysis": skill_analysis,
+            "readme_excerpt": readme_content,
+            "metadata": plugin["metadata"],
         }
 
     def smart_delay(self, message: str = "Rate limiting"):
@@ -201,7 +225,9 @@ class PluginEnhancer:
         print(f"  ⏸️  {message}: {delay:.1f}s...")
         time.sleep(delay)
 
-    def generate_enhancement_plan(self, plugin: Dict[str, Any], analysis: Dict[str, Any]) -> str:
+    def generate_enhancement_plan(
+        self, plugin: Dict[str, Any], analysis: Dict[str, Any]
+    ) -> str:
         """Use Gemini to generate enhancement plan"""
 
         prompt = f"""You are an expert at enhancing Claude Code plugins following Anthropic's Agent Skills best practices.
@@ -210,16 +236,16 @@ class PluginEnhancer:
 {self.standards[:15000]}  # Include relevant portion of standards
 
 # PLUGIN TO ENHANCE
-Name: {plugin['name']}
-Category: {plugin['category']}
-Path: {plugin['path']}
+Name: {plugin["name"]}
+Category: {plugin["category"]}
+Path: {plugin["path"]}
 
 # CURRENT ANALYSIS
-Structure: {json.dumps(analysis['structure'], indent=2)}
-Skill Analysis: {json.dumps(analysis['skill_analysis'], indent=2)}
+Structure: {json.dumps(analysis["structure"], indent=2)}
+Skill Analysis: {json.dumps(analysis["skill_analysis"], indent=2)}
 
 README Excerpt:
-{analysis['readme_excerpt']}
+{analysis["readme_excerpt"]}
 
 # YOUR TASK
 
@@ -287,17 +313,17 @@ Return ONLY valid JSON with this structure:
 Be thorough and specific. This analysis will drive automated enhancements."""
 
         try:
-            print(f"  🤖 Asking Gemini for enhancement plan...")
+            print("  🤖 Asking Gemini for enhancement plan...")
             start_time = time.time()
 
             response = self.model.generate_content(
                 prompt,
                 generation_config={
-                    'temperature': 0.3,  # Lower temperature for structured output
-                    'top_p': 0.8,
-                    'top_k': 40,
-                    'max_output_tokens': 4096,
-                }
+                    "temperature": 0.3,  # Lower temperature for structured output
+                    "top_p": 0.8,
+                    "top_k": 40,
+                    "max_output_tokens": 4096,
+                },
             )
 
             elapsed = time.time() - start_time
@@ -310,9 +336,9 @@ Be thorough and specific. This analysis will drive automated enhancements."""
             response_text = response.text.strip()
 
             # Try to find JSON in response
-            if '```json' in response_text:
-                json_start = response_text.find('```json') + 7
-                json_end = response_text.find('```', json_start)
+            if "```json" in response_text:
+                json_start = response_text.find("```json") + 7
+                json_end = response_text.find("```", json_start)
                 response_text = response_text[json_start:json_end].strip()
 
             plan = json.loads(response_text)
@@ -322,19 +348,28 @@ Be thorough and specific. This analysis will drive automated enhancements."""
             print(f"  ❌ Enhancement plan generation failed: {e}")
             return None
 
-    def create_skill_md(self, plugin: Dict[str, Any], analysis: Dict[str, Any], plan: Dict[str, Any]) -> Optional[str]:
+    def create_skill_md(
+        self, plugin: Dict[str, Any], analysis: Dict[str, Any], plan: Dict[str, Any]
+    ) -> Optional[str]:
         """Use Gemini to create comprehensive SKILL.md"""
 
         if not plan:
             return None
 
         # Skip if not high priority or skill exists and is good
-        if plan.get('implementation_priority') != 'HIGH':
-            print(f"  ⏭️  Skipping SKILL.md creation (priority: {plan.get('implementation_priority')})")
+        if plan.get("implementation_priority") != "HIGH":
+            print(
+                f"  ⏭️  Skipping SKILL.md creation (priority: {plan.get('implementation_priority')})"
+            )
             return None
 
-        if analysis['skill_analysis'].get('exists') and analysis['skill_analysis'].get('size', 0) > 5000:
-            print(f"  ⏭️  SKILL.md already comprehensive ({analysis['skill_analysis']['size']} bytes)")
+        if (
+            analysis["skill_analysis"].get("exists")
+            and analysis["skill_analysis"].get("size", 0) > 5000
+        ):
+            print(
+                f"  ⏭️  SKILL.md already comprehensive ({analysis['skill_analysis']['size']} bytes)"
+            )
             return None
 
         prompt = f"""You are an expert at creating Agent Skills for Claude Code plugins following Anthropic's official guidelines.
@@ -343,14 +378,14 @@ Be thorough and specific. This analysis will drive automated enhancements."""
 {self.standards[20000:50000]}  # Include SKILL.md examples section
 
 # PLUGIN INFORMATION
-Name: {plugin['name']}
-Category: {plugin['category']}
+Name: {plugin["name"]}
+Category: {plugin["category"]}
 
 README:
-{analysis['readme_excerpt']}
+{analysis["readme_excerpt"]}
 
 Metadata:
-{json.dumps(plugin['metadata'], indent=2)}
+{json.dumps(plugin["metadata"], indent=2)}
 
 # ENHANCEMENT PLAN
 {json.dumps(plan, indent=2)}
@@ -361,7 +396,7 @@ Create a comprehensive SKILL.md file following Anthropic's standards:
 
 	## Requirements:
 	1. **Frontmatter** (YAML):
-	   - name: {plugin['name'].lower().replace(' ', '-')}  # hyphen-case
+	   - name: {plugin["name"].lower().replace(" ", "-")}  # hyphen-case
 	   - description: Multi-line with trigger phrases
 	   - license: MIT
 	   - allowed-tools: "Read, Grep, Glob, Edit, Write, Bash(git:*)"  # CSV string
@@ -398,30 +433,32 @@ Return ONLY the complete SKILL.md content (no explanations, just the file conten
 Start with --- for frontmatter and end with proper markdown."""
 
         try:
-            print(f"  🤖 Generating comprehensive SKILL.md...")
+            print("  🤖 Generating comprehensive SKILL.md...")
             start_time = time.time()
 
             response = self.model.generate_content(
                 prompt,
                 generation_config={
-                    'temperature': 0.4,
-                    'top_p': 0.9,
-                    'top_k': 40,
-                    'max_output_tokens': 8192,  # Allow large output
-                }
+                    "temperature": 0.4,
+                    "top_p": 0.9,
+                    "top_k": 40,
+                    "max_output_tokens": 8192,  # Allow large output
+                },
             )
 
             elapsed = time.time() - start_time
             skill_content = response.text.strip()
 
-            print(f"  ✅ Generated SKILL.md ({len(skill_content)} bytes) in {elapsed:.1f}s")
+            print(
+                f"  ✅ Generated SKILL.md ({len(skill_content)} bytes) in {elapsed:.1f}s"
+            )
 
             # Rate limit delay after API call
             self.smart_delay("Post-generation delay")
 
             # Validate it starts with frontmatter
-            if not skill_content.startswith('---'):
-                print(f"  ⚠️  Warning: SKILL.md doesn't start with frontmatter")
+            if not skill_content.startswith("---"):
+                print("  ⚠️  Warning: SKILL.md doesn't start with frontmatter")
                 return None
 
             return skill_content
@@ -432,9 +469,9 @@ Start with --- for frontmatter and end with proper markdown."""
 
     def backup_plugin(self, plugin: Dict[str, Any]):
         """Create timestamped backup of plugin before modifications"""
-        plugin_path = Path(plugin['path'])
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        backup_path = BACKUP_DIR / 'plugin-backups' / f"{plugin['name']}_{timestamp}"
+        plugin_path = Path(plugin["path"])
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        backup_path = BACKUP_DIR / "plugin-backups" / f"{plugin['name']}_{timestamp}"
 
         backup_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.copytree(plugin_path, backup_path)
@@ -442,9 +479,11 @@ Start with --- for frontmatter and end with proper markdown."""
         print(f"  💾 Backup created: {backup_path}")
         return backup_path
 
-    def apply_enhancements(self, plugin: Dict[str, Any], plan: Dict[str, Any], skill_content: Optional[str]) -> bool:
+    def apply_enhancements(
+        self, plugin: Dict[str, Any], plan: Dict[str, Any], skill_content: Optional[str]
+    ) -> bool:
         """Apply enhancements to plugin"""
-        plugin_path = Path(plugin['path'])
+        plugin_path = Path(plugin["path"])
         changes = []
 
         try:
@@ -453,55 +492,62 @@ Start with --- for frontmatter and end with proper markdown."""
 
             # Create SKILL.md if generated
             if skill_content:
-                skill_dir = plugin_path / 'skills' / 'skill-adapter'
+                skill_dir = plugin_path / "skills" / "skill-adapter"
                 skill_dir.mkdir(parents=True, exist_ok=True)
 
-                skill_path = skill_dir / 'SKILL.md'
-                with open(skill_path, 'w') as f:
+                skill_path = skill_dir / "SKILL.md"
+                with open(skill_path, "w") as f:
                     f.write(skill_content)
 
                 changes.append(f"Created/updated {skill_path}")
                 print(f"  ✅ Wrote SKILL.md ({len(skill_content)} bytes)")
 
             # Create bundled resource directories
-            for resource_type in ['scripts', 'references', 'assets']:
-                if plan.get('bundled_resources_needed', {}).get(resource_type):
-                    resource_dir = plugin_path / 'skills' / 'skill-adapter' / resource_type
+            for resource_type in ["scripts", "references", "assets"]:
+                if plan.get("bundled_resources_needed", {}).get(resource_type):
+                    resource_dir = (
+                        plugin_path / "skills" / "skill-adapter" / resource_type
+                    )
                     resource_dir.mkdir(parents=True, exist_ok=True)
 
                     # Create README in each directory
-                    readme_path = resource_dir / 'README.md'
+                    readme_path = resource_dir / "README.md"
                     if not readme_path.exists():
-                        with open(readme_path, 'w') as f:
+                        with open(readme_path, "w") as f:
                             f.write(f"# {resource_type.title()}\n\n")
                             f.write(f"Bundled resources for {plugin['name']} skill\n\n")
-                            for item in plan['bundled_resources_needed'][resource_type]:
+                            for item in plan["bundled_resources_needed"][resource_type]:
                                 f.write(f"- [ ] {item}\n")
 
                         changes.append(f"Created {resource_dir}/")
-                        print(f"  ✅ Created {resource_type}/ directory with TODO README")
+                        print(
+                            f"  ✅ Created {resource_type}/ directory with TODO README"
+                        )
 
             # Log enhancements to database
             conn = sqlite3.connect(DB_PATH)
             cursor = conn.cursor()
 
-            cursor.execute('''
+            cursor.execute(
+                """
                 INSERT INTO enhancements
                 (timestamp, plugin_name, plugin_path, enhancement_type, status, changes_made)
                 VALUES (?, ?, ?, ?, ?, ?)
-            ''', (
-                datetime.now().isoformat(),
-                plugin['name'],
-                plugin['path'],
-                'comprehensive',
-                'success',
-                json.dumps(changes)
-            ))
+            """,
+                (
+                    datetime.now().isoformat(),
+                    plugin["name"],
+                    plugin["path"],
+                    "comprehensive",
+                    "success",
+                    json.dumps(changes),
+                ),
+            )
 
             conn.commit()
             conn.close()
 
-            print(f"  🎉 Enhancements applied successfully!")
+            print("  🎉 Enhancements applied successfully!")
             return True
 
         except Exception as e:
@@ -510,23 +556,23 @@ Start with --- for frontmatter and end with proper markdown."""
 
     def process_plugin(self, plugin: Dict[str, Any]) -> bool:
         """Process a single plugin through the enhancement pipeline"""
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"🔧 Processing: {plugin['name']} ({plugin['category']})")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
 
         start_time = time.time()
 
         try:
             # Step 1: Analyze current state
-            print(f"\n📊 Step 1: Analyzing plugin structure...")
+            print("\n📊 Step 1: Analyzing plugin structure...")
             analysis = self.analyze_plugin(plugin)
 
             # Step 2: Generate enhancement plan
-            print(f"\n🎯 Step 2: Generating enhancement plan...")
+            print("\n🎯 Step 2: Generating enhancement plan...")
             plan = self.generate_enhancement_plan(plugin, analysis)
 
             if not plan:
-                print(f"  ⚠️  Could not generate enhancement plan")
+                print("  ⚠️  Could not generate enhancement plan")
                 return False
 
             print(f"  Quality score: {plan.get('quality_score_before', 0)}/100")
@@ -535,15 +581,15 @@ Start with --- for frontmatter and end with proper markdown."""
 
             # Step 3: Create SKILL.md if needed
             skill_content = None
-            if plan.get('skill_md_enhancements', {}).get('create_new'):
-                print(f"\n📝 Step 3: Creating comprehensive SKILL.md...")
+            if plan.get("skill_md_enhancements", {}).get("create_new"):
+                print("\n📝 Step 3: Creating comprehensive SKILL.md...")
                 skill_content = self.create_skill_md(plugin, analysis, plan)
                 # Delay is handled inside create_skill_md now
             else:
-                print(f"\n⏭️  Step 3: SKILL.md creation not needed")
+                print("\n⏭️  Step 3: SKILL.md creation not needed")
 
             # Step 4: Apply enhancements
-            print(f"\n✨ Step 4: Applying enhancements...")
+            print("\n✨ Step 4: Applying enhancements...")
             success = self.apply_enhancements(plugin, plan, skill_content)
 
             elapsed = time.time() - start_time
@@ -557,14 +603,14 @@ Start with --- for frontmatter and end with proper markdown."""
 
     def run_overnight_batch(self, limit: Optional[int] = None):
         """Run overnight batch enhancement of all plugins"""
-        print(f"\n{'='*60}")
-        print(f"🌙 OVERNIGHT PLUGIN ENHANCEMENT BATCH")
-        print(f"{'='*60}")
+        print(f"\n{'=' * 60}")
+        print("🌙 OVERNIGHT PLUGIN ENHANCEMENT BATCH")
+        print(f"{'=' * 60}")
         print(f"Project: {PROJECT_ID}")
-        print(f"Model: gemini-2.0-flash-exp")
+        print("Model: gemini-2.0-flash-exp")
         print(f"Rate limit: {RATE_LIMIT_DELAY}s between calls")
         print(f"Backup dir: {BACKUP_DIR}")
-        print(f"{'='*60}\n")
+        print(f"{'=' * 60}\n")
 
         # Find all plugins
         plugins = self.find_all_plugins()
@@ -581,9 +627,9 @@ Start with --- for frontmatter and end with proper markdown."""
         start_time = time.time()
 
         for idx, plugin in enumerate(plugins, 1):
-            print(f"\n\n{'#'*60}")
+            print(f"\n\n{'#' * 60}")
             print(f"Plugin {idx}/{total}")
-            print(f"{'#'*60}")
+            print(f"{'#' * 60}")
 
             success = self.process_plugin(plugin)
 
@@ -606,27 +652,31 @@ Start with --- for frontmatter and end with proper markdown."""
         elapsed = time.time() - start_time
         elapsed_hours = elapsed / 3600
 
-        print(f"\n\n{'='*60}")
-        print(f"🎉 BATCH COMPLETE")
-        print(f"{'='*60}")
+        print(f"\n\n{'=' * 60}")
+        print("🎉 BATCH COMPLETE")
+        print(f"{'=' * 60}")
         print(f"Total plugins: {total}")
         print(f"Successful: {success_count}")
         print(f"Failed: {failure_count}")
-        print(f"Success rate: {success_count/total*100:.1f}%")
+        print(f"Success rate: {success_count / total * 100:.1f}%")
         print(f"Total time: {elapsed_hours:.2f} hours")
         print(f"Database: {DB_PATH}")
         print(f"Backups: {BACKUP_DIR}")
-        print(f"{'='*60}\n")
+        print(f"{'=' * 60}\n")
 
 
 def main():
     """Main entry point"""
     import argparse
 
-    parser = argparse.ArgumentParser(description='Overnight Plugin Enhancement System')
-    parser.add_argument('--limit', type=int, help='Limit number of plugins (for testing)')
-    parser.add_argument('--dry-run', action='store_true', help='Analyze only, no changes')
-    parser.add_argument('--plugin', type=str, help='Process specific plugin by name')
+    parser = argparse.ArgumentParser(description="Overnight Plugin Enhancement System")
+    parser.add_argument(
+        "--limit", type=int, help="Limit number of plugins (for testing)"
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Analyze only, no changes"
+    )
+    parser.add_argument("--plugin", type=str, help="Process specific plugin by name")
 
     args = parser.parse_args()
 
@@ -635,7 +685,7 @@ def main():
     if args.plugin:
         # Process single plugin
         plugins = enhancer.find_all_plugins()
-        target = next((p for p in plugins if p['name'] == args.plugin), None)
+        target = next((p for p in plugins if p["name"] == args.plugin), None)
 
         if not target:
             print(f"❌ Plugin not found: {args.plugin}")
@@ -647,5 +697,5 @@ def main():
         enhancer.run_overnight_batch(limit=args.limit)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

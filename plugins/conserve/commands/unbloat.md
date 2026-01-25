@@ -10,10 +10,11 @@ usage: /unbloat [--from-scan REPORT] [--auto-approve low] [--dry-run] [--focus c
 triggers: unbloat, remove bloat, cleanup codebase, reduce bloat
 
 use_when:
+
 - After bloat-scan identifies remediation targets
 - Preparing for release
 - Reducing codebase complexity
-</identification>
+  </identification>
 
 Execute safe bloat remediation workflows with user approval at each step.
 
@@ -44,29 +45,30 @@ Execute safe bloat remediation workflows with user approval at each step.
 
 ## Options
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--from-scan <file>` | Use existing bloat-scan report | Run new scan |
-| `--auto-approve <level>` | Auto-approve: `low`, `medium`, `none` | `none` |
-| `--dry-run` | Preview all changes without executing | `false` |
-| `--focus <area>` | Focus: `code`, `docs`, `deps`, or `all` | `all` |
-| `--backup-branch <name>` | Custom backup branch name | `backup/unbloat-{date}` |
-| `--no-backup` | Skip backup branch creation | `false` |
+| Option                   | Description                             | Default                 |
+| ------------------------ | --------------------------------------- | ----------------------- |
+| `--from-scan <file>`     | Use existing bloat-scan report          | Run new scan            |
+| `--auto-approve <level>` | Auto-approve: `low`, `medium`, `none`   | `none`                  |
+| `--dry-run`              | Preview all changes without executing   | `false`                 |
+| `--focus <area>`         | Focus: `code`, `docs`, `deps`, or `all` | `all`                   |
+| `--backup-branch <name>` | Custom backup branch name               | `backup/unbloat-{date}` |
+| `--no-backup`            | Skip backup branch creation             | `false`                 |
 
 ## Workflow Overview
 
 1. **Scan/Load**: Run integrated Tier 1 scan or load from `--from-scan` report
-2. **Prioritize**: Group by type (DELETE, REFACTOR, CONSOLIDATE, ARCHIVE) and risk
-3. **Backup**: Create timestamped backup branch
-4. **Remediate**: Interactive approval for each finding with preview
-5. **Verify**: Run tests after each change, rollback on failure
-6. **Summary**: Report actions, token savings, rollback instructions
+1. **Prioritize**: Group by type (DELETE, REFACTOR, CONSOLIDATE, ARCHIVE) and risk
+1. **Backup**: Create timestamped backup branch
+1. **Remediate**: Interactive approval for each finding with preview
+1. **Verify**: Run tests after each change, rollback on failure
+1. **Summary**: Report actions, token savings, rollback instructions
 
 For remediation type definitions and risk assessment, see: `@module:remediation-types`
 
 ## Interactive Prompts
 
 Each finding shows:
+
 - File path, action type, confidence level
 - Token impact estimate and rationale
 - Content preview
@@ -106,9 +108,9 @@ Backup: backup/unbloat-20251231-021500
 ## Safety Features
 
 1. **Always backup** (unless `--no-backup`)
-2. **Git operations only** (`git rm`, not `rm` - reversible)
-3. **Test after each change** - auto-rollback on failure
-4. **Detailed logging** to `.unbloat-log`
+1. **Git operations only** (`git rm`, not `rm` - reversible)
+1. **Test after each change** - auto-rollback on failure
+1. **Detailed logging** to `.unbloat-log`
 
 ## Rollback
 

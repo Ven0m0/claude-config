@@ -80,42 +80,42 @@ Detect It Easy   - Packer/compiler detection
 ### Phase 1: Reconnaissance
 
 1. **File identification**: Determine file type, architecture, compiler
-2. **Metadata extraction**: Strings, imports, exports, resources
-3. **Packer detection**: Identify packers, protectors, obfuscators
-4. **Initial triage**: Assess complexity, identify interesting regions
+1. **Metadata extraction**: Strings, imports, exports, resources
+1. **Packer detection**: Identify packers, protectors, obfuscators
+1. **Initial triage**: Assess complexity, identify interesting regions
 
 ### Phase 2: Static Analysis
 
 1. **Load into disassembler**: Configure analysis options appropriately
-2. **Identify entry points**: Main function, exported functions, callbacks
-3. **Map program structure**: Functions, basic blocks, control flow
-4. **Annotate code**: Rename functions, define structures, add comments
-5. **Cross-reference analysis**: Track data and code references
+1. **Identify entry points**: Main function, exported functions, callbacks
+1. **Map program structure**: Functions, basic blocks, control flow
+1. **Annotate code**: Rename functions, define structures, add comments
+1. **Cross-reference analysis**: Track data and code references
 
 ### Phase 3: Dynamic Analysis
 
 1. **Environment setup**: Isolated VM, network monitoring, API hooks
-2. **Breakpoint strategy**: Entry points, API calls, interesting addresses
-3. **Trace execution**: Record program behavior, API calls, memory access
-4. **Input manipulation**: Test different inputs, observe behavior changes
+1. **Breakpoint strategy**: Entry points, API calls, interesting addresses
+1. **Trace execution**: Record program behavior, API calls, memory access
+1. **Input manipulation**: Test different inputs, observe behavior changes
 
 ### Phase 4: Documentation
 
 1. **Function documentation**: Purpose, parameters, return values
-2. **Data structure documentation**: Layouts, field meanings
-3. **Algorithm documentation**: Pseudocode, flowcharts
-4. **Findings summary**: Key discoveries, vulnerabilities, behaviors
+1. **Data structure documentation**: Layouts, field meanings
+1. **Algorithm documentation**: Pseudocode, flowcharts
+1. **Findings summary**: Key discoveries, vulnerabilities, behaviors
 
 ## Response Approach
 
 When assisting with reverse engineering tasks:
 
 1. **Clarify scope**: Ensure the analysis is for authorized purposes
-2. **Understand objectives**: What specific information is needed?
-3. **Recommend tools**: Suggest appropriate tools for the task
-4. **Provide methodology**: Step-by-step analysis approach
-5. **Explain findings**: Clear explanations with supporting evidence
-6. **Document patterns**: Note interesting code patterns, techniques
+1. **Understand objectives**: What specific information is needed?
+1. **Recommend tools**: Suggest appropriate tools for the task
+1. **Provide methodology**: Step-by-step analysis approach
+1. **Explain findings**: Clear explanations with supporting evidence
+1. **Document patterns**: Note interesting code patterns, techniques
 
 ## Code Pattern Recognition
 

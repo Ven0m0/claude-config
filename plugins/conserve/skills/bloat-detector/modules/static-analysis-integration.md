@@ -25,44 +25,50 @@ command -v sonar-scanner &>/dev/null && TOOLS+=("sonarqube")
 
 ## Python Tools
 
-| Tool | Strength | Confidence | Command |
-|------|----------|------------|---------|
-| **vulture** | Dead code detection | 80-95% | `vulture . --min-confidence 80` |
-| **deadcode** | Fast, auto-fix | 85% | `deadcode --dry` |
-| **autoflake** | Import cleanup | 95% | `autoflake --check -r .` |
+| Tool          | Strength            | Confidence | Command                         |
+| ------------- | ------------------- | ---------- | ------------------------------- |
+| **vulture**   | Dead code detection | 80-95%     | `vulture . --min-confidence 80` |
+| **deadcode**  | Fast, auto-fix      | 85%        | `deadcode --dry`                |
+| **autoflake** | Import cleanup      | 95%        | `autoflake --check -r .`        |
 
 ### Vulture (Recommended)
+
 ```bash
 vulture . --min-confidence 80 --exclude=.venv,__pycache__,.git,node_modules
 ```
+
 - 90-100%: Safe to remove
 - 80-89%: Review first
-- <80%: Investigate
+- \<80%: Investigate
 
 ### autoflake (Imports)
+
 ```bash
 autoflake --check --remove-all-unused-imports --expand-star-imports -r .
 # Fix: add --in-place
 ```
+
 **Impact:** 40-70% startup time reduction
 
 ## JavaScript/TypeScript
 
-| Tool | Strength | Confidence | Command |
-|------|----------|------------|---------|
-| **knip** | Files, exports, deps | 95% | `knip --include files,exports` |
+| Tool     | Strength             | Confidence | Command                        |
+| -------- | -------------------- | ---------- | ------------------------------ |
+| **knip** | Files, exports, deps | 95%        | `knip --include files,exports` |
 
 ```bash
 knip --include files,exports,dependencies --reporter json > knip-report.json
 ```
 
 **Tree-shaking prereqs:**
+
 - `"type": "module"` in package.json
 - Avoid `export * from` barrel patterns
 
 ## Multi-Language
 
 **SonarQube** (enterprise): Duplication, complexity, code smells
+
 ```bash
 sonar-scanner -Dsonar.sources=. -Dsonar.exclusions="**/node_modules/**"
 ```
@@ -93,5 +99,6 @@ action: DELETE
 No tools? Fall back to `@module:code-bloat-patterns` heuristics.
 
 ## Related
+
 - `code-bloat-patterns` - Heuristic fallbacks
 - `bloat-auditor` - Orchestrates tool execution

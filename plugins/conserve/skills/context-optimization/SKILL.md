@@ -21,22 +21,23 @@ progressive_loading: true
 # Claude Code 2.1.0+ lifecycle hooks
 hooks:
   PreToolUse:
-    - matcher: "Read"
+    - matcher: Read
       command: |
         echo "[skill:context-optimization] 📊 Context analysis started: $(date)" >> ${CLAUDE_CODE_TMPDIR:-/tmp}/skill-audit.log
       once: true
   PostToolUse:
-    - matcher: "Bash"
+    - matcher: Bash
       command: |
         # Track context analysis tools
         if echo "$CLAUDE_TOOL_INPUT" | grep -qE "(wc|tokei|cloc|context)"; then
           echo "[skill:context-optimization] Context measurement executed: $(date)" >> ${CLAUDE_CODE_TMPDIR:-/tmp}/skill-audit.log
         fi
   Stop:
-    - command: |
+    - command: |-
         echo "[skill:context-optimization] === Optimization completed at $(date) ===" >> ${CLAUDE_CODE_TMPDIR:-/tmp}/skill-audit.log
         # Could export: context pressure events over time
 ---
+
 ## Table of Contents
 
 - [Quick Start](#quick-start)
@@ -47,12 +48,12 @@ hooks:
 - [Integration Points](#integration-points)
 - [Resources](#resources)
 
-
 # Context Optimization Hub
 
 ## Quick Start
 
 ### Basic Usage
+
 ```bash
 # Analyze current context usage
 python -m conserve.context_analyzer
@@ -66,10 +67,10 @@ python -m conserve.context_analyzer
 ## Core Hub Responsibilities
 
 1. Assess context pressure and MECW compliance.
-2. Route to appropriate specialized modules.
-3. Coordinate subagent-based workflows.
-4. Manage token budget allocation across modules.
-5. Synthesize results from modular execution.
+1. Route to appropriate specialized modules.
+1. Coordinate subagent-based workflows.
+1. Manage token budget allocation across modules.
+1. Synthesize results from modular execution.
 
 ## Module Selection Strategy
 
@@ -85,11 +86,11 @@ def select_optimal_modules(context_situation, task_complexity):
 
 ## Context Classification
 
-| Utilization | Status | Action |
-|-------------|--------|--------|
-| < 30% | LOW | Continue normally |
-| 30-50% | MODERATE | Monitor, apply principles |
-| > 50% | CRITICAL | Immediate optimization required |
+| Utilization | Status   | Action                          |
+| ----------- | -------- | ------------------------------- |
+| < 30%       | LOW      | Continue normally               |
+| 30-50%      | MODERATE | Monitor, apply principles       |
+| > 50%       | CRITICAL | Immediate optimization required |
 
 ## Large Output Handling (Claude Code 2.1.2+)
 
@@ -97,11 +98,11 @@ def select_optimal_modules(context_situation, task_complexity):
 
 ### Impact on Context Optimization
 
-| Scenario | Before 2.1.2 | After 2.1.2 |
-|----------|--------------|-------------|
-| Large test output | Truncated, partial data | Full output via file reference |
-| Verbose build logs | Lost after 30K chars | Complete, accessible on-demand |
-| Context pressure | Less from truncation | Same - only loaded when read |
+| Scenario           | Before 2.1.2            | After 2.1.2                    |
+| ------------------ | ----------------------- | ------------------------------ |
+| Large test output  | Truncated, partial data | Full output via file reference |
+| Verbose build logs | Lost after 30K chars    | Complete, accessible on-demand |
+| Context pressure   | Less from truncation    | Same - only loaded when read   |
 
 ### Best Practices
 
@@ -121,6 +122,7 @@ def select_optimal_modules(context_situation, task_complexity):
 - **MECW Theory**: See `modules/mecw-principles.md` for core concepts and the 50% rule.
 - **Context Analysis**: See `modules/mecw-assessment.md` for risk identification.
 - **Workflow Delegation**: See `modules/subagent-coordination.md` for decomposition patterns.
+
 ## Troubleshooting
 
 ### Common Issues

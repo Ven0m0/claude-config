@@ -3,6 +3,7 @@
 Tests for the prompt-improver skill
 Tests YAML frontmatter, file structure, and content validation
 """
+
 import re
 import sys
 from pathlib import Path
@@ -12,17 +13,20 @@ SKILL_DIR = Path(__file__).parent.parent / "skills" / "prompt-improver"
 SKILL_MD = SKILL_DIR / "SKILL.md"
 REFERENCES_DIR = SKILL_DIR / "references"
 
+
 def test_skill_directory_exists():
     """Test that skill directory exists"""
     assert SKILL_DIR.exists(), f"Skill directory not found: {SKILL_DIR}"
     assert SKILL_DIR.is_dir(), f"Skill path is not a directory: {SKILL_DIR}"
     print("✓ Skill directory exists")
 
+
 def test_skill_md_exists():
     """Test that SKILL.md file exists"""
     assert SKILL_MD.exists(), f"SKILL.md not found: {SKILL_MD}"
     assert SKILL_MD.is_file(), f"SKILL.md is not a file: {SKILL_MD}"
     print("✓ SKILL.md exists")
+
 
 def test_yaml_frontmatter():
     """Test that SKILL.md has valid YAML frontmatter"""
@@ -56,9 +60,14 @@ def test_yaml_frontmatter():
 
     description = desc_match.group(1).strip()
     assert len(description) > 0, "Description is empty"
-    assert len(description) <= 1024, f"Description too long (max 1024 chars): {len(description)}"
+    assert len(description) <= 1024, (
+        f"Description too long (max 1024 chars): {len(description)}"
+    )
 
-    print(f"✓ YAML frontmatter valid (name: {name}, description: {len(description)} chars)")
+    print(
+        f"✓ YAML frontmatter valid (name: {name}, description: {len(description)} chars)"
+    )
+
 
 def test_skill_content_structure():
     """Test that SKILL.md has expected content sections"""
@@ -83,6 +92,7 @@ def test_skill_content_structure():
 
     print("✓ SKILL.md has expected content structure")
 
+
 def test_references_directory():
     """Test that references directory exists with expected files"""
     assert REFERENCES_DIR.exists(), f"References directory not found: {REFERENCES_DIR}"
@@ -105,20 +115,23 @@ def test_references_directory():
 
     print(f"✓ References directory has all {len(expected_files)} expected files")
 
+
 def test_forward_slash_paths():
     """Test that all file paths use forward slashes (Unix style)"""
     content = SKILL_MD.read_text()
 
     # Check for backslashes in file paths
     # Allow backslashes in code blocks but not in markdown links
-    links = re.findall(r'\[.*?\]\((.*?)\)', content)
+    links = re.findall(r"\[.*?\]\((.*?)\)", content)
 
     for link in links:
         assert "\\" not in link, f"Found backslash in file path: {link}"
-        assert link.startswith("references/") or link.startswith("./"), \
+        assert link.startswith("references/") or link.startswith("./"), (
             f"File path should be relative: {link}"
+        )
 
     print("✓ All file paths use forward slashes")
+
 
 def test_reference_file_structure():
     """Test that reference files have proper structure"""
@@ -132,22 +145,23 @@ def test_reference_file_structure():
         content = (REFERENCES_DIR / filename).read_text()
 
         # Should start with # heading
-        assert content.strip().startswith("#"), \
-            f"{filename} should start with heading"
+        assert content.strip().startswith("#"), f"{filename} should start with heading"
 
         # Should have table of contents if long enough
         if content.count("\n") > 100:
-            assert "## Table of Contents" in content or "# " in content[:500], \
+            assert "## Table of Contents" in content or "# " in content[:500], (
                 f"{filename} is long but missing table of contents"
+            )
 
     print("✓ Reference files have proper structure")
+
 
 def test_skill_references_valid():
     """Test that SKILL.md references to other files are valid"""
     content = SKILL_MD.read_text()
 
     # Find all markdown links
-    links = re.findall(r'\[.*?\]\((.*?)\)', content)
+    links = re.findall(r"\[.*?\]\((.*?)\)", content)
 
     for link in links:
         # Skip external links
@@ -156,9 +170,12 @@ def test_skill_references_valid():
 
         # Resolve relative path
         referenced_file = SKILL_DIR / link
-        assert referenced_file.exists(), f"Broken reference: {link} -> {referenced_file}"
+        assert referenced_file.exists(), (
+            f"Broken reference: {link} -> {referenced_file}"
+        )
 
     print("✓ All SKILL.md file references are valid")
+
 
 def test_skill_line_count():
     """Test that SKILL.md is under recommended 500 lines"""
@@ -170,6 +187,7 @@ def test_skill_line_count():
         print(f"⚠  Warning: SKILL.md is {line_count} lines (recommended: <500)")
     else:
         print(f"✓ SKILL.md is {line_count} lines (under 500 line recommendation)")
+
 
 def run_all_tests():
     """Run all skill tests"""
@@ -198,7 +216,7 @@ def run_all_tests():
             print(f"✗ {test.__name__} error: {e}")
             failed.append((test.__name__, e))
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     if failed:
         print(f"FAILED: {len(failed)}/{len(tests)} tests failed")
         for name, error in failed:
@@ -207,6 +225,7 @@ def run_all_tests():
     else:
         print(f"SUCCESS: All {len(tests)} skill tests passed!")
         sys.exit(0)
+
 
 if __name__ == "__main__":
     run_all_tests()

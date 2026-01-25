@@ -17,12 +17,15 @@ Execute Gemini CLI commands with support for multiple models and flexible prompt
 - Alternative perspective on code problems
 
 ## Usage
+
 **Mandatory**: Run via uv with fixed timeout 7200000ms (foreground):
+
 ```bash
 uv run ~/.claude/skills/gemini/scripts/gemini.py "<prompt>" [working_dir]
 ```
 
 **Optional** (direct execution or using Python):
+
 ```bash
 ~/.claude/skills/gemini/scripts/gemini.py "<prompt>" [working_dir]
 # or

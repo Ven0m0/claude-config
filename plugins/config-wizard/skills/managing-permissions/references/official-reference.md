@@ -19,25 +19,31 @@ Complete technical reference for Claude Code permissions system, consolidated fr
 Settings are applied in order of precedence (highest to lowest):
 
 1. **Managed settings** (`managed-settings.json`) - Enterprise policies
+
    - **macOS**: `/Library/Application Support/ClaudeCode/managed-settings.json`
    - **Linux/WSL**: `/etc/claude-code/managed-settings.json`
    - **Windows**: `C:\Program Files\ClaudeCode\managed-settings.json`
 
-2. **CLI arguments** - Session-specific overrides
+1. **CLI arguments** - Session-specific overrides
+
    - `--permissions-allow`, `--permissions-deny`, etc.
 
-3. **Local project settings** (`.claude/settings.local.json`)
+1. **Local project settings** (`.claude/settings.local.json`)
+
    - Not committed to version control
    - User-specific project overrides
 
-4. **Shared project settings** (`.claude/settings.json`)
+1. **Shared project settings** (`.claude/settings.json`)
+
    - Committed to git
    - Shared across team
 
-5. **User global settings** (`~/.claude/settings.json`)
+1. **User global settings** (`~/.claude/settings.json`)
+
    - Applies to all projects for this user
 
 **Configuration merging:**
+
 - `deny` rules are merged from all levels (union)
 - `allow` rules are merged from all levels (union)
 - `ask` rules are merged from all levels (union)
@@ -53,6 +59,7 @@ ToolName(pattern)
 ```
 
 **Components:**
+
 - `ToolName` - The tool to control (Bash, Read, Edit, Write, WebFetch, NotebookEdit)
 - `pattern` - The pattern to match (optional for tool-wide rules)
 
@@ -78,7 +85,7 @@ Specific patterns for fine-grained control:
 {
   "allow": [
     "Bash(git status)",          // Exact command
-    "Bash(npm run:*)",           // Prefix with wildcard
+    "Bash(bun run:*)",           // Prefix with wildcard
     "Read(src/**)",              // Glob pattern
     "Edit(*.txt)"                // File extension glob
   ]
@@ -94,10 +101,11 @@ Specific patterns for fine-grained control:
 **Pattern type:** Prefix matching
 
 **Examples:**
+
 ```json
 "Bash(git diff:*)"              // Allows: git diff, git diff file.txt
-"Bash(npm run:*)"               // Allows: npm run test, npm run build
-"Bash(ls)"                      // Allows: ls, ls -la, ls /tmp
+"Bash(bun run:*)"               // Allows: bun run test, bun run build
+"Bash(ls)"                      // Allows: ls, eza -la, ls /tmp
 ```
 
 **Security note:** Bash patterns can be bypassed with command chaining (`cd /secret && cat file`). Combine with file-level denies for sensitive data.
@@ -109,6 +117,7 @@ Specific patterns for fine-grained control:
 **Pattern type:** Glob matching
 
 **Examples:**
+
 ```json
 "Read(src/**)"                  // All files in src/ and subdirectories
 "Read(*.json)"                  // All JSON files in current directory
@@ -123,6 +132,7 @@ Specific patterns for fine-grained control:
 **Pattern type:** Glob matching
 
 **Examples:**
+
 ```json
 "Edit(src/**/*.js)"             // JavaScript files in src/
 "Edit(docs/**/*.md)"            // Markdown files in docs/
@@ -136,6 +146,7 @@ Specific patterns for fine-grained control:
 **Pattern type:** Glob matching
 
 **Examples:**
+
 ```json
 "Write(dist/**)"                // Allow writing to dist/
 "Write(output/*.txt)"           // Allow writing .txt to output/
@@ -143,6 +154,7 @@ Specific patterns for fine-grained control:
 ```
 
 **Distinction:**
+
 - **Edit**: Modifying existing files
 - **Write**: Creating new files or overwriting
 
@@ -153,11 +165,13 @@ Specific patterns for fine-grained control:
 **Pattern type:** Currently does not support URL-specific patterns (all or nothing)
 
 **Examples:**
+
 ```json
 "WebFetch"                      // Allow all HTTP requests
 ```
 
 To deny:
+
 ```json
 {
   "deny": ["WebFetch"]          // Block all HTTP requests
@@ -173,6 +187,7 @@ To deny:
 **Pattern type:** Glob matching
 
 **Examples:**
+
 ```json
 "NotebookEdit(notebooks/**)"    // Notebooks in notebooks/ directory
 "NotebookEdit(*.ipynb)"         // Any notebook in current directory
@@ -186,6 +201,7 @@ To deny:
 The pattern must match the **beginning** of the command string.
 
 **Matching behavior:**
+
 ```json
 Pattern: "Bash(git diff:*)"
 
@@ -201,11 +217,13 @@ Does NOT match:
 ```
 
 **Wildcard:**
+
 - `:*` is optional but recommended for clarity
 - `Bash(git diff)` and `Bash(git diff:*)` behave identically
 - Both allow `git diff` with any arguments
 
 **Exact match:**
+
 ```json
 "Bash(git status)"              // Matches "git status" with any arguments
 ```
@@ -218,13 +236,13 @@ Standard glob syntax used for file paths.
 
 **Glob operators:**
 
-| Operator | Meaning | Example |
-|----------|---------|---------|
-| `*` | Matches any characters within a single path segment | `*.json` → `package.json`, `tsconfig.json` |
-| `**` | Matches zero or more path segments (recursive) | `src/**` → everything under src/ |
-| `?` | Matches exactly one character | `file?.txt` → `file1.txt`, `fileA.txt` |
-| `[abc]` | Matches one character from the set | `file[123].txt` → `file1.txt`, `file2.txt` |
-| `[a-z]` | Matches one character from the range | `data/[0-9]*.csv` → CSV starting with digit |
+| Operator | Meaning                                             | Example                                     |
+| -------- | --------------------------------------------------- | ------------------------------------------- |
+| `*`      | Matches any characters within a single path segment | `*.json` → `package.json`, `tsconfig.json`  |
+| `**`     | Matches zero or more path segments (recursive)      | `src/**` → everything under src/            |
+| `?`      | Matches exactly one character                       | `file?.txt` → `file1.txt`, `fileA.txt`      |
+| `[abc]`  | Matches one character from the set                  | `file[123].txt` → `file1.txt`, `file2.txt`  |
+| `[a-z]`  | Matches one character from the range                | `data/[0-9]*.csv` → CSV starting with digit |
 
 **Examples:**
 
@@ -238,6 +256,7 @@ Standard glob syntax used for file paths.
 ```
 
 **Path formats:**
+
 - **Relative**: `./src/file.txt`, `src/file.txt`
 - **Absolute**: `/home/user/project/file.txt`
 - **Home directory**: `~/.aws/credentials`, `~/Documents/file.txt`
@@ -249,10 +268,11 @@ Standard glob syntax used for file paths.
 When multiple rules could apply:
 
 1. **Deny rules take precedence** over allow and ask
-2. **Ask rules take precedence** over allow
-3. **Allow rules have lowest precedence**
+1. **Ask rules take precedence** over allow
+1. **Allow rules have lowest precedence**
 
 **Example:**
+
 ```json
 {
   "permissions": {
@@ -279,6 +299,7 @@ When multiple rules could apply:
 ```
 
 **Behavior:**
+
 - `git status` → **Allowed** (matches allow, no deny/ask)
 - `git push` → **Denied** (matches both, deny wins)
 - `git commit` → **Ask** (matches allow and ask, ask wins over allow)
@@ -356,6 +377,7 @@ Allows Claude to access directories outside the project root:
 Controls how edits are applied:
 
 **Accept edits automatically:**
+
 ```json
 {
   "defaultMode": "acceptEdits"    // Auto-apply Claude's edits
@@ -363,6 +385,7 @@ Controls how edits are applied:
 ```
 
 **Review edits before applying:**
+
 ```json
 {
   "defaultMode": "reviewEdits"    // Review edits before applying
@@ -394,11 +417,13 @@ Prevents users from using `--dangerously-skip-permissions` flag:
 Enterprise administrators can deploy `managed-settings.json` that takes highest precedence:
 
 **File locations:**
+
 - **macOS**: `/Library/Application Support/ClaudeCode/managed-settings.json`
 - **Linux/WSL**: `/etc/claude-code/managed-settings.json`
 - **Windows**: `C:\Program Files\ClaudeCode\managed-settings.json`
 
 **Example managed-settings.json:**
+
 ```json
 {
   "permissions": {
@@ -417,6 +442,7 @@ Enterprise administrators can deploy `managed-settings.json` that takes highest 
 ```
 
 **Behavior:**
+
 - Users cannot override managed settings with their local configurations
 - Managed deny rules block operations regardless of user allow rules
 - Provides centralized security policy enforcement
@@ -428,6 +454,7 @@ Enterprise administrators can deploy `managed-settings.json` that takes highest 
 **Problem:** Command chaining circumvents prefix matching.
 
 **Example:**
+
 ```bash
 # Deny rule: "Bash(cat .env:*)"
 cd /project && cat .env          # ✓ Bypasses (doesn't start with "cat .env")
@@ -436,6 +463,7 @@ python -c "print(open('.env').read())"  # ✓ Bypasses (starts with "python")
 ```
 
 **Solution:** Use file-level Read denies instead:
+
 ```json
 {
   "deny": ["Read(./.env)"]       // Blocks ALL reads, regardless of tool
@@ -449,6 +477,7 @@ File-level denies are enforced by Claude Code regardless of which tool or comman
 **Problem:** Cannot restrict WebFetch to specific domains.
 
 **Desired but NOT possible:**
+
 ```json
 // NOT SUPPORTED:
 {
@@ -457,6 +486,7 @@ File-level denies are enforced by Claude Code regardless of which tool or comman
 ```
 
 **Current options:**
+
 ```json
 // Option 1: Block entirely
 {
@@ -481,6 +511,7 @@ File-level denies are enforced by Claude Code regardless of which tool or comman
 **Problem:** Patterns are not regular expressions.
 
 **Does NOT work:**
+
 ```json
 // This does NOT work as regex:
 {
@@ -489,6 +520,7 @@ File-level denies are enforced by Claude Code regardless of which tool or comman
 ```
 
 **Correct approach:**
+
 ```json
 {
   "deny": ["Bash(rm:*)"]         // Prefix match: blocks "rm ..." and "rmdir..."
@@ -502,6 +534,7 @@ File-level denies are enforced by Claude Code regardless of which tool or comman
 **Problem:** Cannot use dynamic patterns based on environment or runtime.
 
 **Not possible:**
+
 ```json
 {
   "deny": ["Read(./${SECRETS_DIR}/**)"]  // Variables not expanded
@@ -509,6 +542,7 @@ File-level denies are enforced by Claude Code regardless of which tool or comman
 ```
 
 **Workaround:** Configure explicitly or use multiple pattern rules:
+
 ```json
 {
   "deny": [
@@ -524,11 +558,13 @@ File-level denies are enforced by Claude Code regardless of which tool or comman
 **Problem:** Cannot express "allow X except Y" in a single pattern.
 
 **Not possible:**
+
 ```json
 // "Read src/ except .env" in a single pattern - NOT SUPPORTED
 ```
 
 **Correct approach - use both allow and deny:**
+
 ```json
 {
   "allow": ["Read(src/**)"],
@@ -552,17 +588,20 @@ This reference is based on Claude Code documentation as of December 2025.
 ## Summary
 
 **Core concepts:**
+
 - **Three permission groups**: allow (auto-approve), ask (prompt), deny (block)
 - **Precedence**: Deny > Ask > Allow
 - **Two pattern types**: Bash (prefix matching), Files (glob matching)
 - **Six tools**: Bash, Read, Edit, Write, WebFetch, NotebookEdit
 
 **Key limitations:**
+
 - Bash patterns can be bypassed (use file-level denies)
 - WebFetch cannot filter by domain (all or nothing)
 - Patterns are not regex (prefix or glob only)
 
 **Best practices:**
+
 - Start with deny rules for sensitive files
 - Use file-level denies for security-critical files
 - Combine Bash restrictions with file-level denies

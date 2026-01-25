@@ -3,6 +3,7 @@
 Tests for the prompt-improver hook
 Tests bypass prefixes, skill invocation, and JSON output format
 """
+
 import json
 import subprocess
 import sys
@@ -10,6 +11,7 @@ from pathlib import Path
 
 # Path to the hook script
 HOOK_SCRIPT = Path(__file__).parent.parent / "scripts" / "improve-prompt.py"
+
 
 def run_hook(prompt):
     """Run the hook script with given prompt and return parsed output"""
@@ -19,13 +21,14 @@ def run_hook(prompt):
         [sys.executable, str(HOOK_SCRIPT)],
         input=input_data,
         capture_output=True,
-        text=True
+        text=True,
     )
 
     if result.returncode != 0:
         raise Exception(f"Hook failed: {result.stderr}")
 
     return json.loads(result.stdout)
+
 
 def test_bypass_asterisk():
     """Test that * prefix strips the prefix and passes through"""
@@ -39,6 +42,7 @@ def test_bypass_asterisk():
     assert not context.startswith("*")
     print("✓ Asterisk bypass test passed")
 
+
 def test_bypass_slash():
     """Test that / prefix passes through unchanged (slash commands)"""
     output = run_hook("/commit")
@@ -48,6 +52,7 @@ def test_bypass_slash():
     assert context == "/commit"
     print("✓ Slash command bypass test passed")
 
+
 def test_bypass_hash():
     """Test that # prefix passes through unchanged (memorize feature)"""
     output = run_hook("# remember to use TypeScript")
@@ -56,6 +61,7 @@ def test_bypass_hash():
     context = output["hookSpecificOutput"]["additionalContext"]
     assert context == "# remember to use TypeScript"
     print("✓ Hash prefix bypass test passed")
+
 
 def test_evaluation_prompt():
     """Test that normal prompts get evaluation wrapper"""
@@ -79,6 +85,7 @@ def test_evaluation_prompt():
 
     print("✓ Evaluation prompt test passed")
 
+
 def test_json_output_format():
     """Test that output follows correct JSON schema"""
     output = run_hook("test prompt")
@@ -96,6 +103,7 @@ def test_json_output_format():
 
     print("✓ JSON output format test passed")
 
+
 def test_empty_prompt():
     """Test handling of empty prompt"""
     output = run_hook("")
@@ -106,6 +114,7 @@ def test_empty_prompt():
     # Should still invoke skill even for empty prompt
     assert "prompt-improver skill" in context.lower()
     print("✓ Empty prompt test passed")
+
 
 def test_multiline_prompt():
     """Test handling of multiline prompts"""
@@ -122,6 +131,7 @@ and add error handling"""
     assert "refactor the auth system" in context
     print("✓ Multiline prompt test passed")
 
+
 def test_special_characters():
     """Test handling of special characters in prompts"""
     output = run_hook('fix the "bug" in user\'s code & database')
@@ -133,6 +143,7 @@ def test_special_characters():
     assert "bug" in context
     assert "user" in context or "users" in context
     print("✓ Special characters test passed")
+
 
 def run_all_tests():
     """Run all tests"""
@@ -157,7 +168,7 @@ def run_all_tests():
             print(f"✗ {test.__name__} failed: {e}")
             failed.append((test.__name__, e))
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     if failed:
         print(f"FAILED: {len(failed)}/{len(tests)} tests failed")
         for name, error in failed:
@@ -166,6 +177,7 @@ def run_all_tests():
     else:
         print(f"SUCCESS: All {len(tests)} hook tests passed!")
         sys.exit(0)
+
 
 if __name__ == "__main__":
     run_all_tests()

@@ -146,7 +146,7 @@ Workflow:
 Quick Wins:
 
 Remove EXIF data (saves 20-50KB):
-  identify -verbose image.jpg | grep -i exif
+  identify -verbose image.jpg | rg -i exif
   convert image.jpg -strip image-clean.jpg
 
 Convert to WebP (25-35% smaller):

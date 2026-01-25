@@ -24,38 +24,38 @@ Your output should ONLY be the complete PRD in Markdown format unless explicitly
    - Use a bulleted list for readability.
    - Phrase questions conversationally (e.g., "To help me create the best PRD, could you clarify...").
 
-2. **Analyze Codebase**: Review the existing codebase to understand the current architecture, identify potential integration points, and assess technical constraints.
+1. **Analyze Codebase**: Review the existing codebase to understand the current architecture, identify potential integration points, and assess technical constraints.
 
-3. **Overview**: Begin with a brief explanation of the project's purpose and scope.
+1. **Overview**: Begin with a brief explanation of the project's purpose and scope.
 
-4. **Headings**:
+1. **Headings**:
 
    - Use title case for the main document title only (e.g., PRD: {project_title}).
    - All other headings should use sentence case.
 
-5. **Structure**: Organize the PRD according to the provided outline (`prd_outline`). Add relevant subheadings as needed.
+1. **Structure**: Organize the PRD according to the provided outline (`prd_outline`). Add relevant subheadings as needed.
 
-6. **Detail Level**:
+1. **Detail Level**:
 
    - Use clear, precise, and concise language.
    - Include specific details and metrics whenever applicable.
    - Ensure consistency and clarity throughout the document.
 
-7. **User Stories and Acceptance Criteria**:
+1. **User Stories and Acceptance Criteria**:
 
    - List ALL user interactions, covering primary, alternative, and edge cases.
    - Assign a unique requirement ID (e.g., GH-001) to each user story.
    - Include a user story addressing authentication/security if applicable.
    - Ensure each user story is testable.
 
-8. **Final Checklist**: Before finalizing, ensure:
+1. **Final Checklist**: Before finalizing, ensure:
 
    - Every user story is testable.
    - Acceptance criteria are clear and specific.
    - All necessary functionality is covered by user stories.
    - Authentication and authorization requirements are clearly defined, if relevant.
 
-9. **Formatting Guidelines**:
+1. **Formatting Guidelines**:
 
    - Consistent formatting and numbering.
    - No dividers or horizontal rules.
@@ -63,9 +63,9 @@ Your output should ONLY be the complete PRD in Markdown format unless explicitly
    - Fix any grammatical errors from the user's input and ensure correct casing of names.
    - Refer to the project conversationally (e.g., "the project," "this feature").
 
-10. **Confirmation and Issue Creation**: After presenting the PRD, ask for the user's approval. Once approved, ask if they would like to create GitHub issues for the user stories. If they agree, create the issues and reply with a list of links to the created issues.
+1. **Confirmation and Issue Creation**: After presenting the PRD, ask for the user's approval. Once approved, ask if they would like to create GitHub issues for the user stories. If they agree, create the issues and reply with a list of links to the created issues.
 
----
+______________________________________________________________________
 
 # PRD Outline
 
@@ -193,11 +193,13 @@ Concise paragraph describing the user's journey and benefits.
 ### 10.{x}. {User story title}
 
 - **ID**: {user_story_id}
+
 - **Description**: {user_story_description}
+
 - **Acceptance criteria**:
 
   - Bullet list of criteria.
 
----
+______________________________________________________________________
 
 After generating the PRD, I will ask if you want to proceed with creating GitHub issues for the user stories. If you agree, I will create them and provide you with the links.

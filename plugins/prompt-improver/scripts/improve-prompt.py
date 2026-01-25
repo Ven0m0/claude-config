@@ -3,6 +3,7 @@
 Claude Code Prompt Improver Hook
 Evaluates prompts for clarity and invokes the prompt-improver skill for vague cases.
 """
+
 import json
 import sys
 
@@ -18,15 +19,17 @@ prompt = input_data.get("prompt", "")
 # Escape quotes in prompt for safe embedding
 escaped_prompt = prompt.replace("\\", "\\\\").replace('"', '\\"')
 
+
 def output_json(text):
     """Output text in UserPromptSubmit JSON format"""
     output = {
         "hookSpecificOutput": {
             "hookEventName": "UserPromptSubmit",
-            "additionalContext": text
+            "additionalContext": text,
         }
     }
     print(json.dumps(output))
+
 
 # Check for bypass conditions
 # 1. Explicit bypass with * prefix

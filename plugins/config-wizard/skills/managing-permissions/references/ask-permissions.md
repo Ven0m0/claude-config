@@ -7,6 +7,7 @@ Ask rules prompt for confirmation before allowing tool operations. Use them for 
 ## When to Use Ask
 
 Use ask for operations that:
+
 - **Modify external state** - Publishing, deploying, pushing to remote
 - **Change dependencies** - Installing/updating packages
 - **Modify critical files** - package.json, tsconfig.json, CI configs
@@ -15,6 +16,7 @@ Use ask for operations that:
 ## What to Ask For
 
 ### Git Operations
+
 Operations that publish or modify history:
 
 ```json
@@ -31,14 +33,15 @@ Operations that publish or modify history:
 **Why:** These affect your team or create permanent history worth reviewing.
 
 ### Package Management
+
 Installing or removing dependencies:
 
 ```json
 {
   "ask": [
-    "Bash(npm install:*)",
-    "Bash(npm uninstall:*)",
-    "Bash(pip install:*)",
+    "Bash(bun install:*)",
+    "Bash(bun uninstall:*)",
+    "Bash(uv pip install:*)",
     "Bash(cargo add:*)"
   ]
 }
@@ -47,6 +50,7 @@ Installing or removing dependencies:
 **Why:** Dependencies affect security, build size, and compatibility. Post-install scripts can execute arbitrary code.
 
 ### Critical Configuration Files
+
 Files that control builds, dependencies, or deployment:
 
 ```json
@@ -64,6 +68,7 @@ Files that control builds, dependencies, or deployment:
 **Why:** Errors in these files can break builds or deployments for your entire team.
 
 ### Database Operations
+
 Schema changes and migrations:
 
 ```json
@@ -96,11 +101,11 @@ Don't ask for operations that happen frequently:
   "allow": [
     "Read(src/**)",
     "Edit(src/**)",
-    "Bash(npm run:*)"
+    "Bash(bun run:*)"
   ],
   "ask": [
     "Bash(/usr/bin/git commit:*)",    // Once per commit
-    "Bash(npm install:*)"  // Occasional
+    "Bash(bun install:*)"  // Occasional
   ]
 }
 ```
@@ -108,6 +113,6 @@ Don't ask for operations that happen frequently:
 ## Key Principles
 
 1. **Ask for external changes** - Operations that publish or affect others
-2. **Don't ask for reading** - Read-only operations should be allowed
-3. **Balance convenience and control** - Too many asks create fatigue
-4. **Use hooks for security** - Ask rules are workflow controls, not security
+1. **Don't ask for reading** - Read-only operations should be allowed
+1. **Balance convenience and control** - Too many asks create fatigue
+1. **Use hooks for security** - Ask rules are workflow controls, not security

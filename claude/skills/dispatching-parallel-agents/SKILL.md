@@ -32,12 +32,14 @@ digraph when_to_use {
 ```
 
 **Use when:**
+
 - 3+ test files failing with different root causes
 - Multiple subsystems broken independently
 - Each problem can be understood without context from others
 - No shared state between investigations
 
 **Don't use when:**
+
 - Failures are related (fix one might fix others)
 - Need to understand full system state
 - Agents would interfere with each other
@@ -47,6 +49,7 @@ digraph when_to_use {
 ### 1. Identify Independent Domains
 
 Group failures by what's broken:
+
 - File A tests: Tool approval flow
 - File B tests: Batch completion behavior
 - File C tests: Abort functionality
@@ -56,6 +59,7 @@ Each domain is independent - fixing tool approval doesn't affect abort tests.
 ### 2. Create Focused Agent Tasks
 
 Each agent gets:
+
 - **Specific scope:** One test file or subsystem
 - **Clear goal:** Make these tests pass
 - **Constraints:** Don't change other code
@@ -74,6 +78,7 @@ Task("Fix tool-approval-race-conditions.test.ts failures")
 ### 4. Review and Integrate
 
 When agents return:
+
 - Read each summary
 - Verify fixes don't conflict
 - Run full test suite
@@ -82,9 +87,10 @@ When agents return:
 ## Agent Prompt Structure
 
 Good agent prompts are:
+
 1. **Focused** - One clear problem domain
-2. **Self-contained** - All context needed to understand the problem
-3. **Specific about output** - What should the agent return?
+1. **Self-contained** - All context needed to understand the problem
+1. **Specific about output** - What should the agent return?
 
 ```markdown
 Fix the 3 failing tests in src/agents/agent-tool-abort.test.ts:
@@ -133,6 +139,7 @@ Return: Summary of what you found and what you fixed.
 **Scenario:** 6 test failures across 3 files after major refactoring
 
 **Failures:**
+
 - agent-tool-abort.test.ts: 3 failures (timing issues)
 - batch-completion-behavior.test.ts: 2 failures (tools not executing)
 - tool-approval-race-conditions.test.ts: 1 failure (execution count = 0)
@@ -140,6 +147,7 @@ Return: Summary of what you found and what you fixed.
 **Decision:** Independent domains - abort logic separate from batch completion separate from race conditions
 
 **Dispatch:**
+
 ```
 Agent 1 → Fix agent-tool-abort.test.ts
 Agent 2 → Fix batch-completion-behavior.test.ts
@@ -147,6 +155,7 @@ Agent 3 → Fix tool-approval-race-conditions.test.ts
 ```
 
 **Results:**
+
 - Agent 1: Replaced timeouts with event-based waiting
 - Agent 2: Fixed event structure bug (threadId in wrong place)
 - Agent 3: Added wait for async tool execution to complete
@@ -158,21 +167,23 @@ Agent 3 → Fix tool-approval-race-conditions.test.ts
 ## Key Benefits
 
 1. **Parallelization** - Multiple investigations happen simultaneously
-2. **Focus** - Each agent has narrow scope, less context to track
-3. **Independence** - Agents don't interfere with each other
-4. **Speed** - 3 problems solved in time of 1
+1. **Focus** - Each agent has narrow scope, less context to track
+1. **Independence** - Agents don't interfere with each other
+1. **Speed** - 3 problems solved in time of 1
 
 ## Verification
 
 After agents return:
+
 1. **Review each summary** - Understand what changed
-2. **Check for conflicts** - Did agents edit same code?
-3. **Run full suite** - Verify all fixes work together
-4. **Spot check** - Agents can make systematic errors
+1. **Check for conflicts** - Did agents edit same code?
+1. **Run full suite** - Verify all fixes work together
+1. **Spot check** - Agents can make systematic errors
 
 ## Real-World Impact
 
 From debugging session (2025-10-03):
+
 - 6 failures across 3 files
 - 3 agents dispatched in parallel
 - All investigations completed concurrently

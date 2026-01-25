@@ -42,6 +42,7 @@ Use these battle-tested components from `scripts/`:
 ## Performance Optimization
 
 Consult `references/stdlib_perf.md` for:
+
 - File scanning: `fd` subprocess vs `os.walk` vs `Path.glob`
 - Data structures: `frozenset` vs `set`, `dict` lookups vs linear search
 - String ops: `str.translate` vs regex, precompile patterns
@@ -51,9 +52,9 @@ Consult `references/stdlib_perf.md` for:
 ## Workflow
 
 1. **Start with template**: Copy `scripts/cli_template.py` as baseline
-2. **Add components**: Import from `log_component.py`, `subprocess_helpers.py` as needed
-3. **Optimize**: Check `references/stdlib_perf.md` for bottlenecks
-4. **Verify**: Type check, test exit codes, validate error paths
+1. **Add components**: Import from `log_component.py`, `subprocess_helpers.py` as needed
+1. **Optimize**: Check `references/stdlib_perf.md` for bottlenecks
+1. **Verify**: Type check, test exit codes, validate error paths
 
 ## Project Structure Pattern
 

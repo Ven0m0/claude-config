@@ -19,26 +19,26 @@ mkdir -p "$MARKETPLACE_DIR"
 echo "📚 Installing Claude Code marketplaces..."
 
 MARKETPLACES=(
-    "anthropics/claude-plugins-official"
-    "daymade/claude-code-skills"
-    "cskiro/claudex"
-    "yamadashy/repomix"
-    "fcakyon/claude-codex-settings"
-    "lifegenieai/lifegenie-claude-marketplace"
-    "athola/claude-night-market"
-    "wombat9000/claude-plugins"
-    "Piebald-AI/claude-code-lsps"
-    "SuperClaude-Org/SuperClaude_Plugin"
-    "elb-pr/claudikins-marketplace"
-    "rand/rlm-claude-code"
-    "cexll/myclaude"
-    "edmundmiller/dotfiles"
-    "zircote/lsp-marketplace"
+  "anthropics/claude-plugins-official"
+  "daymade/claude-code-skills"
+  "cskiro/claudex"
+  "yamadashy/repomix"
+  "fcakyon/claude-codex-settings"
+  "lifegenieai/lifegenie-claude-marketplace"
+  "athola/claude-night-market"
+  "wombat9000/claude-plugins"
+  "Piebald-AI/claude-code-lsps"
+  "SuperClaude-Org/SuperClaude_Plugin"
+  "elb-pr/claudikins-marketplace"
+  "rand/rlm-claude-code"
+  "cexll/myclaude"
+  "edmundmiller/dotfiles"
+  "zircote/lsp-marketplace"
 )
 
 for marketplace in "${MARKETPLACES[@]}"; do
-    echo "  📥 Adding $marketplace..."
-    claude plugin marketplace add "$marketplace" 2>/dev/null || echo "    ⚠️  Failed to add $marketplace (may already exist)"
+  echo "  📥 Adding $marketplace..."
+  claude plugin marketplace add "$marketplace" 2>/dev/null || echo "    ⚠️  Failed to add $marketplace (may already exist)"
 done
 
 echo "  ✅ Marketplaces installation complete"
@@ -49,18 +49,18 @@ echo "📦 Installing MCP servers..."
 
 # Node.js-based MCP servers (using bunx)
 NODE_MCP_SERVERS=(
-    "@modelcontextprotocol/server-sequential-thinking"
-    "@morph-llm/morph-fast-apply"
-    "@just-every/mcp-read-website-fast"
-    "@modelcontextprotocol/server-brave-search"
-    "@modelcontextprotocol/server-memory"
-    "gemini-mcp-tool"
-	"@upstash/context7-mcp"
+  "@modelcontextprotocol/server-sequential-thinking"
+  "@morph-llm/morph-fast-apply"
+  "@just-every/mcp-read-website-fast"
+  "@modelcontextprotocol/server-brave-search"
+  "@modelcontextprotocol/server-memory"
+  "gemini-mcp-tool"
+  "@upstash/context7-mcp"
 )
 
 for server in "${NODE_MCP_SERVERS[@]}"; do
-    echo "  Installing $server (bunx)..."
-    bunx --bun "$server" --version 2>/dev/null || echo "    Note: $server will be installed on first use"
+  echo "  Installing $server (bunx)..."
+  bunx --bun "$server" --version 2>/dev/null || echo "    Note: $server will be installed on first use"
 done
 
 # Python-based MCP servers (using uvx)
@@ -72,7 +72,7 @@ echo ""
 
 # Create/update settings.json
 echo "⚙️  Creating settings.json..."
-cat > "$SETTINGS_FILE" << 'EOF'
+cat >"$SETTINGS_FILE" <<'EOF'
 {
 	"$schema": "https://json.schemastore.org/claude-code-settings.json",
 	"env": {
@@ -182,13 +182,13 @@ echo "  ✅ settings.json created"
 # Update .claude.json to add MCP servers
 echo "🔧 Configuring MCP servers in .claude.json..."
 if [ -f "$CLAUDE_JSON" ]; then
-    # Backup existing file
-    cp "$CLAUDE_JSON" "$CLAUDE_JSON.backup"
-    echo "  ✅ Backed up existing .claude.json"
+  # Backup existing file
+  cp "$CLAUDE_JSON" "$CLAUDE_JSON.backup"
+  echo "  ✅ Backed up existing .claude.json"
 fi
 
 # Create/update .claude.json with MCP servers
-cat > "$CLAUDE_JSON" << 'EOF'
+cat >"$CLAUDE_JSON" <<'EOF'
 {
   "installMethod": "native",
   "autoUpdates": true,

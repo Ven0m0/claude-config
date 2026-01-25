@@ -45,6 +45,7 @@ def is_enabled() -> bool:
     val = os.environ.get("OMC_SAFE_PERMISSIONS", "1").lower()
     return val not in ("0", "false", "no", "off")
 
+
 # =============================================================================
 # Safe command patterns
 # =============================================================================
@@ -52,10 +53,18 @@ def is_enabled() -> bool:
 SAFE_PATTERNS = RegexCache()
 
 # Node.js test/lint/typecheck commands
-SAFE_PATTERNS.add("npm_test", r"^npm\s+(test|run\s+(test|lint|typecheck|check|format))", re.IGNORECASE)
-SAFE_PATTERNS.add("npx_test", r"^npx\s+(jest|vitest|mocha|eslint|prettier|tsc)", re.IGNORECASE)
-SAFE_PATTERNS.add("yarn_test", r"^yarn\s+(test|lint|typecheck|check|format)", re.IGNORECASE)
-SAFE_PATTERNS.add("pnpm_test", r"^pnpm\s+(test|lint|typecheck|check|format)", re.IGNORECASE)
+SAFE_PATTERNS.add(
+    "npm_test", r"^npm\s+(test|run\s+(test|lint|typecheck|check|format))", re.IGNORECASE
+)
+SAFE_PATTERNS.add(
+    "npx_test", r"^npx\s+(jest|vitest|mocha|eslint|prettier|tsc)", re.IGNORECASE
+)
+SAFE_PATTERNS.add(
+    "yarn_test", r"^yarn\s+(test|lint|typecheck|check|format)", re.IGNORECASE
+)
+SAFE_PATTERNS.add(
+    "pnpm_test", r"^pnpm\s+(test|lint|typecheck|check|format)", re.IGNORECASE
+)
 
 # Python test/lint commands
 SAFE_PATTERNS.add("pytest", r"^(pytest|python\s+-m\s+pytest)", re.IGNORECASE)
@@ -174,7 +183,9 @@ def is_path_in_project(path: str) -> bool:
     try:
         resolved = os.path.realpath(path)
         cwd_resolved = os.path.realpath(cwd)
-        is_within = resolved.startswith(cwd_resolved + os.sep) or resolved == cwd_resolved
+        is_within = (
+            resolved.startswith(cwd_resolved + os.sep) or resolved == cwd_resolved
+        )
         log_debug(f"resolved={resolved}, is_within_cwd={is_within}")
         return is_within
     except (OSError, ValueError) as e:
@@ -182,7 +193,9 @@ def is_path_in_project(path: str) -> bool:
         return False
 
 
-def is_safe_read_tool(tool_name: str, tool_input: dict | str) -> tuple[bool, str | None]:
+def is_safe_read_tool(
+    tool_name: str, tool_input: dict | str
+) -> tuple[bool, str | None]:
     """
     Check if a Read/Glob/Grep operation is safe to auto-approve.
 

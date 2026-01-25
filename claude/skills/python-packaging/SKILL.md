@@ -95,6 +95,7 @@ dev = [
 Use the advanced sections below for full templates, publishing workflows, and checklists.
 
 <!-- progressive: patterns-and-templates -->
+
 ## Package Structure Patterns
 
 ### Pattern 1: Source Layout (Recommended)
@@ -366,7 +367,7 @@ my-tool = "my_package.cli:main"
 **Usage:**
 
 ```bash
-pip install -e .
+uv pip install -e .
 my-tool greet World
 my-tool greet Alice --greeting="Hi"
 my-tool repeat --count=3
@@ -425,7 +426,7 @@ if __name__ == "__main__":
 
 ```bash
 # Install build tools
-pip install build twine
+uv pip install build twine
 
 # Build distribution
 python -m build
@@ -443,13 +444,13 @@ twine check dist/*
 
 ```bash
 # Install publishing tools
-pip install twine
+uv pip install twine
 
 # Test on TestPyPI first
 twine upload --repository testpypi dist/*
 
 # Install from TestPyPI to test
-pip install --index-url https://test.pypi.org/simple/ my-package
+uv pip install --index-url https://test.pypi.org/simple/ my-package
 
 # If all good, publish to PyPI
 twine upload dist/*
@@ -497,7 +498,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install build twine
+          uv pip install build twine
 
       - name: Build package
         run: python -m build
@@ -674,11 +675,11 @@ local_scheme = "dirty-tag"
 
 ```bash
 # Install in development mode
-pip install -e .
+uv pip install -e .
 
 # With optional dependencies
-pip install -e ".[dev]"
-pip install -e ".[dev,docs]"
+uv pip install -e ".[dev]"
+uv pip install -e ".[dev,docs]"
 
 # Now changes to source code are immediately reflected
 ```
@@ -692,7 +693,7 @@ source test-env/bin/activate  # Linux/Mac
 # test-env\Scripts\activate  # Windows
 
 # Install package
-pip install dist/my_package-1.0.0-py3-none-any.whl
+uv pip install dist/my_package-1.0.0-py3-none-any.whl
 
 # Test it works
 python -c "import my_package; print(my_package.__version__)"
@@ -721,7 +722,7 @@ Brief description of your package.
 ## Installation
 
 ```bash
-pip install my-package
+uv pip install my-package
 ```
 ````
 
@@ -748,7 +749,7 @@ Full documentation: https://my-package.readthedocs.io
 ```bash
 git clone https://github.com/username/my-package.git
 cd my-package
-pip install -e ".[dev]"
+uv pip install -e ".[dev]"
 pytest
 ```
 
@@ -791,7 +792,7 @@ jobs:
 
 ```bash
 # Install from private index
-pip install my-package --index-url https://private.pypi.org/simple/
+uv pip install my-package --index-url https://private.pypi.org/simple/
 
 # Or add to pip.conf
 [global]
@@ -882,13 +883,14 @@ recursive-exclude * *.py[co]
 ## Best Practices Summary
 
 1. **Use src/ layout** for cleaner package structure
-2. **Use pyproject.toml** for modern packaging
-3. **Pin build dependencies** in build-system.requires
-4. **Version appropriately** with semantic versioning
-5. **Include all metadata** (classifiers, URLs, etc.)
-6. **Test installation** in clean environments
-7. **Use TestPyPI** before publishing to PyPI
-8. **Document thoroughly** with README and docstrings
-9. **Include LICENSE** file
-10. **Automate publishing** with CI/CD
+1. **Use pyproject.toml** for modern packaging
+1. **Pin build dependencies** in build-system.requires
+1. **Version appropriately** with semantic versioning
+1. **Include all metadata** (classifiers, URLs, etc.)
+1. **Test installation** in clean environments
+1. **Use TestPyPI** before publishing to PyPI
+1. **Document thoroughly** with README and docstrings
+1. **Include LICENSE** file
+1. **Automate publishing** with CI/CD
+
 <!-- /progressive -->

@@ -12,25 +12,31 @@ Detect anti-patterns using pattern recognition and heuristics. Works without ext
 ## Anti-Patterns
 
 ### 1. God Class
+
 **Definition:** Single class with > 500 lines, > 10 methods, multiple responsibilities.
 
 ```bash
 # Quick detection
 find . -name "*.py" -exec sh -c 'lines=$(wc -l < "$1"); [ $lines -gt 500 ] && echo "GOD_CLASS: $1 - $lines lines"' _ {} \;
 ```
+
 **Confidence:** HIGH (85%) | **Action:** REFACTOR into focused modules
 
 ### 2. Lava Flow
+
 **Definition:** Ancient untouched code - commented blocks, old TODOs.
 
 ```bash
 # Find files with >20% commented code
 grep -rn "^#\|^//" --include="*.py" . | cut -d: -f1 | sort | uniq -c | sort -rn | head -10
 ```
+
 **Confidence:** HIGH (90%) | **Action:** DELETE commented code
 
 ### 3. Dead Code
+
 **Detection:** Use static analysis (Vulture/Knip) or fallback heuristic:
+
 ```bash
 # Heuristic: find functions with 0 calls
 grep -rn "^def " --include="*.py" . | while read line; do
@@ -38,9 +44,11 @@ grep -rn "^def " --include="*.py" . | while read line; do
   [ $(git grep -c "$func(" 2>/dev/null || echo 0) -eq 1 ] && echo "DEAD: $func"
 done
 ```
+
 **Confidence:** MEDIUM (70%) heuristic, HIGH (90%) with tools | **Action:** DELETE
 
 ### 4. Import Bloat
+
 ```bash
 # Star imports (block tree-shaking)
 grep -rn "^from .* import \*" --include="*.py" .
@@ -48,9 +56,11 @@ grep -rn "^from .* import \*" --include="*.py" .
 # Unused imports (requires autoflake)
 autoflake --check --remove-all-unused-imports -r .
 ```
+
 **Confidence:** HIGH (95%) | **Action:** Fix imports
 
 ### 5. Duplication
+
 **Intra-file:** Hash-based block detection (5+ line matches)
 **Cross-file:** Function signature matching
 **Semantic:** AST comparison (80%+ similarity)
@@ -60,10 +70,12 @@ autoflake --check --remove-all-unused-imports -r .
 ## Language-Specific
 
 ### Python
+
 - Circular imports: Files with 20+ imports
 - Deep nesting: > 4 indentation levels
 
 ### JavaScript/TypeScript
+
 - Barrel files: `export * from` breaks tree-shaking
 - CommonJS in ESM: `module.exports`/`require()` blocks bundler optimization
 
@@ -72,6 +84,7 @@ autoflake --check --remove-all-unused-imports -r .
 These traditional patterns are amplified by AI coding tools:
 
 ### 6. Tab-Completion Duplication
+
 **Definition:** AI suggests similar code blocks instead of reusing existing functions.
 **2024 Data:** 8x increase in 5+ line duplicated blocks (GitClear)
 
@@ -80,10 +93,12 @@ These traditional patterns are amplified by AI coding tools:
 grep -rn "^def " --include="*.py" . | awk -F'def ' '{print $2}' | \
   cut -d'(' -f1 | sort | uniq -c | sort -rn | awk '$1 > 1'
 ```
+
 **Confidence:** HIGH (85%) | **Action:** EXTRACT shared utility
 
 ### 7. Premature Abstraction
-**Definition:** Base classes/interfaces with <3 implementations (YAGNI violation).
+
+**Definition:** Base classes/interfaces with \<3 implementations (YAGNI violation).
 **AI Cause:** AI defaults to "scalable" patterns without context.
 
 ```bash
@@ -93,9 +108,11 @@ grep -rln "ABC\|abstractmethod" --include="*.py" . | while read f; do
   [ $(grep -rc "($class)" --include="*.py" . 2>/dev/null) -lt 3 ] && echo "PREMATURE: $class"
 done
 ```
+
 **Confidence:** HIGH (80%) | **Action:** INLINE until 3rd use case
 
 ### 8. Happy Path Bias
+
 **Definition:** Tests verify success paths only; no error handling tested.
 **AI Cause:** AI optimizes for "works" demonstrations.
 
@@ -103,6 +120,7 @@ done
 # Tests without error assertions
 grep -rL "Error\|Exception\|raises\|fail\|invalid" --include="test_*.py" .
 ```
+
 **Confidence:** MEDIUM (70%) | **Action:** ADD error path tests
 
 For comprehensive AI-specific patterns, see: `@module:ai-generated-bloat`

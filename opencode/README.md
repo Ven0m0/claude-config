@@ -3,6 +3,7 @@
 References and setup notes for OpenCode related tooling.
 
 Recommended extensions and add ons:
+
 - https://github.com/ramarivera/opencode-model-announcer
 - https://github.com/shekohex/opencode-pty
 - https://github.com/Opencode-DCP/opencode-dynamic-context-pruning
@@ -14,6 +15,7 @@ Recommended extensions and add ons:
 - https://github.com/JRedeker/opencode-morph-fast-apply
 
 Related tooling:
+
 - https://github.com/hosenur/portal
 - https://github.com/open-webui/open-webui
 - https://github.com/different-ai/openwork

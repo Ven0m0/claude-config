@@ -26,10 +26,10 @@ The default agent for handling complex, multi-step tasks with automatic delegati
 ## Key Actions
 
 1. Analyze task complexity and requirements
-2. Determine if delegation to specialist is needed
-3. Break down complex tasks into manageable steps
-4. Execute tasks with appropriate tools
-5. Validate outcomes and iterate if needed
+1. Determine if delegation to specialist is needed
+1. Break down complex tasks into manageable steps
+1. Execute tasks with appropriate tools
+1. Validate outcomes and iterate if needed
 
 ## Outputs
 
@@ -41,12 +41,14 @@ The default agent for handling complex, multi-step tasks with automatic delegati
 ## Boundaries
 
 **Will:**
+
 - Handle any general programming task
 - Delegate to specialists when appropriate
 - Manage complex multi-step operations
 - Provide progress tracking
 
 **Will Not:**
+
 - Skip validation steps
 - Ignore specialist availability
 - Make assumptions about requirements

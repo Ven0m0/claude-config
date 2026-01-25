@@ -3,6 +3,7 @@ Clean up technical debt in $ARGUMENTS.
 Steps:
 
 1. Identify cleanup targets:
+
    - Scan for TODO, FIXME, HACK, XXX comments
    - Find commented-out code blocks
    - Locate unused imports and variables
@@ -10,7 +11,8 @@ Steps:
    - Identify deprecated API usage
    - Find console.log/print debug statements
 
-2. Code quality improvements:
+1. Code quality improvements:
+
    - Fix linting errors and warnings
    - Apply consistent code formatting
    - Standardize naming conventions
@@ -18,7 +20,8 @@ Steps:
    - Update to modern syntax (arrow functions, destructuring)
    - Remove unnecessary type assertions
 
-3. Remove dead code:
+1. Remove dead code:
+
    - Delete commented-out code older than 3 months
    - Remove unused functions and methods
    - Clean up unreferenced files
@@ -26,28 +29,32 @@ Steps:
    - Remove feature flags for shipped features
    - Clean up A/B test code for completed experiments
 
-4. Consolidate duplication:
+1. Consolidate duplication:
+
    - Identify duplicate code blocks
    - Extract common functionality to utilities
    - Merge similar functions with parameters
    - Consolidate redundant type definitions
    - Unify error handling patterns
 
-5. Update deprecated usage:
+1. Update deprecated usage:
+
    - Replace deprecated library methods
    - Update to current API versions
    - Migrate from legacy patterns
    - Update outdated documentation references
    - Fix deprecated test patterns
 
-6. File organization:
+1. File organization:
+
    - Remove empty files and directories
    - Organize imports (grouped and sorted)
    - Move files to appropriate directories
    - Update incorrect file extensions
    - Fix circular dependencies
 
-7. Documentation cleanup:
+1. Documentation cleanup:
+
    - Remove outdated comments
    - Update incorrect documentation
    - Add missing JSDoc/docstrings

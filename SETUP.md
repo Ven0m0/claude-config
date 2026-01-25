@@ -64,17 +64,19 @@ claude
 ### Coding Assistant
 
 **Required:**
+
 - No special requirements (uses Claude Code's built-in tools)
 
 **Optional (for auto-formatting hook):**
+
 ```bash
 # JavaScript/TypeScript
-npm install -g @biomejs/biome
+bun install -g @biomejs/biome
 
 # Python (via uv - auto-installs on first use)
-pip install uv
+uv pip install uv
 # or install ruff directly
-pip install ruff
+uv pip install ruff
 
 # Go (included with Go installation)
 # Rust
@@ -84,23 +86,27 @@ rustup component add rustfmt
 ### Technical Writer
 
 **Required:**
+
 - No special requirements
 
 ### Data Analyst
 
 **Required for analysis:**
+
 ```bash
-pip install pandas numpy matplotlib seaborn
+uv pip install pandas numpy matplotlib seaborn
 ```
 
 **Optional (for visualizations):**
+
 ```bash
-pip install plotly
+uv pip install plotly
 ```
 
 **Optional (for MCP database server):**
+
 ```bash
-pip install uvx
+uv pip install uvx
 uvx mcp-server-sqlite
 ```
 
@@ -188,6 +194,7 @@ cd ~/.claude/plugins/data-analyst
 **Error:** `Plugin 'coding-assistant' not found in marketplace 'claude-config-marketplace'`
 
 **Solution:**
+
 1. Ensure the marketplace is added: `/plugin marketplace list`
 2. Refresh marketplace: `/plugin marketplace refresh`
 3. Try adding again: `/plugin marketplace add Ven0m0/claude-config`
@@ -197,29 +204,32 @@ cd ~/.claude/plugins/data-analyst
 **Error:** `Skill '/code-review' not found`
 
 **Solution:**
+
 1. Check plugin is installed: `/plugin list`
-2. Verify the plugin loaded correctly: `/plugin info coding-assistant`
-3. Reinstall if needed: `/plugin uninstall coding-assistant && /plugin install coding-assistant@claude-config-marketplace`
+1. Verify the plugin loaded correctly: `/plugin info coding-assistant`
+1. Reinstall if needed: `/plugin uninstall coding-assistant && /plugin install coding-assistant@claude-config-marketplace`
 
 ### Hook Errors
 
 **Error:** Hook script fails to execute
 
 **Solution:**
+
 1. Check formatter is installed (biome, ruff, etc.)
-2. Make script executable: `chmod +x ~/.claude/plugins/coding-assistant/scripts/format.sh`
-3. Test script manually: `~/.claude/plugins/coding-assistant/scripts/format.sh test.js`
-4. Disable hook if not needed (edit plugin.json)
+1. Make script executable: `chmod +x ~/.claude/plugins/coding-assistant/scripts/format.sh`
+1. Test script manually: `~/.claude/plugins/coding-assistant/scripts/format.sh test.js`
+1. Disable hook if not needed (edit plugin.json)
 
 ### MCP Server Not Starting
 
 **Error:** SQLite MCP server fails to start
 
 **Solution:**
-1. Install uvx: `pip install uvx`
-2. Verify mcp-server-sqlite: `uvx mcp-server-sqlite --help`
-3. Check database path in `.mcp.json`
-4. Create database directory if needed: `mkdir -p ~/.claude/plugins/data-analyst/data`
+
+1. Install uvx: `uv pip install uvx`
+1. Verify mcp-server-sqlite: `uvx mcp-server-sqlite --help`
+1. Check database path in `.mcp.json`
+1. Create database directory if needed: `mkdir -p ~/.claude/plugins/data-analyst/data`
 
 ## Updating Plugins
 
@@ -255,11 +265,12 @@ Remove plugins you no longer need:
 To add your own skills to a plugin:
 
 1. Navigate to plugin's skills directory
-2. Create a new directory for your skill
-3. Add a `SKILL.md` file with frontmatter
-4. Reload the plugin
+1. Create a new directory for your skill
+1. Add a `SKILL.md` file with frontmatter
+1. Reload the plugin
 
 Example:
+
 ```bash
 cd ~/.claude/plugins/coding-assistant/skills
 mkdir my-skill
@@ -293,6 +304,6 @@ Want to contribute? See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 - **Use caution** with plugins that execute system commands
 - **Report security issues** privately to the maintainers
 
----
+______________________________________________________________________
 
 **You're all set! Start using your Claude Code plugins! 🚀**

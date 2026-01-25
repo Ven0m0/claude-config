@@ -1,12 +1,12 @@
 {
-  "printWidth": 100,       // wrap prose at 100 chars
-  "tabWidth": 2,           // 2 spaces per indent
-  "useTabs": false,        // no tabs
-  "semi": true,            // add semicolons in code
-  "singleQuote": true,     // use single quotes in code
-  "trailingComma": "es5",  // trailing commas where valid in ES5
-  "bracketSpacing": true,  // { foo: bar }
-  "arrowParens": "always", // (x) => x
-  "proseWrap": "always",   // wrap Markdown/README text
-  "endOfLine": "lf"        // consistent line endings
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "proseWrap": "always",
+  "endOfLine": "lf"
 }

@@ -4,13 +4,13 @@ category: utilities-debugging
 ---
 
 Check fact accuracy by examining:
+
 1. Actual code (most trustworthy)
-2. README.md and docs/
-3. Config files (package.json, etc.)
+1. README.md and docs/
+1. Config files (package.json, etc.)
 
 Report: ✅ Correct / ❌ Incorrect / ⚠️ Partially correct / ❓ Cannot determine
 Provide evidence: file paths, code snippets, notes explaining verdict.
-
 
 ### Report Format
 
@@ -54,11 +54,11 @@ Provide evidence: file paths, code snippets, notes explaining verdict.
 
 ```bash
 # Check dependencies
-ls -la && find . -name "pubspec.yaml" -exec cat {} \;
+eza -la && find . -name "pubspec.yaml" -exec cat {} \;
 /check-fact "The main dependencies used in this project are..."
 
 # Check how something is built
-grep -r "authentication" . --include="*.dart"
+rg "authentication" . --include="*.dart"
 /check-fact "Authentication is custom built, not using third-party auth"
 
 # Check if docs match reality

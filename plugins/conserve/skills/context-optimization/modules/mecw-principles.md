@@ -20,12 +20,12 @@ This module covers the theoretical foundations of Maximum Effective Context Wind
 
 ### Why 50%?
 
-| Context Usage | Effect on Model |
-|---------------|-----------------|
-| < 30% | Optimal performance, high accuracy |
-| 30-50% | Good performance, slight accuracy degradation |
-| 50-70% | Degraded performance, increased hallucination risk |
-| > 70% | Severe degradation, high hallucination probability |
+| Context Usage | Effect on Model                                    |
+| ------------- | -------------------------------------------------- |
+| < 30%         | Optimal performance, high accuracy                 |
+| 30-50%        | Good performance, slight accuracy degradation      |
+| 50-70%        | Degraded performance, increased hallucination risk |
+| > 70%         | Severe degradation, high hallucination probability |
 
 ### The Physics of Context Pressure
 
@@ -49,17 +49,19 @@ def calculate_context_pressure(current_tokens, max_tokens):
 ## Hallucination Prevention
 
 ### Root Cause
+
 When context exceeds MECW limits:
+
 1. Model attention becomes diffuse across too many tokens
-2. Earlier context gets "forgotten" or compressed
-3. Model compensates by generating plausible-sounding but incorrect content
+1. Earlier context gets "forgotten" or compressed
+1. Model compensates by generating plausible-sounding but incorrect content
 
 ### Prevention Strategies
 
 1. **Early Detection**: Monitor context usage continuously
-2. **Proactive Compression**: Summarize before hitting limits
-3. **Strategic Delegation**: Use subagents for complex workflows
-4. **Progressive Disclosure**: Load only needed information
+1. **Proactive Compression**: Summarize before hitting limits
+1. **Strategic Delegation**: Use subagents for complex workflows
+1. **Progressive Disclosure**: Load only needed information
 
 ## Practical Application
 
@@ -70,17 +72,20 @@ When context exceeds MECW limits:
 **Improved Accuracy (2.0.70+)**: The `current_usage` field in the status line input enables precise context percentage calculations, eliminating estimation variance.
 
 **Improved Visualization (2.0.74+)**: The `/context` command now groups skills and agents by source plugin, showing:
+
 - Plugin organization and context contribution
 - Slash commands in use
 - Sorted token counts for optimization
 - Better visibility into which plugins consume context
 
 This complements our MECW thresholds:
+
 - **Status line** shows accurate current usage %
 - **/context command** shows detailed breakdown by plugin (2.0.74+)
 - **Conservation plugin** provides proactive optimization recommendations when approaching thresholds
 
 **Context Optimization with /context (2.0.74+)**:
+
 ```bash
 # View detailed context breakdown
 /context
@@ -116,10 +121,10 @@ class MECWMonitor:
 ### Compression Techniques
 
 1. **Code Summarization**: Replace full code with signatures + descriptions
-2. **Content Chunking**: Process in MECW-compliant segments
-3. **Result Synthesis**: Combine partial results efficiently
-4. **Context Rotation**: Swap out completed context for new tasks
-5. **LSP Optimization (2.0.74+)**: **Default approach** for token-efficient code navigation
+1. **Content Chunking**: Process in MECW-compliant segments
+1. **Result Synthesis**: Combine partial results efficiently
+1. **Context Rotation**: Swap out completed context for new tasks
+1. **LSP Optimization (2.0.74+)**: **Default approach** for token-efficient code navigation
    - **Old grep approach**: Load many files, search text (10,000+ tokens)
    - **LSP approach (PREFERRED)**: Query semantic index, read only target (500 tokens)
    - **Savings**: ~90% token reduction for reference finding
@@ -130,10 +135,10 @@ class MECWMonitor:
 ## Best Practices
 
 1. **Plan for 40%**: Design workflows to use ~40% of context
-2. **Buffer for Response**: Leave 50% for model reasoning + response
-3. **Monitor Continuously**: Check context at each major step
-4. **Fail Fast**: Abort and restructure when approaching limits
-5. **Document Aggressively**: Keep summaries for context recovery
+1. **Buffer for Response**: Leave 50% for model reasoning + response
+1. **Monitor Continuously**: Check context at each major step
+1. **Fail Fast**: Abort and restructure when approaching limits
+1. **Document Aggressively**: Keep summaries for context recovery
 
 ## Integration
 

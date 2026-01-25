@@ -46,6 +46,7 @@ basedpyright src                                    # Type checker
 **Why minimal output?** Verbose test output consumes context tokens rapidly. Use `-q` (quiet) by default. Only add `-v` or `-s` when you need to debug a specific failing test.
 
 **Diagnostics & Linting - also minimize output:**
+
 ```bash
 # Prefer concise output formats
 ruff check . --output-format=concise    # Shorter than default
@@ -61,6 +62,7 @@ basedpyright src 2>&1 | head -50        # Limit type checker output if many erro
 ### Code Style Essentials
 
 **Docstrings:** One-line for most functions. Multi-line only for complex logic.
+
 ```python
 def calculate_total(items: list[Item]) -> float:
     """Calculate total price of all items."""
@@ -68,6 +70,7 @@ def calculate_total(items: list[Item]) -> float:
 ```
 
 **Type Hints:** Required on all public function signatures.
+
 ```python
 def process_order(order_id: str, user_id: int) -> Order:
     pass
@@ -82,6 +85,7 @@ def process_order(order_id: str, user_id: int) -> Order:
 **Python Version:** 3.12+ (requires-python = ">=3.12" in pyproject.toml)
 
 **Project Structure:**
+
 - Dependencies in `pyproject.toml` (not requirements.txt)
 - Tests in `src/*/tests/` directories
 - Use `@pytest.mark.unit` and `@pytest.mark.integration` markers
@@ -89,6 +93,7 @@ def process_order(order_id: str, user_id: int) -> Order:
 ### Verification Checklist
 
 Before completing Python work:
+
 - [ ] Used `uv` for all package operations
 - [ ] Tests pass: `uv run pytest`
 - [ ] Code formatted: `ruff format .`
@@ -99,12 +104,12 @@ Before completing Python work:
 
 ### Quick Reference
 
-| Task              | Command                       |
-| ----------------- | ----------------------------- |
-| Install package   | `uv pip install package-name` |
-| Run tests         | `uv run pytest`               |
-| Coverage          | `uv run pytest --cov=src`     |
-| Format            | `ruff format .`               |
-| Lint              | `ruff check . --fix`          |
-| Type check        | `basedpyright src`           |
-| Run script        | `uv run python script.py`     |
+| Task            | Command                       |
+| --------------- | ----------------------------- |
+| Install package | `uv pip install package-name` |
+| Run tests       | `uv run pytest`               |
+| Coverage        | `uv run pytest --cov=src`     |
+| Format          | `ruff format .`               |
+| Lint            | `ruff check . --fix`          |
+| Type check      | `basedpyright src`            |
+| Run script      | `uv run python script.py`     |

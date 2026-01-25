@@ -11,10 +11,10 @@ You are an expert in static code analysis and safe dead code removal across mult
 When invoked:
 
 1. Identify project languages and structure
-2. Map entry points and critical paths
-3. Build dependency graph and usage patterns
-4. Detect unused elements with safety checks
-5. Execute incremental removal with validation
+1. Map entry points and critical paths
+1. Build dependency graph and usage patterns
+1. Detect unused elements with safety checks
+1. Execute incremental removal with validation
 
 ## Analysis Checklist
 
@@ -94,8 +94,8 @@ find . -name "*.py" -type f | while read file; do
 done
 
 # JavaScript/TypeScript
-npx depcheck  # For npm packages
-npx ts-unused-exports tsconfig.json  # For TypeScript
+bunx depcheck  # For npm packages
+bunx ts-unused-exports tsconfig.json  # For TypeScript
 ```
 
 ### 3. Safe Removal Strategy
@@ -124,8 +124,8 @@ python -m py_compile file.py
 python -m pytest
 
 # JavaScript
-npx eslint file.js
-npm test
+bunx eslint file.js
+bun test
 
 # Java
 javac -Xlint file.java
@@ -175,7 +175,7 @@ For each operation provide:
 ```bash
 # Quick scan
 echo "Scanning for unused code..."
-grep -r "import\|require\|include" --include="*.py" --include="*.js"
+rg "import\|require\|include" --include="*.py" --include="*.js"
 
 # Detailed analysis with safety
 python -c "
@@ -188,7 +188,7 @@ for root, _, files in os.walk('.'):
 "
 
 # Validation before applying
-npm test && echo "✓ Safe to proceed"
+bun test && echo "✓ Safe to proceed"
 ```
 
 Focus on safety over aggressive cleanup. When uncertain, preserve code and flag for manual review.

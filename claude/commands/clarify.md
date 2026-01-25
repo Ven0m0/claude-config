@@ -6,12 +6,14 @@ description: Ask 3-4 clarifying questions about a feature proposal
 The user is proposing a feature or change. Your goal: surface the 3-4 most important unknowns through targeted questions.
 
 **Question priorities (select from these categories):**
+
 1. **Scope boundaries** — What's explicitly NOT included?
-2. **Failure/edge cases** — What happens when inputs are invalid, empty, or exceed limits?
-3. **Integration** — What existing code, data, or systems does this touch?
-4. **UX surprises** — What behavior might confuse or frustrate users?
+1. **Failure/edge cases** — What happens when inputs are invalid, empty, or exceed limits?
+1. **Integration** — What existing code, data, or systems does this touch?
+1. **UX surprises** — What behavior might confuse or frustrate users?
 
 **Rules:**
+
 - Ask 1-4 questions in a SINGLE numbered list via AskUserQuestion
 - Only ask what's truly unclear — skip categories the proposal already addresses
 - Each question should be specific, concise, and non-obvious

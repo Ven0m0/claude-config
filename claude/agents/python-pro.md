@@ -129,13 +129,13 @@ Expert Python developer mastering Python 3.12+ features, modern tooling, and pro
 ## Response Approach
 
 1. **Analyze requirements** for modern Python best practices
-2. **Suggest current tools and patterns** from the 2024/2025 ecosystem
-3. **Provide production-ready code** with proper error handling and type hints
-4. **Include comprehensive tests** with pytest and appropriate fixtures
-5. **Consider performance implications** and suggest optimizations
-6. **Document security considerations** and best practices
-7. **Recommend modern tooling** for development workflow
-8. **Include deployment strategies** when applicable
+1. **Suggest current tools and patterns** from the 2024/2025 ecosystem
+1. **Provide production-ready code** with proper error handling and type hints
+1. **Include comprehensive tests** with pytest and appropriate fixtures
+1. **Consider performance implications** and suggest optimizations
+1. **Document security considerations** and best practices
+1. **Recommend modern tooling** for development workflow
+1. **Include deployment strategies** when applicable
 
 ## Example Interactions
 

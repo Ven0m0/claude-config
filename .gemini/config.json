@@ -1,37 +1,37 @@
 {
-  "$schema": "https://developers.google.com/gemini-code-assist/docs/config-schema",
-  "codeReview": {
-    "enabled": true,
-    "autoReview": true,
-    "maxFilesToReview": 30,
-    "excludePatterns": [
-      "**/.git/**",
-      "**/.cache/**",
-      "**/.idea/**",
-      "**/.vscode/**",
-      "**/.venv/**",
-      "**/__pycache__/**",
-      "**/.pytest_cache/**",
-      "**/.ruff_cache/**",
-      "**/dist/**",
-      "**/build/**",
-      "**/coverage/**",
-      "**/node_modules/**",
-      "**/target/**",
-      "**/vendor/**",
-      "**/*.min.js",
-      "**/*.min.css",
-      "**/*.lock",
-      "**/bun.lockb",
-      "**/package-lock.json",
-      "**/pnpm-lock.yaml",
-      "**/yarn.lock",
-      "**/uv.lock",
-      "**/poetry.lock"
-    ]
-  },
-  "pullRequestSummary": {
-    "enabled": true,
-    "includeStats": true
-  }
+	"$schema": "https://developers.google.com/gemini-code-assist/docs/config-schema",
+	"codeReview": {
+		"enabled": true,
+		"autoReview": true,
+		"maxFilesToReview": 30,
+		"excludePatterns": [
+			"**/.git/**",
+			"**/.cache/**",
+			"**/.idea/**",
+			"**/.vscode/**",
+			"**/.venv/**",
+			"**/__pycache__/**",
+			"**/.pytest_cache/**",
+			"**/.ruff_cache/**",
+			"**/dist/**",
+			"**/build/**",
+			"**/coverage/**",
+			"**/node_modules/**",
+			"**/target/**",
+			"**/vendor/**",
+			"**/*.min.js",
+			"**/*.min.css",
+			"**/*.lock",
+			"**/bun.lockb",
+			"**/package-lock.json",
+			"**/pnpm-lock.yaml",
+			"**/yarn.lock",
+			"**/uv.lock",
+			"**/poetry.lock"
+		]
+	},
+	"pullRequestSummary": {
+		"enabled": true,
+		"includeStats": true
+	}
 }

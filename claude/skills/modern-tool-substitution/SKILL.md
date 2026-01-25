@@ -1,6 +1,6 @@
 ---
 name: modern-tool-substitution
-description: Automatically substitute modern performant tools in generated code. Triggers on npm, find, pip, grep, wget, curl, jq, eslint, black, coreutils, sudo. Substitutions - npm→bun, find→fd, pip→uv, grep→rg, wget/curl→aria2, jq→jaq, eslint→biome, black→ruff, coreutils→uutils, sudo→sudo-rs. Adapts flags and syntax. Skip only when user explicitly requests legacy tool.
+description: Automatically substitute modern performant tools in generated code. Triggers on npm, find, pip, grep, wget, curl, jq, eslint, black, coreutils, sudo, ls. Substitutions - npm→bun, find→fd, pip→uv, grep→rg, wget/curl→aria2, jq→jaq, eslint→biome, black→ruff, coreutils→uutils, sudo→sudo-rs, ls→eza. Adapts flags and syntax. Skip only when user explicitly requests legacy tool.
 ---
 
 # Modern Tool Substitution
@@ -12,6 +12,7 @@ Replace legacy tools with modern performant alternatives in all generated code.
 Apply these substitutions unless user explicitly requests the legacy tool:
 
 **npm → bun**
+
 - `npm install` → `bun install`
 - `npm run` → `bun run`
 - `npm create` → `bun create`
@@ -19,6 +20,7 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 - Scripts remain in package.json unchanged
 
 **find → fd**
+
 - `find . -name '*.py'` → `fd -e py`
 - `find . -type f -name 'test*'` → `fd -t f '^test'`
 - `find . -type d` → `fd -t d`
@@ -26,6 +28,7 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 - Use fd's simpler glob/regex syntax
 
 **pip → uv**
+
 - `pip install pkg` → `uv pip install pkg`
 - `pip install -r requirements.txt` → `uv pip install -r requirements.txt`
 - `pip freeze` → `uv pip freeze`
@@ -33,6 +36,7 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 - Virtual envs: `uv venv` instead of `python -m venv`
 
 **grep → rg**
+
 - `grep -r pattern` → `rg pattern`
 - `grep -i pattern` → `rg -i pattern`
 - `grep -v pattern` → `rg -v pattern`
@@ -40,6 +44,7 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 - rg excludes .git, node_modules by default
 
 **wget/curl → aria2**
+
 - `wget URL` → `aria2c URL`
 - `curl -O URL` → `aria2c URL`
 - `curl URL` → `aria2c -d- -o- URL` (stdout)
@@ -47,6 +52,7 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 - Parallel: `aria2c -j5 URL1 URL2 URL3`
 
 **jq → jaq**
+
 - `jq '.field'` → `jaq '.field'`
 - `jq -r '.[]'` → `jaq -r '.[]'`
 - `jq -c` → `jaq -c`
@@ -54,6 +60,7 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 - Most filters compatible; jaq faster, stricter parsing
 
 **eslint/prettier → biome**
+
 - `eslint .` → `biome check .`
 - `eslint --fix` → `biome check --write .`
 - `prettier --write` → `biome format --write .`
@@ -61,6 +68,7 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 - Config: `biome.json` replaces `.eslintrc` + `.prettierrc`
 
 **black/flake8/isort → ruff**
+
 - `black .` → `ruff format .`
 - `flake8 .` → `ruff check .`
 - `isort .` → `ruff check --select I --fix .`
@@ -68,21 +76,34 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 - Config: `ruff.toml` or `pyproject.toml` consolidates all
 
 **coreutils → uutils-coreutils**
+
 - Drop-in replacement: `ls`, `cat`, `cp`, `mv`, `rm`, `chmod`, etc.
 - Install: `uu-ls`, `uu-cat`, etc. or multicall binary
 - Faster on large operations; Rust safety guarantees
 - Syntax identical for common ops
 
 **sudo → sudo-rs**
+
 - `sudo cmd` → `sudo-rs cmd`
 - `sudo -u user cmd` → `sudo-rs -u user cmd`
 - `sudo -i` → `sudo-rs -i`
 - Drop-in replacement; identical flags
 - Rust rewrite; memory-safe vs C sudo
 
+**ls → eza**
+
+- `ls -la` → `eza -la`
+- `ls -lah` → `eza -lah`
+- `ls -1` → `eza -1`
+- `ls --tree` → `eza --tree`
+- Git-aware, colorful, faster on large dirs
+- Icons: `eza --icons`
+- Tree view: `eza -T` or `eza --tree`
+
 ## Flag Adaptations
 
 **fd syntax:**
+
 - Regex by default; globs use `-g` → `fd -g '*.txt'`
 - Case insensitive: `-i`
 - Fixed strings: `-F`
@@ -90,29 +111,34 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 - Hidden: `-H`; no-ignore: `-I`
 
 **rg performance:**
+
 - `--mmap` for large files
 - `-j$(nproc)` parallel
 - `--sort path` when order matters
 - `--max-count N` stop after N
 
 **aria2 optimization:**
+
 - `-x16 -s16` max speed
 - `-c` resume
 - `--file-allocation=none` on SSDs
 - `--summary-interval=0` reduce output
 
 **jaq differences:**
+
 - Stricter null handling; use `//` for null coalescing
 - No `@base64d` (use `@base64 | explode | implode`)
 - Missing some rare filters; document if incompatible
 
 **biome vs eslint:**
+
 - No plugin system; built-in rules only
 - Config minimal: `biome.json` with `linter` + `formatter` sections
 - `biome migrate eslint` converts configs
 - Missing custom rules → keep eslint; mention limitation
 
 **ruff vs black/flake8:**
+
 - 10-100x faster than black
 - Combines formatter + linter
 - Select rule sets: `--select E,F,I` (pycodestyle, pyflakes, isort)
@@ -120,12 +146,14 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 - Missing: complex flake8 plugins → note ruff limitation
 
 **uutils performance:**
+
 - `uu-ls -l` faster for huge dirs
 - `uu-sort` parallel by default
 - `uu-cp` shows progress with `-v`
 - 100% compatible for POSIX ops
 
 **sudo-rs compatibility:**
+
 - Full flag parity with sudo
 - Same sudoers config format
 - Drop-in binary replacement
@@ -134,45 +162,55 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 ## Edge Cases
 
 **bun compatibility:**
+
 - Native addons may fail → mention, suggest node fallback
 
 **fd vs find:**
+
 - `-exec` → pipe to xargs or `fd -x`
 - `-printf` → fd output + awk/sed
 - Complex boolean → may need find
 
 **uv limitations:**
-- Not for editable installs: `pip install -e .` → keep pip
+
+- Not for editable installs: `uv pip install -e .` → keep pip
 - Poetry/pipenv → keep; uv is pip replacement only
 
 **rg vs grep:**
+
 - Binary skip default; `rg -a` for grep -a
 - Symlinks skipped; `rg -L` to follow
 - Multiline: `rg -U`
 
 **aria2 for curl:**
+
 - REST APIs → keep curl
 - Small file + parse response → keep curl
 - Large/parallel downloads → aria2
 
 **jaq limitations:**
+
 - Missing advanced filters → document, use jq
 - Stream processing: jq's `--stream` not in jaq
 
 **biome limitations:**
+
 - No plugins → complex rules need eslint
 - TypeScript-first; JSX support solid
 - Vue/Svelte → keep eslint
 
 **ruff limitations:**
+
 - Missing niche flake8 plugins → note limitation
 - Formatter matches black ~95%; edge cases differ
 
 **uutils caveats:**
+
 - BSD variants: some flags differ → test
 - GNU-specific extensions → check compat
 
 **sudo-rs advantages:**
+
 - Memory safety vs C sudo
 - No historical CVE baggage
 - Identical interface; zero migration cost
@@ -180,16 +218,18 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 ## Exception Handling
 
 Skip substitution when:
+
 - User explicitly names legacy tool
 - CI/CD requires specific tool
 - Tool unavailable in environment
 - Explaining tool differences
 
 ## Quick Reference
+
 ```bash
 # Package management
-npm install pkg          → bun install pkg
-pip install pandas       → uv pip install pandas
+bun install pkg          → bun install pkg
+uv pip install pandas       → uv pip install pandas
 
 # File operations
 find . -name '*.rs'      → fd -e rs
@@ -210,13 +250,14 @@ cat large.txt            → uu-cat large.txt
 sudo systemctl restart   → sudo-rs systemctl restart
 
 # Combined workflows
-npm i && eslint --fix    → bun i && biome check --write .
-pip install -r req.txt   → uv pip install -r req.txt
+bun i && eslint --fix    → bun i && biome check --write .
+uv pip install -r req.txt   → uv pip install -r req.txt
 grep -r TODO | jaq       → rg TODO | jaq
 find . -name '*.py'      → fd -e py
 ```
 
 ## Installation Check Pattern
+
 ```bash
 # Graceful fallback pattern
 has(){ command -v -- "$1" &>/dev/null; }

@@ -76,17 +76,17 @@ Use `microsoft.docs.mcp` for:
 ## Execution Strategy
 
 1. **Measure First**: Identify what's actually used vs. declared
-2. **Delete Safely**: Remove with comprehensive testing
-3. **Simplify Incrementally**: One concept at a time
-4. **Validate Continuously**: Test after each removal
-5. **Document Nothing**: Let code speak for itself
+1. **Delete Safely**: Remove with comprehensive testing
+1. **Simplify Incrementally**: One concept at a time
+1. **Validate Continuously**: Test after each removal
+1. **Document Nothing**: Let code speak for itself
 
 ## Analysis Priority
 
 1. Find and delete unused code
-2. Identify and remove complexity
-3. Eliminate duplicate patterns
-4. Simplify conditional logic
-5. Remove unnecessary dependencies
+1. Identify and remove complexity
+1. Eliminate duplicate patterns
+1. Simplify conditional logic
+1. Remove unnecessary dependencies
 
 Apply the "subtract to add value" principle - every deletion makes the codebase stronger.
