@@ -786,7 +786,7 @@ CMD ["node", "dist/index.js"]
 FROM python:3.11-slim AS base
 
 # Install UV - next generation Python package manager
-RUN uv pip install uv
+RUN pip install uv
 
 # Stage 1: Dependency resolution with UV
 FROM base AS deps
