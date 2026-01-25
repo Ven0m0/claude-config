@@ -5,9 +5,9 @@ Thanks for contributing. This repository contains Claude Code plugins, skills, a
 ## Quick Start
 
 1. Create a feature branch for your changes.
-1. Keep changes focused and small.
-1. Update documentation when behavior changes.
-1. Run relevant tests or validation scripts.
+2. Keep changes focused and small.
+3. Update documentation when behavior changes.
+4. Run relevant tests or validation scripts.
 
 ## Guidelines
 
