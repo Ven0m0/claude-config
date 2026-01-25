@@ -196,8 +196,8 @@ cd ~/.claude/plugins/data-analyst
 **Solution:**
 
 1. Ensure the marketplace is added: `/plugin marketplace list`
-1. Refresh marketplace: `/plugin marketplace refresh`
-1. Try adding again: `/plugin marketplace add Ven0m0/claude-config`
+2. Refresh marketplace: `/plugin marketplace refresh`
+3. Try adding again: `/plugin marketplace add Ven0m0/claude-config`
 
 ### Skill Not Working
 
