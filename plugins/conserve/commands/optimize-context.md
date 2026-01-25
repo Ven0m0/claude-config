@@ -24,18 +24,18 @@ Analyzes context window usage and provides optimization recommendations based on
 ## What It Does
 
 1. **Context Pressure Assessment**: Evaluates current context utilization
-2. **MECW Compliance Check**: Validates against MECW principles
-3. **Optimization Recommendations**: Suggests specific improvements
-4. **Token Budget Analysis**: Breaks down token usage by component
+1. **MECW Compliance Check**: Validates against MECW principles
+1. **Optimization Recommendations**: Suggests specific improvements
+1. **Token Budget Analysis**: Breaks down token usage by component
 
 ## MECW Thresholds
 
-| Utilization | Status | Action |
-|-------------|--------|--------|
-| < 30% | Optimal | No action needed |
-| 30-50% | Good | Monitor growth |
-| 50-70% | Warning | Consider optimization |
-| > 70% | Critical | Immediate action required |
+| Utilization | Status   | Action                    |
+| ----------- | -------- | ------------------------- |
+| < 30%       | Optimal  | No action needed          |
+| 30-50%      | Good     | Monitor growth            |
+| 50-70%      | Warning  | Consider optimization     |
+| > 70%       | Critical | Immediate action required |
 
 ## Examples
 
@@ -58,6 +58,7 @@ Analyzes context window usage and provides optimization recommendations based on
 ## Integration
 
 Works with conservation plugin skills:
+
 - `context-optimization` - Core MECW implementation
 - `token-conservation` - Token reduction strategies
 - `optimizing-large-skills` - Modularization patterns

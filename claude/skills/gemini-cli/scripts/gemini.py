@@ -11,12 +11,13 @@ Usage:
     python3 gemini.py "<prompt>"
     ./gemini.py "your prompt"
 """
+
 import subprocess
 import sys
 import os
 
-DEFAULT_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-3-pro-preview')
-DEFAULT_WORKDIR = '.'
+DEFAULT_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3-pro-preview")
+DEFAULT_WORKDIR = "."
 TIMEOUT_MS = 7_200_000  # 固定 2 小时，毫秒
 DEFAULT_TIMEOUT = TIMEOUT_MS // 1000
 FORCE_KILL_DELAY = 5
@@ -40,26 +41,22 @@ def log_info(message: str):
 def parse_args():
     """解析位置参数"""
     if len(sys.argv) < 2:
-        log_error('Prompt required')
+        log_error("Prompt required")
         sys.exit(1)
 
     return {
-        'prompt': sys.argv[1],
-        'workdir': sys.argv[2] if len(sys.argv) > 2 else DEFAULT_WORKDIR
+        "prompt": sys.argv[1],
+        "workdir": sys.argv[2] if len(sys.argv) > 2 else DEFAULT_WORKDIR,
     }
 
 
 def build_gemini_args(args) -> list:
     """构建 gemini CLI 参数"""
-    return [
-        'gemini',
-        '-m', DEFAULT_MODEL,
-        '-p', args['prompt']
-    ]
+    return ["gemini", "-m", DEFAULT_MODEL, "-p", args["prompt"]]
 
 
 def main():
-    log_info('Script started')
+    log_info("Script started")
     args = parse_args()
     log_info(f"Prompt length: {len(args['prompt'])}")
     log_info(f"Working dir: {args['workdir']}")
@@ -68,16 +65,16 @@ def main():
     log_info(f"Timeout: {timeout_sec}s")
 
     # 如果指定了工作目录，切换到该目录
-    if args['workdir'] != DEFAULT_WORKDIR:
+    if args["workdir"] != DEFAULT_WORKDIR:
         try:
-            os.chdir(args['workdir'])
+            os.chdir(args["workdir"])
         except FileNotFoundError:
             log_error(f"Working directory not found: {args['workdir']}")
             sys.exit(1)
         except PermissionError:
             log_error(f"Permission denied: {args['workdir']}")
             sys.exit(1)
-        log_info('Changed working directory')
+        log_info("Changed working directory")
 
     try:
         log_info(f"Starting gemini with model {DEFAULT_MODEL}")
@@ -88,7 +85,7 @@ def main():
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            bufsize=1  # 行缓冲
+            bufsize=1,  # 行缓冲
         )
 
         # 实时输出 stdout
@@ -106,13 +103,13 @@ def main():
 
         # 检查退出码
         if returncode != 0:
-            log_error(f'Gemini exited with status {returncode}')
+            log_error(f"Gemini exited with status {returncode}")
             sys.exit(returncode)
 
         sys.exit(0)
 
     except subprocess.TimeoutExpired:
-        log_error(f'Gemini execution timeout ({timeout_sec}s)')
+        log_error(f"Gemini execution timeout ({timeout_sec}s)")
         if process is not None:
             process.kill()
             try:
@@ -123,7 +120,9 @@ def main():
 
     except FileNotFoundError:
         log_error("gemini command not found in PATH")
-        log_error("Please install Gemini CLI: https://github.com/google/generative-ai-python")
+        log_error(
+            "Please install Gemini CLI: https://github.com/google/generative-ai-python"
+        )
         sys.exit(127)
 
     except KeyboardInterrupt:
@@ -136,5 +135,5 @@ def main():
         sys.exit(130)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

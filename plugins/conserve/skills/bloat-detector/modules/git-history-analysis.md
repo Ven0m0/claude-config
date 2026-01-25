@@ -14,6 +14,7 @@ Detect bloat using git history: staleness, churn metrics, and reference counting
 ### 1. Staleness Detection
 
 **Command:**
+
 ```bash
 # Files not modified in last 6 months
 git log --since="6 months ago" --name-only --pretty=format: | sort -u > recent.txt
@@ -21,6 +22,7 @@ comm -13 recent.txt <(git ls-files | sort) > stale_files.txt
 ```
 
 **Staleness Scoring:**
+
 ```python
 def staleness_score(months_since_change):
     if months_since_change > 24:
@@ -34,6 +36,7 @@ def staleness_score(months_since_change):
 ```
 
 **Confidence Modifiers:**
+
 - File type: Config files -20%, code files +0%
 - Last author: If single author who left project +15%
 - Dependencies: If no imports found +25%
@@ -41,6 +44,7 @@ def staleness_score(months_since_change):
 ### 2. Reference Counting
 
 **Detect unused files:**
+
 ```bash
 # For each file, count references in codebase
 git ls-files | while read file; do
@@ -57,6 +61,7 @@ done | grep "^0 "
 **Confidence:** HIGH (90%) if zero refs + stale
 
 **False Positives:**
+
 - Entry points (main.py, index.js)
 - Configuration files
 - Documentation
@@ -64,6 +69,7 @@ done | grep "^0 "
 ### 3. Code Churn Metrics
 
 **Churn formula:**
+
 ```bash
 # Lines added + deleted per file
 git log --numstat --pretty="%H" -- $file | \
@@ -71,11 +77,13 @@ git log --numstat --pretty="%H" -- $file | \
 ```
 
 **Churn Categories:**
+
 - **High churn (>1000 changes/year)**: Active development
-- **Low churn (<50 changes/year)**: Stable or abandoned
+- **Low churn (\<50 changes/year)**: Stable or abandoned
 - **Zero churn + old**: Strong bloat signal
 
 **Hotspot Detection:**
+
 ```python
 def is_hotspot(churn, complexity):
     """
@@ -90,6 +98,7 @@ def is_hotspot(churn, complexity):
 ### 4. Ownership Analysis
 
 **Detect abandoned code:**
+
 ```bash
 # Find files where primary author has no recent commits
 git log --format="%an" --since="6 months ago" | sort -u > active_authors.txt
@@ -107,6 +116,7 @@ done
 ### 5. Branch Analysis
 
 **Detect orphaned feature branches:**
+
 ```bash
 # Branches not merged in 6+ months
 git for-each-ref --sort=-committerdate refs/heads/ --format='%(committerdate:short) %(refname:short)' | \
@@ -203,6 +213,7 @@ ORDER BY total_churn DESC;
 ## Performance Optimization
 
 **Caching Strategy:**
+
 ```bash
 # Cache git log results for reuse
 git log --all --numstat --pretty=format:'%H|%an|%ai' > /tmp/git_cache.txt
@@ -212,6 +223,7 @@ grep "path/to/file" /tmp/git_cache.txt
 ```
 
 **Incremental Updates:**
+
 - Store previous scan results
 - Only analyze changed files
 - Delta reporting
@@ -221,11 +233,12 @@ grep "path/to/file" /tmp/git_cache.txt
 Before flagging for deletion:
 
 1. **Test Files**: Exclude `test_*.py`, `*.spec.js`
-2. **Migrations**: Database migrations must never auto-delete
-3. **CI/CD**: Files in `.github/`, `.gitlab-ci.yml`
-4. **Documentation**: User-facing docs need manual review
+1. **Migrations**: Database migrations must never auto-delete
+1. **CI/CD**: Files in `.github/`, `.gitlab-ci.yml`
+1. **Documentation**: User-facing docs need manual review
 
 **Whitelist Patterns:**
+
 ```yaml
 safe_paths:
   - tests/
@@ -271,6 +284,7 @@ def validate_quick_scan_finding(finding):
 ## Next Steps
 
 Based on git analysis:
+
 - **HIGH confidence**: Create cleanup PR
 - **MEDIUM confidence**: Run static analysis (Tier 2)
 - **LOW confidence**: Manual code review

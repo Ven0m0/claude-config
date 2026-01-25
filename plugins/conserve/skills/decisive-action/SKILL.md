@@ -23,17 +23,18 @@ Ask questions only when ambiguity would **materially impair correctness** or cap
 
 ### Always Ask For
 
-| Scenario | Why | Example |
-|----------|-----|---------|
-| **Destructive Operations** | Irreversible, high cost of error | "Delete which files?" |
-| **Multiple Valid Approaches** | Materially different tradeoffs | "Add index vs cache vs denormalize?" |
-| **Security-Critical** | Wrong choice = vulnerability | "Which auth method?" |
-| **Data Migration** | Data loss risk | "Preserve or transform?" |
-| **Breaking Changes** | Affects downstream users | "Deprecate or remove?" |
+| Scenario                      | Why                              | Example                              |
+| ----------------------------- | -------------------------------- | ------------------------------------ |
+| **Destructive Operations**    | Irreversible, high cost of error | "Delete which files?"                |
+| **Multiple Valid Approaches** | Materially different tradeoffs   | "Add index vs cache vs denormalize?" |
+| **Security-Critical**         | Wrong choice = vulnerability     | "Which auth method?"                 |
+| **Data Migration**            | Data loss risk                   | "Preserve or transform?"             |
+| **Breaking Changes**          | Affects downstream users         | "Deprecate or remove?"               |
 
 ### Ask Threshold Checklist
 
 Before asking, verify:
+
 - [ ] >30% chance of wrong interpretation
 - [ ] Error cost > correction cost
 - [ ] No clear standard approach exists
@@ -43,16 +44,17 @@ Before asking, verify:
 
 ### Default to Action For
 
-| Scenario | Why | Assumption |
-|----------|-----|------------|
-| **Standard Approach Exists** | Industry convention | Use conventional pattern |
-| **Easily Reversible** | Low cost of error | Can undo via git/backup |
-| **Clear from Context** | Intent is obvious | Proceed with stated goal |
-| **User Can Review** | PR/dry-run available | Changes are inspectable |
+| Scenario                     | Why                  | Assumption               |
+| ---------------------------- | -------------------- | ------------------------ |
+| **Standard Approach Exists** | Industry convention  | Use conventional pattern |
+| **Easily Reversible**        | Low cost of error    | Can undo via git/backup  |
+| **Clear from Context**       | Intent is obvious    | Proceed with stated goal |
+| **User Can Review**          | PR/dry-run available | Changes are inspectable  |
 
 ### Proceed Threshold Checklist
 
 Proceed without asking if:
+
 - [ ] Standard/obvious solution exists
 - [ ] Easily reversible (git, backup)
 - [ ] User can review before finalize
@@ -61,25 +63,26 @@ Proceed without asking if:
 
 ## Decision Matrix
 
-| Reversibility | Ambiguity | Action |
-|---------------|-----------|--------|
-| Reversible | Low | **Proceed** |
-| Reversible | High | **Proceed** with preview |
-| Irreversible | Low | **Proceed** with confirmation |
-| Irreversible | High | **Ask** |
+| Reversibility | Ambiguity | Action                        |
+| ------------- | --------- | ----------------------------- |
+| Reversible    | Low       | **Proceed**                   |
+| Reversible    | High      | **Proceed** with preview      |
+| Irreversible  | Low       | **Proceed** with confirmation |
+| Irreversible  | High      | **Ask**                       |
 
 ## Safety Mechanisms
 
 ### Before Proceeding Autonomously
 
 1. **Dry-run/Preview**: Show proposed action before executing
-2. **Backup First**: Create git branch, backup directory
-3. **Incremental Changes**: Commit small, reviewable chunks
-4. **Document Assumptions**: In commit message or PR description
+1. **Backup First**: Create git branch, backup directory
+1. **Incremental Changes**: Commit small, reviewable chunks
+1. **Document Assumptions**: In commit message or PR description
 
 ### Undo Capability
 
 Always ensure rollback is possible:
+
 - Git operations: `git stash`, backup branches
 - File operations: Copy before modify
 - Data operations: Transaction rollback
@@ -91,11 +94,13 @@ Always ensure rollback is possible:
 **User**: "Delete the old files"
 
 **Analysis**:
+
 - Destructive operation ✗
 - Multiple interpretations ✗
 - No clear standard ✗
 
 **Response**:
+
 ```
 Which files should I delete? I found:
 - Files unchanged >6 months: 23 files
@@ -108,6 +113,7 @@ Which files should I delete? I found:
 **User**: "Add error handling to the parser"
 
 **Analysis**:
+
 - Standard approach exists ✓
 - Easily reversible (git) ✓
 - User can review PR ✓
@@ -119,11 +125,13 @@ Which files should I delete? I found:
 **User**: "Refactor the API layer"
 
 **Analysis**:
+
 - Multiple valid approaches
 - BUT: reversible via git
 - AND: user can review
 
 **Action**:
+
 ```
 Refactoring API layer. Proposed changes:
 
@@ -152,18 +160,19 @@ Preview diff available before merge.
 ## Integration
 
 Combine with:
+
 - `conserve:response-compression` - Direct communication
 - `sanctum:git-workspace-review` - Context gathering
 - `imbue:scope-guard` - Scope management
 
 ## Quick Reference
 
-| Situation | Action |
-|-----------|--------|
-| "Delete X" | **Ask** which X |
-| "Add feature" | **Proceed** with standard approach |
-| "Fix bug" | **Proceed** with obvious fix |
-| "Choose between A/B" | **Ask** for preference |
-| "Optimize query" | **Ask** if multiple approaches |
-| "Format code" | **Proceed** with project style |
-| "Deploy to prod" | **Ask** for confirmation |
+| Situation            | Action                             |
+| -------------------- | ---------------------------------- |
+| "Delete X"           | **Ask** which X                    |
+| "Add feature"        | **Proceed** with standard approach |
+| "Fix bug"            | **Proceed** with obvious fix       |
+| "Choose between A/B" | **Ask** for preference             |
+| "Optimize query"     | **Ask** if multiple approaches     |
+| "Format code"        | **Proceed** with project style     |
+| "Deploy to prod"     | **Ask** for confirmation           |

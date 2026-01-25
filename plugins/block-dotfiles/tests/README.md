@@ -54,7 +54,9 @@ bats tests/test-grep-validate.bats
 Each test suite covers:
 
 ### 1. Blocking Scenarios
+
 Tests that verify the script blocks access to sensitive files:
+
 - `.bashrc`, `.zshrc`, `.bash_profile`, `.zsh_profile`
 - `.env`, `.env.local`, `.env.production`, `.env.development`
 - `.ssh/` directory and SSH keys
@@ -65,18 +67,23 @@ Tests that verify the script blocks access to sensitive files:
 - Nested paths
 
 ### 2. Allowing Scenarios
+
 Tests that verify the script allows normal operations:
+
 - Regular source files
 - Configuration directories
 - Files with similar names (e.g., `environment.js` vs `.env`)
 - Standard project files
 
 ### 3. Input Modes
+
 Each validation script is tested with:
+
 - **Command-line arguments** - Direct testing mode
 - **JSON input via stdin** - Production hook mode
 
 ### 4. Edge Cases
+
 - Empty inputs
 - Missing parameters
 - Malformed JSON
@@ -113,9 +120,9 @@ Each validation script is tested with:
 When adding new sensitive files to block:
 
 1. Add the file to `SENSITIVE_FILES` array in all validation scripts
-2. Add blocking tests for both command-line and JSON modes
-3. Add tests for both simple filename and nested paths
-4. Verify edge cases (similar names that should be allowed)
+1. Add blocking tests for both command-line and JSON modes
+1. Add tests for both simple filename and nested paths
+1. Verify edge cases (similar names that should be allowed)
 
 Example test structure:
 

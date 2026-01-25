@@ -4,14 +4,14 @@
 
 ### When to Use
 
-| Need | Command |
-|------|---------|
-| View PR details | `gh pr view 123` |
-| Create PR | `gh pr create` |
-| View issue | `gh issue view 456` |
-| Create issue | `gh issue create` |
+| Need            | Command                             |
+| --------------- | ----------------------------------- |
+| View PR details | `gh pr view 123`                    |
+| Create PR       | `gh pr create`                      |
+| View issue      | `gh issue view 456`                 |
+| Create issue    | `gh issue create`                   |
 | Check CI status | `gh pr checks 123` or `gh run list` |
-| Any GitHub API | `gh api <endpoint>` |
+| Any GitHub API  | `gh api <endpoint>`                 |
 
 ### Common Commands
 
@@ -63,13 +63,14 @@ gh pr list --json number,title,author
 
 ### Why gh Over Alternatives?
 
-| Alternative | Problem | gh Advantage |
-|-------------|---------|--------------|
-| WebFetch on GitHub | May hit rate limits, requires parsing | Authenticated, structured data |
-| GitHub API directly | Need to handle auth, pagination | Built-in auth and pagination |
-| Web scraping | Fragile, may break | Official CLI, stable API |
+| Alternative         | Problem                               | gh Advantage                   |
+| ------------------- | ------------------------------------- | ------------------------------ |
+| WebFetch on GitHub  | May hit rate limits, requires parsing | Authenticated, structured data |
+| GitHub API directly | Need to handle auth, pagination       | Built-in auth and pagination   |
+| Web scraping        | Fragile, may break                    | Official CLI, stable API       |
 
 **Key benefits:**
+
 - Automatically authenticated (uses your GitHub token)
 - Handles pagination for large result sets
 - Returns structured data with `--json` flag

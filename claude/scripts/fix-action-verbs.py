@@ -9,7 +9,6 @@ Action verb patterns:
 - Setup, Test, Transform, Validate, Verify
 """
 
-import os
 import re
 from pathlib import Path
 
@@ -54,17 +53,48 @@ VERB_MAP = {
 }
 
 ACTION_VERBS = [
-    "Analyze", "Audit", "Build", "Configure", "Create", "Debug", "Deploy",
-    "Design", "Detect", "Execute", "Export", "Generate", "Handle", "Import",
-    "Implement", "Initialize", "Install", "Manage", "Monitor", "Optimize",
-    "Parse", "Plan", "Process", "Profile", "Run", "Scan", "Schedule", "Setup",
-    "Test", "Track", "Transform", "Validate", "Verify", "Visualize"
+    "Analyze",
+    "Audit",
+    "Build",
+    "Configure",
+    "Create",
+    "Debug",
+    "Deploy",
+    "Design",
+    "Detect",
+    "Execute",
+    "Export",
+    "Generate",
+    "Handle",
+    "Import",
+    "Implement",
+    "Initialize",
+    "Install",
+    "Manage",
+    "Monitor",
+    "Optimize",
+    "Parse",
+    "Plan",
+    "Process",
+    "Profile",
+    "Run",
+    "Scan",
+    "Schedule",
+    "Setup",
+    "Test",
+    "Track",
+    "Transform",
+    "Validate",
+    "Verify",
+    "Visualize",
 ]
+
 
 def has_action_verb(description: str) -> bool:
     """Check if description starts with an action verb."""
     first_word = description.strip().split()[0] if description.strip() else ""
     return first_word in ACTION_VERBS
+
 
 def get_action_verb(skill_name: str) -> str:
     """Determine appropriate action verb based on skill name."""
@@ -85,12 +115,13 @@ def get_action_verb(skill_name: str) -> str:
         return "Process"
     return "Execute"  # Default fallback
 
+
 def fix_skill(filepath: Path) -> bool:
     """Fix action verb in skill description."""
     content = filepath.read_text()
 
     # Extract description from frontmatter
-    desc_match = re.search(r'(description: \|?\n)((?:\s+.+\n)+)', content)
+    desc_match = re.search(r"(description: \|?\n)((?:\s+.+\n)+)", content)
     if not desc_match:
         return False
 
@@ -98,7 +129,7 @@ def fix_skill(filepath: Path) -> bool:
     desc_content = desc_match.group(2)
 
     # Get first line of description
-    lines = desc_content.split('\n')
+    lines = desc_content.split("\n")
     first_line = lines[0].strip() if lines else ""
 
     if has_action_verb(first_line):
@@ -113,12 +144,16 @@ def fix_skill(filepath: Path) -> bool:
         parts = first_line.split(" - ", 1)
         new_first = f"{verb} {parts[0].lower()} operations. {parts[1]}"
     else:
-        new_first = f"{verb} {first_line.lower()}" if not first_line[0].isupper() else f"{verb} {first_line[0].lower()}{first_line[1:]}"
+        new_first = (
+            f"{verb} {first_line.lower()}"
+            if not first_line[0].isupper()
+            else f"{verb} {first_line[0].lower()}{first_line[1:]}"
+        )
 
     # Reconstruct description
     indent = "  " if desc_prefix.endswith("|\n") else ""
     lines[0] = indent + new_first
-    new_desc = '\n'.join(lines)
+    new_desc = "\n".join(lines)
 
     new_content = content.replace(desc_match.group(0), desc_prefix + new_desc)
 
@@ -126,6 +161,7 @@ def fix_skill(filepath: Path) -> bool:
         filepath.write_text(new_content)
         return True
     return False
+
 
 def main():
     fixed = 0
@@ -144,6 +180,7 @@ def main():
                 print(f"  ✗ {filepath}: {e}")
 
     print(f"\nFixed {fixed}/{total} skills")
+
 
 if __name__ == "__main__":
     main()

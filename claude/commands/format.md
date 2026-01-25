@@ -5,6 +5,7 @@ allowed-tools: Bash, Edit, Read, Glob
 ---
 
 Detect project languages and run appropriate formatters/linters:
+
 - Python: `uvx ruff format . && uvx ruff check --fix .`
 - JS/TS: `npx @biomejs/biome check --write .`
 - Go: `go fmt ./...`

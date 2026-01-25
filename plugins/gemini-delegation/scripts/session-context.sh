@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 cat <<'EOF'
 GEMINI SUBAGENT AVAILABLE

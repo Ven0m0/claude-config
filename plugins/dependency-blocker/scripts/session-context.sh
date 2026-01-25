@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 # This script provides context to Claude at session start about the dependency blocker plugin.
 # It informs Claude proactively about blocked directories and allowed tools.

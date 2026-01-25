@@ -21,12 +21,12 @@ Guidance on KISS, YAGNI, and SOLID principles with language-specific examples.
 
 ### Guidelines
 
-| Prefer | Avoid |
-|--------|-------|
+| Prefer              | Avoid                           |
+| ------------------- | ------------------------------- |
 | Simple conditionals | Complex regex for simple checks |
-| Explicit code | Magic numbers/strings |
-| Standard patterns | Clever shortcuts |
-| Direct solutions | Over-abstracted layers |
+| Explicit code       | Magic numbers/strings           |
+| Standard patterns   | Clever shortcuts                |
+| Direct solutions    | Over-abstracted layers          |
 
 ### Python Example
 
@@ -69,12 +69,12 @@ fn process(data: &[u8]) -> Result<Vec<u8>, &'static str> {
 
 ### Guidelines
 
-| Do | Don't |
-|----|-------|
-| Solve current problem | Build for hypothetical futures |
+| Do                            | Don't                              |
+| ----------------------------- | ---------------------------------- |
+| Solve current problem         | Build for hypothetical futures     |
 | Add when 3rd use case appears | Create abstractions for 1 use case |
-| Delete dead code | Keep "just in case" code |
-| Minimal viable solution | Premature optimization |
+| Delete dead code              | Keep "just in case" code           |
+| Minimal viable solution       | Premature optimization             |
 
 ### Python Example
 
@@ -239,25 +239,26 @@ class OrderService:
 
 ## Quick Reference
 
-| Principle | Question to Ask | Red Flag |
-|-----------|-----------------|----------|
-| KISS | "Is there a simpler way?" | Complex solution for simple problem |
-| YAGNI | "Do I need this right now?" | Building for hypothetical use cases |
-| SRP | "What's the one reason to change?" | Class doing multiple jobs |
-| OCP | "Can I extend without modifying?" | Switch statements for types |
-| LSP | "Can subtypes replace base types?" | Overridden methods with side effects |
-| ISP | "Does client need all methods?" | Empty method implementations |
-| DIP | "Am I depending on abstractions?" | `new` keyword in business logic |
+| Principle | Question to Ask                    | Red Flag                             |
+| --------- | ---------------------------------- | ------------------------------------ |
+| KISS      | "Is there a simpler way?"          | Complex solution for simple problem  |
+| YAGNI     | "Do I need this right now?"        | Building for hypothetical use cases  |
+| SRP       | "What's the one reason to change?" | Class doing multiple jobs            |
+| OCP       | "Can I extend without modifying?"  | Switch statements for types          |
+| LSP       | "Can subtypes replace base types?" | Overridden methods with side effects |
+| ISP       | "Does client need all methods?"    | Empty method implementations         |
+| DIP       | "Am I depending on abstractions?"  | `new` keyword in business logic      |
 
 ## When Principles Conflict
 
 1. **KISS vs SOLID**: For small projects, KISS wins. Add SOLID patterns as complexity grows.
-2. **YAGNI vs DIP**: Don't add abstractions until you have 2+ implementations.
-3. **Readability vs DRY**: Prefer slight duplication over wrong abstraction.
+1. **YAGNI vs DIP**: Don't add abstractions until you have 2+ implementations.
+1. **Readability vs DRY**: Prefer slight duplication over wrong abstraction.
 
 ## Integration with Code Review
 
 When reviewing code, check:
+
 - [ ] No unnecessary complexity (KISS)
 - [ ] No speculative features (YAGNI)
 - [ ] Each class has single responsibility (SRP)

@@ -9,6 +9,7 @@ Optimize Python scripts using stdlib and strategic external tool integration.
 **Problem**: Find files recursively by extension
 
 **Options**:
+
 ```python
 # Option 1: fd subprocess (fastest: ~10x faster than os.walk)
 import subprocess as sp
@@ -44,6 +45,7 @@ def find_files(root: Path, exts: frozenset[str]) -> list[Path]:
 ```
 
 **Benchmark** (10K files):
+
 - `fd`: 50ms
 - `os.walk`: 500ms
 - `Path.rglob`: 1500ms
@@ -53,6 +55,7 @@ def find_files(root: Path, exts: frozenset[str]) -> list[Path]:
 **Problem**: Read large files efficiently
 
 **Options**:
+
 ```python
 # Small files (<1MB): read_text
 content = Path('file.txt').read_text()
@@ -80,6 +83,7 @@ with path.open('rb') as f:
 **Problem**: Check membership efficiently
 
 **Options**:
+
 ```python
 # List: O(n) lookup
 items = ['a', 'b', 'c']
@@ -99,6 +103,7 @@ if 'a' in counts: pass
 ```
 
 **Benchmark** (1000 items, 10K lookups):
+
 - `list`: 50ms
 - `set`: 0.5ms
 - `frozenset`: 0.5ms
@@ -111,6 +116,7 @@ if 'a' in counts: pass
 **Problem**: Count occurrences
 
 **Options**:
+
 ```python
 from collections import defaultdict, Counter
 
@@ -135,6 +141,7 @@ counts = Counter(items)
 **Problem**: Remove duplicates while preserving order
 
 **Options**:
+
 ```python
 # set (fastest but loses order)
 unique = list(set(items))
@@ -156,6 +163,7 @@ unique = [x for x in items if x not in seen and not seen.add(x)]
 **Problem**: Replace substrings
 
 **Options**:
+
 ```python
 # str.replace (fastest for simple literal replacements)
 result = text.replace('old', 'new')
@@ -172,6 +180,7 @@ result = pattern.sub('NUM', text)
 ```
 
 **Benchmark** (1MB text):
+
 - `str.replace`: 5ms
 - `str.translate`: 3ms
 - `re.sub` (compiled): 50ms
@@ -184,6 +193,7 @@ result = pattern.sub('NUM', text)
 **Problem**: Split text efficiently
 
 **Options**:
+
 ```python
 # str.split (fastest, use when possible)
 parts = text.split(',')
@@ -229,11 +239,13 @@ lines = [line.strip() for line in f if line]
 ### When to Shell Out
 
 **Use subprocess when**:
+
 - Tool is 5-10x faster than Python
 - Pure Python requires complex algorithm
 - Tool is commonly installed (fd, rg, git)
 
 **Stay in Python when**:
+
 - Simple operations (string replace, file read)
 - Need error handling/retry logic
 - Subprocess overhead > processing time
@@ -317,6 +329,7 @@ if key in lookup: ...
 **Problem**: Parse/serialize JSON
 
 **Options**:
+
 ```python
 # json (stdlib): baseline
 import json
@@ -330,6 +343,7 @@ result = orjson.dumps(data)  # Returns bytes
 ```
 
 **Benchmark** (1MB JSON):
+
 - `json.loads`: 30ms
 - `orjson.loads`: 5ms
 - `json.dumps`: 25ms
@@ -382,14 +396,14 @@ assert x is y  # True
 
 ## Summary: Quick Reference
 
-| Task | Fastest | Fallback |
-|------|---------|----------|
-| File finding | `fd` subprocess | `os.walk` |
-| Text search | `rg` subprocess | `str.find` / `re.search` |
-| Lookups | `frozenset` / `dict` | Never `list` |
-| Replace | `str.replace` | `str.translate` |
-| Regex | Precompile | One-time `re.sub` |
-| Large files | Generators | Never full read |
-| JSON | `json` (stdlib) | `orjson` (high-throughput) |
-| Dataclasses | `slots=True` | Regular class |
-| Complexity | O(n) target | Avoid O(n²) |
+| Task         | Fastest              | Fallback                   |
+| ------------ | -------------------- | -------------------------- |
+| File finding | `fd` subprocess      | `os.walk`                  |
+| Text search  | `rg` subprocess      | `str.find` / `re.search`   |
+| Lookups      | `frozenset` / `dict` | Never `list`               |
+| Replace      | `str.replace`        | `str.translate`            |
+| Regex        | Precompile           | One-time `re.sub`          |
+| Large files  | Generators           | Never full read            |
+| JSON         | `json` (stdlib)      | `orjson` (high-throughput) |
+| Dataclasses  | `slots=True`         | Regular class              |
+| Complexity   | O(n) target          | Avoid O(n²)                |

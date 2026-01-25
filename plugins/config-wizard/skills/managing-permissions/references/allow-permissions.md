@@ -1,6 +1,7 @@
 # Allow Permissions
 
 Allow rules grant automatic permission for tool operations without user confirmation. Use them for safe, routine operations that are:
+
 - **Non-destructive** - Don't delete, publish, or irreversibly modify
 - **Reversible** - Can be undone (git protects source code edits)
 - **Non-sensitive** - Don't access credentials, secrets, or private data
@@ -8,6 +9,7 @@ Allow rules grant automatic permission for tool operations without user confirma
 ## What to Allow
 
 ### Reading and Editing Source Code
+
 The agent's primary job is to work with your code:
 
 ```json
@@ -25,6 +27,7 @@ The agent's primary job is to work with your code:
 Git protects you - you can review and revert any changes.
 
 ### Read-Only Commands
+
 Safe commands that just view information:
 
 ```json
@@ -37,6 +40,7 @@ Safe commands that just view information:
 ```
 
 ### Non-Destructive Development Commands
+
 Operations that don't modify source or publish anything:
 
 ```json
@@ -53,6 +57,7 @@ Operations that don't modify source or publish anything:
 ## What NOT to Allow
 
 ### Never Allow Sensitive Data Access
+
 ```json
 {
   "deny": [
@@ -65,6 +70,7 @@ Operations that don't modify source or publish anything:
 ```
 
 ### Never Allow Destructive Operations
+
 ```json
 {
   "deny": [
@@ -76,6 +82,7 @@ Operations that don't modify source or publish anything:
 ```
 
 ### Require Review for Important Operations
+
 Use `ask` instead of `allow`:
 
 ```json
@@ -115,6 +122,6 @@ Use `ask` instead of `allow`:
 ## Key Principles
 
 1. **Be specific** - Avoid broad wildcards like `Bash(*)` or `Read(**)`
-2. **Layer protections** - Use `allow`, `ask`, and `deny` together
-3. **Trust git** - It's your safety net for source code changes
-4. **When uncertain** - Use `ask` instead of `allow`
+1. **Layer protections** - Use `allow`, `ask`, and `deny` together
+1. **Trust git** - It's your safety net for source code changes
+1. **When uncertain** - Use `ask` instead of `allow`

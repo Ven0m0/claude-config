@@ -4,13 +4,13 @@ category: utilities-debugging
 ---
 
 Check fact accuracy by examining:
+
 1. Actual code (most trustworthy)
-2. README.md and docs/
-3. Config files (package.json, etc.)
+1. README.md and docs/
+1. Config files (package.json, etc.)
 
 Report: ✅ Correct / ❌ Incorrect / ⚠️ Partially correct / ❓ Cannot determine
 Provide evidence: file paths, code snippets, notes explaining verdict.
-
 
 ### Report Format
 

@@ -5,6 +5,7 @@
 ## Overview
 
 The **gemini-delegation** plugin adds a new subagent to Claude Code that enables context-segregated delegation to Gemini AI for:
+
 - Web research and real-time information gathering
 - Fact-checking current events
 - Information beyond Claude's knowledge cutoff
@@ -15,6 +16,7 @@ The **gemini-delegation** plugin adds a new subagent to Claude Code that enables
 ### 🤖 Dedicated Subagent
 
 A specialized `gemini` subagent that:
+
 - Runs in **isolated context** for clean delegation
 - Has access only to the **Bash tool** (minimal surface area)
 - Invokes Gemini CLI with structured JSON output
@@ -23,6 +25,7 @@ A specialized `gemini` subagent that:
 ### 🔄 Context Segregation
 
 The subagent architecture provides:
+
 - **No context pollution** - research happens in a separate conversation
 - **Focused execution** - subagent has a single purpose
 - **Efficient token usage** - only findings return to main context
@@ -31,6 +34,7 @@ The subagent architecture provides:
 ### 📡 SessionStart Hook
 
 Automatically informs Claude at session start about:
+
 - When to use the Gemini subagent
 - How to invoke it via the Task tool
 - Best practices for delegation
@@ -48,6 +52,7 @@ gemini auth login
 ```
 
 Verify installation:
+
 ```bash
 gemini -p "Hello" -o text
 ```
@@ -55,11 +60,13 @@ gemini -p "Hello" -o text
 ## Installation
 
 ### Option 1: From Marketplace (if published)
+
 ```bash
 /plugin install gemini-delegation@wombat9000-marketplace
 ```
 
 ### Option 2: Local Development
+
 ```bash
 # Clone this repository
 cd ~/.claude/plugins/
@@ -75,6 +82,7 @@ ln -s /path/to/claude-plugins/plugins/gemini-delegation gemini-delegation
 When you ask Claude about current events or recent information, it will automatically delegate to the Gemini subagent:
 
 **Example conversation:**
+
 ```
 User: What are the latest security vulnerabilities in Python 3.13?
 
@@ -99,6 +107,7 @@ User: Use the Gemini subagent to research the latest developments in quantum com
 ### 1. Main Claude Instance
 
 When a research task is identified:
+
 ```python
 Task(
   subagent_type="gemini",
@@ -111,23 +120,25 @@ Task(
 ### 2. Gemini Subagent Execution
 
 The subagent (running in isolated context):
+
 1. Receives the research prompt
-2. Invokes Gemini CLI:
+1. Invokes Gemini CLI:
    ```bash
    gemini -p "research query" -o json -y 2>/dev/null
    ```
-3. Parses the JSON response:
+1. Parses the JSON response:
    ```json
    {
      "response": "Gemini's findings...",
      "stats": { ... }
    }
    ```
-4. Returns findings in a structured format
+1. Returns findings in a structured format
 
 ### 3. Main Claude Synthesis
 
 Claude receives the subagent's report and:
+
 - Integrates findings with its own knowledge
 - Provides additional analysis or context
 - Formats the final response for the user
@@ -190,15 +201,16 @@ gemini -p "query" -o json --allowed-tools web_search 2>/dev/null
 
 ### vs. Direct Gemini Invocation
 
-| Approach | Context | Flexibility | Token Efficiency |
-|----------|---------|-------------|------------------|
-| Direct Bash call | Pollutes main context | Low | Poor |
-| Slash command | Main context | Medium | Poor |
-| **Subagent** | **Isolated** | **High** | **Excellent** |
+| Approach         | Context               | Flexibility | Token Efficiency |
+| ---------------- | --------------------- | ----------- | ---------------- |
+| Direct Bash call | Pollutes main context | Low         | Poor             |
+| Slash command    | Main context          | Medium      | Poor             |
+| **Subagent**     | **Isolated**          | **High**    | **Excellent**    |
 
 ### Context Segregation Example
 
 **Without Subagent (Direct Call):**
+
 ```json
 [Main context: 50k tokens]
 + Gemini CLI output: 5k tokens
@@ -207,6 +219,7 @@ gemini -p "query" -o json --allowed-tools web_search 2>/dev/null
 ```
 
 **With Subagent:**
+
 ```json
 [Main context: 50k tokens]
 [Subagent context: 8k tokens - separate]
@@ -219,29 +232,34 @@ gemini -p "query" -o json --allowed-tools web_search 2>/dev/null
 ### Good Use Cases ✅
 
 1. **Current Events**
+
    - "What happened in the latest SpaceX launch?"
    - "What are today's top tech news stories?"
 
-2. **Recent Software Releases**
+1. **Recent Software Releases**
+
    - "What's new in Python 3.13?"
    - "Has Rust 1.75 been released?"
 
-3. **Real-Time Data**
+1. **Real-Time Data**
+
    - "Current Bitcoin price and market trends"
    - "Latest npm package versions for React"
 
-4. **Fact-Checking**
+1. **Fact-Checking**
+
    - "Verify if the Bun 1.0 release includes native TypeScript support"
 
-5. **Web Research**
+1. **Web Research**
+
    - "Compare the latest benchmarks for LLM inference frameworks"
 
 ### Not Ideal For ❌
 
 1. **Code Generation** - Claude excels at this
-2. **Local File Operations** - Use Claude's file tools
-3. **Historical Information** - Within Claude's knowledge cutoff
-4. **Complex Multi-Step Tasks** - Better handled by Claude directly
+1. **Local File Operations** - Use Claude's file tools
+1. **Historical Information** - Within Claude's knowledge cutoff
+1. **Complex Multi-Step Tasks** - Better handled by Claude directly
 
 ## Advanced Usage
 
@@ -271,6 +289,7 @@ Claude:
 ### Subagent Not Available
 
 Check if the plugin is installed:
+
 ```bash
 /agents list
 # Should show "gemini" in the list
@@ -279,6 +298,7 @@ Check if the plugin is installed:
 ### "gemini: command not found"
 
 Ensure Gemini CLI is installed:
+
 ```bash
 which gemini
 npm install -g @google/generative-ai-cli
@@ -287,6 +307,7 @@ npm install -g @google/generative-ai-cli
 ### Authentication Errors
 
 Re-authenticate with Gemini:
+
 ```bash
 gemini auth login
 ```
@@ -294,6 +315,7 @@ gemini auth login
 ### Subagent Returns Errors
 
 Test Gemini CLI directly:
+
 ```bash
 gemini -p "test query" -o json 2>/dev/null
 ```
@@ -301,6 +323,7 @@ gemini -p "test query" -o json 2>/dev/null
 ### Context Hook Not Showing
 
 Verify the hook executes:
+
 ```bash
 ./plugins/gemini-delegation/scripts/session-context.sh
 ```
@@ -322,6 +345,7 @@ bash plugins/gemini-delegation/scripts/session-context.sh
 ### Editing the Subagent Prompt
 
 Edit [agents/gemini.md](agents/gemini.md) to customize:
+
 - System instructions
 - Gemini CLI flags
 - Output formatting
@@ -348,19 +372,23 @@ model: haiku
 Contributions welcome! Potential enhancements:
 
 1. **Additional Subagents**
+
    - `gemini-summarize` - URL/document summarization
    - `gemini-debug` - Debug assistance with web research
    - `gemini-benchmark` - Performance comparison research
 
-2. **PreToolUse Hooks**
+1. **PreToolUse Hooks**
+
    - Auto-suggest Gemini when Claude uses WebSearch/WebFetch
    - Transparent delegation for web-related tools
 
-3. **Output Formatters**
+1. **Output Formatters**
+
    - Helper scripts to parse Gemini JSON into specific formats
    - Structured data extraction utilities
 
-4. **Test Suite**
+1. **Test Suite**
+
    - BATS tests for subagent invocation
    - Mock Gemini CLI for CI/CD testing
 
@@ -375,6 +403,6 @@ Contributions welcome! Potential enhancements:
 
 [Your License Here]
 
----
+______________________________________________________________________
 
 **Note:** This plugin requires an active Gemini API key and the Gemini CLI to be installed. Costs incurred from Gemini API usage are separate from Claude Code usage.

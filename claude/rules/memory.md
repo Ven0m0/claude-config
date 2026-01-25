@@ -14,12 +14,12 @@ Search past work, decisions, and context across sessions. Follow the 3-layer wor
 
 ### Tools
 
-| Tool | Purpose | Key Params |
-|------|---------|------------|
-| `search` | Find observations | `query`, `limit`, `type`, `project`, `dateStart`, `dateEnd` |
-| `timeline` | Context around result | `anchor` (ID) or `query`, `depth_before`, `depth_after` |
-| `get_observations` | Full details | `ids` (array, required) |
-| `save_memory` | Save manually | `text` (required), `title`, `project` |
+| Tool               | Purpose               | Key Params                                                  |
+| ------------------ | --------------------- | ----------------------------------------------------------- |
+| `search`           | Find observations     | `query`, `limit`, `type`, `project`, `dateStart`, `dateEnd` |
+| `timeline`         | Context around result | `anchor` (ID) or `query`, `depth_before`, `depth_after`     |
+| `get_observations` | Full details          | `ids` (array, required)                                     |
+| `save_memory`      | Save manually         | `text` (required), `title`, `project`                       |
 
 ### Search Filters
 
@@ -47,6 +47,7 @@ save_memory(text="Chose PostgreSQL for JSONB support", title="DB Decision")
 ### Privacy
 
 Use `<private>` tags to exclude content from storage:
+
 ```
 <private>API_KEY=secret</private>
 ```

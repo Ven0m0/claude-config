@@ -102,17 +102,26 @@ Result: Completed with customized configuration applied
 
 - [Relevant documentation](https://example.com)
 - [API reference](https://example.com/api)
-"""
+""",
 }
 
 
 # === UTILITY FUNCTIONS ===
 
+
 def find_skill_files(root: Path, category: str = None) -> List[Path]:
     """Find SKILL.md files, optionally filtered by category."""
     excluded_dirs = {
-        "archive", "backups", "backup", ".git", "node_modules",
-        "__pycache__", ".venv", "010-archive", "000-docs", "002-workspaces",
+        "archive",
+        "backups",
+        "backup",
+        ".git",
+        "node_modules",
+        "__pycache__",
+        ".venv",
+        "010-archive",
+        "000-docs",
+        "002-workspaces",
     }
     results = []
 
@@ -145,7 +154,7 @@ def find_skill_files(root: Path, category: str = None) -> List[Path]:
 
 def parse_skill(path: Path) -> Tuple[dict, str, str]:
     """Parse SKILL.md into (frontmatter_dict, body, raw_content)."""
-    content = path.read_text(encoding='utf-8')
+    content = path.read_text(encoding="utf-8")
     m = RE_FRONTMATTER.match(content)
     if not m:
         raise ValueError("No frontmatter found")
@@ -164,16 +173,16 @@ def serialize_skill(fm: dict, body: str) -> str:
         if key == "description" and isinstance(value, str) and len(value) > 80:
             # Use literal block style for long descriptions
             lines.append(f"{key}: |")
-            for desc_line in value.split('\n'):
+            for desc_line in value.split("\n"):
                 lines.append(f"  {desc_line}")
         elif isinstance(value, str):
-            if '\n' in value:
+            if "\n" in value:
                 lines.append(f"{key}: |")
-                for v_line in value.split('\n'):
+                for v_line in value.split("\n"):
                     lines.append(f"  {v_line}")
             else:
                 # Quote if contains special chars
-                if any(c in value for c in ':{}[]&*#?|-<>=!%@'):
+                if any(c in value for c in ":{}[]&*#?|-<>=!%@"):
                     lines.append(f'{key}: "{value}"')
                 else:
                     lines.append(f"{key}: {value}")
@@ -184,29 +193,29 @@ def serialize_skill(fm: dict, body: str) -> str:
     lines.append("")
     lines.append(body.lstrip())
 
-    return '\n'.join(lines)
+    return "\n".join(lines)
 
 
 def infer_use_when(name: str, description: str) -> str:
     """Infer a 'Use when' phrase from skill name and description."""
-    name_words = name.replace('-', ' ').replace('_', ' ')
+    name_words = name.replace("-", " ").replace("_", " ")
 
     # Common patterns
-    if 'api' in name.lower():
-        return f"Use when working with APIs or building integrations."
-    elif 'test' in name.lower():
-        return f"Use when writing or running tests."
-    elif 'deploy' in name.lower():
-        return f"Use when deploying applications or services."
-    elif 'config' in name.lower():
-        return f"Use when configuring systems or services."
-    elif 'monitor' in name.lower():
-        return f"Use when monitoring systems or services."
-    elif 'debug' in name.lower():
-        return f"Use when debugging issues or troubleshooting."
-    elif 'create' in name.lower() or 'generate' in name.lower():
+    if "api" in name.lower():
+        return "Use when working with APIs or building integrations."
+    elif "test" in name.lower():
+        return "Use when writing or running tests."
+    elif "deploy" in name.lower():
+        return "Use when deploying applications or services."
+    elif "config" in name.lower():
+        return "Use when configuring systems or services."
+    elif "monitor" in name.lower():
+        return "Use when monitoring systems or services."
+    elif "debug" in name.lower():
+        return "Use when debugging issues or troubleshooting."
+    elif "create" in name.lower() or "generate" in name.lower():
         return f"Use when creating or generating {name_words}."
-    elif 'analyze' in name.lower() or 'audit' in name.lower():
+    elif "analyze" in name.lower() or "audit" in name.lower():
         return f"Use when analyzing or auditing {name_words}."
     else:
         return f"Use when working with {name_words} functionality."
@@ -214,8 +223,8 @@ def infer_use_when(name: str, description: str) -> str:
 
 def infer_trigger_with(name: str, description: str) -> str:
     """Infer a 'Trigger with' phrase from skill name and description."""
-    name_words = name.replace('-', ' ').replace('_', ' ')
-    name_parts = name.split('-')
+    name_words = name.replace("-", " ").replace("_", " ")
+    name_parts = name.split("-")
 
     # Generate trigger phrases
     triggers = []
@@ -225,21 +234,21 @@ def infer_trigger_with(name: str, description: str) -> str:
         triggers.append(f"{name_parts[0]} {name_parts[-1]}")
 
     # Add action-based trigger
-    if 'create' in name.lower():
+    if "create" in name.lower():
         triggers.append(f"create {name_words.replace('create', '').strip()}")
-    elif 'analyze' in name.lower():
+    elif "analyze" in name.lower():
         triggers.append(f"analyze {name_words.replace('analyze', '').strip()}")
-    elif 'deploy' in name.lower():
+    elif "deploy" in name.lower():
         triggers.append(f"deploy {name_words.replace('deploy', '').strip()}")
 
     # Ensure we have at least 2-3 triggers
     if len(triggers) < 2:
-        triggers.append(name.replace('-', ' '))
+        triggers.append(name.replace("-", " "))
     if len(triggers) < 3:
         triggers.append(name_parts[0] if name_parts else name)
 
     # Format
-    trigger_list = ', '.join(f'"{t}"' for t in triggers[:3])
+    trigger_list = ", ".join(f'"{t}"' for t in triggers[:3])
     return f"Trigger with phrases like {trigger_list}."
 
 
@@ -257,7 +266,9 @@ def add_section(body: str, section_name: str, template: str) -> str:
     # Find insertion point (before ## Resources if exists, else at end)
     if has_section(body, "Resources"):
         pattern = r"(^##\s+Resources)"
-        body = re.sub(pattern, template.rstrip() + "\n\n\\1", body, count=1, flags=re.MULTILINE)
+        body = re.sub(
+            pattern, template.rstrip() + "\n\n\\1", body, count=1, flags=re.MULTILINE
+        )
     else:
         body = body.rstrip() + "\n\n" + template.strip() + "\n"
 
@@ -265,6 +276,7 @@ def add_section(body: str, section_name: str, template: str) -> str:
 
 
 # === FIX FUNCTIONS ===
+
 
 def fix_skill(path: Path, dry_run: bool = False) -> Dict[str, Any]:
     """
@@ -276,7 +288,7 @@ def fix_skill(path: Path, dry_run: bool = False) -> Dict[str, Any]:
         "fixed": False,
         "changes": [],
         "errors": [],
-        "needs_manual": []
+        "needs_manual": [],
     }
 
     try:
@@ -325,8 +337,15 @@ def fix_skill(path: Path, dry_run: bool = False) -> Dict[str, Any]:
             modified = True
 
     # === DETECT: Missing sections (manual review needed) ===
-    required_sections = ["Overview", "Prerequisites", "Instructions", "Output",
-                        "Error Handling", "Examples", "Resources"]
+    required_sections = [
+        "Overview",
+        "Prerequisites",
+        "Instructions",
+        "Output",
+        "Error Handling",
+        "Examples",
+        "Resources",
+    ]
     for section in required_sections:
         if not has_section(body, section):
             result["needs_manual"].append(f"missing_section:{section}")
@@ -334,7 +353,7 @@ def fix_skill(path: Path, dry_run: bool = False) -> Dict[str, Any]:
     # === WRITE CHANGES ===
     if modified and not dry_run:
         new_content = serialize_skill(fm, body)
-        path.write_text(new_content, encoding='utf-8')
+        path.write_text(new_content, encoding="utf-8")
         result["fixed"] = True
 
     return result
@@ -342,11 +361,7 @@ def fix_skill(path: Path, dry_run: bool = False) -> Dict[str, Any]:
 
 def generate_template(path: Path, output_dir: Path) -> Dict[str, Any]:
     """Generate a template file for manual review of missing sections."""
-    result = {
-        "path": str(path),
-        "template_path": None,
-        "sections_needed": []
-    }
+    result = {"path": str(path), "template_path": None, "sections_needed": []}
 
     try:
         fm, body, _ = parse_skill(path)
@@ -357,14 +372,25 @@ def generate_template(path: Path, output_dir: Path) -> Dict[str, Any]:
     name = fm.get("name", path.parent.name)
     sections_to_add = []
 
-    required_sections = ["Overview", "Prerequisites", "Instructions", "Output",
-                        "Error Handling", "Examples", "Resources"]
+    required_sections = [
+        "Overview",
+        "Prerequisites",
+        "Instructions",
+        "Output",
+        "Error Handling",
+        "Examples",
+        "Resources",
+    ]
 
     for section in required_sections:
         if not has_section(body, section):
-            template = SECTION_TEMPLATES.get(section, f"## {section}\n\nContent needed.\n")
+            template = SECTION_TEMPLATES.get(
+                section, f"## {section}\n\nContent needed.\n"
+            )
             template = template.replace("{skill_name}", name)
-            template = template.replace("{capability_summary}", "specialized functionality")
+            template = template.replace(
+                "{capability_summary}", "specialized functionality"
+            )
             sections_to_add.append(template)
             result["sections_needed"].append(section)
 
@@ -377,7 +403,7 @@ def generate_template(path: Path, output_dir: Path) -> Dict[str, Any]:
         template_content += "\n".join(sections_to_add)
 
         template_path.parent.mkdir(parents=True, exist_ok=True)
-        template_path.write_text(template_content, encoding='utf-8')
+        template_path.write_text(template_content, encoding="utf-8")
         result["template_path"] = str(template_path)
 
     return result
@@ -385,39 +411,34 @@ def generate_template(path: Path, output_dir: Path) -> Dict[str, Any]:
 
 # === MAIN ===
 
+
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Batch fix skill compliance gaps"
-    )
+    parser = argparse.ArgumentParser(description="Batch fix skill compliance gaps")
     parser.add_argument(
         "--auto-fix",
         action="store_true",
-        help="Apply safe auto-fixes (author, license, description phrases)"
+        help="Apply safe auto-fixes (author, license, description phrases)",
     )
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Show what would be fixed without making changes"
+        help="Show what would be fixed without making changes",
     )
     parser.add_argument(
-        "--category",
-        help="Filter by category (e.g., standalone, saas-packs)"
+        "--category", help="Filter by category (e.g., standalone, saas-packs)"
     )
     parser.add_argument(
         "--generate-templates",
         action="store_true",
-        help="Generate template files for missing sections"
+        help="Generate template files for missing sections",
     )
     parser.add_argument(
-        "--output", "-o",
+        "--output",
+        "-o",
         default="templates/skill-sections",
-        help="Output directory for templates"
+        help="Output directory for templates",
     )
-    parser.add_argument(
-        "--limit",
-        type=int,
-        help="Limit number of skills to process"
-    )
+    parser.add_argument("--limit", type=int, help="Limit number of skills to process")
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parents[1]
@@ -428,7 +449,7 @@ def main() -> int:
         return 1
 
     if args.limit:
-        skills = skills[:args.limit]
+        skills = skills[: args.limit]
 
     print(f"Processing {len(skills)} skills...")
 
@@ -479,5 +500,5 @@ def main() -> int:
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

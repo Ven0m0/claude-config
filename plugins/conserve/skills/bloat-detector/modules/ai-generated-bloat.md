@@ -12,8 +12,9 @@ Detect bloat patterns specific to AI-assisted coding: vibe coding artifacts, slo
 ## Why This Module Exists
 
 AI coding has created qualitatively different bloat than traditional development:
+
 - **2024**: First year copy/pasted lines exceeded refactored lines (GitClear)
-- **Refactoring**: Dropped from 25% (2021) to <10% (2024), predicted 3% (2025)
+- **Refactoring**: Dropped from 25% (2021) to \<10% (2024), predicted 3% (2025)
 - **Duplication**: 8x increase in 5+ line code blocks
 
 ## AI Bloat Patterns
@@ -209,9 +210,9 @@ rationale: "Vibe coding signature - large addition without tests or abstraction"
 When AI bloat is detected, recommend:
 
 1. **Refactoring Budget**: Add 25 lines of refactoring for every 100 lines added
-2. **Test Requirement**: No merge without proportional test coverage
-3. **Understanding Gate**: Require explanation of non-trivial changes
-4. **24-Hour Rule**: Sleep before adopting new AI-suggested patterns
+1. **Test Requirement**: No merge without proportional test coverage
+1. **Understanding Gate**: Require explanation of non-trivial changes
+1. **24-Hour Rule**: Sleep before adopting new AI-suggested patterns
 
 ## Related
 

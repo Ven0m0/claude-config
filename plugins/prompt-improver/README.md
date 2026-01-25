@@ -7,6 +7,7 @@ A UserPromptSubmit hook that enriches vague prompts before Claude Code executes 
 ## What It Does
 
 Intercepts prompts and evaluates clarity. Claude then:
+
 - Checks if the prompt is clear using conversation history
 - For clear prompts: proceeds immediately (zero overhead)
 - For vague prompts: invokes the `prompt-improver` skill to create research plan, gather context, and ask 1-6 grounded questions
@@ -50,11 +51,13 @@ sequenceDiagram
 ### Option 1: Via Marketplace (Recommended)
 
 **1. Add the marketplace:**
+
 ```bash
 claude plugin marketplace add severity1/severity1-marketplace
 ```
 
 **2. Install the plugin:**
+
 ```bash
 claude plugin install prompt-improver@severity1-marketplace
 ```
@@ -66,12 +69,14 @@ Verify installation with `/plugin` command. You should see the prompt-improver p
 ### Option 2: Local Plugin Installation (Recommended for Development)
 
 **1. Clone the repository:**
+
 ```bash
 git clone https://github.com/severity1/claude-code-prompt-improver.git
 cd claude-code-prompt-improver
 ```
 
 **2. Add the local marketplace:**
+
 ```bash
 claude plugin marketplace add /absolute/path/to/claude-code-prompt-improver/.dev-marketplace/.claude-plugin/marketplace.json
 ```
@@ -79,6 +84,7 @@ claude plugin marketplace add /absolute/path/to/claude-code-prompt-improver/.dev
 Replace `/absolute/path/to/` with the actual path where you cloned the repository.
 
 **3. Install the plugin:**
+
 ```bash
 claude plugin install prompt-improver@local-dev
 ```
@@ -90,12 +96,14 @@ Verify installation with `/plugin` command. You should see "1 plugin available, 
 ### Option 3: Manual Installation
 
 **1. Copy the hook:**
+
 ```bash
 cp scripts/improve-prompt.py ~/.claude/hooks/
 chmod +x ~/.claude/hooks/improve-prompt.py
 ```
 
 **2. Update `~/.claude/settings.json`:**
+
 ```json
 {
   "hooks": {
@@ -116,12 +124,14 @@ chmod +x ~/.claude/hooks/improve-prompt.py
 ## Usage
 
 **Normal use:**
+
 ```bash
 claude "fix the bug"      # Hook evaluates, may ask questions
 claude "add tests"        # Hook evaluates, may ask questions
 ```
 
 **Bypass prefixes:**
+
 ```bash
 claude "* add dark mode"                    # * = skip evaluation
 claude "/help"                              # / = slash commands bypass
@@ -129,11 +139,13 @@ claude "# remember to use rg over grep"     # # = memorize bypass
 ```
 
 **Vague prompt:**
+
 ```bash
 $ claude "fix the error"
 ```
 
 Claude asks:
+
 ```
 Which error needs fixing?
   ○ TypeError in src/components/Map.tsx (recent change)
@@ -144,6 +156,7 @@ Which error needs fixing?
 You select an option, Claude proceeds with full context.
 
 **Clear prompt:**
+
 ```bash
 $ claude "Fix TypeError in src/components/Map.tsx line 127 where mapboxgl.Map constructor is missing container option"
 ```
@@ -163,6 +176,7 @@ Claude proceeds immediately without questions.
 **v0.4.0:** Skill-based architecture with hook-level evaluation.
 
 **Hook (scripts/improve-prompt.py) - Evaluation Orchestrator:**
+
 - Intercepts via stdin/stdout JSON (~70 lines)
 - Handles bypass prefixes: `*`, `/`, `#`
 - Wraps prompts with evaluation instructions (~189 tokens)
@@ -170,6 +184,7 @@ Claude proceeds immediately without questions.
 - If vague: Instructs Claude to invoke `prompt-improver` skill
 
 **Skill (skills/prompt-improver/) - Research & Question Logic:**
+
 - **SKILL.md**: Research and question workflow (~170 lines)
   - Assumes prompt already determined vague by hook
   - 4-phase process: Research → Questions → Clarify → Execute
@@ -180,26 +195,30 @@ Claude proceeds immediately without questions.
   - `examples.md`: Real transformations (200-300 lines)
 
 **Flow for Clear Prompts:**
+
 1. Hook wraps with evaluation prompt (~189 tokens)
-2. Claude evaluates: prompt is clear
-3. Claude proceeds immediately (no skill invocation)
-4. **Total overhead: ~189 tokens**
+1. Claude evaluates: prompt is clear
+1. Claude proceeds immediately (no skill invocation)
+1. **Total overhead: ~189 tokens**
 
 **Flow for Vague Prompts:**
+
 1. Hook wraps with evaluation prompt (~189 tokens)
-2. Claude evaluates: prompt is vague
-3. Claude invokes `prompt-improver` skill
-4. Skill loads research/question guidance
-5. Claude creates research plan, gathers context, asks questions
-6. **Total overhead: ~189 tokens + skill load**
+1. Claude evaluates: prompt is vague
+1. Claude invokes `prompt-improver` skill
+1. Skill loads research/question guidance
+1. Claude creates research plan, gathers context, asks questions
+1. **Total overhead: ~189 tokens + skill load**
 
 **Progressive Disclosure Benefits:**
+
 - Clear prompts: Never load skill (zero skill overhead)
 - Vague prompts: Only load skill and relevant reference files
 - Detailed guidance available without bloating all prompts
 - Zero context penalty for unused reference materials
 
 **Why main session (not subagent)?**
+
 - Has conversation history
 - No redundant exploration
 - More transparent
@@ -207,6 +226,7 @@ Claude proceeds immediately without questions.
 
 **Manual Skill Invocation:**
 You can also invoke the skill manually without the hook:
+
 ```json
 Use the prompt-improver skill to research and clarify: "add authentication"
 ```
@@ -222,11 +242,13 @@ Use the prompt-improver skill to research and clarify: "add authentication"
 - **Trade-off:** Minimal overhead for better first-attempt results
 
 **Clear prompts benefit:**
+
 - Evaluation happens in hook (~189 tokens)
 - Claude proceeds immediately (no skill load)
 - Zero skill overhead for clear prompts
 
 **Vague prompts:**
+
 - Evaluation in hook (~189 tokens)
 - Skill loads only when needed for research/questions
 - Progressive disclosure: reference files load on-demand

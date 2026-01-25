@@ -4,13 +4,13 @@ category: utilities-debugging
 ---
 
 Analyze error and provide:
+
 1. Root cause identification
-2. Resolution time estimate (🚀<5min / ⚡<30min / 🔧<2hr / 🔬>4hr)
-3. Immediate solution with code example
-4. Prevention recommendations
+1. Resolution time estimate (🚀\<5min / ⚡\<30min / 🔧\<2hr / 🔬>4hr)
+1. Immediate solution with code example
+1. Prevention recommendations
 
 Check error against common patterns (null refs, module not found, CORS, syntax errors, etc).
-
 
 ### Collaboration with Claude
 
@@ -134,16 +134,19 @@ Common Errors and Immediate Solutions
 #### Phase 2: Root Cause Analysis
 
 1. **Identify symptoms**
+
    - Exact error message
    - When and how it happens
    - What's affected
 
-2. **Find root causes**
+1. **Find root causes**
+
    - Use 5 Whys analysis
    - Check dependencies
    - Compare environments
 
-3. **Test your theory**
+1. **Test your theory**
+
    - Create minimal repro
    - Isolate the issue
    - Confirm the cause
@@ -259,16 +262,16 @@ Must check (high):
 - **Absolutely prohibited**: Making judgments based only on part of an error message, applying Stack Overflow solutions without verification
 - **Exception conditions**: Temporary workarounds are only allowed under these 3 conditions:
   1. Emergency response in production environment (root solution required within 24 hours)
-  2. External service failures (alternative means while waiting for recovery)
-  3. Known framework bugs (waiting for fixed version release)
+  1. External service failures (alternative means while waiting for recovery)
+  1. Known framework bugs (waiting for fixed version release)
 - **Recommendation**: Prioritize identifying root causes and avoid superficial fixes
 
 ### Best Practices
 
 1. **Complete information collection**: Check error messages from beginning to end
-2. **Reproducibility confirmation**: Prioritize creating minimal reproduction code
-3. **Step-by-step approach**: Start with small fixes and verify
-4. **Documentation**: Record the solution process for knowledge sharing
+1. **Reproducibility confirmation**: Prioritize creating minimal reproduction code
+1. **Step-by-step approach**: Start with small fixes and verify
+1. **Documentation**: Record the solution process for knowledge sharing
 
 #### Common Pitfalls
 

@@ -38,6 +38,7 @@ These commands only read metadata and never: read file contents, modify state, o
 **Note:** `git tag` without arguments lists tags (safe), but `git tag <name>` creates tags (should use "ask" - see table below).
 
 **Why safe:**
+
 - No file content access (can't read secrets)
 - No destructive operations (can't lose data)
 - No remote modifications (can't affect others)
@@ -116,35 +117,35 @@ These commands have specific risks but can be used safely with proper safeguards
 
 ## Git Commands Reference
 
-| Command | Reads Secrets? | Destructive? | Reversible? | Affects Remote? | Suggested |
-|---------|----------------|--------------|-------------|-----------------|-----------|
-| `git status` | No | No | N/A | No | Allow |
-| `git branch` | No | No | N/A | No | Allow |
-| `git remote` | No | No | N/A | No | Allow |
-| `git diff` | **Yes** | No | N/A | No | Allow + Hook OR Ask |
-| `git log` | **Yes** | No | N/A | No | Allow + Hook OR Ask |
-| `git show` | **Yes** | No | N/A | No | Allow + Hook OR Ask |
-| `git grep` | **Yes** | No | N/A | No | Allow + Hook OR Ask |
-| `git add` | No | No | Yes | No | Allow |
-| `git commit` | No | No | Yes (amend) | No | Allow/Ask |
-| `git checkout` | No | No | Yes | No | Allow |
-| `git switch` | No | No | Yes | No | Allow |
-| `git merge` | No | No | Yes (reset) | No | Ask |
-| `git rebase` | No | Modifies history | Partially | No | Ask |
-| `git stash` | No | No | Yes (pop) | No | Allow |
-| `git fetch` | No | No | N/A | No | Allow |
-| `git pull` | No | No | Yes (reflog) | No | Ask |
-| `git push` | No | No | Partially | **Yes** | Ask |
-| `git push origin main` | No | No | No | **Yes** | Deny |
-| `git push --force` | No | **Yes** | No | **Yes** | Deny |
-| `git tag` | No | No | Yes (delete) | Depends | Ask |
-| `git reset --hard` | No | **Yes** | Partially | No | Deny |
+| Command                | Reads Secrets? | Destructive?     | Reversible?  | Affects Remote? | Suggested           |
+| ---------------------- | -------------- | ---------------- | ------------ | --------------- | ------------------- |
+| `git status`           | No             | No               | N/A          | No              | Allow               |
+| `git branch`           | No             | No               | N/A          | No              | Allow               |
+| `git remote`           | No             | No               | N/A          | No              | Allow               |
+| `git diff`             | **Yes**        | No               | N/A          | No              | Allow + Hook OR Ask |
+| `git log`              | **Yes**        | No               | N/A          | No              | Allow + Hook OR Ask |
+| `git show`             | **Yes**        | No               | N/A          | No              | Allow + Hook OR Ask |
+| `git grep`             | **Yes**        | No               | N/A          | No              | Allow + Hook OR Ask |
+| `git add`              | No             | No               | Yes          | No              | Allow               |
+| `git commit`           | No             | No               | Yes (amend)  | No              | Allow/Ask           |
+| `git checkout`         | No             | No               | Yes          | No              | Allow               |
+| `git switch`           | No             | No               | Yes          | No              | Allow               |
+| `git merge`            | No             | No               | Yes (reset)  | No              | Ask                 |
+| `git rebase`           | No             | Modifies history | Partially    | No              | Ask                 |
+| `git stash`            | No             | No               | Yes (pop)    | No              | Allow               |
+| `git fetch`            | No             | No               | N/A          | No              | Allow               |
+| `git pull`             | No             | No               | Yes (reflog) | No              | Ask                 |
+| `git push`             | No             | No               | Partially    | **Yes**         | Ask                 |
+| `git push origin main` | No             | No               | No           | **Yes**         | Deny                |
+| `git push --force`     | No             | **Yes**          | No           | **Yes**         | Deny                |
+| `git tag`              | No             | No               | Yes (delete) | Depends         | Ask                 |
+| `git reset --hard`     | No             | **Yes**          | Partially    | No              | Deny                |
 
 ## Key Points
 
 1. **Secret protection requires hooks** - `git diff`, `git show`, `git log`, `git grep` can read ANY file, bypassing `Read` denies
-2. **Destructive operations** - `git reset --hard` and `git push --force` can cause irreversible data loss
-3. **Reversibility matters** - Local operations (commit, merge, checkout) are generally recoverable via `git reflog`
-4. **Remote operations affect others** - Anything touching `origin` should require approval
-5. **Pattern matching** - Use `:*` suffix to match arguments: `"Bash(git push origin main:*)"`
-6. **Precedence** - Deny > Ask > Allow when rules overlap
+1. **Destructive operations** - `git reset --hard` and `git push --force` can cause irreversible data loss
+1. **Reversibility matters** - Local operations (commit, merge, checkout) are generally recoverable via `git reflog`
+1. **Remote operations affect others** - Anything touching `origin` should require approval
+1. **Pattern matching** - Use `:*` suffix to match arguments: `"Bash(git push origin main:*)"`
+1. **Precedence** - Deny > Ask > Allow when rules overlap

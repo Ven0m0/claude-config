@@ -11,7 +11,6 @@ This script:
 6. Tracks progress and generates reports
 """
 
-import os
 import re
 import sys
 import yaml
@@ -26,18 +25,39 @@ class SkillProcessor:
     """Process Agent Skills to comply with Anthropic's specification."""
 
     # Anthropic spec-compliant fields only
-    ALLOWED_FIELDS = {'name', 'description', 'allowed-tools', 'license'}
+    ALLOWED_FIELDS = {"name", "description", "allowed-tools", "license"}
 
     # Common action verbs for descriptions
     ACTION_VERBS = [
-        'Analyze', 'Generate', 'Create', 'Build', 'Deploy', 'Test', 'Debug',
-        'Optimize', 'Monitor', 'Manage', 'Configure', 'Validate', 'Process',
-        'Transform', 'Extract', 'Parse', 'Format', 'Audit', 'Review', 'Inspect'
+        "Analyze",
+        "Generate",
+        "Create",
+        "Build",
+        "Deploy",
+        "Test",
+        "Debug",
+        "Optimize",
+        "Monitor",
+        "Manage",
+        "Configure",
+        "Validate",
+        "Process",
+        "Transform",
+        "Extract",
+        "Parse",
+        "Format",
+        "Audit",
+        "Review",
+        "Inspect",
     ]
 
     def __init__(self, repo_root: Path):
         self.repo_root = repo_root
-        self.backup_dir = repo_root / "backups" / f"skills-batch-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+        self.backup_dir = (
+            repo_root
+            / "backups"
+            / f"skills-batch-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+        )
         self.backup_dir.mkdir(parents=True, exist_ok=True)
         self.processed_count = 0
         self.error_count = 0
@@ -53,10 +73,10 @@ class SkillProcessor:
     def parse_skill_file(self, skill_path: Path) -> Tuple[Optional[Dict], str]:
         """Parse SKILL.md file into frontmatter and content."""
         try:
-            content = skill_path.read_text(encoding='utf-8')
+            content = skill_path.read_text(encoding="utf-8")
 
             # Extract YAML frontmatter
-            match = re.match(r'^---\s*\n(.*?)\n---\s*\n(.*)', content, re.DOTALL)
+            match = re.match(r"^---\s*\n(.*?)\n---\s*\n(.*)", content, re.DOTALL)
             if not match:
                 return None, content
 
@@ -75,10 +95,12 @@ class SkillProcessor:
     def optimize_description(self, description: str) -> str:
         """Optimize description to meet spec requirements."""
         # Remove excessive whitespace
-        description = re.sub(r'\s+', ' ', description).strip()
+        description = re.sub(r"\s+", " ", description).strip()
 
         # Ensure it starts with action verb
-        starts_with_verb = any(description.startswith(verb) for verb in self.ACTION_VERBS)
+        starts_with_verb = any(
+            description.startswith(verb) for verb in self.ACTION_VERBS
+        )
         if not starts_with_verb:
             # Try to extract key action and restructure
             description = description.capitalize()
@@ -110,35 +132,43 @@ class SkillProcessor:
                 cleaned[field] = frontmatter[field]
 
         # Optimize description
-        if 'description' in cleaned:
-            if isinstance(cleaned['description'], str):
-                cleaned['description'] = self.optimize_description(cleaned['description'])
-            elif isinstance(cleaned['description'], list):
+        if "description" in cleaned:
+            if isinstance(cleaned["description"], str):
+                cleaned["description"] = self.optimize_description(
+                    cleaned["description"]
+                )
+            elif isinstance(cleaned["description"], list):
                 # Join multi-line descriptions
-                desc_text = ' '.join(str(line).strip() for line in cleaned['description'] if line)
-                cleaned['description'] = self.optimize_description(desc_text)
+                desc_text = " ".join(
+                    str(line).strip() for line in cleaned["description"] if line
+                )
+                cleaned["description"] = self.optimize_description(desc_text)
 
         # Ensure allowed-tools is present and valid
-        if 'allowed-tools' not in cleaned:
-            cleaned['allowed-tools'] = 'Read, Write, Edit, Grep, Glob'
-        elif isinstance(cleaned['allowed-tools'], list):
+        if "allowed-tools" not in cleaned:
+            cleaned["allowed-tools"] = "Read, Write, Edit, Grep, Glob"
+        elif isinstance(cleaned["allowed-tools"], list):
             # Convert YAML array to CSV string (Claude Code standard)
-            tools = [str(t).strip() for t in cleaned['allowed-tools'] if str(t).strip()]
-            cleaned['allowed-tools'] = ', '.join(tools)
-        elif isinstance(cleaned['allowed-tools'], str):
+            tools = [str(t).strip() for t in cleaned["allowed-tools"] if str(t).strip()]
+            cleaned["allowed-tools"] = ", ".join(tools)
+        elif isinstance(cleaned["allowed-tools"], str):
             # Normalize CSV spacing
-            tools = [t.strip() for t in cleaned['allowed-tools'].split(',') if t.strip()]
-            cleaned['allowed-tools'] = ', '.join(tools)
+            tools = [
+                t.strip() for t in cleaned["allowed-tools"].split(",") if t.strip()
+            ]
+            cleaned["allowed-tools"] = ", ".join(tools)
         else:
-            cleaned['allowed-tools'] = 'Read, Write, Edit, Grep, Glob'
+            cleaned["allowed-tools"] = "Read, Write, Edit, Grep, Glob"
 
         # Add default license if missing
-        if 'license' not in cleaned:
-            cleaned['license'] = 'MIT'
+        if "license" not in cleaned:
+            cleaned["license"] = "MIT"
 
         return cleaned
 
-    def write_skill_file(self, skill_path: Path, frontmatter: Dict, content: str) -> bool:
+    def write_skill_file(
+        self, skill_path: Path, frontmatter: Dict, content: str
+    ) -> bool:
         """Write cleaned skill file."""
         try:
             # Format YAML frontmatter
@@ -146,14 +176,14 @@ class SkillProcessor:
                 frontmatter,
                 default_flow_style=False,
                 allow_unicode=True,
-                sort_keys=False
+                sort_keys=False,
             )
 
             # Reconstruct file
             new_content = f"---\n{yaml_str}---\n{content}"
 
             # Write to file
-            skill_path.write_text(new_content, encoding='utf-8')
+            skill_path.write_text(new_content, encoding="utf-8")
             return True
 
         except Exception as e:
@@ -169,6 +199,7 @@ class SkillProcessor:
             backup_path.parent.mkdir(parents=True, exist_ok=True)
 
             import shutil
+
             shutil.copy2(skill_path, backup_path)
             return True
 
@@ -196,13 +227,13 @@ class SkillProcessor:
 
         # Check if changes were made
         if cleaned == frontmatter:
-            print(f"    → No changes needed")
+            print("    → No changes needed")
             return True
 
         # Write cleaned file
         if self.write_skill_file(skill_path, cleaned, content):
             self.processed_count += 1
-            print(f"    → ✓ Cleaned and updated")
+            print("    → ✓ Cleaned and updated")
             return True
 
         return False
@@ -213,17 +244,17 @@ class SkillProcessor:
             # Add all modified skills
             for skill_path in skills_in_batch:
                 subprocess.run(
-                    ['git', 'add', str(skill_path)],
+                    ["git", "add", str(skill_path)],
                     cwd=self.repo_root,
                     check=True,
-                    capture_output=True
+                    capture_output=True,
                 )
 
             # Check if there are changes to commit
             status = subprocess.run(
-                ['git', 'diff', '--cached', '--quiet'],
+                ["git", "diff", "--cached", "--quiet"],
                 cwd=self.repo_root,
-                capture_output=True
+                capture_output=True,
             )
 
             if status.returncode == 0:
@@ -231,18 +262,22 @@ class SkillProcessor:
                 return True
 
             # Create commit
-            commit_msg = f"feat(skills): batch {batch_num} - comply with Anthropic spec\n\n"
+            commit_msg = (
+                f"feat(skills): batch {batch_num} - comply with Anthropic spec\n\n"
+            )
             commit_msg += f"Processed {len(skills_in_batch)} skills:\n"
             commit_msg += "- Removed non-spec fields (version, author, tags, sources)\n"
             commit_msg += "- Optimized descriptions (50-250 chars, action verbs)\n"
             commit_msg += "- Ensured allowed-tools and license fields present\n\n"
-            commit_msg += "Spec-compliant fields: name, description, allowed-tools, license"
+            commit_msg += (
+                "Spec-compliant fields: name, description, allowed-tools, license"
+            )
 
             subprocess.run(
-                ['git', 'commit', '-m', commit_msg],
+                ["git", "commit", "-m", commit_msg],
                 cwd=self.repo_root,
                 check=True,
-                capture_output=True
+                capture_output=True,
             )
 
             print(f"  ✓ Created commit for batch {batch_num}")
@@ -257,15 +292,15 @@ class SkillProcessor:
         total_skills = len(skills)
         skills_to_process = skills[skip:]
 
-        print(f"\n{'='*70}")
-        print(f"BATCH PROCESSING AGENT SKILLS")
-        print(f"{'='*70}")
+        print(f"\n{'=' * 70}")
+        print("BATCH PROCESSING AGENT SKILLS")
+        print(f"{'=' * 70}")
         print(f"Total skills found: {total_skills}")
         print(f"Already processed: {skip}")
         print(f"To process: {len(skills_to_process)}")
         print(f"Batch size: {batch_size}")
         print(f"Backup directory: {self.backup_dir}")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         if not skills_to_process:
             print("No skills to process!")
@@ -273,12 +308,12 @@ class SkillProcessor:
 
         # Process in batches
         for i in range(0, len(skills_to_process), batch_size):
-            batch = skills_to_process[i:i+batch_size]
+            batch = skills_to_process[i : i + batch_size]
             batch_num = (skip + i) // batch_size + 1
 
-            print(f"\n{'─'*70}")
+            print(f"\n{'─' * 70}")
             print(f"Batch {batch_num}: Processing {len(batch)} skills")
-            print(f"{'─'*70}")
+            print(f"{'─' * 70}")
 
             batch_processed = []
             for skill_path in batch:
@@ -297,9 +332,9 @@ class SkillProcessor:
     def generate_report(self) -> str:
         """Generate completion report."""
         report = []
-        report.append("\n" + "="*70)
+        report.append("\n" + "=" * 70)
         report.append("AGENT SKILLS BATCH PROCESSING REPORT")
-        report.append("="*70)
+        report.append("=" * 70)
         report.append(f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         report.append(f"Backup location: {self.backup_dir}")
         report.append("")
@@ -330,7 +365,7 @@ class SkillProcessor:
         report.append("  - description: 50-250 chars, action verb start")
         report.append("  - allowed-tools: CSV string of permitted tools")
         report.append("  - license: MIT (default)")
-        report.append("="*70)
+        report.append("=" * 70)
 
         return "\n".join(report)
 
@@ -357,16 +392,13 @@ def main():
 
     # Save report to file
     report_file = processor.backup_dir / "processing_report.txt"
-    report_file.write_text(report, encoding='utf-8')
+    report_file.write_text(report, encoding="utf-8")
     print(f"\nReport saved to: {report_file}")
 
     # Save errors to JSON if any
     if processor.errors:
         errors_file = processor.backup_dir / "errors.json"
-        errors_file.write_text(
-            json.dumps(processor.errors, indent=2),
-            encoding='utf-8'
-        )
+        errors_file.write_text(json.dumps(processor.errors, indent=2), encoding="utf-8")
         print(f"Errors saved to: {errors_file}")
 
     # Return exit code

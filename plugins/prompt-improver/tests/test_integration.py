@@ -3,6 +3,7 @@
 Integration tests for the prompt-improver system
 Tests the complete flow from hook to skill
 """
+
 import json
 import subprocess
 import sys
@@ -14,6 +15,7 @@ HOOK_SCRIPT = PROJECT_ROOT / "scripts" / "improve-prompt.py"
 PLUGIN_JSON = PROJECT_ROOT / ".claude-plugin" / "plugin.json"
 SKILL_DIR = PROJECT_ROOT / "skills" / "prompt-improver"
 
+
 def run_hook(prompt):
     """Run the hook script with given prompt"""
     input_data = json.dumps({"prompt": prompt})
@@ -22,13 +24,14 @@ def run_hook(prompt):
         [sys.executable, str(HOOK_SCRIPT)],
         input=input_data,
         capture_output=True,
-        text=True
+        text=True,
     )
 
     if result.returncode != 0:
         raise Exception(f"Hook failed: {result.stderr}")
 
     return json.loads(result.stdout)
+
 
 def test_plugin_configuration():
     """Test that plugin.json is properly configured"""
@@ -37,7 +40,9 @@ def test_plugin_configuration():
     config = json.loads(PLUGIN_JSON.read_text())
 
     # Check version is 0.5.0
-    assert config["version"] == "0.5.0", f"Expected version 0.5.0, got {config['version']}"
+    assert config["version"] == "0.5.0", (
+        f"Expected version 0.5.0, got {config['version']}"
+    )
 
     # Check skills field exists
     assert "skills" in config, "Missing 'skills' field in plugin.json"
@@ -45,17 +50,24 @@ def test_plugin_configuration():
     assert len(config["skills"]) > 0, "'skills' list is empty"
 
     # Check hooks field is NOT present (standard hooks/hooks.json is auto-discovered)
-    assert "hooks" not in config, "The 'hooks' field should not be present (standard location is auto-discovered)"
+    assert "hooks" not in config, (
+        "The 'hooks' field should not be present (standard location is auto-discovered)"
+    )
 
     # Check skill path
     skill_path = config["skills"][0]
-    assert skill_path == "./skills/prompt-improver", f"Unexpected skill path: {skill_path}"
+    assert skill_path == "./skills/prompt-improver", (
+        f"Unexpected skill path: {skill_path}"
+    )
 
     # Verify skill directory exists
     resolved_skill_path = PROJECT_ROOT / skill_path.lstrip("./")
-    assert resolved_skill_path.exists(), f"Skill directory not found: {resolved_skill_path}"
+    assert resolved_skill_path.exists(), (
+        f"Skill directory not found: {resolved_skill_path}"
+    )
 
     print("✓ Plugin configuration is correct")
+
 
 def test_end_to_end_flow():
     """Test complete flow from prompt to evaluation"""
@@ -71,6 +83,7 @@ def test_end_to_end_flow():
     assert "skill" in context.lower()
 
     print("✓ End-to-end flow works (normal prompt → evaluation wrapper)")
+
 
 def test_bypass_flow():
     """Test that bypass mechanism works end-to-end"""
@@ -91,6 +104,7 @@ def test_bypass_flow():
     assert context == "# note for later"
 
     print("✓ Bypass mechanisms work end-to-end")
+
 
 def test_skill_file_integrity():
     """Test that all skill files are present and valid"""
@@ -118,6 +132,7 @@ def test_skill_file_integrity():
 
     print("✓ All skill files present and valid")
 
+
 def test_token_overhead():
     """Test that hook overhead is reasonable"""
     output = run_hook("test")
@@ -130,16 +145,22 @@ def test_token_overhead():
 
     # New version should be ~200-220 tokens (evaluation prompt with preface instruction)
     # Old v0.3.2 was ~275 tokens (embedded evaluation logic)
-    assert estimated_tokens < 250, \
+    assert estimated_tokens < 250, (
         f"Hook overhead too high: ~{estimated_tokens} tokens (expected <250)"
+    )
 
     # Should be less than old version
     old_estimated_tokens = 275
     if estimated_tokens < old_estimated_tokens:
-        reduction_percent = ((old_estimated_tokens - estimated_tokens) / old_estimated_tokens) * 100
-        print(f"✓ Token overhead acceptable: ~{estimated_tokens} tokens (<250), ~{reduction_percent:.0f}% reduction from v0.3.2")
+        reduction_percent = (
+            (old_estimated_tokens - estimated_tokens) / old_estimated_tokens
+        ) * 100
+        print(
+            f"✓ Token overhead acceptable: ~{estimated_tokens} tokens (<250), ~{reduction_percent:.0f}% reduction from v0.3.2"
+        )
     else:
         print(f"✓ Token overhead acceptable: ~{estimated_tokens} tokens (<250)")
+
 
 def test_hook_output_consistency():
     """Test that hook output is consistent across different prompts"""
@@ -165,6 +186,7 @@ def test_hook_output_consistency():
 
     print(f"✓ Hook output consistent across {len(prompts)} different prompts")
 
+
 def test_architecture_separation():
     """Test that architecture properly separates concerns"""
     # Hook should be reasonably sized (< 80 lines)
@@ -185,6 +207,7 @@ def test_architecture_separation():
     assert "vague" in skill_content.lower()
 
     print("✓ Architecture properly separates concerns (hook evaluates, skill enriches)")
+
 
 def run_all_tests():
     """Run all integration tests"""
@@ -211,7 +234,7 @@ def run_all_tests():
             print(f"✗ {test.__name__} error: {e}")
             failed.append((test.__name__, e))
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     if failed:
         print(f"FAILED: {len(failed)}/{len(tests)} tests failed")
         for name, error in failed:
@@ -220,6 +243,7 @@ def run_all_tests():
     else:
         print(f"SUCCESS: All {len(tests)} integration tests passed!")
         sys.exit(0)
+
 
 if __name__ == "__main__":
     run_all_tests()

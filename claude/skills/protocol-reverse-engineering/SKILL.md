@@ -14,14 +14,15 @@ Focus on repeatable capture, structured analysis, and clear documentation so fin
 ## Quick Start
 
 1. Capture traffic with tcpdump or Wireshark and export a clean pcap.
-2. Identify protocol boundaries, message types, and state transitions.
-3. Document message formats, fields, and validation rules.
+1. Identify protocol boundaries, message types, and state transitions.
+1. Document message formats, fields, and validation rules.
 
 ## Progressive Details
 
 Use the detailed sections below for full workflows, templates, and advanced techniques.
 
 <!-- progressive: protocol-playbook -->
+
 ## Traffic Capture
 
 ### Wireshark Capture
@@ -389,7 +390,7 @@ Brief description of protocol purpose and design.
 |
 DATA/DATA
 |
-[CLOSED] <--CLOSE--+
+[CLOSED] \<--CLOSE--+
 
 ```
 
@@ -516,12 +517,12 @@ for pkt in packets:
 ### Analysis Workflow
 
 1. **Capture traffic**: Multiple sessions, different scenarios
-2. **Identify boundaries**: Message start/end markers
-3. **Map structure**: Fixed header, variable payload
-4. **Identify fields**: Compare multiple samples
-5. **Document format**: Create specification
-6. **Validate understanding**: Implement parser/generator
-7. **Test edge cases**: Fuzzing, boundary conditions
+1. **Identify boundaries**: Message start/end markers
+1. **Map structure**: Fixed header, variable payload
+1. **Identify fields**: Compare multiple samples
+1. **Document format**: Create specification
+1. **Validate understanding**: Implement parser/generator
+1. **Test edge cases**: Fuzzing, boundary conditions
 
 ### Common Patterns to Look For
 
@@ -533,4 +534,5 @@ for pkt in packets:
 - Checksums/CRCs for integrity
 - Timestamps for timing
 - Session/connection identifiers
+
 <!-- /progressive -->

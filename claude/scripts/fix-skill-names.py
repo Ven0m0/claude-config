@@ -9,7 +9,6 @@ Example:
   "Creating GitHub Issues from Web Research" → "creating-github-issues-from-web-research"
 """
 
-import os
 import re
 from pathlib import Path
 
@@ -26,13 +25,13 @@ def title_to_hyphen_case(title):
     # Convert to lowercase
     name = title.lower()
     # Replace spaces with hyphens
-    name = re.sub(r'\s+', '-', name)
+    name = re.sub(r"\s+", "-", name)
     # Remove non-alphanumeric except hyphens
-    name = re.sub(r'[^a-z0-9-]', '', name)
+    name = re.sub(r"[^a-z0-9-]", "", name)
     # Remove multiple consecutive hyphens
-    name = re.sub(r'-+', '-', name)
+    name = re.sub(r"-+", "-", name)
     # Remove leading/trailing hyphens
-    name = name.strip('-')
+    name = name.strip("-")
     return name
 
 
@@ -40,7 +39,7 @@ def main():
     """Fix all SKILL.md files in plugins directory."""
 
     # Find all SKILL.md files
-    skill_files = list(Path('plugins').rglob('SKILL.md'))
+    skill_files = list(Path("plugins").rglob("SKILL.md"))
 
     if not skill_files:
         print("❌ No SKILL.md files found in plugins directory")
@@ -58,7 +57,7 @@ def main():
             content = skill_file.read_text()
 
             # Extract current name from frontmatter
-            match = re.search(r'^name:\s*(.+)$', content, re.MULTILINE)
+            match = re.search(r"^name:\s*(.+)$", content, re.MULTILINE)
 
             if not match:
                 print(f"⚠️  No name field found: {skill_file}")
@@ -75,11 +74,11 @@ def main():
 
             # Replace name in frontmatter (only first occurrence in YAML section)
             new_content = re.sub(
-                r'^name:\s*.+$',
-                f'name: {new_name}',
+                r"^name:\s*.+$",
+                f"name: {new_name}",
                 content,
                 count=1,
-                flags=re.MULTILINE
+                flags=re.MULTILINE,
             )
 
             # Write updated content

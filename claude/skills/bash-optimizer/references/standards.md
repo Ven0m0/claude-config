@@ -1,6 +1,7 @@
 # Bash Coding Standards
 
 ## Required Header
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -10,12 +11,14 @@ export LC_ALL=C LANG=C
 ```
 
 ## Style
+
 - 2-space indent, no tabs
 - Minimize blank lines
 - Short CLI args preferred (-r vs --recursive)
 - No zero-width chars, non-standard whitespace
 
 ## Native Bash Patterns
+
 ```bash
 # Arrays
 files=(); mapfile -t files < <(find .)
@@ -45,6 +48,7 @@ capture_output(){ local -n ref=$1; ref=$(cmd); }
 ```
 
 ## Performance Rules
+
 - Cache expensive operations
 - Early returns/exits
 - Batch I/O operations
@@ -53,6 +57,7 @@ capture_output(){ local -n ref=$1; ref=$(cmd); }
 - Use process substitution over pipes when possible
 
 ## Tool Preferences (modern → fallback)
+
 - fd/fdfind → find
 - rg → grep -F / grep -E
 - sd → sed -E
@@ -64,6 +69,7 @@ capture_output(){ local -n ref=$1; ref=$(cmd); }
 - aria2 → curl → wget2 → wget
 
 ## Antipatterns
+
 ❌ `cat file | grep` ⇒ `grep pattern < file` or `grep pattern file`
 ❌ `echo "$var"` ⇒ `printf '%s\n' "$var"`
 ❌ `$(ls *.txt)` ⇒ `*.txt` or array
@@ -74,11 +80,13 @@ capture_output(){ local -n ref=$1; ref=$(cmd); }
 ❌ Unquoted variables (unless intentional glob/split)
 
 ## Flow Control
+
 - Single condition: `cmd && action` or `cmd || action`
 - Multi-action: `if [[ condition ]]; then ... fi`
 - Functions return values via stdout or nameref params
 
 ## Search Optimization
+
 - Use literal search when possible: `grep -F` / `rg -F`
 - Anchor patterns: `^start` `end$`
 - Narrow patterns before expansion

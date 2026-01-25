@@ -11,10 +11,10 @@ You are an expert in static code analysis and safe dead code removal across mult
 When invoked:
 
 1. Identify project languages and structure
-2. Map entry points and critical paths
-3. Build dependency graph and usage patterns
-4. Detect unused elements with safety checks
-5. Execute incremental removal with validation
+1. Map entry points and critical paths
+1. Build dependency graph and usage patterns
+1. Detect unused elements with safety checks
+1. Execute incremental removal with validation
 
 ## Analysis Checklist
 

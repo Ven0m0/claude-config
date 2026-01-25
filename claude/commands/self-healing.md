@@ -1,12 +1,15 @@
 # Self-Healing Workflows
 
 ## Purpose
+
 Automatically detect and recover from errors without interrupting your flow.
 
 ## Self-Healing Features
 
 ### 1. Error Detection
+
 Monitors for:
+
 - Failed commands
 - Syntax errors
 - Missing dependencies
@@ -15,6 +18,7 @@ Monitors for:
 ### 2. Automatic Recovery
 
 **Missing Dependencies:**
+
 ```
 Error: Cannot find module 'express'
 → Automatically runs: npm install express
@@ -22,6 +26,7 @@ Error: Cannot find module 'express'
 ```
 
 **Syntax Errors:**
+
 ```
 Error: Unexpected token
 → Analyzes error location
@@ -30,6 +35,7 @@ Error: Unexpected token
 ```
 
 **Test Failures:**
+
 ```json
 Test failed: "user authentication"
 → Spawns debugger agent
@@ -39,12 +45,15 @@ Test failed: "user authentication"
 ```
 
 ### 3. Learning from Failures
+
 Each recovery improves future prevention:
+
 - Patterns saved to knowledge base
 - Similar errors prevented proactively
 - Recovery strategies optimized
 
 **Pattern Storage:**
+
 ```javascript
 // Store error patterns
 mcp__claude-flow__memory_usage({
@@ -66,6 +75,7 @@ mcp__claude-flow__neural_patterns({
 ## Self-Healing Integration
 
 ### MCP Tool Coordination
+
 ```javascript
 // Initialize self-healing swarm
 mcp__claude-flow__swarm_init({
@@ -90,6 +100,7 @@ mcp__claude-flow__task_orchestrate({
 ```
 
 ### Fallback Hook Configuration
+
 ```json
 {
   "PostToolUse": [{
@@ -100,6 +111,7 @@ mcp__claude-flow__task_orchestrate({
 ```
 
 ## Benefits
+
 - 🛡️ Resilient workflows
 - 🔄 Automatic recovery
 - 📚 Learns from errors

@@ -257,18 +257,18 @@
 
 ## Usage Patterns Summary
 
-| Scenario | Pattern | Key Features |
-|----------|---------|--------------|
-| Linear problem-solving | Sequential thoughts | Steady progress, scope adjustment |
-| Exploring alternatives | Branching | Multiple paths from decision point |
-| Correcting mistakes | Revision | Reference earlier thought, update conclusion |
-| Complex analysis | Mixed | Combine all features as needed |
+| Scenario               | Pattern             | Key Features                                 |
+| ---------------------- | ------------------- | -------------------------------------------- |
+| Linear problem-solving | Sequential thoughts | Steady progress, scope adjustment            |
+| Exploring alternatives | Branching           | Multiple paths from decision point           |
+| Correcting mistakes    | Revision            | Reference earlier thought, update conclusion |
+| Complex analysis       | Mixed               | Combine all features as needed               |
 
 ## Tips for Effective Use
 
 1. **Start broad, narrow down**: Early thoughts explore problem space, later thoughts dive into specifics
-2. **Show your work**: Document reasoning process, not just conclusions
-3. **Revise when wrong**: Don't continue down incorrect path—backtrack and correct
-4. **Branch at crossroads**: When facing clear alternatives, explore each systematically
-5. **Adjust dynamically**: Change `totalThoughts` as understanding evolves
-6. **End decisively**: Final thought should summarize conclusion and next actions
+1. **Show your work**: Document reasoning process, not just conclusions
+1. **Revise when wrong**: Don't continue down incorrect path—backtrack and correct
+1. **Branch at crossroads**: When facing clear alternatives, explore each systematically
+1. **Adjust dynamically**: Change `totalThoughts` as understanding evolves
+1. **End decisively**: Final thought should summarize conclusion and next actions

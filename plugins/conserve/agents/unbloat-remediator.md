@@ -14,8 +14,8 @@ escalation:
     - many_cross_file_dependencies
 examples:
   - context: User requests unbloat
-    user: "Run unbloat to clean up this codebase"
-    assistant: "I'll orchestrate safe bloat remediation, starting with a backup branch and high-confidence deletions."
+    user: Run unbloat to clean up this codebase
+    assistant: I'll orchestrate safe bloat remediation, starting with a backup branch and high-confidence deletions.
 ---
 
 # Unbloat Remediator Agent
@@ -25,11 +25,11 @@ Orchestrates safe bloat remediation with progressive risk mitigation and user ap
 ## Core Responsibilities
 
 1. **Load/Scan**: Use existing bloat-scan report or run integrated scan
-2. **Prioritize**: Group by type and risk level
-3. **Backup**: Create timestamped backup branch
-4. **Remediate**: Interactive approval with preview for each finding
-5. **Verify**: Test after each change, rollback on failure
-6. **Report**: Summary with token savings and rollback instructions
+1. **Prioritize**: Group by type and risk level
+1. **Backup**: Create timestamped backup branch
+1. **Remediate**: Interactive approval with preview for each finding
+1. **Verify**: Test after each change, rollback on failure
+1. **Report**: Summary with token savings and rollback instructions
 
 For remediation types (DELETE, REFACTOR, CONSOLIDATE, ARCHIVE) and risk assessment, see: `@module:remediation-types`
 
@@ -136,13 +136,14 @@ Rollback: git reset --hard {backup_branch}
 ## Safety Protocol
 
 1. **Never auto-delete without preview** - even with `--auto-approve`
-2. **Always use git operations** (`git rm`, not `rm`)
-3. **Test after each change** - rollback immediately on failure
-4. **Never modify core files** without HIGH confidence (>95%)
+1. **Always use git operations** (`git rm`, not `rm`)
+1. **Test after each change** - rollback immediately on failure
+1. **Never modify core files** without HIGH confidence (>95%)
 
 ## Escalation to Opus
 
 Escalate when:
+
 - Complex refactorings (> 500 lines, > 10 import sites)
 - High-risk changes (core infrastructure)
 - Many cross-file dependencies

@@ -39,11 +39,13 @@ tests/
 ## Running Tests
 
 ### Prerequisites
+
 - Python 3.8+
 - uv package manager
 - Plugin dependencies installed
 
 ### Basic Test Execution
+
 ```bash
 # Run all tests
 uv run pytest tests/
@@ -63,6 +65,7 @@ uv run pytest tests/ -m "performance" -v # Performance tests only
 ```
 
 ### Make Commands
+
 ```bash
 make test           # Run all tests with coverage
 make test-unit      # Run unit tests
@@ -75,17 +78,20 @@ make coverage       # Generate coverage report
 ## Test Categories
 
 ### Unit Tests
+
 - **Core Logic**: Conservation validator and analysis scripts
 - **Skills**: Individual skill business logic validation
 - **Commands**: Command parsing and execution logic
 - **Agents**: Agent workflow and decision-making tests
 
 ### Integration Tests
+
 - **Workflow Orchestration**: End-to-end conserve workflows
 - **Token Optimization**: Complete token conservation pipelines
 - **Performance Monitoring**: Resource tracking and alerting
 
 ### Performance Tests
+
 - **Scalability**: Large-scale resource management
 - **Efficiency**: Optimization algorithm performance
 - **Resource Usage**: Memory and CPU consumption validation
@@ -93,6 +99,7 @@ make coverage       # Generate coverage report
 ## Key Testing Patterns
 
 ### TDD/BDD Structure
+
 ```python
 class TestFeatureName:
     """
@@ -115,16 +122,19 @@ class TestFeatureName:
 ### Conservation-Specific Testing
 
 #### MECW (Maximum Effective Context Window) Testing
+
 - Context utilization analysis
 - Threshold compliance validation
 - Optimization recommendation testing
 
 #### Token Conservation Testing
+
 - Quota tracking and validation
 - Usage pattern analysis
 - Efficiency measurement
 
 #### Performance Monitoring Testing
+
 - Resource usage tracking
 - Alert system validation
 - Report generation accuracy
@@ -132,6 +142,7 @@ class TestFeatureName:
 ## Test Fixtures
 
 ### Core Fixtures
+
 - `conservation_plugin_root`: Plugin root directory
 - `sample_skill_content`: Valid skill file content
 - `sample_plugin_json`: Plugin configuration
@@ -139,6 +150,7 @@ class TestFeatureName:
 - `mock_claude_tools`: Claude Code tools mock
 
 ### Specialized Fixtures
+
 - `mock_performance_monitor`: Performance monitoring mock
 - `mock_mecw_analyzer`: MECW analysis mock
 - `mock_token_quota_tracker`: Token quota tracking mock
@@ -148,12 +160,14 @@ class TestFeatureName:
 ## Quality Gates
 
 ### Coverage Requirements
+
 - **Unit Tests**: 95% line coverage minimum
 - **Integration Tests**: 100% workflow path coverage
 - **Branch Coverage**: 90% minimum
 - **Critical Business Logic**: 100% coverage required
 
 ### Performance Requirements
+
 - Test execution time < 5 minutes total
 - Memory usage < 1GB during test execution
 - No memory leaks in long-running tests
@@ -161,16 +175,19 @@ class TestFeatureName:
 ## Test Data Management
 
 ### Sample Skills
+
 - Realistic conserve skill examples
 - Various complexity levels and configurations
 - Edge cases and error conditions
 
 ### Performance Data
+
 - Synthetic performance metrics
 - Resource usage patterns
 - Scaling test datasets
 
 ### Token Logs
+
 - Realistic token usage patterns
 - Quota exceedance scenarios
 - Efficiency measurement data
@@ -178,11 +195,13 @@ class TestFeatureName:
 ## Continuous Integration
 
 ### Pre-commit Hooks
+
 - Test execution on commit
 - Coverage validation
 - Performance regression detection
 
 ### CI/CD Pipeline
+
 - Automated test execution
 - Coverage reporting
 - Performance benchmarking
@@ -191,13 +210,15 @@ class TestFeatureName:
 ## Development Workflow
 
 ### Adding New Tests
+
 1. Follow TDD/BDD patterns
-2. Use appropriate fixtures
-3. Include detailed scenarios
-4. Add performance considerations
-5. Update documentation
+1. Use appropriate fixtures
+1. Include detailed scenarios
+1. Add performance considerations
+1. Update documentation
 
 ### Test Maintenance
+
 - Regular review and updates
 - Performance baseline adjustments
 - Fixture maintenance
@@ -206,12 +227,14 @@ class TestFeatureName:
 ## Troubleshooting
 
 ### Common Issues
+
 - Missing dependencies: Run `uv sync --group dev`
 - Permission errors: Check script permissions
 - Memory issues: Increase test timeout
 - Performance failures: Check system resources
 
 ### Debug Tips
+
 - Use `pytest -s` for live output
 - Check test logs in `tests/.pytest_cache/`
 - Monitor system resources during performance tests
@@ -220,11 +243,12 @@ class TestFeatureName:
 ## Contributing
 
 When adding tests:
+
 1. Follow established patterns
-2. Maintain BDD structure
-3. Include edge cases
-4. Update fixtures if needed
-5. Document new test categories
+1. Maintain BDD structure
+1. Include edge cases
+1. Update fixtures if needed
+1. Document new test categories
 
 ## Resources
 

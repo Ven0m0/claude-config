@@ -55,9 +55,9 @@ Commands are available via the CLI's command system. See individual `.md` files 
 Active hooks (auto-run on file edits):
 
 1. **post-edit-format.py** - Auto-formats Python (ruff), JS/TS (biome), Rust (cargo fmt)
-2. **enforce_rg_over_grep.py** - Policy: blocks `grep`/`find`, suggests `rg`/`fd`
-3. **json-to-toon.mjs** - Compresses JSON/CSV in prompts (via plugin)
-4. **auto-git-add.md** - Auto-stages edited files
+1. **enforce_rg_over_grep.py** - Policy: blocks `grep`/`find`, suggests `rg`/`fd`
+1. **json-to-toon.mjs** - Compresses JSON/CSV in prompts (via plugin)
+1. **auto-git-add.md** - Auto-stages edited files
 
 ## ⚙️ Settings Highlights
 
@@ -70,6 +70,7 @@ Active hooks (auto-run on file edits):
 ### Tool Preferences
 
 Modern tools enforced:
+
 - `rg` (ripgrep) > `grep`
 - `fd` > `find`
 - `bun` > `npm`
@@ -77,12 +78,12 @@ Modern tools enforced:
 
 ## 📊 Optimization Results
 
-| Area | Before | After | Reduction |
-|------|--------|-------|-----------|
-| Commands | ~85KB | ~43KB | **49%** |
-| Hooks | 8 files | 4 files | **50%** |
-| Settings | 137 lines, invalid | ~100 lines, valid | **27%** |
-| Permissions | 45 entries | 20 entries | **56%** |
+| Area        | Before             | After             | Reduction |
+| ----------- | ------------------ | ----------------- | --------- |
+| Commands    | ~85KB              | ~43KB             | **49%**   |
+| Hooks       | 8 files            | 4 files           | **50%**   |
+| Settings    | 137 lines, invalid | ~100 lines, valid | **27%**   |
+| Permissions | 45 entries         | 20 entries        | **56%**   |
 
 **Total config size reduction: ~50%**
 
@@ -101,7 +102,7 @@ bun update <package>
 ### Adding New Commands
 
 1. Create `commands/your-command.md`
-2. Use this template:
+1. Use this template:
 
 ```markdown
 ---
@@ -116,6 +117,7 @@ Your ultra-short command instructions here (5-15 lines max).
 ### Troubleshooting
 
 **JSON validation failed?**
+
 ```bash
 jq empty settings.json
 ```

@@ -26,34 +26,40 @@ dependencies:
 # Token Conservation Workflow
 
 ## When to Use
+
 - Run at the start of every session and whenever prompt sizes or tool calls begin to spike.
 - Mandatory before launching long-running analyses, wide diffs, or massive context loads.
 
 ## Required TodoWrite Items
+
 1. `token-conservation:quota-check`
-2. `token-conservation:context-plan`
-3. `token-conservation:delegation-check`
-4. `token-conservation:compression-review`
-5. `token-conservation:logging`
+1. `token-conservation:context-plan`
+1. `token-conservation:delegation-check`
+1. `token-conservation:compression-review`
+1. `token-conservation:logging`
 
 ## Step 1 – Quota Check (`quota-check`)
+
 - Record current session duration and weekly usage (from `/status` or notebook).
   Note the 5-hour rolling cap + weekly cap highlighted in the Claude community notice.
 - Capture remaining budget and set a max token target for this task.
 
 ## Step 2 – Context Plan (`context-plan`)
+
 - Decide exactly which files/snippets to expose. Prefer `rg`/`sed -n` slices
   instead of whole files.
 - Convert prose instructions into bullet lists before prompting so only essential
   info hits the model.
 
 ## Step 3 – Delegation Check (`delegation-check`)
+
 - Evaluate whether compute-intensive tasks can go to Qwen MCP or other external
   tooling (use `qwen-delegation` skill if needed).
 - For local work, favor deterministic scripts (formatters, analyzers) instead
   of LLM reasoning when possible.
 
 ## Step 4 – Compression Review (`compression-review`)
+
 - Summarize prior steps/results before adding new context.
   Remove redundant history, collapse logs, and avoid reposting identical code.
 - Use `prompt caching` ideas: reference prior outputs instead of restating them
@@ -72,11 +78,13 @@ plans. Record any recommendations made regarding the use of `/new` or `/compact`
 or justify why neither was necessary, to inform future context-handling decisions.
 
 ## Output Expectations
+
 - A short explanation of token-saving steps, delegated tasks, and remaining runway.
 - Concrete next-action list that keeps the conversation lean (e.g.):
   - "next turn: provide only failing test output lines 40-60"
 - Explicit reminder about `/new` or `/compact` whenever you determine it would save
   tokens (otherwise state that no reset/compaction is needed yet).
+
 ## Troubleshooting
 
 ### Common Issues

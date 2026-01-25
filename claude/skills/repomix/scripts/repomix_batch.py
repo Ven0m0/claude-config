@@ -19,6 +19,7 @@ import argparse
 @dataclass
 class RepomixConfig:
     """Configuration for repomix execution."""
+
     style: str = "xml"
     output_dir: str = "repomix-output"
     remove_comments: bool = False
@@ -47,8 +48,8 @@ class EnvLoader:
         # Define search paths in reverse order (lowest to highest priority)
         search_paths = [
             script_dir.parent.parent.parent / ".env",  # .claude/.env
-            script_dir.parent.parent / ".env",          # skills/.env
-            script_dir.parent / ".env",                 # skill/.env (repomix/.env)
+            script_dir.parent.parent / ".env",  # skills/.env
+            script_dir.parent / ".env",  # skill/.env (repomix/.env)
         ]
 
         # Load from files (lower priority first)
@@ -74,15 +75,15 @@ class EnvLoader:
         """
         env_vars = {}
         try:
-            with open(path, 'r', encoding='utf-8') as f:
+            with open(path, "r", encoding="utf-8") as f:
                 for line in f:
                     line = line.strip()
                     # Skip comments and empty lines
-                    if not line or line.startswith('#'):
+                    if not line or line.startswith("#"):
                         continue
                     # Parse KEY=VALUE
-                    if '=' in line:
-                        key, value = line.split('=', 1)
+                    if "=" in line:
+                        key, value = line.split("=", 1)
                         key = key.strip()
                         value = value.strip()
                         # Remove quotes if present
@@ -123,17 +124,14 @@ class RepomixBatchProcessor:
                 capture_output=True,
                 text=True,
                 timeout=5,
-                env=self.env_vars
+                env=self.env_vars,
             )
             return result.returncode == 0
         except (subprocess.SubprocessError, FileNotFoundError):
             return False
 
     def process_repository(
-        self,
-        repo_path: str,
-        output_name: Optional[str] = None,
-        is_remote: bool = False
+        self, repo_path: str, output_name: Optional[str] = None, is_remote: bool = False
     ) -> Tuple[bool, str]:
         """
         Process a single repository with repomix.
@@ -156,7 +154,7 @@ class RepomixBatchProcessor:
         else:
             if is_remote:
                 # Extract repo name from URL
-                repo_name = repo_path.rstrip('/').split('/')[-1]
+                repo_name = repo_path.rstrip("/").split("/")[-1]
             else:
                 repo_name = Path(repo_path).name
 
@@ -175,7 +173,7 @@ class RepomixBatchProcessor:
                 capture_output=True,
                 text=True,
                 timeout=300,  # 5 minute timeout
-                env=self.env_vars
+                env=self.env_vars,
             )
 
             if result.returncode == 0:
@@ -190,10 +188,7 @@ class RepomixBatchProcessor:
             return False, f"Error processing {repo_path}: {str(e)}"
 
     def _build_command(
-        self,
-        repo_path: str,
-        output_file: Path,
-        is_remote: bool
+        self, repo_path: str, output_file: Path, is_remote: bool
     ) -> List[str]:
         """
         Build repomix command with configuration options.
@@ -245,18 +240,10 @@ class RepomixBatchProcessor:
         Returns:
             File extension
         """
-        extensions = {
-            "xml": "xml",
-            "markdown": "md",
-            "json": "json",
-            "plain": "txt"
-        }
+        extensions = {"xml": "xml", "markdown": "md", "json": "json", "plain": "txt"}
         return extensions.get(style, "xml")
 
-    def process_batch(
-        self,
-        repositories: List[Dict[str, str]]
-    ) -> Dict[str, List[str]]:
+    def process_batch(self, repositories: List[Dict[str, str]]) -> Dict[str, List[str]]:
         """
         Process multiple repositories.
 
@@ -282,9 +269,7 @@ class RepomixBatchProcessor:
             is_remote = repo.get("remote", False)
 
             success, message = self.process_repository(
-                repo_path,
-                output_name,
-                is_remote
+                repo_path, output_name, is_remote
             )
 
             if success:
@@ -315,7 +300,7 @@ def load_repositories_from_file(file_path: str) -> List[Dict[str, str]]:
         List of repository configurations
     """
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
             if isinstance(data, list):
                 return data
@@ -337,14 +322,9 @@ def main():
     )
 
     # Input options
+    parser.add_argument("repos", nargs="*", help="Repository paths or URLs to process")
     parser.add_argument(
-        "repos",
-        nargs="*",
-        help="Repository paths or URLs to process"
-    )
-    parser.add_argument(
-        "-f", "--file",
-        help="JSON file containing repository configurations"
+        "-f", "--file", help="JSON file containing repository configurations"
     )
 
     # Output options
@@ -352,42 +332,29 @@ def main():
         "--style",
         choices=["xml", "markdown", "json", "plain"],
         default="xml",
-        help="Output format (default: xml)"
+        help="Output format (default: xml)",
     )
     parser.add_argument(
-        "-o", "--output-dir",
+        "-o",
+        "--output-dir",
         default="repomix-output",
-        help="Output directory (default: repomix-output)"
+        help="Output directory (default: repomix-output)",
     )
 
     # Processing options
     parser.add_argument(
         "--remove-comments",
         action="store_true",
-        help="Remove comments from source files"
+        help="Remove comments from source files",
     )
+    parser.add_argument("--include", help="Include pattern (glob)")
+    parser.add_argument("--ignore", help="Ignore pattern (glob)")
     parser.add_argument(
-        "--include",
-        help="Include pattern (glob)"
+        "--no-security-check", action="store_true", help="Disable security checks"
     )
+    parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
     parser.add_argument(
-        "--ignore",
-        help="Ignore pattern (glob)"
-    )
-    parser.add_argument(
-        "--no-security-check",
-        action="store_true",
-        help="Disable security checks"
-    )
-    parser.add_argument(
-        "-v", "--verbose",
-        action="store_true",
-        help="Verbose output"
-    )
-    parser.add_argument(
-        "--remote",
-        action="store_true",
-        help="Treat all repos as remote URLs"
+        "--remote", action="store_true", help="Treat all repos as remote URLs"
     )
 
     args = parser.parse_args()
@@ -400,7 +367,7 @@ def main():
         include_pattern=args.include,
         ignore_pattern=args.ignore,
         no_security_check=args.no_security_check,
-        verbose=args.verbose
+        verbose=args.verbose,
     )
 
     # Initialize processor
@@ -422,10 +389,7 @@ def main():
     # Add command line repositories
     if args.repos:
         for repo_path in args.repos:
-            repositories.append({
-                "path": repo_path,
-                "remote": args.remote
-            })
+            repositories.append({"path": repo_path, "remote": args.remote})
 
     # Validate we have repositories to process
     if not repositories:
@@ -443,12 +407,12 @@ def main():
     print(f"Success: {len(results['success'])}")
     print(f"Failed: {len(results['failed'])}")
 
-    if results['failed']:
+    if results["failed"]:
         print("\nFailed repositories:")
-        for failure in results['failed']:
+        for failure in results["failed"]:
             print(f"  - {failure}")
 
-    return 0 if not results['failed'] else 1
+    return 0 if not results["failed"] else 1
 
 
 if __name__ == "__main__":

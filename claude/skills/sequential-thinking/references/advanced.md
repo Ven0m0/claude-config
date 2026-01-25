@@ -16,6 +16,7 @@ When a thought proves incorrect or incomplete, use revision to correct the reaso
 ```
 
 **When to revise**:
+
 - New evidence contradicts earlier conclusions
 - Assumptions prove incorrect
 - Scope was misunderstood
@@ -56,6 +57,7 @@ Explore different solution paths by branching from a specific thought:
 ```
 
 **When to branch**:
+
 - Multiple viable approaches exist
 - Need to compare trade-offs
 - Exploring contingencies
@@ -105,6 +107,7 @@ Freely adjust `totalThoughts` as understanding evolves:
 ## Session Management
 
 Each reasoning session maintains its own context. The tool tracks:
+
 - All thoughts in sequence
 - Revision relationships
 - Branch hierarchies
@@ -115,8 +118,8 @@ You don't need to manually manage state—focus on expressing reasoning clearly.
 ## Best Practices
 
 1. **Express uncertainty**: "This might be...", "Uncertain if...", "Need to verify..."
-2. **Show reasoning**: Not just conclusions, but how you arrived there
-3. **Revise freely**: Correcting course is expected and valuable
-4. **Branch decisively**: When exploring alternatives, commit to exploring each fully
-5. **Adjust scope**: Don't lock into initial estimates
-6. **Maintain clarity**: Each thought should be self-contained enough to understand in isolation
+1. **Show reasoning**: Not just conclusions, but how you arrived there
+1. **Revise freely**: Correcting course is expected and valuable
+1. **Branch decisively**: When exploring alternatives, commit to exploring each fully
+1. **Adjust scope**: Don't lock into initial estimates
+1. **Maintain clarity**: Each thought should be self-contained enough to understand in isolation

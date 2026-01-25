@@ -1,5 +1,5 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
 
 MAX=${1:-10}
 SLEEP=${2:-2}
@@ -7,12 +7,12 @@ SLEEP=${2:-2}
 echo "Starting Ralph - Max $MAX iterations"
 echo ""
 
-for ((i=1; i<=$MAX; i++)); do
-    echo "==========================================="
-    echo "  Iteration $i of $MAX"
-    echo "==========================================="
+for ((i = 1; i <= MAX; i++)); do
+  echo "==========================================="
+  echo "  Iteration $i of $MAX"
+  echo "==========================================="
 
-    result=$(claude --dangerously-skip-permissions -p "You are Ralph, an autonomous coding agent. Do exactly ONE task per iteration.
+  result=$(claude --dangerously-skip-permissions -p "You are Ralph, an autonomous coding agent. Do exactly ONE task per iteration.
 
 ## Steps
 
@@ -59,17 +59,17 @@ After completing your task, check PRD.md:
 - If ALL tasks are [x], output exactly: <promise>COMPLETE</promise>
 - If tasks remain [ ], just end your response (next iteration will continue)")
 
-    echo "$result"
-    echo ""
+  echo "$result"
+  echo ""
 
-    if [[ "$result" == *"<promise>COMPLETE</promise>"* ]]; then
-        echo "==========================================="
-        echo "  All tasks complete after $i iterations!"
-        echo "==========================================="
-        exit 0
-    fi
+  if [[ $result == *"<promise>COMPLETE</promise>"* ]]; then
+    echo "==========================================="
+    echo "  All tasks complete after $i iterations!"
+    echo "==========================================="
+    exit 0
+  fi
 
-    sleep $SLEEP
+  sleep "$SLEEP"
 done
 
 echo "==========================================="

@@ -109,6 +109,7 @@ fi
 Use the pattern catalog below when you need full script templates and advanced defensive techniques.
 
 <!-- progressive: bash-patterns -->
+
 ## Fundamental Patterns
 
 ### Pattern 1: Safe Script Directory Detection
@@ -523,23 +524,24 @@ check_dependencies
 ## Best Practices Summary
 
 1. **Always use strict mode** - `set -Eeuo pipefail`
-2. **Quote all variables** - `"$variable"` prevents word splitting
-3. **Use [[]] conditionals** - More robust than [ ]
-4. **Implement error trapping** - Catch and handle errors gracefully
-5. **Validate all inputs** - Check file existence, permissions, formats
-6. **Use functions for reusability** - Prefix with meaningful names
-7. **Implement structured logging** - Include timestamps and levels
-8. **Support dry-run mode** - Allow users to preview changes
-9. **Handle temporary files safely** - Use mktemp, cleanup with trap
-10. **Design for idempotency** - Scripts should be safe to rerun
-11. **Document requirements** - List dependencies and minimum versions
-12. **Test error paths** - Ensure error handling works correctly
-13. **Use `command -v`** - Safer than `which` for checking executables
-14. **Prefer printf over echo** - More predictable across systems
+1. **Quote all variables** - `"$variable"` prevents word splitting
+1. **Use \[[]\] conditionals** - More robust than [ ]
+1. **Implement error trapping** - Catch and handle errors gracefully
+1. **Validate all inputs** - Check file existence, permissions, formats
+1. **Use functions for reusability** - Prefix with meaningful names
+1. **Implement structured logging** - Include timestamps and levels
+1. **Support dry-run mode** - Allow users to preview changes
+1. **Handle temporary files safely** - Use mktemp, cleanup with trap
+1. **Design for idempotency** - Scripts should be safe to rerun
+1. **Document requirements** - List dependencies and minimum versions
+1. **Test error paths** - Ensure error handling works correctly
+1. **Use `command -v`** - Safer than `which` for checking executables
+1. **Prefer printf over echo** - More predictable across systems
 
 ## Resources
 
 - **Bash Strict Mode**: http://redsymbol.net/articles/unofficial-bash-strict-mode/
 - **Google Shell Style Guide**: https://google.github.io/styleguide/shellguide.html
 - **Defensive BASH Programming**: https://www.lifepipe.net/
+
 <!-- /progressive -->

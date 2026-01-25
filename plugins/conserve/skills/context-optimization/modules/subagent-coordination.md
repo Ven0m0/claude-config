@@ -34,6 +34,7 @@ Claude Code v2.1.1+ introduced automatic context compaction for "sidechain" (sub
 ```
 
 **Key observations**:
+
 - **Threshold**: ~160k tokens triggers compaction
 - **Automatic**: No configuration needed - system handles it
 - **Transparent**: Subagent continues working after compaction
@@ -42,20 +43,20 @@ Claude Code v2.1.1+ introduced automatic context compaction for "sidechain" (sub
 ### Implications for Agent Design
 
 1. **Long-running subagents are safe**: They won't crash at context limits
-2. **No manual checkpointing needed**: System handles context overflow
-3. **Design for continuity**: Ensure subagent state survives compaction
+1. **No manual checkpointing needed**: System handles context overflow
+1. **Design for continuity**: Ensure subagent state survives compaction
    - Store critical state in files, not just conversation
    - Use explicit progress markers (TodoWrite, checkpoints)
    - Avoid relying on early conversation context for late decisions
 
 ### When Auto-Compaction Triggers
 
-| Context Usage | Behavior |
-|--------------|----------|
-| < 80% (~128k) | Normal operation |
-| 80-90% (~128-144k) | Warning zone, plan wrap-up |
-| > 90% (~144k+) | Compaction imminent |
-| ~160k | **Auto-compaction triggers** |
+| Context Usage      | Behavior                     |
+| ------------------ | ---------------------------- |
+| < 80% (~128k)      | Normal operation             |
+| 80-90% (~128-144k) | Warning zone, plan wrap-up   |
+| > 90% (~144k+)     | Compaction imminent          |
+| ~160k              | **Auto-compaction triggers** |
 
 ### Best Practice: State Preservation
 
@@ -97,23 +98,25 @@ grep -r "compact_boundary" ~/.claude/projects/*/agent_*.log | tail -5
 
 ### The Economics
 
-| Task Type | Task Tokens | + Base Overhead | Total | Efficiency |
-|-----------|-------------|-----------------|-------|------------|
-| Simple commit | ~50 | +8,000 | 8,050 | **0.6%** ❌ |
-| PR description | ~200 | +8,000 | 8,200 | **2.4%** ❌ |
-| Code review | ~3,000 | +8,000 | 11,000 | **27%** ⚠️ |
-| Architecture analysis | ~15,000 | +8,000 | 23,000 | **65%** ✅ |
-| Multi-file refactor | ~25,000 | +8,000 | 33,000 | **76%** ✅ |
+| Task Type             | Task Tokens | + Base Overhead | Total  | Efficiency  |
+| --------------------- | ----------- | --------------- | ------ | ----------- |
+| Simple commit         | ~50         | +8,000          | 8,050  | **0.6%** ❌ |
+| PR description        | ~200        | +8,000          | 8,200  | **2.4%** ❌ |
+| Code review           | ~3,000      | +8,000          | 11,000 | **27%** ⚠️  |
+| Architecture analysis | ~15,000     | +8,000          | 23,000 | **65%** ✅  |
+| Multi-file refactor   | ~25,000     | +8,000          | 33,000 | **76%** ✅  |
 
 **Rule of Thumb**: If task reasoning < 2,000 tokens, parent agent should do it directly.
 
 ### Cost Comparison (Haiku vs Opus)
 
 Even though Haiku is ~60x cheaper per token:
+
 - Parent (Opus) doing simple commit: ~200 tokens = ~$0.009
 - Subagent (Haiku) doing simple commit: ~8,700 tokens = ~$0.0065
 
 **Marginal savings ($0.003) don't justify**:
+
 - Latency overhead (subagent spin-up)
 - Complexity cost (more failure modes)
 - Opportunity cost (8k tokens could fund real reasoning)
@@ -137,32 +140,32 @@ A subagent that "bails early" still costs nearly the full overhead.
 
 **Before delegating, ask**: "Does this task require analysis, or just execution?"
 
-| Task Type | Reasoning Required | Delegate? |
-|-----------|-------------------|-----------|
-| `git add && git commit && git push` | None | **NO** - parent does directly |
-| "Classify changes and write commit" | Minimal | **NO** - parent does directly |
-| "Review PR for security issues" | Substantial | **MAYBE** - if context pressure |
-| "Analyze architecture and suggest refactors" | High | **YES** - benefits from fresh context |
+| Task Type                                    | Reasoning Required | Delegate?                             |
+| -------------------------------------------- | ------------------ | ------------------------------------- |
+| `git add && git commit && git push`          | None               | **NO** - parent does directly         |
+| "Classify changes and write commit"          | Minimal            | **NO** - parent does directly         |
+| "Review PR for security issues"              | Substantial        | **MAYBE** - if context pressure       |
+| "Analyze architecture and suggest refactors" | High               | **YES** - benefits from fresh context |
 
 ### Pre-Invocation Checklist (Parent MUST verify)
 
 Before calling ANY subagent via Task tool:
 
 1. **Can I do this in one command?** → Do it directly
-2. **Is the reasoning < 500 tokens?** → Do it directly
-3. **Is this a "run X" request?** → Run X directly
-4. **Check agent description for ⚠️ PRE-INVOCATION CHECK** → Follow it
+1. **Is the reasoning < 500 tokens?** → Do it directly
+1. **Is this a "run X" request?** → Run X directly
+1. **Check agent description for ⚠️ PRE-INVOCATION CHECK** → Follow it
 
 ### Delegation Triggers (Updated)
 
-| Trigger | Threshold | Action |
-|---------|-----------|--------|
-| **Task reasoning** | < 2,000 tokens | ❌ Parent does directly |
-| Task reasoning | > 2,000 tokens | Consider delegation |
-| Context pressure | > 40% usage | Consider delegation |
-| Task complexity | > 5 distinct steps | Recommend delegation |
-| File operations | > 3 large files | Require delegation |
-| Parallel work | Independent subtasks | Optimal for delegation |
+| Trigger            | Threshold            | Action                  |
+| ------------------ | -------------------- | ----------------------- |
+| **Task reasoning** | < 2,000 tokens       | ❌ Parent does directly |
+| Task reasoning     | > 2,000 tokens       | Consider delegation     |
+| Context pressure   | > 40% usage          | Consider delegation     |
+| Task complexity    | > 5 distinct steps   | Recommend delegation    |
+| File operations    | > 3 large files      | Require delegation      |
+| Parallel work      | Independent subtasks | Optimal for delegation  |
 
 ### Decision Framework
 
@@ -263,10 +266,11 @@ def decompose_workflow(task):
 ### Task Packaging
 
 When delegating to a subagent, package:
+
 1. **Clear objective**: What the subagent should accomplish
-2. **Required context**: Minimal context needed for the task
-3. **Expected output**: Format and content of results
-4. **Constraints**: Time limits, resource bounds, quality requirements
+1. **Required context**: Minimal context needed for the task
+1. **Expected output**: Format and content of results
+1. **Constraints**: Time limits, resource bounds, quality requirements
 
 ## Subagent Patterns
 
@@ -345,9 +349,9 @@ class SubagentCoordinator:
 ### Combining Subagent Output
 
 1. **Extract key findings**: Pull essential information from each result
-2. **Resolve conflicts**: Handle contradictory findings
-3. **Build coherent summary**: Create unified view for parent context
-4. **Preserve references**: Keep pointers to detailed results if needed
+1. **Resolve conflicts**: Handle contradictory findings
+1. **Build coherent summary**: Create unified view for parent context
+1. **Preserve references**: Keep pointers to detailed results if needed
 
 ### Synthesis Patterns
 
@@ -377,10 +381,10 @@ def synthesize_exploration_results(results):
 ## Best Practices
 
 1. **Minimize handoff context**: Pass only essential information
-2. **Define clear boundaries**: Each subagent has specific scope
-3. **Plan for failures**: Handle subagent errors gracefully
-4. **Summarize aggressively**: Keep only key results
-5. **Parallelize when possible**: Use concurrent execution for speed
+1. **Define clear boundaries**: Each subagent has specific scope
+1. **Plan for failures**: Handle subagent errors gracefully
+1. **Summarize aggressively**: Keep only key results
+1. **Parallelize when possible**: Use concurrent execution for speed
 
 ## Integration
 

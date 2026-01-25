@@ -109,21 +109,25 @@ df -h / | tail -1 | awk '{print "After maximum cleanup: " $4 " free"}'
 ## Execution Steps
 
 1. **Determine Cleanup Level**
+
    - No arguments or empty: Run Conservative Cleanup (Option 1)
    - `--aggressive`: Run Aggressive Cleanup (Option 2)
    - `--maximum`: Run Maximum Cleanup (Option 3)
 
-2. **Safety Checks**
+1. **Safety Checks**
+
    - Verify sufficient permissions
    - Ensure critical applications are closed (browsers for Option 2+)
    - Warn about Docker containers being removed (Option 3)
 
-3. **Execute Cleanup**
+1. **Execute Cleanup**
+
    - Run appropriate commands based on the selected option
    - Show progress for each cleanup step
    - Handle errors gracefully (missing directories, permissions)
 
-4. **Report Results**
+1. **Report Results**
+
    - Display disk space before and after
    - Show amount of space recovered
    - List what was cleaned
@@ -132,16 +136,19 @@ df -h / | tail -1 | awk '{print "After maximum cleanup: " $4 " free"}'
 ## Important Notes
 
 **Conservative Cleanup** (default):
+
 - ✅ Always safe to run
 - ✅ Caches rebuild automatically when needed
 - ✅ No application impact
 
 **Aggressive Cleanup** (--aggressive):
+
 - ⚠️ Close browsers before running
 - ⚠️ Browser caches will rebuild on next use
 - ⚠️ ML models will re-download if needed
 
 **Maximum Cleanup** (--maximum):
+
 - ⚠️ Stops and removes all Docker containers/images
 - ⚠️ Only deletes node_modules after manual review
 - ⚠️ Most impactful but recovers the most space
@@ -170,7 +177,8 @@ All cleaned caches are temporary and will rebuild automatically:
 ```
 
 After cleanup, verify the results and inform the user of:
+
 1. Space freed
-2. Current free space
-3. What was cleaned
-4. Whether additional cleanup is recommended
+1. Current free space
+1. What was cleaned
+1. Whether additional cleanup is recommended

@@ -4,13 +4,13 @@
 
 ### When to Use Context7 (Proactively!)
 
-| Situation | Action |
-|-----------|--------|
-| Adding new dependency | Query Context7 for setup and usage patterns |
-| Using library for first time | Query Context7 for API overview and examples |
-| Implementing specific feature | Query Context7 for that feature's documentation |
-| Getting errors from a library | Query Context7 for correct usage patterns |
-| Unsure about library capabilities | Query Context7 to understand what's available |
+| Situation                         | Action                                          |
+| --------------------------------- | ----------------------------------------------- |
+| Adding new dependency             | Query Context7 for setup and usage patterns     |
+| Using library for first time      | Query Context7 for API overview and examples    |
+| Implementing specific feature     | Query Context7 for that feature's documentation |
+| Getting errors from a library     | Query Context7 for correct usage patterns       |
+| Unsure about library capabilities | Query Context7 to understand what's available   |
 
 **Don't guess or assume** - Context7 has 1000s of indexed libraries with real documentation.
 
@@ -29,6 +29,7 @@ query-docs(libraryId="/npm/react", query="specific question")
 ### Query Tips
 
 Use descriptive queries - they drive result relevance:
+
 - ❌ `"fixtures"` → ✅ `"how to create and use fixtures in pytest"`
 - ❌ `"hooks"` → ✅ `"useState and useEffect patterns in React"`
 - ❌ `"auth"` → ✅ `"how to implement JWT authentication with refresh tokens"`
@@ -37,14 +38,14 @@ Use descriptive queries - they drive result relevance:
 
 ### Tool Selection Guide
 
-| Need | Primary Tool | Fallback |
-|------|--------------|----------|
-| Library API reference | Context7 | Official docs |
-| Framework patterns | Context7 | Official docs |
-| Code examples | Context7 | GitHub search |
-| Error message lookup | WebSearch | Stack Overflow |
-| General web research | WebSearch | - |
-| Codebase patterns | Vexor | Grep/Glob |
+| Need                  | Primary Tool | Fallback       |
+| --------------------- | ------------ | -------------- |
+| Library API reference | Context7     | Official docs  |
+| Framework patterns    | Context7     | Official docs  |
+| Code examples         | Context7     | GitHub search  |
+| Error message lookup  | WebSearch    | Stack Overflow |
+| General web research  | WebSearch    | -              |
+| Codebase patterns     | Vexor        | Grep/Glob      |
 
 ### Example: Learning a New Library
 

@@ -5,15 +5,21 @@ allowed-tools: Read, Write
 ---
 
 Optimize database performance:
-1. Analyze slow queries and execution plans (EXPLAIN ANALYZE)
-2. Add/optimize indexes for common query patterns
-3. Review index usage stats and remove unused indexes
-4. Optimize query structure (reduce N+1, add covering indexes, use partial indexes)
-5. Configure connection pooling and query caching
-6. Document improvements with before/after metrics
 
+1. Analyze slow queries and execution plans (EXPLAIN ANALYZE)
+
+1. Add/optimize indexes for common query patterns
+
+1. Review index usage stats and remove unused indexes
+
+1. Optimize query structure (reduce N+1, add covering indexes, use partial indexes)
+
+1. Configure connection pooling and query caching
+
+1. Document improvements with before/after metrics
 
    **PostgreSQL Query Optimization:**
+
    ```sql
    -- Enable query logging for analysis
    ALTER SYSTEM SET log_statement = 'all';
@@ -36,6 +42,7 @@ Optimize database performance:
    ```
 
    **MySQL Query Optimization:**
+
    ```sql
    -- Enable slow query log
    SET GLOBAL slow_query_log = 'ON';
@@ -56,10 +63,12 @@ Optimize database performance:
    ADD INDEX idx_category_price (category_id, price);
    ```
 
-3. **Index Strategy Optimization**
+1. **Index Strategy Optimization**
+
    - Design and implement optimal indexing strategy:
 
    **Index Analysis and Creation:**
+
    ```sql
    -- PostgreSQL index usage analysis
    SELECT
@@ -95,6 +104,7 @@ Optimize database performance:
    ```
 
    **Index Maintenance Scripts:**
+
    ```javascript
    // Node.js index analysis tool
    const { Pool } = require('pg');
@@ -141,10 +151,12 @@ Optimize database performance:
    }
    ```
 
-4. **Schema Design Optimization**
+1. **Schema Design Optimization**
+
    - Optimize database schema for performance:
 
    **Normalization and Denormalization:**
+
    ```sql
    -- Denormalization example for read-heavy workloads
    -- Instead of joining multiple tables for product display
@@ -181,6 +193,7 @@ Optimize database performance:
    ```
 
    **Partitioning for Large Tables:**
+
    ```sql
    -- PostgreSQL table partitioning
    CREATE TABLE orders_partitioned (
@@ -214,10 +227,12 @@ Optimize database performance:
    $$ LANGUAGE plpgsql;
    ```
 
-5. **Connection Pool Optimization**
+1. **Connection Pool Optimization**
+
    - Configure optimal database connection pooling:
 
    **Node.js Connection Pool Configuration:**
+
    ```javascript
    const { Pool } = require('pg');
 
@@ -263,6 +278,7 @@ Optimize database performance:
    ```
 
    **Database Connection Middleware:**
+
    ```javascript
    class DatabaseManager {
      static async executeQuery(query, params = []) {
@@ -300,7 +316,8 @@ Optimize database performance:
    }
    ```
 
-6. **Query Result Caching**
+1. **Query Result Caching**
+
    - Implement intelligent database result caching:
 
    ```javascript
@@ -348,10 +365,12 @@ Optimize database performance:
    }
    ```
 
-7. **Database Monitoring and Profiling**
+1. **Database Monitoring and Profiling**
+
    - Set up comprehensive database monitoring:
 
    **Performance Monitoring Script:**
+
    ```javascript
    class DatabaseMonitor {
      static async getPerformanceStats() {
@@ -419,7 +438,8 @@ Optimize database performance:
    }, 300000); // Every 5 minutes
    ```
 
-8. **Read Replica and Load Balancing**
+1. **Read Replica and Load Balancing**
+
    - Configure read replicas for query distribution:
 
    ```javascript
@@ -476,10 +496,12 @@ Optimize database performance:
    const dbCluster = new DatabaseCluster();
    ```
 
-9. **Database Vacuum and Maintenance**
+1. **Database Vacuum and Maintenance**
+
    - Implement automated database maintenance:
 
    **PostgreSQL Maintenance Scripts:**
+
    ```sql
    -- Automated vacuum and analyze
    CREATE OR REPLACE FUNCTION auto_vacuum_analyze()
@@ -503,6 +525,7 @@ Optimize database performance:
    ```
 
    **Maintenance Monitoring:**
+
    ```javascript
    class MaintenanceMonitor {
      static async checkTableBloat() {
@@ -549,78 +572,80 @@ Optimize database performance:
    }
    ```
 
-10. **Performance Testing and Benchmarking**
-    - Set up database performance testing:
+1. **Performance Testing and Benchmarking**
 
-    **Load Testing Script:**
-    ```javascript
-    const { Pool } = require('pg');
-    const pool = new Pool();
+   - Set up database performance testing:
 
-    class DatabaseLoadTester {
-      static async benchmarkQuery(query, params, iterations = 100) {
-        const times = [];
+   **Load Testing Script:**
 
-        for (let i = 0; i < iterations; i++) {
-          const start = process.hrtime.bigint();
-          await pool.query(query, params);
-          const end = process.hrtime.bigint();
+   ```javascript
+   const { Pool } = require('pg');
+   const pool = new Pool();
 
-          times.push(Number(end - start) / 1000000); // Convert to milliseconds
-        }
+   class DatabaseLoadTester {
+     static async benchmarkQuery(query, params, iterations = 100) {
+       const times = [];
 
-        const avg = times.reduce((a, b) => a + b, 0) / times.length;
-        const min = Math.min(...times);
-        const max = Math.max(...times);
-        const median = times.sort()[Math.floor(times.length / 2)];
+       for (let i = 0; i < iterations; i++) {
+         const start = process.hrtime.bigint();
+         await pool.query(query, params);
+         const end = process.hrtime.bigint();
 
-        return { avg, min, max, median, iterations };
-      }
+         times.push(Number(end - start) / 1000000); // Convert to milliseconds
+       }
 
-      static async stressTest(concurrency = 10, duration = 60000) {
-        const startTime = Date.now();
-        const results = { success: 0, errors: 0, totalTime: 0 };
+       const avg = times.reduce((a, b) => a + b, 0) / times.length;
+       const min = Math.min(...times);
+       const max = Math.max(...times);
+       const median = times.sort()[Math.floor(times.length / 2)];
 
-        const workers = Array(concurrency).fill().map(async () => {
-          while (Date.now() - startTime < duration) {
-            try {
-              const start = Date.now();
-              await pool.query('SELECT COUNT(*) FROM products');
-              results.totalTime += Date.now() - start;
-              results.success++;
-            } catch (error) {
-              results.errors++;
-            }
-          }
-        });
+       return { avg, min, max, median, iterations };
+     }
 
-        await Promise.all(workers);
+     static async stressTest(concurrency = 10, duration = 60000) {
+       const startTime = Date.now();
+       const results = { success: 0, errors: 0, totalTime: 0 };
 
-        results.qps = results.success / (duration / 1000);
-        results.avgResponseTime = results.totalTime / results.success;
+       const workers = Array(concurrency).fill().map(async () => {
+         while (Date.now() - startTime < duration) {
+           try {
+             const start = Date.now();
+             await pool.query('SELECT COUNT(*) FROM products');
+             results.totalTime += Date.now() - start;
+             results.success++;
+           } catch (error) {
+             results.errors++;
+           }
+         }
+       });
 
-        return results;
-      }
-    }
+       await Promise.all(workers);
 
-    // Run benchmarks
-    async function runBenchmarks() {
-      console.log('Running database benchmarks...');
+       results.qps = results.success / (duration / 1000);
+       results.avgResponseTime = results.totalTime / results.success;
 
-      const simpleQuery = await DatabaseLoadTester.benchmarkQuery(
-        'SELECT * FROM products LIMIT 10'
-      );
-      console.log('Simple query benchmark:', simpleQuery);
+       return results;
+     }
+   }
 
-      const complexQuery = await DatabaseLoadTester.benchmarkQuery(
-        `SELECT p.*, c.name as category
-         FROM products p
-         JOIN categories c ON p.category_id = c.id
-         ORDER BY p.created_at DESC LIMIT 50`
-      );
-      console.log('Complex query benchmark:', complexQuery);
+   // Run benchmarks
+   async function runBenchmarks() {
+     console.log('Running database benchmarks...');
 
-      const stressTest = await DatabaseLoadTester.stressTest(5, 30000);
-      console.log('Stress test results:', stressTest);
-    }
-    ```
+     const simpleQuery = await DatabaseLoadTester.benchmarkQuery(
+       'SELECT * FROM products LIMIT 10'
+     );
+     console.log('Simple query benchmark:', simpleQuery);
+
+     const complexQuery = await DatabaseLoadTester.benchmarkQuery(
+       `SELECT p.*, c.name as category
+        FROM products p
+        JOIN categories c ON p.category_id = c.id
+        ORDER BY p.created_at DESC LIMIT 50`
+     );
+     console.log('Complex query benchmark:', complexQuery);
+
+     const stressTest = await DatabaseLoadTester.stressTest(5, 30000);
+     console.log('Stress test results:', stressTest);
+   }
+   ```

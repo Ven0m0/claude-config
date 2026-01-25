@@ -77,6 +77,7 @@ async fn fetch_data(url: &str) -> Result<String> {
 Use the patterns below when you need deeper catalogs, debugging tips, and resources.
 
 <!-- progressive: rust-async-patterns -->
+
 ## Patterns
 
 ### Pattern 1: Concurrent Task Execution
@@ -522,4 +523,5 @@ tokio::spawn(async move {
 - [Tokio Tutorial](https://tokio.rs/tokio/tutorial)
 - [Async Book](https://rust-lang.github.io/async-book/)
 - [Tokio Console](https://github.com/tokio-rs/console)
+
 <!-- /progressive -->

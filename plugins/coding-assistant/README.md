@@ -20,16 +20,19 @@ This plugin includes automatic code formatting after edits:
 ## Usage Examples
 
 ### Code Review
+
 ```bash
 /code-review src/components/UserProfile.tsx
 ```
 
 ### Debug Issues
+
 ```json
 /debug "TypeError: Cannot read property 'map' of undefined in UserList component"
 ```
 
 ### Refactor Code
+
 ```bash
 /refactor src/utils/dataProcessing.js
 ```
@@ -39,21 +42,24 @@ This plugin includes automatic code formatting after edits:
 The auto-format hook runs after every Write or Edit operation. To use it:
 
 1. Install the appropriate formatter for your language:
+
    - JavaScript/TypeScript: `npm install -g @biomejs/biome`
    - Python: `pip install uv` (ruff auto-installs via uvx) or `pip install ruff`
    - Go: Included with Go installation
    - Rust: `rustup component add rustfmt`
 
-2. The hook will automatically format files when you edit them
+1. The hook will automatically format files when you edit them
 
-3. To disable the hook, remove or comment out the `hooks` field in `.claude-plugin/plugin.json`
+1. To disable the hook, remove or comment out the `hooks` field in `.claude-plugin/plugin.json`
 
 ## Requirements
 
 ### For Code Review and Refactoring
+
 - No special requirements - uses Claude's built-in tools
 
 ### For Auto-formatting (optional)
+
 - **JavaScript/TypeScript**: Biome (`npm install -g @biomejs/biome`)
 - **Python**: ruff (`pip install uv` or `pip install ruff`)
 - **Go**: gofmt (comes with Go)

@@ -1,25 +1,25 @@
 ---
 name: prd
-description: "Generate a Product Requirements Document (PRD) for a new feature. Use when planning a feature, starting a new project, or when asked to create a PRD. Triggers on: create a prd, write prd for, plan this feature, requirements for, spec out."
+description: 'Generate a Product Requirements Document (PRD) for a new feature. Use when planning a feature, starting a new project, or when asked to create a PRD. Triggers on: create a prd, write prd for, plan this feature, requirements for, spec out.'
 ---
 
 # PRD Generator
 
 Create detailed Product Requirements Documents that are clear, actionable, and suitable for autonomous AI implementation via the Ralph loop.
 
----
+______________________________________________________________________
 
 ## The Job
 
 1. Receive a feature description from the user
-2. Ask 3-5 essential clarifying questions (with lettered options)
-3. Generate a structured PRD based on answers
-4. Save to `PRD.md`
-5. Create empty `progress.txt`
+1. Ask 3-5 essential clarifying questions (with lettered options)
+1. Generate a structured PRD based on answers
+1. Save to `PRD.md`
+1. Create empty `progress.txt`
 
 **Important:** Do NOT start implementing. Just create the PRD.
 
----
+______________________________________________________________________
 
 ## Step 1: Clarifying Questions
 
@@ -54,7 +54,7 @@ Ask only critical questions where the initial prompt is ambiguous. Focus on:
 
 This lets users respond with "1A, 2C, 3B" for quick iteration.
 
----
+______________________________________________________________________
 
 ## Step 2: Story Sizing (THE NUMBER ONE RULE)
 
@@ -63,46 +63,51 @@ This lets users respond with "1A, 2C, 3B" for quick iteration.
 Ralph spawns a fresh instance per iteration with no memory of previous work. If a story is too big, the AI runs out of context before finishing and produces broken code.
 
 ### Right-sized stories:
+
 - Add a database column and migration
 - Add a single UI component to an existing page
 - Update a server action with new logic
 - Add a filter dropdown to a list
 
 ### Too big (MUST split):
-| Too Big | Split Into |
-|---------|-----------|
-| "Build the dashboard" | Schema, queries, UI components, filters |
-| "Add authentication" | Schema, middleware, login UI, session handling |
-| "Add drag and drop" | Drag events, drop zones, state update, persistence |
-| "Refactor the API" | One story per endpoint or pattern |
+
+| Too Big               | Split Into                                         |
+| --------------------- | -------------------------------------------------- |
+| "Build the dashboard" | Schema, queries, UI components, filters            |
+| "Add authentication"  | Schema, middleware, login UI, session handling     |
+| "Add drag and drop"   | Drag events, drop zones, state update, persistence |
+| "Refactor the API"    | One story per endpoint or pattern                  |
 
 **Rule of thumb:** If you cannot describe the change in 2-3 sentences, it is too big.
 
----
+______________________________________________________________________
 
 ## Step 3: Story Ordering (Dependencies First)
 
 Stories execute in priority order. Earlier stories must NOT depend on later ones.
 
 **Correct order:**
+
 1. Schema/database changes (migrations)
-2. Server actions / backend logic
-3. UI components that use the backend
-4. Dashboard/summary views that aggregate data
+1. Server actions / backend logic
+1. UI components that use the backend
+1. Dashboard/summary views that aggregate data
 
 **Wrong order:**
+
 ```
 US-001: UI component (depends on schema that doesn't exist yet!)
 US-002: Schema change
 ```
 
----
+______________________________________________________________________
 
 ## Step 4: Acceptance Criteria (Must Be Verifiable)
 
 Each criterion must be something Ralph can CHECK, not something vague.
 
 ### Good criteria (verifiable):
+
 - "Add `status` column to tasks table with default 'pending'"
 - "Filter dropdown has options: All, Active, Completed"
 - "Clicking delete shows confirmation dialog"
@@ -110,41 +115,49 @@ Each criterion must be something Ralph can CHECK, not something vague.
 - "Tests pass"
 
 ### Bad criteria (vague):
+
 - "Works correctly"
 - "User can do X easily"
 - "Good UX"
 - "Handles edge cases"
 
 ### Always include as final criterion:
+
 ```
 "Typecheck passes"
 ```
 
 ### For stories that change UI, also include:
+
 ```
 "Verify changes work in browser"
 ```
 
----
+______________________________________________________________________
 
 ## PRD Structure
 
 Generate the PRD with these sections:
 
 ### 1. Introduction
+
 Brief description of the feature and the problem it solves.
 
 ### 2. Goals
+
 Specific, measurable objectives (bullet list).
 
 ### 3. User Stories
+
 Each story needs:
+
 - **ID:** Sequential (US-001, US-002, etc.)
 - **Title:** Short descriptive name
 - **Description:** "As a [user], I want [feature] so that [benefit]"
 - **Acceptance Criteria:** Verifiable checklist
 
 **Format:**
+
 ```markdown
 ### US-001: [Title]
 **Description:** As a [user], I want [feature] so that [benefit].
@@ -157,13 +170,15 @@ Each story needs:
 ```
 
 ### 4. Non-Goals
+
 What this feature will NOT include. Critical for scope.
 
 ### 5. Technical Considerations (Optional)
+
 - Known constraints
 - Existing components to reuse
 
----
+______________________________________________________________________
 
 ## Example PRD
 
@@ -232,13 +247,14 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 - Filter state managed via URL search params
 ```
 
----
+______________________________________________________________________
 
 ## Output
 
 Save to `PRD.md` in the current directory.
 
 Also create `progress.txt`:
+
 ```markdown
 # Progress Log
 
@@ -248,7 +264,7 @@ Also create `progress.txt`:
 ---
 ```
 
----
+______________________________________________________________________
 
 ## Checklist Before Saving
 

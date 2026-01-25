@@ -4,6 +4,7 @@ category: utilities-debugging
 ---
 
 Enable Token Efficiency Mode for compressed responses:
+
 - Use visual symbols: →(leads to), ✅(success), ❌(error), ⚡(performance), 🔧(config)
 - Use abbreviations: cfg(config), impl(implementation), perf(performance), deps(dependencies)
 - Keep code quality unchanged, only compress explanations

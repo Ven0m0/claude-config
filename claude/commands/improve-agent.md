@@ -5,13 +5,13 @@ model: claude-opus-4-1
 Improve an existing agent based on recent performance:
 
 1. Analyze recent uses of: $ARGUMENTS
-2. Identify patterns in:
+1. Identify patterns in:
    - Failed tasks
    - User corrections
    - Suboptimal outputs
-3. Update the agent's prompt with:
+1. Update the agent's prompt with:
    - New examples
    - Clarified instructions
    - Additional constraints
-4. Test on recent scenarios
-5. Save improved version
+1. Test on recent scenarios
+1. Save improved version

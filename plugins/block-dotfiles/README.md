@@ -30,6 +30,7 @@ The Block Dotfiles plugin automatically prevents Claude Code from reading or exe
 By default, the following sensitive files and directories are blocked:
 
 ### Shell Configuration
+
 - `.bashrc` - Bash shell configuration (may contain API keys/tokens)
 - `.zshrc` - Zsh shell configuration (may contain API keys/tokens)
 - `.bash_profile` - Bash login configuration
@@ -37,6 +38,7 @@ By default, the following sensitive files and directories are blocked:
 - `.profile` - Generic shell profile
 
 ### Environment Variables
+
 - `.env` - Environment variables (commonly contains secrets)
 - `.env.local` - Local environment overrides
 - `.env.production` - Production environment variables
@@ -45,6 +47,7 @@ By default, the following sensitive files and directories are blocked:
 - `.env.test` - Test environment variables
 
 ### Credentials & Keys
+
 - `.ssh/` - SSH keys and configuration
 - `.aws/` - AWS credentials and configuration
 - `.npmrc` - NPM authentication tokens
@@ -61,7 +64,9 @@ By default, the following sensitive files and directories are blocked:
 The plugin uses a SessionStart hook for proactive security warnings and four PreToolUse validation hooks that run before tool execution:
 
 ### 0. SessionStart Hook
+
 Provides upfront security context to Claude:
+
 - Warns about all sensitive files blocked by the plugin at session start
 - Lists categories: shell configs, environment files, credential stores
 - Explicitly instructs Claude NOT to access these files
@@ -70,48 +75,61 @@ Provides upfront security context to Claude:
 - Runs once per session, before any tools are executed
 
 ### 1. Bash Hook
+
 Validates bash command executions
 
 ### 2. Read Hook
+
 Validates file read operations
 
 ### 3. Glob Hook
+
 Validates file pattern matching operations
 
 ### 4. Grep Hook
+
 Validates content search operations
 
 When Claude attempts to access a blocked file, the validation hook will:
+
 1. Check if the path/command/pattern contains any sensitive file
-2. Block the operation and display an informative security message
-3. Return exit code 2 to prevent execution
+1. Block the operation and display an informative security message
+1. Return exit code 2 to prevent execution
 
 ## Example Usage
 
 ### Blocked Operations
 
 **Read operation:**
+
 ```bash
 Read: .env
 ```
+
 Blocked with: `Blocked: Access to sensitive file '.env' is not allowed for security reasons.`
 
 **Bash command:**
+
 ```bash
 cat .bashrc
 ```
+
 Blocked with: `Blocked: Command references sensitive file '.bashrc' which is not allowed for security reasons.`
 
 **Glob pattern:**
+
 ```bash
 **/.env*
 ```
+
 Blocked with: `Blocked: Glob pattern '**/.env*' targets sensitive file '.env' which is not allowed for security reasons.`
 
 **Grep search:**
+
 ```bash
 Grep: pattern="API_KEY", path=".env"
 ```
+
 Blocked with: `Blocked: Grep path '.env' contains sensitive file '.env' which is not allowed for security reasons.`
 
 ### Allowed Operations
@@ -186,6 +204,7 @@ bats tests/test-grep-validate.bats
 ### Test Coverage
 
 The test suite includes 105 tests organized by hook:
+
 - **test-session-context.bats (1 test)**: SessionStart hook execution verification
 - **test-bash-validate.bats (26 tests)**: Command validation with blocking/allowing scenarios
 - **test-read-validate.bats (28 tests)**: File path validation in command-line and JSON modes
@@ -199,6 +218,7 @@ See [tests/README.md](tests/README.md) for detailed testing documentation.
 ### False Positives
 
 The plugin blocks any path component matching a sensitive filename. For example:
+
 - `.env` is blocked
 - `path/to/.env` is blocked
 - But `environment.js` is allowed (different name)
@@ -222,11 +242,11 @@ Remember to re-enable it afterward:
 This plugin is one layer of security. Always follow these practices:
 
 1. **Never commit secrets** to version control
-2. **Use environment variables** for sensitive configuration
-3. **Keep `.env` in `.gitignore`**
-4. **Use secret management systems** for production (Vault, AWS Secrets Manager, etc.)
-5. **Rotate credentials** regularly
-6. **Use different credentials** for each environment
+1. **Use environment variables** for sensitive configuration
+1. **Keep `.env` in `.gitignore`**
+1. **Use secret management systems** for production (Vault, AWS Secrets Manager, etc.)
+1. **Rotate credentials** regularly
+1. **Use different credentials** for each environment
 
 ## Version
 

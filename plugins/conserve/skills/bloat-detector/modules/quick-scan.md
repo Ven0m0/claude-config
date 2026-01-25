@@ -36,6 +36,7 @@ done | sort -rn
 ```
 
 **Thresholds:**
+
 - Python: > 500 lines (God class likely)
 - JavaScript/TypeScript: > 400 lines
 - Markdown: > 300 lines (bloated docs)
@@ -60,6 +61,7 @@ rm recent_files.txt
 ```
 
 **Thresholds:**
+
 - > 12 months: HIGH confidence (95%)
 - 6-12 months: MEDIUM confidence (75%)
 - 3-6 months: LOW confidence (50%)
@@ -93,6 +95,7 @@ grep -rn "TODO\|FIXME\|HACK" --include="*.py" --include="*.js" --include="*.ts" 
 ```
 
 **Thresholds:**
+
 - > 12 months: Remove or convert to issue
 - 6-12 months: Review for relevance
 - 3-6 months: Monitor
@@ -178,6 +181,7 @@ recommendations:
 ## Integration with Git Analysis
 
 Quick scan coordinates with `git-history-analysis` module:
+
 - Quick scan identifies candidates
 - Git analysis validates with reference counting
 - Combined confidence: HIGHER than either alone
@@ -232,6 +236,7 @@ generated/*
 ## Next Steps After Quick Scan
 
 Based on findings:
+
 - **High-confidence**: Proceed with cleanup
 - **Medium-confidence**: Run Tier 2 for validation
 - **Low-confidence**: Manual review required

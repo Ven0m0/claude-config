@@ -180,7 +180,7 @@ def main() -> None:
         # Block the read
         reason = (
             f"File has {line_count} lines (threshold: {threshold}). "
-            f"Use Task(subagent_type=\"oh-my-claude:librarian\") to read large files. "
+            f'Use Task(subagent_type="oh-my-claude:librarian") to read large files. '
             f"This protects your context window for reasoning."
         )
         log_debug(f"blocking read: {reason}")

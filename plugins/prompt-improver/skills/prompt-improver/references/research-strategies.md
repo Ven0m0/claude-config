@@ -19,18 +19,22 @@ This reference provides systematic approaches for researching codebase context, 
 Before researching, explicitly identify gaps:
 
 **Target Gap:**
+
 - "Which file/function needs modification?"
 - "What component is involved?"
 
 **Approach Gap:**
+
 - "How should this be implemented?"
 - "What pattern should be used?"
 
 **Scope Gap:**
+
 - "How much should be changed?"
 - "What's included in this request?"
 
 **Context Gap:**
+
 - "What's the current state?"
 - "What patterns exist already?"
 
@@ -39,6 +43,7 @@ Before researching, explicitly identify gaps:
 Use TodoWrite to create a research plan before executing. This ensures systematic investigation.
 
 **Template:**
+
 ```
 Research Plan for [Prompt Type]:
 1. [What to research] - [Tool/approach]
@@ -47,6 +52,7 @@ Research Plan for [Prompt Type]:
 ```
 
 **Example:**
+
 ```json
 Research Plan for "fix the bug":
 1. Check conversation history for error messages - Review recent messages
@@ -62,6 +68,7 @@ Systematically execute each research step, documenting findings.
 ### Phase 4: Document Findings
 
 Summarize what you learned:
+
 - Key files involved
 - Existing patterns found
 - Common approaches in the codebase
@@ -75,6 +82,7 @@ Summarize what you learned:
 **When to use:** Need to understand architecture, find similar implementations, or explore unknown territory
 
 **Approach:**
+
 ```
 Use Task tool with subagent_type=Explore to:
 - Map codebase structure
@@ -84,6 +92,7 @@ Use Task tool with subagent_type=Explore to:
 ```
 
 **Example:**
+
 ```json
 Prompt: "find the bug"
 
@@ -98,6 +107,7 @@ Research:
 **When to use:** Know what you're looking for (file type, name pattern)
 
 **Common patterns:**
+
 ```bash
 # Find all authentication-related files
 **/*auth*.ts
@@ -116,6 +126,7 @@ Research:
 ```
 
 **Example:**
+
 ```json
 Prompt: "add tests"
 
@@ -130,6 +141,7 @@ Research:
 **When to use:** Looking for specific code patterns, function calls, or keywords
 
 **Effective searches:**
+
 ```bash
 # Find authentication implementations
 pattern: "authenticate|login|auth"
@@ -148,6 +160,7 @@ pattern: "process\.env|config\.|getConfig"
 ```
 
 **Example:**
+
 ```json
 Prompt: "improve error handling"
 
@@ -163,12 +176,14 @@ Research:
 **When to use:** Need to understand how systems connect
 
 **Approach:**
+
 1. Start with entry points (index.ts, main.ts, app.ts)
-2. Read key configuration files (package.json, tsconfig.json)
-3. Explore directory structure
-4. Read README.md and architecture docs
+1. Read key configuration files (package.json, tsconfig.json)
+1. Explore directory structure
+1. Read README.md and architecture docs
 
 **Example:**
+
 ```json
 Prompt: "refactor the API"
 
@@ -184,6 +199,7 @@ Research:
 **When to use:** Understanding evolution, finding related changes
 
 **Useful git commands via Bash:**
+
 ```bash
 # Recent commits
 git log --oneline -20
@@ -202,6 +218,7 @@ git diff HEAD~5..HEAD --stat
 ```
 
 **Example:**
+
 ```json
 Prompt: "fix the recent regression"
 
@@ -217,14 +234,16 @@ Research:
 ### Strategy 1: Local Documentation (Read)
 
 **Priority order:**
+
 1. README.md at project root
-2. docs/ directory
-3. Package-specific READMEs (packages/*/README.md)
-4. CONTRIBUTING.md
-5. Architecture docs (.architecture/, docs/architecture/)
-6. API documentation (docs/api/)
+1. docs/ directory
+1. Package-specific READMEs (packages/\*/README.md)
+1. CONTRIBUTING.md
+1. Architecture docs (.architecture/, docs/architecture/)
+1. API documentation (docs/api/)
 
 **Example:**
+
 ```json
 Prompt: "implement caching"
 
@@ -240,11 +259,13 @@ Research:
 **When to use:** Understanding third-party library usage
 
 **Approach:**
+
 1. Read package.json for library versions
-2. Check local docs or examples
-3. WebFetch official documentation if needed
+1. Check local docs or examples
+1. WebFetch official documentation if needed
 
 **Example:**
+
 ```json
 Prompt: "update the validation"
 
@@ -260,6 +281,7 @@ Research:
 **When to use:** Finding design decisions, warnings, constraints
 
 **Patterns:**
+
 ```bash
 # Find important comments
 pattern: "NOTE:|WARNING:|IMPORTANT:|FIXME:"
@@ -272,6 +294,7 @@ pattern: "must|require|cannot|constraint"
 ```
 
 **Example:**
+
 ```json
 Prompt: "modify the database schema"
 
@@ -288,6 +311,7 @@ Research:
 **When to use:** Need current approaches, recent changes, industry standards
 
 **Effective queries:**
+
 ```
 # Framework-specific patterns
 "React authentication best practices 2024"
@@ -307,6 +331,7 @@ Research:
 ```
 
 **Example:**
+
 ```json
 Prompt: "add authentication"
 
@@ -323,6 +348,7 @@ Research:
 **When to use:** Need official guidance for frameworks in use
 
 **Common documentation sites:**
+
 ```
 # JavaScript/TypeScript
 https://developer.mozilla.org/docs/
@@ -340,6 +366,7 @@ https://prettier.io/docs/
 ```
 
 **Example:**
+
 ```json
 Prompt: "update the middleware"
 
@@ -355,6 +382,7 @@ Research:
 **When to use:** Implementing well-known patterns
 
 **Queries:**
+
 ```
 "repository pattern TypeScript example"
 "MVC architecture Node.js best practices"
@@ -363,6 +391,7 @@ Research:
 ```
 
 **Example:**
+
 ```json
 Prompt: "refactor data access"
 
@@ -381,6 +410,7 @@ Research:
 **When to use:** Always (first step in research)
 
 **Check for:**
+
 - Error messages in recent messages
 - File names mentioned
 - Features discussed
@@ -388,6 +418,7 @@ Research:
 - Code shown or referenced
 
 **Example:**
+
 ```
 Recent messages:
 User: "I'm getting TypeError: Cannot read property 'id' of undefined"
@@ -406,11 +437,13 @@ Research:
 **When to use:** Understanding what user is working on
 
 **Pattern:**
+
 - Last 5-10 messages establish working context
 - File views indicate focus area
 - Previous questions show user intent
 
 **Example:**
+
 ```
 Message history:
 5 messages ago: "How do I implement caching in Express?"
@@ -430,11 +463,13 @@ Research:
 **When to use:** User viewing specific file
 
 **System messages indicate:**
+
 ```json
 [System: User opened src/api/auth.ts]
 ```
 
 **Example:**
+
 ```json
 [System: User opened src/components/LoginForm.tsx]
 User: "refactor this to use hooks"
@@ -451,41 +486,48 @@ Research:
 ### Choosing the Right Tool
 
 **Task/Explore Agent:**
+
 - Broad exploration needed
 - Understanding architecture
 - Finding similar patterns
 - Complex multi-step research
 
 **Glob:**
+
 - Finding files by name pattern
 - Known file types
 - Specific naming conventions
 
 **Grep:**
+
 - Searching code content
 - Finding function calls
 - Pattern matching
 - TODO/FIXME discovery
 
 **Read:**
+
 - Reading specific files
 - Documentation review
 - Configuration inspection
 - Package.json analysis
 
 **Bash (git commands):**
+
 - Historical context
 - Recent changes
 - Commit messages
 - File history
 
 **WebSearch:**
+
 - Current best practices
 - Industry standards
 - Library comparisons
 - Common solutions
 
 **WebFetch:**
+
 - Official documentation
 - Specific documentation pages
 - API references
@@ -494,6 +536,7 @@ Research:
 ### Multi-Tool Research Patterns
 
 **Pattern 1: Architecture Discovery**
+
 ```
 1. Read: package.json (understand stack)
 2. Read: README.md (understand project)
@@ -503,6 +546,7 @@ Research:
 ```
 
 **Pattern 2: Implementation Approach**
+
 ```
 1. Grep: Search for existing pattern
 2. Read: Example implementation
@@ -512,6 +556,7 @@ Research:
 ```
 
 **Pattern 3: Bug Investigation**
+
 ```
 1. Review: Conversation history for errors
 2. Grep: Search for error patterns
@@ -527,6 +572,7 @@ Research:
 **When:** Simple ambiguity, limited scope
 
 **Example:**
+
 ```json
 Prompt: "add tests"
 
@@ -545,6 +591,7 @@ Findings:
 **When:** Multiple unknowns, need pattern understanding
 
 **Example:**
+
 ```json
 Prompt: "improve error handling"
 
@@ -566,6 +613,7 @@ Findings:
 **When:** Major feature, architectural decision, complex implementation
 
 **Example:**
+
 ```json
 Prompt: "add authentication"
 
@@ -632,10 +680,11 @@ Before asking questions:
 - [ ] Marked research phase complete in todo list
 
 **Critical Rules:**
+
 1. NEVER skip research phase
-2. ALWAYS ground questions in findings
-3. NEVER assume based on general knowledge
-4. ALWAYS use conversation history first
-5. DOCUMENT research findings before asking
+1. ALWAYS ground questions in findings
+1. NEVER assume based on general knowledge
+1. ALWAYS use conversation history first
+1. DOCUMENT research findings before asking
 
 Research is the foundation of effective clarification. The quality of your questions depends entirely on the thoroughness of your research.

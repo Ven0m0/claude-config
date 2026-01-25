@@ -329,16 +329,16 @@ def coordinate_plugin_resources(plugins: List[str]):
 ## Benefits
 
 1. **Eliminates Race Conditions**: No more arbitrary timing guesses
-2. **Responsive Optimization**: React to actual conditions, not timers
-3. **Resource Efficient**: No wasted polling or unnecessary delays
-4. **Better Error Messages**: Clear indication of what was waited for
-5. **Testable**: Conditions can be mocked and verified
-6. **Composable**: Multiple conditions can be combined
+1. **Responsive Optimization**: React to actual conditions, not timers
+1. **Resource Efficient**: No wasted polling or unnecessary delays
+1. **Better Error Messages**: Clear indication of what was waited for
+1. **Testable**: Conditions can be mocked and verified
+1. **Composable**: Multiple conditions can be combined
 
 ## Best Practices
 
 1. **Always Include Timeouts**: Prevent infinite waiting
-2. **Clear Descriptions**: Error messages should explain what was expected
-3. **Appropriate Polling**: Default to 10ms, not 1ms (wastes CPU) or 100ms (slows response)
-4. **Condition Functions**: Should be fast and side-effect free
-5. **Document Conditions**: Explain WHY we're waiting for specific conditions
+1. **Clear Descriptions**: Error messages should explain what was expected
+1. **Appropriate Polling**: Default to 10ms, not 1ms (wastes CPU) or 100ms (slows response)
+1. **Condition Functions**: Should be fast and side-effect free
+1. **Document Conditions**: Explain WHY we're waiting for specific conditions

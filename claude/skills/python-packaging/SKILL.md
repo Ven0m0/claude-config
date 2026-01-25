@@ -95,6 +95,7 @@ dev = [
 Use the advanced sections below for full templates, publishing workflows, and checklists.
 
 <!-- progressive: patterns-and-templates -->
+
 ## Package Structure Patterns
 
 ### Pattern 1: Source Layout (Recommended)
@@ -882,13 +883,14 @@ recursive-exclude * *.py[co]
 ## Best Practices Summary
 
 1. **Use src/ layout** for cleaner package structure
-2. **Use pyproject.toml** for modern packaging
-3. **Pin build dependencies** in build-system.requires
-4. **Version appropriately** with semantic versioning
-5. **Include all metadata** (classifiers, URLs, etc.)
-6. **Test installation** in clean environments
-7. **Use TestPyPI** before publishing to PyPI
-8. **Document thoroughly** with README and docstrings
-9. **Include LICENSE** file
-10. **Automate publishing** with CI/CD
+1. **Use pyproject.toml** for modern packaging
+1. **Pin build dependencies** in build-system.requires
+1. **Version appropriately** with semantic versioning
+1. **Include all metadata** (classifiers, URLs, etc.)
+1. **Test installation** in clean environments
+1. **Use TestPyPI** before publishing to PyPI
+1. **Document thoroughly** with README and docstrings
+1. **Include LICENSE** file
+1. **Automate publishing** with CI/CD
+
 <!-- /progressive -->

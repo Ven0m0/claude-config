@@ -1,8 +1,8 @@
 {
-  "mcpServers": {
-    "git": {
-      "command": "uvx",
-      "args": ["mcp-server-git"]
-    }
-  }
+	"mcpServers": {
+		"git": {
+			"command": "uvx",
+			"args": ["mcp-server-git"]
+		}
+	}
 }

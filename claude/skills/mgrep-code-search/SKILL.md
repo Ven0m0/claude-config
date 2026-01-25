@@ -12,6 +12,7 @@ mgrep is a semantic search tool that enables natural language queries across cod
 ## When to Use This Skill
 
 Use mgrep when:
+
 - The codebase contains more than 30 non-gitignored files
 - There are nested directory structures
 - Searching for concepts, features, or intent rather than exact strings
@@ -19,6 +20,7 @@ Use mgrep when:
 - Need to understand "where" or "how" something is implemented
 
 Use traditional grep/ripgrep when:
+
 - Searching for exact patterns or symbols
 - Regex-based refactoring
 - Tracing specific function or variable names
@@ -53,13 +55,13 @@ bunx @mixedbread/mgrep "database connection setup" src/lib
 
 ### Search Options
 
-| Option | Description |
-|--------|-------------|
-| `-m <count>` | Maximum results (default: 10) |
-| `-c, --content` | Display full result content |
-| `-a, --answer` | Generate AI-powered synthesis of results |
-| `-s, --sync` | Update index before searching |
-| `--no-rerank` | Disable relevance optimisation |
+| Option          | Description                              |
+| --------------- | ---------------------------------------- |
+| `-m <count>`    | Maximum results (default: 10)            |
+| `-c, --content` | Display full result content              |
+| `-a, --answer`  | Generate AI-powered synthesis of results |
+| `-s, --sync`    | Update index before searching            |
+| `--no-rerank`   | Disable relevance optimisation           |
 
 ### Examples with Options
 
@@ -80,16 +82,19 @@ bunx @mixedbread/mgrep -s "payment processing" src/services
 ## Workflow
 
 1. **Start watcher** (once per session or when files change significantly):
+
    ```bash
    bunx @mixedbread/mgrep watch
    ```
 
-2. **Search semantically**:
+1. **Search semantically**:
+
    ```bash
    bunx @mixedbread/mgrep "what you're looking for" [optional/path]
    ```
 
-3. **Refine as needed** using path constraints or options:
+1. **Refine as needed** using path constraints or options:
+
    ```bash
    bunx @mixedbread/mgrep -m 20 -c "refined query" src/specific/directory
    ```
@@ -98,12 +103,12 @@ bunx @mixedbread/mgrep -s "payment processing" src/services
 
 Configure defaults via environment variables:
 
-| Variable | Purpose |
-|----------|---------|
-| `MGREP_MAX_COUNT` | Default result limit |
-| `MGREP_CONTENT` | Enable content display (1/true) |
-| `MGREP_ANSWER` | Enable AI synthesis (1/true) |
-| `MGREP_SYNC` | Pre-search sync (1/true) |
+| Variable          | Purpose                         |
+| ----------------- | ------------------------------- |
+| `MGREP_MAX_COUNT` | Default result limit            |
+| `MGREP_CONTENT`   | Enable content display (1/true) |
+| `MGREP_ANSWER`    | Enable AI synthesis (1/true)    |
+| `MGREP_SYNC`      | Pre-search sync (1/true)        |
 
 ## Important Notes
 

@@ -9,6 +9,7 @@ license: MIT
 ## Trigger Phrases
 
 Activate when user says:
+
 - "think through this step by step", "break this down", "reason through"
 - "complex problem", "multi-step analysis", "decompose this"
 - "let me think about", "need to work through", "figure out"
@@ -29,6 +30,7 @@ Enables structured problem-solving through iterative reasoning with revision and
 ## When to Use
 
 Use `mcp__reasoning__sequentialthinking` when:
+
 - Problem requires multiple interconnected reasoning steps
 - Initial scope or approach is uncertain
 - Need to filter through complexity to find core issues
@@ -91,6 +93,7 @@ The MCP tool `mcp__reasoning__sequentialthinking` accepts these parameters:
 ## Advanced Features
 
 For revision patterns, branching strategies, and complex workflows, see:
+
 - [Advanced Usage](references/advanced.md) - Revision and branching patterns
 - [Examples](references/examples.md) - Real-world use cases
 

@@ -25,13 +25,13 @@ skills: conserve:context-optimization, conserve:optimizing-large-skills
 # Claude Code 2.1.0+ lifecycle hooks
 hooks:
   PreToolUse:
-    - matcher: "Read"
+    - matcher: Read
       command: |
         # Track files being analyzed for context optimization
         echo "[context-optimizer] Analyzing: $CLAUDE_TOOL_INPUT" >> ${CLAUDE_CODE_TMPDIR:-/tmp}/context-audit.log
       once: false
   PostToolUse:
-    - matcher: "Write"
+    - matcher: Write
       command: |
         # Log optimization outputs
         echo "[context-optimizer] Optimization written" >> ${CLAUDE_CODE_TMPDIR:-/tmp}/context-audit.log
@@ -62,6 +62,7 @@ Autonomous agent specialized in analyzing and optimizing context window usage ac
 ## When to Use
 
 Dispatch this agent for:
+
 - Full context audits across large skill collections
 - Automated optimization of skills exceeding token budgets
 - Pre-release context compliance verification
@@ -74,11 +75,13 @@ Dispatch this agent for:
 Before any work, assess if this task justifies subagent overhead:
 
 **Return early if**:
+
 - Single skill token count → "SIMPLE: `wc -w skill.md` or parent estimates"
 - Quick MECW check → "SIMPLE: Parent reads file and checks against threshold"
 - One-off file size query → "SIMPLE: Parent uses Read tool"
 
 **Continue if**:
+
 - Full plugin audit (multiple skills)
 - Growth trend analysis across time
 - Optimization recommendations needed
@@ -87,10 +90,10 @@ Before any work, assess if this task justifies subagent overhead:
 ### Steps 1-5 (Only if Complexity Check passes)
 
 1. **Discovery**: Find all SKILL.md files in target directory
-2. **Analysis**: Calculate token usage and growth patterns for each
-3. **Assessment**: Evaluate against MECW thresholds
-4. **Recommendations**: Generate prioritized optimization suggestions
-5. **Reporting**: Produce detailed context health report
+1. **Analysis**: Calculate token usage and growth patterns for each
+1. **Assessment**: Evaluate against MECW thresholds
+1. **Recommendations**: Generate prioritized optimization suggestions
+1. **Reporting**: Produce detailed context health report
 
 ## Example Dispatch
 
@@ -102,6 +105,7 @@ and generate a prioritized list of optimization opportunities.
 ## Output Format
 
 The agent produces a structured report including:
+
 - Summary statistics (total files, total tokens, average per file)
 - Skills exceeding thresholds with specific recommendations
 - Growth trajectory predictions
@@ -110,6 +114,7 @@ The agent produces a structured report including:
 ## Integration
 
 This agent uses tools from:
+
 - `scripts/growth-analyzer.py` - Growth pattern analysis
 - `scripts/growth-controller.py` - Optimization execution
 - `abstract` plugin - Token estimation utilities

@@ -11,6 +11,7 @@ user-invocable: true
 Reusable skills are not code snippets to copy-paste, but **principles and decision-making heuristics** that teach Claude HOW TO THINK about a class of problems.
 
 **The difference:**
+
 - BAD (mimicking): "When you see ConnectionResetError, add this try/except block"
 - GOOD (reusable skill): "In async network code, any I/O operation can fail independently due to client/server lifecycle mismatches. The principle: wrap each I/O operation separately, because failure between operations is the common case, not the exception."
 
@@ -19,6 +20,7 @@ A good skill changes how Claude APPROACHES problems, not just what code it produ
 ## Why This Matters
 
 Before extracting a skill, ask yourself:
+
 - "Could someone Google this in 5 minutes?" → If yes, STOP. Don't extract.
 - "Is this specific to THIS codebase?" → If no, STOP. Don't extract.
 - "Did this take real debugging effort to discover?" → If no, STOP. Don't extract.
@@ -28,6 +30,7 @@ If a potential skill fails any of these questions, it's not worth saving.
 ## Recognition Pattern
 
 Use /oh-my-claudecode:learner ONLY after:
+
 - Solving a tricky bug that required deep investigation
 - Discovering a non-obvious workaround specific to this codebase
 - Finding a hidden gotcha that wastes time when forgotten
@@ -40,14 +43,17 @@ Use /oh-my-claudecode:learner ONLY after:
 **Step 1: Gather Required Information**
 
 - **Problem Statement**: The SPECIFIC error, symptom, or confusion that occurred
+
   - Include actual error messages, file paths, line numbers
   - Example: "TypeError in src/hooks/session.ts:45 when sessionId is undefined after restart"
 
 - **Solution**: The EXACT fix, not general advice
+
   - Include code snippets, file paths, configuration changes
   - Example: "Add null check before accessing session.user, regenerate session on 401"
 
 - **Triggers**: Keywords that would appear when hitting this problem again
+
   - Use error message fragments, file names, symptom descriptions
   - Example: ["sessionId undefined", "session.ts TypeError", "401 session"]
 
@@ -56,6 +62,7 @@ Use /oh-my-claudecode:learner ONLY after:
 **Step 2: Quality Validation**
 
 The system REJECTS skills that are:
+
 - Too generic (no file paths, line numbers, or specific error messages)
 - Easily Googleable (standard patterns, library usage)
 - Vague solutions (no code snippets or precise instructions)
@@ -71,18 +78,22 @@ The system REJECTS skills that are:
 **CRITICAL**: Not every solution is worth saving. A good skill is:
 
 1. **Non-Googleable**: Something you couldn't easily find via search
+
    - BAD: "How to read files in TypeScript" ❌
    - GOOD: "This codebase uses custom path resolution in ESM that requires fileURLToPath + specific relative paths" ✓
 
-2. **Context-Specific**: References actual files, error messages, or patterns from THIS codebase
+1. **Context-Specific**: References actual files, error messages, or patterns from THIS codebase
+
    - BAD: "Use try/catch for error handling" ❌
    - GOOD: "The aiohttp proxy in server.py:42 crashes on ClientDisconnectedError - wrap StreamResponse in try/except" ✓
 
-3. **Actionable with Precision**: Tells you exactly WHAT to do and WHERE
+1. **Actionable with Precision**: Tells you exactly WHAT to do and WHERE
+
    - BAD: "Handle edge cases" ❌
    - GOOD: "When seeing 'Cannot find module' in dist/, check tsconfig.json moduleResolution matches package.json type field" ✓
 
-4. **Hard-Won**: Took significant debugging effort to discover
+1. **Hard-Won**: Took significant debugging effort to discover
+
    - BAD: Generic programming patterns ❌
    - GOOD: "Race condition in worker.ts - the Promise.all at line 89 needs await before the map callback returns" ✓
 
@@ -101,6 +112,7 @@ Skills are saved as markdown with this structure:
 ### YAML Frontmatter
 
 Standard metadata fields:
+
 - id, name, description, source, triggers, quality
 
 ### Body Structure (Required)

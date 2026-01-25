@@ -5,6 +5,7 @@ This directory contains example scripts and usage patterns for the Claude config
 ## Python Example
 
 See `example_usage.py` for a complete example of:
+
 - Loading configuration
 - Using prompts
 - Making API calls
@@ -13,6 +14,7 @@ See `example_usage.py` for a complete example of:
 ## JavaScript/Node.js Example
 
 See `example_usage.js` for a complete example of:
+
 - Loading configuration
 - Using prompts
 - Making API calls

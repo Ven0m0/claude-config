@@ -7,6 +7,7 @@
 **MANDATORY: Detect and use the project's existing package manager. NEVER mix package managers.**
 
 Check the project root for lock files:
+
 - `bun.lockb` → use **bun**
 - `pnpm-lock.yaml` → use **pnpm**
 - `yarn.lock` → use **yarn**
@@ -21,18 +22,21 @@ If no lock file exists, check `packageManager` field in `package.json`, or defau
 ### Type Safety
 
 **Explicit return types on all exported functions:**
+
 ```typescript
 export function processOrder(orderId: string, userId: number): Order { ... }
 export async function fetchUser(id: string): Promise<User> { ... }
 ```
 
 **Interfaces for objects, types for unions:**
+
 ```typescript
 interface User { id: string; email: string; }
 type Status = 'pending' | 'active' | 'suspended';
 ```
 
 **Avoid `any` - use `unknown` instead:**
+
 ```typescript
 // BAD: function parse(data: any) { ... }
 // GOOD: function parse(data: unknown) { ... }
@@ -43,12 +47,14 @@ type Status = 'pending' | 'active' | 'suspended';
 ### Code Style
 
 **Self-documenting code. Minimize comments.**
+
 ```typescript
 // BAD: if (u.r === 'admin')
 // GOOD: if (user.isAdmin())
 ```
 
 **One-line JSDoc for exports:**
+
 ```typescript
 /** Calculate discounted price by applying rate. */
 export function calculateDiscount(price: number, rate: number): number { ... }
@@ -73,6 +79,7 @@ npm test -- --bail                      # Stop on first failure
 **Why minimal output?** Verbose test output consumes context tokens rapidly. Use `--silent` or minimal reporters by default. Only add verbose flags when debugging a specific failing test.
 
 **Diagnostics & Type Checking - also minimize output:**
+
 ```bash
 # Limit output when many errors exist
 tsc --noEmit 2>&1 | head -50            # Cap type checker output
@@ -90,11 +97,12 @@ eslint . --format compact               # Shorter than default stylish format
 Before completing TypeScript work, **always run** (using detected package manager):
 
 1. **Type check:** `tsc --noEmit` or project's `typecheck` script
-2. **Lint:** `eslint . --fix` or project's `lint` script
-3. **Format:** `prettier --write .` or project's `format` script
-4. **Tests:** Project's `test` script (with minimal output flags)
+1. **Lint:** `eslint . --fix` or project's `lint` script
+1. **Format:** `prettier --write .` or project's `format` script
+1. **Tests:** Project's `test` script (with minimal output flags)
 
 **⚠️ BLOCKERS - Do NOT mark work complete if:**
+
 - Type checking fails (`tsc --noEmit` has errors)
 - Lint errors exist (warnings OK, errors are blockers)
 - Tests fail
@@ -102,6 +110,7 @@ Before completing TypeScript work, **always run** (using detected package manage
 **If `tsc --noEmit` shows errors:** STOP. Fix type errors before proceeding.
 
 Verify:
+
 - [ ] All commands pass without errors
 - [ ] Explicit return types on exports
 - [ ] No `any` types (use `unknown` instead)
@@ -109,10 +118,10 @@ Verify:
 
 ### Quick Reference
 
-| Task         | npm                  | yarn              | pnpm              | bun              |
-| ------------ | -------------------- | ----------------- | ----------------- | ---------------- |
-| Install all  | `npm install`        | `yarn`            | `pnpm install`    | `bun install`    |
-| Add package  | `npm install pkg`    | `yarn add pkg`    | `pnpm add pkg`    | `bun add pkg`    |
-| Add dev dep  | `npm install -D pkg` | `yarn add -D pkg` | `pnpm add -D pkg` | `bun add -D pkg` |
-| Run script   | `npm run script`     | `yarn script`     | `pnpm script`     | `bun script`     |
-| Type check   | `npx tsc --noEmit`   | `yarn tsc --noEmit` | `pnpm tsc --noEmit` | `bunx tsc --noEmit` |
+| Task        | npm                  | yarn                | pnpm                | bun                 |
+| ----------- | -------------------- | ------------------- | ------------------- | ------------------- |
+| Install all | `npm install`        | `yarn`              | `pnpm install`      | `bun install`       |
+| Add package | `npm install pkg`    | `yarn add pkg`      | `pnpm add pkg`      | `bun add pkg`       |
+| Add dev dep | `npm install -D pkg` | `yarn add -D pkg`   | `pnpm add -D pkg`   | `bun add -D pkg`    |
+| Run script  | `npm run script`     | `yarn script`       | `pnpm script`       | `bun script`        |
+| Type check  | `npx tsc --noEmit`   | `yarn tsc --noEmit` | `pnpm tsc --noEmit` | `bunx tsc --noEmit` |

@@ -1,4 +1,6 @@
 ---
+name: docker-optimize
+description: Docker optimization expert for creating efficient, secure, and minimal container images. Optimizes Dockerfiles for size, build speed, security, and runtime performance.
 model: claude-sonnet-4-5
 ---
 
@@ -7,9 +9,11 @@ model: claude-sonnet-4-5
 You are a Docker optimization expert specializing in creating efficient, secure, and minimal container images. Optimize Dockerfiles for size, build speed, security, and runtime performance while following container best practices.
 
 ## Context
+
 The user needs to optimize Docker images and containers for production use. Focus on reducing image size, improving build times, implementing security best practices, and ensuring efficient runtime performance.
 
 ## Requirements
+
 $ARGUMENTS
 
 ## Instructions
@@ -19,6 +23,7 @@ $ARGUMENTS
 Choose the right optimization approach based on your application type and requirements:
 
 **Optimization Strategy Matrix**
+
 ```python
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
@@ -277,6 +282,7 @@ class SmartDockerOptimizer:
 ```
 
 **Advanced Multi-Framework Dockerfile Generator**
+
 ```python
 class FrameworkOptimizedDockerfileGenerator:
     def __init__(self):
@@ -717,6 +723,7 @@ ENTRYPOINT ["/app"]
 Implement sophisticated multi-stage builds with modern optimization techniques:
 
 **Ultra-Optimized Multi-Stage Patterns**
+
 ```dockerfile
 # Pattern 1: Node.js with Bun - Next-generation JavaScript runtime
 # 5x faster installs, 4x faster runtime, 90% smaller images
@@ -773,6 +780,7 @@ CMD ["node", "dist/index.js"]
 ```
 
 **Advanced Python Multi-Stage with UV Package Manager**
+
 ```dockerfile
 # Pattern 2: Python with UV - 10-100x faster than pip
 FROM python:3.11-slim AS base
@@ -838,6 +846,7 @@ CMD ["python", "-m", "gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "--
 ```
 
 **Go Static Binary with Scratch Base**
+
 ```dockerfile
 # Pattern 3: Go with ultra-minimal scratch base
 FROM golang:1.21-alpine AS base
@@ -899,6 +908,7 @@ ENTRYPOINT ["/app"]
 ```
 
 **Rust with Cross-Compilation and Security**
+
 ```dockerfile
 # Pattern 4: Rust with musl for static linking
 FROM rust:1.70-alpine AS base
@@ -956,6 +966,7 @@ ENTRYPOINT ["/app"]
 ```
 
 **Java Spring Boot with GraalVM Native Image**
+
 ```dockerfile
 # Pattern 5: Java with GraalVM Native Image (sub-second startup)
 FROM ghcr.io/graalvm/graalvm-ce:java17 AS base
@@ -1016,6 +1027,7 @@ ENTRYPOINT ["/app"]
 ```
 
 **Python Multi-Stage Example**
+
 ```dockerfile
 # Stage 1: Build dependencies
 FROM python:3.11-slim AS builder
@@ -1060,6 +1072,7 @@ CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "app:application"]
 Minimize Docker image size:
 
 **Size Reduction Techniques**
+
 ```dockerfile
 # Alpine-based optimization
 FROM alpine:3.18
@@ -1095,6 +1108,7 @@ ENTRYPOINT ["/app"]
 ```
 
 **Layer Optimization Script**
+
 ```python
 def optimize_dockerfile_layers(dockerfile_content):
     """
@@ -1138,6 +1152,7 @@ def optimize_dockerfile_layers(dockerfile_content):
 Speed up Docker builds:
 
 **.dockerignore Optimization**
+
 ```
 # .dockerignore
 # Version control
@@ -1200,6 +1215,7 @@ docker-compose*
 ```
 
 **Build Cache Optimization**
+
 ```dockerfile
 # Optimize build cache
 FROM node:18-alpine
@@ -1236,6 +1252,7 @@ RUN --mount=type=cache,target=/app/.cache \
 Implement security best practices:
 
 **Security-Hardened Dockerfile**
+
 ```dockerfile
 # Use specific version and minimal base image
 FROM alpine:3.18.4
@@ -1277,6 +1294,7 @@ CMD ["./app"]
 ```
 
 **Security Scanning Integration**
+
 ```yaml
 # .github/workflows/docker-security.yml
 name: Docker Security Scan
@@ -1324,6 +1342,7 @@ jobs:
 Optimize container runtime performance:
 
 **Runtime Configuration**
+
 ```dockerfile
 # JVM optimization example
 FROM eclipse-temurin:17-jre-alpine
@@ -1567,19 +1586,20 @@ def generate_dockerfile_checklist():
 ## Output Format
 
 1. **Analysis Report**: Current Dockerfile issues and optimization opportunities
-2. **Optimized Dockerfile**: Rewritten Dockerfile with all optimizations
-3. **Size Comparison**: Before/after image size analysis
-4. **Build Performance**: Build time improvements and caching strategy
-5. **Security Report**: Security scan results and hardening recommendations
-6. **Runtime Config**: Optimized runtime settings for the application
-7. **Monitoring Setup**: Container metrics and performance tracking
-8. **Migration Guide**: Step-by-step guide to implement optimizations
+1. **Optimized Dockerfile**: Rewritten Dockerfile with all optimizations
+1. **Size Comparison**: Before/after image size analysis
+1. **Build Performance**: Build time improvements and caching strategy
+1. **Security Report**: Security scan results and hardening recommendations
+1. **Runtime Config**: Optimized runtime settings for the application
+1. **Monitoring Setup**: Container metrics and performance tracking
+1. **Migration Guide**: Step-by-step guide to implement optimizations
 
 ## Cross-Command Integration
 
 ### Complete Container-First Development Workflow
 
 **Containerized Development Pipeline**
+
 ```bash
 # 1. Generate containerized API scaffolding
 /api-scaffold
@@ -1608,6 +1628,7 @@ horizontal_scaling: true
 ```
 
 **Integrated Container Configuration**
+
 ```python
 # container-config.py - Shared across all commands
 class IntegratedContainerConfig:
@@ -1691,6 +1712,7 @@ class IntegratedContainerConfig:
 ```
 
 **API Container Integration**
+
 ```dockerfile
 # Dockerfile.api - Generated from /api-scaffold + /docker-optimize
 # Multi-stage build optimized for FastAPI applications
@@ -1771,6 +1793,7 @@ CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000
 ```
 
 **Database Container Integration**
+
 ```dockerfile
 # Dockerfile.db - Generated for database migrations from /db-migrate
 FROM postgres:15-alpine AS base
@@ -1814,6 +1837,7 @@ EXPOSE 5432
 ```
 
 **Frontend Container Integration**
+
 ```dockerfile
 # Dockerfile.frontend - Generated from /frontend-optimize + /docker-optimize
 # Multi-stage build for React/Vue applications
@@ -1896,6 +1920,7 @@ CMD ["nginx", "-g", "daemon off;"]
 ```
 
 **Kubernetes Container Integration**
+
 ```yaml
 # k8s-optimized-deployment.yaml - From /k8s-manifest + /docker-optimize
 apiVersion: v1
@@ -2095,6 +2120,7 @@ spec:
 ```
 
 **CI/CD Container Integration**
+
 ```yaml
 # .github/workflows/container-pipeline.yml
 name: Optimized Container Pipeline
@@ -2246,6 +2272,7 @@ jobs:
 ```
 
 **Monitoring Integration**
+
 ```python
 # container_monitoring.py - Integrated container monitoring
 import docker

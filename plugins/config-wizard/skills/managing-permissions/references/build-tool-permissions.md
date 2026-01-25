@@ -65,11 +65,13 @@ Never allow both wildcard execution AND config file editing without review.
 ```
 
 **Why:** This combination allows arbitrary code execution:
+
 1. Modify the config file to add a malicious script
-2. Execute it immediately via the wildcard permission
-3. No user review required
+1. Execute it immediately via the wildcard permission
+1. No user review required
 
 **Safe alternative:**
+
 ```json
 {
   "allow": [
@@ -98,6 +100,7 @@ Configure build tool permissions at the **project level** (`.claude/settings.jso
 ```
 
 **Why:**
+
 - **Team consistency** - Everyone has the same security protections
 - **Version controlled** - Permission changes reviewed in pull requests
 - **Visible decisions** - Security trade-offs are documented and shared
@@ -136,21 +139,24 @@ Layer multiple protections together: specific allows, ask for important operatio
 Use this framework to decide which permission level to use:
 
 **✅ Generally safe to allow:**
+
 1. **Tests** - Commands that run existing test suites (`npm run test`, `cargo test`)
-2. **Builds** - Compilation/bundling of existing code (`npm run build`, `make build`)
-3. **Linting/Formatting** - Code quality checks (`npm run lint`, `cargo fmt`)
-4. **Read-only operations** - Status checks, info commands (`npm list`, `cargo tree`)
+1. **Builds** - Compilation/bundling of existing code (`npm run build`, `make build`)
+1. **Linting/Formatting** - Code quality checks (`npm run lint`, `cargo fmt`)
+1. **Read-only operations** - Status checks, info commands (`npm list`, `cargo tree`)
 
 **⚠️ Use `ask` for:**
+
 1. **Wildcards** - Any pattern like `npm run:*` or `make:*`
-2. **Config edits** - Modifications to build files (`Edit(package.json)`, `Edit(Makefile)`)
-3. **Custom scripts** - User-defined scripts you haven't reviewed
-4. **Publishing** - Anything that publishes packages or deploys
-5. **Dependency changes** - Installing or updating packages
+1. **Config edits** - Modifications to build files (`Edit(package.json)`, `Edit(Makefile)`)
+1. **Custom scripts** - User-defined scripts you haven't reviewed
+1. **Publishing** - Anything that publishes packages or deploys
+1. **Dependency changes** - Installing or updating packages
 
 **❌ Never allow together:**
+
 1. Wildcard execution + config file editing (creates arbitrary code execution)
-2. Any pattern that enables unreviewed code execution
+1. Any pattern that enables unreviewed code execution
 
 ## Understanding the Risk
 
@@ -159,13 +165,14 @@ Use this framework to decide which permission level to use:
 Build tools execute scripts defined in configuration files. When you combine:
 
 1. **Wildcard permissions** to run any script/task (e.g., `npm run:*`, `gradle:*`, `make:*`)
-2. **Edit permissions** to configuration files (e.g., `package.json`, `build.gradle`, `Makefile`)
+1. **Edit permissions** to configuration files (e.g., `package.json`, `build.gradle`, `Makefile`)
 
 You create an **arbitrary code execution vulnerability**.
 
 ### Example Attack Scenario
 
 **Vulnerable configuration:**
+
 ```json
 {
   "allow": [
@@ -176,6 +183,7 @@ You create an **arbitrary code execution vulnerability**.
 ```
 
 **How it could be exploited:**
+
 ```json
 // Modify package.json to add:
 {
@@ -191,25 +199,26 @@ You create an **arbitrary code execution vulnerability**.
 
 Any build tool that executes user-defined scripts from configuration files:
 
-| Build Tool | Config File(s) | Vulnerable Pattern |
-|------------|----------------|-------------------|
-| npm, yarn, pnpm, bun | `package.json` | `Bash(npm run:*)` |
-| Make | `Makefile` | `Bash(make:*)` |
-| Gradle | `build.gradle`, `build.gradle.kts` | `Bash(gradle:*)`, `Bash(./gradlew:*)` |
-| Maven | `pom.xml` | `Bash(mvn:*)` |
-| Cargo | `build.rs`, `.cargo/config.toml` | `Bash(cargo:*)` |
-| Python | `setup.py`, `pyproject.toml` | `Bash(python setup.py:*)`, `Bash(python -m:*)` |
-| Rake | `Rakefile` | `Bash(rake:*)` |
-| Bazel | `BUILD`, `BUILD.bazel` | `Bash(bazel:*)` |
+| Build Tool           | Config File(s)                     | Vulnerable Pattern                             |
+| -------------------- | ---------------------------------- | ---------------------------------------------- |
+| npm, yarn, pnpm, bun | `package.json`                     | `Bash(npm run:*)`                              |
+| Make                 | `Makefile`                         | `Bash(make:*)`                                 |
+| Gradle               | `build.gradle`, `build.gradle.kts` | `Bash(gradle:*)`, `Bash(./gradlew:*)`          |
+| Maven                | `pom.xml`                          | `Bash(mvn:*)`                                  |
+| Cargo                | `build.rs`, `.cargo/config.toml`   | `Bash(cargo:*)`                                |
+| Python               | `setup.py`, `pyproject.toml`       | `Bash(python setup.py:*)`, `Bash(python -m:*)` |
+| Rake                 | `Rakefile`                         | `Bash(rake:*)`                                 |
+| Bazel                | `BUILD`, `BUILD.bazel`             | `Bash(bazel:*)`                                |
 
 ## Summary
 
 **Core approach:**
+
 1. **Allow specific commands** you've reviewed and trust (`npm run test`, `make build`)
-2. **Use `ask` for flexibility** - wildcards and config edits require review
-3. **Never combine** wildcards + config edits in allow rules
-4. **Configure at project level** for team consistency
-5. **Layer protections** with allow, ask, and deny rules
+1. **Use `ask` for flexibility** - wildcards and config edits require review
+1. **Never combine** wildcards + config edits in allow rules
+1. **Configure at project level** for team consistency
+1. **Layer protections** with allow, ask, and deny rules
 
 **Key principle:** Default to requiring review. If you're unsure whether a permission is safe, use `ask` instead of `allow`.
 

@@ -76,6 +76,7 @@ print(f"Average time: {execution_time/100:.6f} seconds")
 Use the advanced sections below when you need tooling guidance, deeper pattern catalogs, and checklists.
 
 <!-- progressive: profiling-and-optimization -->
+
 ## Profiling Tools
 
 ### Pattern 1: cProfile - CPU Profiling
@@ -834,15 +835,15 @@ def test_map_function(benchmark):
 ## Best Practices
 
 1. **Profile before optimizing** - Measure to find real bottlenecks
-2. **Focus on hot paths** - Optimize code that runs most frequently
-3. **Use appropriate data structures** - Dict for lookups, set for membership
-4. **Avoid premature optimization** - Clarity first, then optimize
-5. **Use built-in functions** - They're implemented in C
-6. **Cache expensive computations** - Use lru_cache
-7. **Batch I/O operations** - Reduce system calls
-8. **Use generators** for large datasets
-9. **Consider NumPy** for numerical operations
-10. **Profile production code** - Use py-spy for live systems
+1. **Focus on hot paths** - Optimize code that runs most frequently
+1. **Use appropriate data structures** - Dict for lookups, set for membership
+1. **Avoid premature optimization** - Clarity first, then optimize
+1. **Use built-in functions** - They're implemented in C
+1. **Cache expensive computations** - Use lru_cache
+1. **Batch I/O operations** - Reduce system calls
+1. **Use generators** for large datasets
+1. **Consider NumPy** for numerical operations
+1. **Profile production code** - Use py-spy for live systems
 
 ## Common Pitfalls
 
@@ -877,4 +878,5 @@ def test_map_function(benchmark):
 - [ ] Minimized function call overhead in hot loops
 - [ ] Checked for memory leaks
 - [ ] Benchmarked before and after optimization
+
 <!-- /progressive -->

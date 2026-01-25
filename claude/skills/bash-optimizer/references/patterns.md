@@ -3,7 +3,9 @@
 ## Consolidation Strategies
 
 ### Unified Entry Point Pattern
+
 Merge multiple scripts into one with mode selection:
+
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -17,7 +19,9 @@ esac
 ```
 
 ### Shared Function Library
+
 Extract common code into sourced library:
+
 ```bash
 # lib/common.sh
 die(){ printf 'Error: %s\n' "$1" >&2; exit 1; }
@@ -25,7 +29,9 @@ has(){ command -v "$1" &>/dev/null; }
 ```
 
 ### Configuration-Driven Logic
+
 Replace script proliferation with data:
+
 ```bash
 declare -A configs=(
   [mode1]="opt1 opt2"
@@ -39,6 +45,7 @@ done
 ## Performance Patterns
 
 ### Parallel Processing
+
 ```bash
 # Batch operations
 mapfile -t items < <(find_items)
@@ -52,6 +59,7 @@ printf '%s\0' "${items[@]}" | xargs -0 -P"$(nproc)" -I{} process_item {}
 ```
 
 ### Caching
+
 ```bash
 # Cache expensive lookups
 declare -A cache
@@ -63,6 +71,7 @@ get_data(){
 ```
 
 ### Batch I/O
+
 ```bash
 # Accumulate then write once
 output=()
@@ -73,6 +82,7 @@ printf '%s\n' "${output[@]}" > result
 ```
 
 ### Early Exit
+
 ```bash
 # Check prerequisites upfront
 [[ -f required.txt ]] || die "Missing required.txt"
@@ -83,6 +93,7 @@ has jq || die "jq not found"
 ## Modern Tool Replacement
 
 ### fd over find
+
 ```bash
 # Old: find . -type f -name "*.txt"
 # New: fd -tf '\.txt$'
@@ -90,6 +101,7 @@ has jq || die "jq not found"
 ```
 
 ### rg over grep
+
 ```bash
 # Old: grep -r "pattern" .
 # New: rg "pattern"
@@ -97,6 +109,7 @@ has jq || die "jq not found"
 ```
 
 ### sd over sed
+
 ```bash
 # Old: sed 's/old/new/g' file
 # New: sd 'old' 'new' file
@@ -104,6 +117,7 @@ has jq || die "jq not found"
 ```
 
 ### choose over cut/awk
+
 ```bash
 # Old: echo "$line" | awk '{print $2}'
 # New: choose 1 <<< "$line"
@@ -113,6 +127,7 @@ has jq || die "jq not found"
 ## Token Efficiency
 
 ### Compact Patterns
+
 ```bash
 # Verbose
 if [[ -f "$file" ]]; then
@@ -124,6 +139,7 @@ fi
 ```
 
 ### Reduce Whitespace
+
 ```bash
 # Prefer
 fn(){ local x=$1; cmd "$x"; }
@@ -136,6 +152,7 @@ fn() {
 ```
 
 ### Inline Documentation
+
 ```bash
 # Use ⇒ for cause-effect
 # Bad network ⇒ retry with backoff
@@ -145,6 +162,7 @@ fn() {
 ```
 
 ## Refactoring Checklist
+
 - [ ] Replace cat pipes with redirects
 - [ ] Convert `[ ]` to `[[ ]]`
 - [ ] Quote all variable expansions

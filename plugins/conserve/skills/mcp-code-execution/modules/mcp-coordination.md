@@ -32,6 +32,7 @@ def coordinate_pipeline_subagents(subagents, input_data):
 ```
 
 ### When to Use Pipeline
+
 - **Sequential dependencies**: Each step depends on previous result
 - **Linear workflows**: Clear progression from input to output
 - **Token conservation**: Share minimal context between steps
@@ -68,6 +69,7 @@ def coordinate_parallel_subagents(subagents, input_data):
 ```
 
 ### When to Use Parallel
+
 - **Independent tasks**: No dependencies between subagents
 - **Time-sensitive**: Need faster completion
 - **Resource distribution**: Share MECW budget across subagents
@@ -102,6 +104,7 @@ def coordinate_hybrid_subagents(phase_groups):
 ```
 
 ### When to Use Hybrid
+
 - **Complex workflows**: Mix of sequential and parallel steps
 - **Phase dependencies**: Groups of parallel tasks with inter-group dependencies
 - **Resource optimization**: Balance speed (parallel) with coordination (sequential)

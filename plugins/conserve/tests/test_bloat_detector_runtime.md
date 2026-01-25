@@ -28,6 +28,7 @@ Expected:
 
 **Evidence of Module Loading:**
 Look for responses that include:
+
 - ✅ Specific thresholds (> 500 lines, > 10 methods)
 - ✅ Detection commands from the module
 - ✅ Confidence scoring from module (85%, etc.)
@@ -46,6 +47,7 @@ Expected:
 ```
 
 **Success Criteria:**
+
 ```bash
 # Expected output should match modules/quick-scan.md (with cache exclusions):
 find . -type f \( -name "*.py" -o -name "*.js" -o -name "*.ts" \) \
@@ -94,6 +96,7 @@ Expected:
 ```
 
 **Manual Verification:**
+
 ```bash
 # Count all markdown files (including cache dirs)
 find plugins/conserve -name "*.md" | wc -l
@@ -110,6 +113,7 @@ find plugins/conserve -type f -name "*.md" \
 ```
 
 **Success Criteria:**
+
 - ✅ Bloat scan excludes cache directories automatically
 - ✅ File counts match manual count with exclusions
 - ✅ No .venv, node_modules, or .pytest_cache files in scan results
@@ -192,12 +196,14 @@ claude
 ## Evidence Collection
 
 **Positive Indicators (module WAS loaded):**
+
 - Response includes specific line numbers/code blocks from module
 - Uses exact terminology from module frontmatter
 - References module-specific thresholds (500 lines, 85% confidence, etc.)
 - Provides bash commands verbatim from module
 
 **Negative Indicators (module NOT loaded):**
+
 - Generic/vague responses
 - No specific thresholds or commands
 - Doesn't mention module names explicitly
@@ -206,6 +212,7 @@ claude
 ## Token Usage Verification
 
 **With Progressive Loading:**
+
 ```bash
 # Initial load (SKILL.md only): ~800 tokens
 # After requesting quick-scan details: +200 tokens
@@ -214,6 +221,7 @@ claude
 ```
 
 **Without Progressive Loading (all-at-once):**
+
 ```bash
 # Initial load (SKILL.md + all modules): ~1,550 tokens
 # No additional loads needed
@@ -229,6 +237,7 @@ Progressive loading saves ~250 tokens when not all modules are needed.
 **Symptom:** Claude gives generic answer, doesn't reference module
 
 **Debug:**
+
 ```bash
 # 1. Check module reference exists
 grep "modules/quick-scan" skills/bloat-detector/SKILL.md
@@ -247,6 +256,7 @@ head -10 skills/bloat-detector/modules/quick-scan.md
 **Cause:** Module content may not be directive enough
 
 **Fix:** Add explicit instructions in module:
+
 ```markdown
 ## Usage
 
@@ -257,9 +267,10 @@ When detecting large files, use this command EXACTLY:
 ## Conclusion
 
 **Runtime verification requires:**
+
 1. ✅ Static validation (modules referenced)
-2. ✅ Interactive testing (Claude reads modules when asked)
-3. ✅ Content verification (responses match module content)
-4. ✅ Token tracking (progressive loading working)
+1. ✅ Interactive testing (Claude reads modules when asked)
+1. ✅ Content verification (responses match module content)
+1. ✅ Token tracking (progressive loading working)
 
 **Without interactive testing, you can't confirm runtime behavior!**
