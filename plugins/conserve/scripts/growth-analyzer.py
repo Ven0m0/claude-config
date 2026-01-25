@@ -7,8 +7,8 @@ Support multiple output formats and customizable projection horizons.
 import argparse
 import json
 import math
-import sys
 from datetime import datetime
+import sys
 
 # Constants
 CONTROLLABLE_GROWTH_THRESHOLD = 0.10
