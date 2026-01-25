@@ -187,12 +187,19 @@ Delegate research and web search tasks to Gemini AI via CLI.
 .
 ├── .claude-plugin/
 │   └── marketplace.json        # Marketplace catalog
+├── .gemini/                    # Gemini Code Assist config
+├── claude/                     # Claude Code config and tools
+├── gemini/                     # Gemini CLI config
+├── copilot-cli/                # Copilot CLI templates
+├── cursor/                     # Cursor rules and templates
+├── opencode/                   # OpenCode references
+├── qwen/                       # Qwen prompt templates
 ├── plugins/
 │   ├── coding-assistant/       # Code review, debug, refactor
 │   ├── technical-writer/       # API docs, user guides
 │   └── data-analyst/           # Data analysis and visualization
-├── .claude/                    # Legacy configuration files
 ├── examples/                   # Usage examples
+├── LLM_CONFIG_STANDARDS.md     # Shared config defaults
 ├── README.md                   # This file
 ├── SETUP.md                    # Setup guide
 ├── CHANGELOG.md                # Version history

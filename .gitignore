@@ -1,20 +1,30 @@
-# API Keys and Secrets
+# API keys and secrets
 .claude/settings/api_settings.json
 
-# Environment Variables
+# Environment variables
 .env
 .env.local
 .env.*.local
 
-# Conversation History
+# Conversation history
 conversations/
 *.conversation.json
 
-# System Files
-.DS_Store
-Thumbs.db
+# Claude runtime state
+.claude/state/*
+.claude/message-bus/queue.db
+.claude/message-bus/signals/*
+.claude/completion-state/*
+.claude/worker-assignments/*
+.claude/test
 
-# IDE and Editor
+# Local settings overrides
+.claude/settings.local.json
+
+# MCP configuration with API keys
+.mcp.json
+
+# IDE and editor
 .vscode/
 .idea/
 *.swp
@@ -25,46 +35,11 @@ Thumbs.db
 *.log
 logs/
 
-# Temporary Files
+# Temporary files
+*.tmp
+*.temp
 tmp/
 temp/
-*.tmp
-
-# Node modules (if using Node.js tools)
-node_modules/
-
-# Python (if using Python tools)
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-venv/
-env/
-
-# Backup files
-*.bak
-*.backup
-
-# Local settings override (user-specific paths and preferences)
-.claude/settings.local.json
-
-# MCP configuration with API keys (users should copy from .mcp.json.example)
-.mcp.json
-
-# Python cache
-__pycache__/
-*.py[cod]
-*$py.class
-*.pyc
-.pytest_cache/
-.coverage
-htmlcov/
-
-# Node cache
-node_modules/
-.npm
-package-lock.json
 
 # OS files
 .DS_Store
@@ -72,29 +47,22 @@ package-lock.json
 ._*
 .Spotlight-V100
 .Trashes
-ehthumbs.db
 Thumbs.db
+ehthumbs.db
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# Node.js
+node_modules/
+.npm
+package-lock.json
 
-# Logs
-*.log
-
-# Temporary files
-*.tmp
-*.temp
-tmp/
-temp/
-
-# Runtime state (created during usage)
-.claude/state/*
-.claude/message-bus/queue.db
-.claude/message-bus/signals/*
-.claude/completion-state/*
-.claude/worker-assignments/*
-.claude/test
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
+venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
