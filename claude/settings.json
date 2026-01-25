@@ -7,6 +7,7 @@
     "DISABLE_PROMPT_CACHING": "0",
     "DISABLE_TELEMETRY": "1",
     "DISABLE_ERROR_REPORTING": "1",
+    "DISABLE_INSTALLATION_CHECKS": "true",
     "DISABLE_COST_WARNINGS": "1",
     "ENABLE_LSP_TOOL": "true",
     "ENABLE_TOOL_SEARCH": "true",
@@ -18,15 +19,14 @@
     "PYTHONOPTIMIZE": "2",
     "PYTHONDONTWRITEBYTECODE": "1",
     "PYTHONUNBUFFERED": "1",
-    "CARGO_TERM_COLOR": "always",
-    "NO_COLOR": "0",
     "BASH_DEFAULT_TIMEOUT_MS": "120000",
     "BASH_MAX_TIMEOUT_MS": "600000",
     "BASH_MAX_OUTPUT_LENGTH": "100000",
-    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "8000",
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "63999",
     "MCP_TIMEOUT": "30000",
     "MCP_TOOL_TIMEOUT": "60000",
-    "MAX_MCP_OUTPUT_TOKENS": "50000"
+    "MAX_MCP_OUTPUT_TOKENS": "19999"
+    "MAX_THINKING_TOKENS": "31999"
   },
   "includeCoAuthoredBy": false,
   "cleanupPeriodDays": 90,
@@ -58,7 +58,6 @@
       "Bash(jq:*)",
       "Bash(sd:*)",
       "Bash(sed:*)",
-      "Bash(mawk:*)",
       "Bash(awk:*)",
       "Bash(curl:*)",
       "Bash(aria2c:*)",
@@ -78,8 +77,7 @@
       "Task",
       "WebSearch",
       "WebFetch",
-      "mcp__*",
-      "mcp__plugin_serena_serena__get_current_config"
+      "mcp__*"
     ],
     "defaultMode": "acceptEdits"
   },
@@ -106,7 +104,6 @@
     "prompt-optimizer@daymade-skills": true,
     "general-dev@claude-settings": true,
     "ultralytics-dev@claude-settings": true,
-    "optimize-claude-md@lifegenie-marketplace": true,
     "docs-cleaner@daymade-skills": true,
     "conserve@claude-night-market": true,
     "github@claude-plugins-official": true,
