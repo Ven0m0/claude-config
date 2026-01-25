@@ -406,7 +406,7 @@ CMD ["node", "dist/index.js"]
 FROM python:{python_version}-slim AS base
 
 # Install uv - the fastest Python package manager
-RUN uv pip install uv
+RUN pip install uv
 
 # Build dependencies
 FROM base AS build
