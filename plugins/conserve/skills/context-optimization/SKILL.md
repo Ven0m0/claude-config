@@ -1,8 +1,7 @@
 ---
 name: context-optimization
 description: |
-
-Triggers: context, optimization
+  Triggers: context, optimization
   Reduce context usage with MECW principles (keep under 50% of total window).
 
   Triggers: context pressure, token usage, MECW, context window, optimization,

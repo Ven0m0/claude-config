@@ -1,8 +1,7 @@
 ---
 name: cpu-gpu-performance
 description: |
-
-Triggers: performance
+  Triggers: performance
   Monitor and optimize CPU/GPU usage with load measurement and cost-effective
   validation strategies.
 

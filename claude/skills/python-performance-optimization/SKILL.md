@@ -1,6 +1,6 @@
 ---
 name: python-performance-optimization
-description: Profile and optimize Python code using cProfile, memory profilers, and performance best practices. Use when debugging slow Python code, optimizing bottlenecks, or improving application performance.
+description: Profile and optimize Python code using cProfile, memory profilers, and performance best practices. Use when debugging slow Python code, optimizing bottlenecks, or improving application performance. Trigger with phrases like "profile", "optimize", "bottleneck", or "slow".
 ---
 
 # Python Performance Optimization
@@ -71,6 +71,11 @@ execution_time = timeit.timeit(
 print(f"Average time: {execution_time/100:.6f} seconds")
 ```
 
+## Progressive Details
+
+Use the advanced sections below when you need tooling guidance, deeper pattern catalogs, and checklists.
+
+<!-- progressive: profiling-and-optimization -->
 ## Profiling Tools
 
 ### Pattern 1: cProfile - CPU Profiling
@@ -872,3 +877,4 @@ def test_map_function(benchmark):
 - [ ] Minimized function call overhead in hot loops
 - [ ] Checked for memory leaks
 - [ ] Benchmarked before and after optimization
+<!-- /progressive -->

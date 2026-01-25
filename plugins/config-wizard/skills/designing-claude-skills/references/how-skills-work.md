@@ -27,7 +27,7 @@ Anthropic provides pre-built Agent Skills for common document tasks (PowerPoint,
 
 <Note>
 **Get started:**
-- For pre-built Agent Skills: See the [quickstart tutorial](/docs/en/agents-and-tools/agent-skills/quickstart) to start using PowerPoint, Excel, Word, and PDF skills in the API
+- For pre-built Agent Skills: See the [quickstart tutorial](https://code.claude.com/docs/en/agents-and-tools/agent-skills/quickstart) to start using PowerPoint, Excel, Word, and PDF skills in the API
 - For custom Skills: See the [Agent Skills Cookbook](https://github.com/anthropics/claude-cookbooks/tree/main/skills) to learn how to create your own Skills
 </Note>
 
@@ -161,7 +161,7 @@ The Claude API supports both pre-built Agent Skills and custom Skills. Both work
 
 Use pre-built Agent Skills by referencing their `skill_id` (e.g., `pptx`, `xlsx`), or create and upload your own via the Skills API (`/v1/skills` endpoints). Custom Skills are shared organization-wide.
 
-To learn more, see [Use Skills with the Claude API](/docs/en/build-with-claude/skills-guide).
+To learn more, see [Use Skills with the Claude API](https://code.claude.com/docs/en/build-with-claude/skills-guide).
 
 ### Claude Code
 
@@ -175,13 +175,13 @@ To learn more, see [Use Skills in Claude Code](https://code.claude.com/docs/en/s
 
 ### Claude Agent SDK
 
-The [Claude Agent SDK](/docs/en/agent-sdk/overview) supports custom Skills through filesystem-based configuration.
+The [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview) supports custom Skills through filesystem-based configuration.
 
 **Custom Skills**: Create Skills as directories with SKILL.md files in `.claude/skills/`. Enable Skills by including `"Skill"` in your `allowed_tools` configuration.
 
 Skills in the Agent SDK are then automatically discovered when the SDK runs.
 
-To learn more, see [Agent Skills in the SDK](/docs/en/agent-sdk/skills).
+To learn more, see [Agent Skills in the SDK](https://code.claude.com/docs/en/agent-sdk/skills).
 
 ### Claude.ai
 
@@ -231,7 +231,7 @@ description: Brief description of what this Skill does and when to use it
 - Maximum 1024 characters
 - Cannot contain XML tags
 
-The `description` should include both what the Skill does and when Claude should use it. For complete authoring guidance, see the [best practices guide](/docs/en/agents-and-tools/agent-skills/best-practices).
+The `description` should include both what the Skill does and when Claude should use it. For complete authoring guidance, see the [best practices guide](https://code.claude.com/docs/en/agents-and-tools/agent-skills/best-practices).
 
 ## Security considerations
 
@@ -259,7 +259,7 @@ The following pre-built Agent Skills are available for immediate use:
 - **Word (docx)**: Create documents, edit content, format text
 - **PDF (pdf)**: Generate formatted PDF documents and reports
 
-These Skills are available on the Claude API and claude.ai. See the [quickstart tutorial](/docs/en/agents-and-tools/agent-skills/quickstart) to start using them in the API.
+These Skills are available on the Claude API and claude.ai. See the [quickstart tutorial](https://code.claude.com/docs/en/agents-and-tools/agent-skills/quickstart) to start using them in the API.
 
 ### Custom Skills examples
 
@@ -297,7 +297,7 @@ The exact runtime environment available to your skill depends on the product sur
 - **Claude API**:
     - **No network access**: Skills cannot make external API calls or access the internet
     - **No runtime package installation**: Only pre-installed packages are available. You cannot install new packages during execution.
-    - **Pre-configured dependencies only**: Check the [code execution tool documentation](/docs/en/agents-and-tools/tool-use/code-execution-tool) for the list of available packages
+    - **Pre-configured dependencies only**: Check the [code execution tool documentation](https://code.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool) for the list of available packages
 - **Claude Code**:
     - **Full network access**: Skills have the same network access as any other program on the user's computer
     - **Global package installation discouraged**: Skills should only install packages locally in order to avoid interfering with the user's computer

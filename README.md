@@ -20,17 +20,29 @@ Install individual plugins from the marketplace:
 # Install coding assistant
 /plugin install coding-assistant@claude-config-marketplace
 
-# Install technical writer
-/plugin install technical-writer@claude-config-marketplace
+# Install prompt improver
+/plugin install prompt-improver@claude-config-marketplace
 
-# Install data analyst
-/plugin install data-analyst@claude-config-marketplace
+# Install conserve
+/plugin install conserve@claude-config-marketplace
+
+# Install config wizard
+/plugin install config-wizard@claude-config-marketplace
+
+# Install dependency blocker
+/plugin install dependency-blocker@claude-config-marketplace
+
+# Install block dotfiles
+/plugin install block-dotfiles@claude-config-marketplace
+
+# Install gemini delegation
+/plugin install gemini-delegation@claude-config-marketplace
 ```
 
 Or install all plugins at once:
 
 ```bash
-/plugin install coding-assistant technical-writer data-analyst @claude-config-marketplace
+/plugin install coding-assistant prompt-improver conserve config-wizard dependency-blocker block-dotfiles gemini-delegation @claude-config-marketplace
 ```
 
 ## 📦 Available Plugins
@@ -51,39 +63,6 @@ Advanced coding assistant with code review, debugging, and refactoring capabilit
 - Best practices guidance
 
 [View Plugin Documentation](./plugins/coding-assistant/README.md)
-
-### 📝 Technical Writer
-
-Professional technical documentation and API documentation writer.
-
-**Skills:**
-- `/api-docs` - Generate comprehensive API documentation with multi-language examples
-- `/user-guide` - Create detailed user guides and tutorials
-
-**Features:**
-- Standardized API documentation templates
-- Multi-language code examples (cURL, Python, JavaScript)
-- Step-by-step tutorial generation
-- Industry-standard documentation practices
-
-[View Plugin Documentation](./plugins/technical-writer/README.md)
-
-### 📊 Data Analyst
-
-Comprehensive data analysis and visualization assistant.
-
-**Skills:**
-- `/analyze-data` - Exploratory data analysis with statistical insights
-- `/visualize-data` - Create effective data visualizations
-
-**Features:**
-- Descriptive statistics and pattern identification
-- Data quality assessment
-- Correlation analysis
-- matplotlib, seaborn, and Plotly visualizations
-- Optional SQLite MCP server for database analysis
-
-[View Plugin Documentation](./plugins/data-analyst/README.md)
 
 ### ⚡ Conserve
 
@@ -195,9 +174,13 @@ Delegate research and web search tasks to Gemini AI via CLI.
 ├── opencode/                   # OpenCode references
 ├── qwen/                       # Qwen prompt templates
 ├── plugins/
+│   ├── block-dotfiles/         # Block dotfile access
 │   ├── coding-assistant/       # Code review, debug, refactor
-│   ├── technical-writer/       # API docs, user guides
-│   └── data-analyst/           # Data analysis and visualization
+│   ├── config-wizard/          # Plugin configuration wizard
+│   ├── conserve/               # Context and token optimization
+│   ├── dependency-blocker/     # Block dependency directories
+│   ├── gemini-delegation/      # Gemini CLI delegation
+│   └── prompt-improver/        # Prompt clarity improvements
 ├── examples/                   # Usage examples
 ├── LLM_CONFIG_STANDARDS.md     # Shared config defaults
 ├── README.md                   # This file
@@ -218,24 +201,14 @@ Delegate research and web search tasks to Gemini AI via CLI.
 /code-review --focus security src/api/
 ```
 
-### API Documentation
+### Context Optimization
 
 ```bash
-# Document an endpoint
-/api-docs POST /api/v1/users
+# Scan for bloat signals
+/bloat-scan
 
-# Generate docs from OpenAPI spec
-/api-docs openapi.yaml
-```
-
-### Data Analysis
-
-```bash
-# Analyze a dataset
-/analyze-data sales_data.csv
-
-# Create visualizations
-/visualize-data data.csv --type scatter
+# Reduce context usage
+/optimize-context
 ```
 
 ## 🔧 Requirements
@@ -249,13 +222,8 @@ Delegate research and web search tasks to Gemini AI via CLI.
 **Coding Assistant:**
 - Optional formatters: Biome, ruff, gofmt, rustfmt
 
-**Technical Writer:**
-- No additional requirements
-
-**Data Analyst:**
-- Python 3.8+
-- pandas, numpy, matplotlib, seaborn
-- Optional: SQLite MCP server (`uvx mcp-server-sqlite`)
+**Prompt Improver:**
+- Claude Code 2.0.22+ (AskUserQuestion tool)
 
 ## 🎨 Features
 

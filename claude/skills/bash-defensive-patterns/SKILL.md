@@ -1,6 +1,6 @@
 ---
 name: bash-defensive-patterns
-description: Master defensive Bash programming techniques for production-grade scripts. Use when writing robust shell scripts, CI/CD pipelines, or system utilities requiring fault tolerance and safety.
+description: Master defensive Bash programming techniques for production-grade scripts. Use when writing robust shell scripts, CI/CD pipelines, or system utilities requiring fault tolerance and safety. Trigger with phrases like "bash script", "shell safety", "set -euo pipefail", or "argument parsing".
 ---
 
 # Bash Defensive Patterns
@@ -104,6 +104,11 @@ if [[ -z "${VAR:-}" ]]; then
 fi
 ```
 
+## Progressive Details
+
+Use the pattern catalog below when you need full script templates and advanced defensive techniques.
+
+<!-- progressive: bash-patterns -->
 ## Fundamental Patterns
 
 ### Pattern 1: Safe Script Directory Detection
@@ -537,3 +542,4 @@ check_dependencies
 - **Bash Strict Mode**: http://redsymbol.net/articles/unofficial-bash-strict-mode/
 - **Google Shell Style Guide**: https://google.github.io/styleguide/shellguide.html
 - **Defensive BASH Programming**: https://www.lifepipe.net/
+<!-- /progressive -->

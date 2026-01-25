@@ -1,7 +1,7 @@
 ---
 name: mcp-builder
 category: development-code
-description: Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate external APIs or services, whether in Python (FastMCP) or Node/TypeScript (MCP SDK).
+description: Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate external APIs or services, whether in Python (FastMCP) or Node/TypeScript (MCP SDK). Trigger with phrases like "MCP server", "tool schema", or "model context protocol".
 license: Complete terms in LICENSE.txt
 ---
 
@@ -11,6 +11,11 @@ license: Complete terms in LICENSE.txt
 
 To create high-quality MCP (Model Context Protocol) servers that enable LLMs to effectively interact with external services, use this skill. An MCP server provides tools that allow LLMs to access external services and APIs. The quality of an MCP server is measured by how well it enables LLMs to accomplish real-world tasks using the tools provided.
 
+## Progressive Details
+
+Use the workflow and reference library below when you need full build guidance.
+
+<!-- progressive: mcp-workflow -->
 ---
 
 # Process
@@ -327,3 +332,4 @@ Load these resources as needed during development:
   - XML format specifications
   - Example questions and answers
   - Running an evaluation with the provided scripts
+<!-- /progressive -->
