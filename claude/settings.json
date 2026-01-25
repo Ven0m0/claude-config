@@ -37,6 +37,8 @@
       "Bash(eza:*)",
       "Bash(rg:*)",
       "Bash(fd:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
       "Bash(cp:*)",
       "Bash(mv:*)",
       "Bash(rm:*)",
