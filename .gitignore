@@ -45,3 +45,56 @@ env/
 # Backup files
 *.bak
 *.backup
+
+# Local settings override (user-specific paths and preferences)
+.claude/settings.local.json
+
+# MCP configuration with API keys (users should copy from .mcp.json.example)
+.mcp.json
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node cache
+node_modules/
+.npm
+package-lock.json
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Runtime state (created during usage)
+.claude/state/*
+.claude/message-bus/queue.db
+.claude/message-bus/signals/*
+.claude/completion-state/*
+.claude/worker-assignments/*
+.claude/test
