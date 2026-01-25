@@ -265,12 +265,13 @@ ln -s ~/.claude-plugins/conserve/rules/conserve.md .claude/rules/
 
 ## Related Documentation
 
-- **[Agent Boundaries Guide](../../docs/guides/agent-boundaries.md)** - Understand which agents to use and how they relate
-- **[LSP Native Support](../../docs/guides/lsp-native-support.md)** - LSP setup and troubleshooting
+- **[Bloat Auditor Agent](agents/bloat-auditor.md)** - Scan workflow overview
+- **[Context Optimizer Agent](agents/context-optimizer.md)** - Context planning guidance
 - **[MECW Principles](skills/context-optimization/modules/mecw-principles.md)** - Deep dive into Maximum Effective Context Window
-- **[Rules Templates Guide](../../docs/guides/rules-templates.md)** - Plugin rules for project context
+- **[Rules Template](rules/conserve.md)** - Project-level rules for context control
+- **[Modularization Plan](docs/modularization-plan.md)** - Architecture notes and roadmap
 
-See `docs/` for MCP optimization patterns and architecture decisions.
+See `docs/modularization-plan.md` for MCP optimization patterns and architecture decisions.
 
 ## License
 
