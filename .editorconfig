@@ -1,0 +1,59 @@
+root = true
+
+[*]
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+indent_style = space
+spaces_around_operators = true
+spaces_around_brackets = false
+indent_size = 2
+tab_width = 2
+max_line_length = 120
+quote_type = double
+spelling_language = en
+shell_variant = bash
+binary_next_line = true
+switch_case_indent = true
+space_redirects = false
+function_next_line = false
+
+[[shell],**/*.{sh,bash,zsh}]
+spaces_around_operators = true
+spaces_around_brackets = false
+binary_next_line = true
+switch_case_indent = true
+keep_padding = false
+space_redirects = false
+function_next_line = false
+
+[**/*.fish]
+indent_size = 4
+
+[**/*.{py,pyw,pyi}]
+indent_size = 4
+
+# Makefiles (require tabs)
+[Makefile,**/*.mk]
+indent_style = tab
+indent_size = 4
+tab_width = 4
+
+[**/*.{rst,txt}]
+trim_trailing_whitespace = false
+
+# XML / HTML
+[**/*.{xml,html,htm}]
+indent_size = 4
+
+[**/*.{md,markdown}]
+max_line_length = unset
+trim_trailing_whitespace = false
+
+[**/*.{patch,diff}]
+trim_trailing_whitespace = false
+insert_final_newline = false
+
+[{bun.lockb,package-lock.json}]
+insert_final_newline = true
