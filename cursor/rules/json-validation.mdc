@@ -1,0 +1,41 @@
+---
+description: JSON validation using python3 json.tool with specific flags
+globs: **/*.json
+alwaysApply: false
+---
+
+# JSON Validation
+
+When validating JSON files, use different flags based on the use case:
+
+## For File Output (Pretty Printing)
+
+When formatting JSON and outputting to a file, use:
+
+```bash
+python3 -OO -m json.tool --indent 2 <input.json> > <output.json>
+```
+
+## For Validation/Checking (Like Grepping)
+
+When only checking validity or searching through code (similar to grepping), use:
+
+```bash
+python3 -OO -m json.tool --compact <file.json> > /dev/null
+```
+
+## Examples
+
+- **Format and save**: `python3 -OO -m json.tool --indent 2 file.json > formatted.json`
+- **Check validity**: `python3 -OO -m json.tool --compact file.json > /dev/null && echo "Valid" || echo "Invalid"`
+- **Validate in scripts**: `python3 -OO -m json.tool --compact file.json > /dev/null`
+
+## Flags Explained
+
+- `-OO`: Python optimization level 2 (removes docstrings and asserts)
+- `--indent 2`: Use 2 spaces for indentation (for file output)
+- `--compact`: Compact output format (for validation/checking only)
+
+**Rule**: Use `--indent 2` when outputting to a file. Use `--compact` when only validating or checking (like grepping).
+
+Never use `python3 -m json.tool` without these flags when validating JSON files.
