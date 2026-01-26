@@ -1,6 +1,6 @@
 ---
-name: strategic-compact
-description: Suggests manual context compaction at logical intervals to preserve context through task phases rather than arbitrary auto-compaction.
+name: compacting-context-strategically
+description: Suggests manual /compact at strategic workflow points to preserve context through task phases. Use when approaching context limits, completing major milestones, or before context shifts. Triggers include high tool call counts, after planning phases, or before major implementation work.
 ---
 
 # Strategic Compact Skill

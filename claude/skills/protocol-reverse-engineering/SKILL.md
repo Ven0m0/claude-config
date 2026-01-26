@@ -1,6 +1,6 @@
 ---
-name: protocol-reverse-engineering
-description: Master network protocol reverse engineering including packet analysis, protocol dissection, and custom protocol documentation. Use when analyzing network traffic, understanding proprietary protocols, or debugging network communication. Trigger with phrases like "pcap", "packet capture", "protocol analysis", or "wireshark".
+name: reverse-engineering-protocols
+description: Reverse engineers network protocols through packet analysis, dissection, and documentation. Use when analyzing network traffic, understanding proprietary protocols, or debugging communication. Triggers include "pcap", "packet capture", "protocol analysis", "Wireshark", or "tcpdump".
 ---
 
 # Protocol Reverse Engineering

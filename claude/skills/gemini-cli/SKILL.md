@@ -1,6 +1,6 @@
 ---
-name: gemini
-description: Execute Gemini CLI for AI-powered code analysis and generation. Use when you need to leverage Google's Gemini models for complex reasoning tasks.
+name: running-gemini-cli
+description: Executes Gemini CLI for AI-powered code analysis and generation using Google's Gemini models. Use when needing alternative AI perspectives, complex reasoning, or code generation with Gemini. Triggers include "gemini", "Google AI", or when requesting Gemini-specific analysis.
 ---
 
 # Gemini CLI Integration

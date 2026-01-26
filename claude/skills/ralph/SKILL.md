@@ -1,6 +1,6 @@
 ---
-name: prd
-description: 'Generate a Product Requirements Document (PRD) for a new feature. Use when planning a feature, starting a new project, or when asked to create a PRD. Triggers on: create a prd, write prd for, plan this feature, requirements for, spec out.'
+name: generating-prds
+description: Generates Product Requirements Documents (PRDs) for new features suitable for AI implementation. Use when planning features, starting projects, or creating specifications. Triggers include "create PRD", "write prd", "plan feature", "requirements document", or "spec out".
 ---
 
 # PRD Generator

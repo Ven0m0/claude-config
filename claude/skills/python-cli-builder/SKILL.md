@@ -1,6 +1,6 @@
 ---
-name: python-cli-builder
-description: Build production-ready Python CLI tools, utilities, and automation scripts with strict typing, performance optimization, and zero external dependencies (stdlib-only by default). Triggers on "Create a CLI tool for", "Build a Python utility that", "Write a script to", or any request for Python automation/file processing/system utilities. Enforces user preferences (PEP 8, slots=True dataclasses, typed returns, O(n) complexity, security-first, no external libs unless essential).
+name: building-python-cli-tools
+description: Builds production-ready Python CLI tools with strict typing, performance optimization, and stdlib-only dependencies. Use when creating CLI tools, automation scripts, or utilities. Triggers include "CLI tool", "Python utility", "argparse", "click", or "command-line script".
 ---
 
 # Python CLI Builder

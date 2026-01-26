@@ -1,6 +1,6 @@
 ---
-name: using-tmux-for-interactive-commands
-description: Use when you need to run interactive CLI tools (vim, git rebase -i, Python REPL, etc.) that require real-time input/output - provides tmux-based approach for controlling interactive sessions through detached sessions and send-keys
+name: running-interactive-commands-with-tmux
+description: Controls interactive CLI tools (vim, git rebase -i, REPLs) through tmux detached sessions and send-keys. Use when running tools requiring terminal interaction, programmatic editor control, or orchestrating Claude Code sessions. Triggers include "interactive command", "vim", "REPL", "tmux", or "git rebase -i".
 ---
 
 # Using tmux for Interactive Commands

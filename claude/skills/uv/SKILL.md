@@ -1,6 +1,6 @@
 ---
-name: uv
-description: Guide for using uv, the Python package and project manager. Use this when working with Python projects, scripts, packages, or tools.
+name: managing-python-with-uv
+description: Manages Python packages, projects, and environments using uv, the fast Python package manager replacing pip, poetry, and pyenv. Use when installing packages, running scripts, managing virtual environments, or working with uv.lock files. Triggers include "uv", "pip install", "python project", or "uv.lock".
 ---
 
 # uv

@@ -1,6 +1,6 @@
 ---
-name: repomix
-description: Package entire code repositories into single AI-friendly files using Repomix. Capabilities include pack codebases with customizable include/exclude patterns, generate multiple output formats (XML, Markdown, plain text), preserve file structure and context, optimize for AI consumption with token counting, filter by file types and directories, add custom headers and summaries. Use when packaging codebases for AI analysis, creating repository snapshots for LLM context, analyzing third-party libraries, preparing for security audits, generating documentation context, or evaluating unfamiliar codebases.
+name: packaging-repos-with-repomix
+description: Packages entire repositories into single AI-friendly files using Repomix with multiple output formats. Use when packaging codebases for LLM analysis, creating repository snapshots, or preparing security audits. Triggers include "repomix", "package codebase", "AI-friendly", or "LLM context".
 ---
 
 # Repomix Skill
