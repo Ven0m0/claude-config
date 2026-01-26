@@ -285,3 +285,12 @@ echo "  • Python MCP servers use uvx (not pipx) - make sure 'uv' is installed"
 echo "  • MCP servers will be downloaded on first use"
 echo ""
 echo "🔄 Restart Claude Code to apply changes"
+
+
+echo "Setup cursor"
+
+if [[ -d ~/.cursor ]]; then
+  [[ -f ~/.cursor/argv.json ]] && sed -i 's/"enable-crash-reporter":[[:space:]]*true/"enable-crash-reporter": false/' ~/.cursor/argv.jsona
+else
+  mkdir -p ~/.cursor
+fi
