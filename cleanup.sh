@@ -18,31 +18,23 @@ readonly DRY_RUN=${DRY_RUN:-0}
 optimize_db(){
   local db="$1"
   local size_before size_after
-  
   [[ ! -f "$db" ]] && return 1
-  
   size_before=$(stat -f%z "$db" 2>/dev/null || stat -c%s "$db")
-  
   echo "  Optimizing $(basename "$db")"
-  
   if [[ $DRY_RUN -eq 0 ]]; then
     sqlite3 "$db" "VACUUM; REINDEX;" 2>/dev/null || {
       echo "  ⚠ Failed to optimize $db"
       return 1
     }
-    
     size_after=$(stat -f%z "$db" 2>/dev/null || stat -c%s "$db")
     local saved=$((size_before - size_after))
     [[ $saved -gt 0 ]] && echo "  ✓ Saved $(numfmt --to=iec "$saved" 2>/dev/null || echo "$saved bytes")"
   fi
 }
-
 cleanup_dir(){
   local dir="$HOME/$1"
   [[ ! -d "$dir" ]] && return 0
-  
   echo "==> Cleaning $1"
-  
   # Remove log files
   if command -v fd &>/dev/null; then
     fd -t f -e log -e log.gz -e log.old . "$dir" -x rm -v
@@ -55,10 +47,8 @@ cleanup_dir(){
     find "$dir" -type d -iname '*cache*' -o -iname '*tmp*' -o -iname '*temp*' -o -iname '*logs*' -exec rm -rf {} +
     find "$dir" -type f -mtime "+$DAYS_OLD" -delete -print
   fi
-  
   # Remove empty directories
   find "$dir" -type d -empty -delete 2>/dev/null || true
-  
   # Optimize SQLite databases
   if command -v sqlite3 &>/dev/null; then
     if command -v fd &>/dev/null; then
