@@ -1,0 +1,83 @@
+{
+  "mcpServers": {
+    "context7": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": [
+        "@upstash/context7-mcp"
+      ]
+    },
+    "Exa Search": {
+      "type": "http",
+      "url": "https://mcp.exa.ai",
+      "headers": {}
+    },
+    "serena": {
+      "type": "http",
+      "url": "https://server.smithery.ai/chris/serena",
+      "headers": {}
+    },
+    "git": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "mcp-server-git"
+      ]
+    },
+    "sequential-thinking": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": [
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "env": {}
+    },
+    "morphllm-fast-apply": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": [
+        "@morph-llm/morph-fast-apply"
+      ],
+      "env": {
+        "MORPH_API_KEY": "$MORPH_API_KEY",
+        "ENABLED_TOOLS": "edit_file,warpgrep_codebase_search"
+      }
+    },
+    "read-website-fast": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": [
+        "@just-every/mcp-read-website-fast"
+      ],
+      "env": {}
+    },
+    "search": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": [
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "$BRAVE_API_KEY"
+      }
+    },
+    "memory": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": [
+        "@modelcontextprotocol/server-memory"
+      ],
+      "env": {}
+    },
+    "gemini-cli": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": [
+        "gemini-mcp-tool"
+      ],
+      "env": {
+        "GEMINI_API_KEY": "$GEMINI_API_KEY"
+      }
+    }
+  }
+}
