@@ -1,6 +1,6 @@
 ---
 name: substituting-modern-tools
-description: Substitutes modern performant tools for legacy equivalents in generated code (npm→bun, find→fd, pip→uv, grep→rg, jq→jaq, eslint→biome, black→ruff). Use when generating shell commands or scripts. Triggers include npm, find, pip, grep, wget, jq, eslint, black. Adapts flags and syntax automatically.
+description: Substitutes modern performant tools for legacy equivalents (npm→bun, find→fd, pip→uv, grep→rg, wget/curl→aria2, jq→jaq, eslint→biome, black→ruff, ls→eza, sudo→sudo-rs). Use when generating shell commands or scripts. Triggers include npm, find, pip, grep, wget, curl, jq, eslint, black, ls, sudo.
 ---
 
 # Modern Tool Substitution

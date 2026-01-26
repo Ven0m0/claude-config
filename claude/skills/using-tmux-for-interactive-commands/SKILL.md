@@ -131,12 +131,6 @@ tmux send-keys -t rebase 'Down' 'Home' 'squash' Escape
 tmux send-keys -t rebase ':wq' Enter
 ```
 
-## Progressive Details
-
-For advanced patterns including Claude Code orchestration, error handling, and remote monitoring protocols, see sections below.
-
-<!-- progressive: advanced-tmux-patterns -->
-
 ## Common Mistakes
 
 ### Not Waiting After Session Start
@@ -174,6 +168,12 @@ tmux send-keys -t sess 'text\n'      # ✗
 tmux kill-session -t session_name
 # Or check for existing: tmux has-session -t name 2>/dev/null
 ```
+
+## Progressive Details
+
+For advanced patterns including Claude Code orchestration and remote monitoring protocols, see sections below.
+
+<!-- progressive: advanced-tmux-patterns -->
 
 ## Controlling Claude Code Sessions in tmux
 
