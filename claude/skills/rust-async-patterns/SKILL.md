@@ -1,6 +1,6 @@
 ---
-name: rust-async-patterns
-description: Master Rust async programming with Tokio, async traits, error handling, and concurrent patterns. Use when building async Rust applications, implementing concurrent systems, or debugging async code. Trigger with phrases like "tokio", "async rust", "futures", or "stream".
+name: writing-async-rust
+description: Implements Rust async programming with Tokio, async traits, and concurrent patterns. Use when building async Rust applications, network services, or debugging async code. Triggers include "tokio", "async rust", "futures", "stream", or ".await".
 ---
 
 # Rust Async Patterns

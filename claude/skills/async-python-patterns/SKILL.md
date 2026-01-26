@@ -1,6 +1,6 @@
 ---
-name: async-python-patterns
-description: Master Python asyncio, concurrent programming, and async/await patterns for high-performance applications. Use when building async APIs, concurrent systems, or I/O-bound applications requiring non-blocking operations. Trigger with phrases like "asyncio", "await", "concurrency", or "non-blocking".
+name: writing-async-python
+description: Implements Python asyncio, async/await patterns, and concurrent programming for high-performance applications. Use when building async APIs, concurrent I/O operations, or non-blocking systems. Triggers include "asyncio", "await", "async def", "concurrency", or "aiohttp".
 ---
 
 # Async Python Patterns

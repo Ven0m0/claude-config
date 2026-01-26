@@ -1,6 +1,6 @@
 ---
 name: dispatching-parallel-agents
-description: Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies
+description: Dispatches multiple independent agents to work on unrelated tasks concurrently. Use when facing 2+ independent failures, multiple subsystems broken, or tasks without shared state. Triggers include "parallel agents", "multiple failures", "concurrent investigation", or "dispatch agents".
 ---
 
 # Dispatching Parallel Agents

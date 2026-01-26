@@ -1,6 +1,6 @@
 ---
-name: codeagent
-description: Execute codeagent-wrapper for multi-backend AI code tasks. Supports Codex, Claude, and Gemini backends with file references (@syntax) and structured output.
+name: running-codeagent-tasks
+description: Executes codeagent-wrapper for multi-backend AI code tasks supporting Codex, Claude, and Gemini. Use when running complex code analysis, large-scale refactoring, or parallel AI tasks with backend selection. Triggers include "codeagent", "multi-backend", or "parallel code tasks".
 ---
 
 # Codeagent Wrapper Integration

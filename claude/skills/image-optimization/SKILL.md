@@ -1,6 +1,6 @@
 ---
-name: image-optimization
-description: Optimize images for web to reduce file size without sacrificing quality. Use compression, modern formats, and responsive techniques for faster loading.
+name: optimizing-images
+description: Optimizes images for web using compression, modern formats (WebP, AVIF), and responsive techniques. Use when reducing page weight, improving load times, or implementing responsive images. Triggers include "image optimization", "compress images", "WebP", or "srcset".
 ---
 
 # Image Optimization

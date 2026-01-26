@@ -1,7 +1,6 @@
 ---
-name: toon-formatter
-description: Use TOON v2.0 formatting for structured data to minimize tokens while preserving readability. Use when outputs include tables, logs, events, transactions, or repeated records and token budgets matter. Trigger with phrases like "format table", "structured data", "large list", or "TOON".
-allowed-tools: Read, Write, Edit, Bash
+name: formatting-with-toon
+description: Formats structured data using TOON v2.0 to minimize tokens while preserving readability. Use when outputs include tables, logs, events, or repeated records and token budgets matter. Triggers include "format table", "structured data", "TOON", "minimize tokens", or "large list".
 ---
 
 # TOON v2.0 Formatter Skill (AGGRESSIVE MODE)

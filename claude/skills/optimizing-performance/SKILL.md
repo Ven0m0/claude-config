@@ -1,6 +1,6 @@
 ---
-name: optimizing-performance
-description: Analyzes and optimizes application performance across frontend, backend, and database layers. Use when diagnosing slowness, improving load times, optimizing queries, reducing bundle size, or when asked about performance issues.
+name: optimizing-app-performance
+description: Analyzes and optimizes application performance across frontend, backend, and database layers. Use when diagnosing slowness, improving load times, optimizing queries, or reducing bundle size. Triggers include "slow", "performance", "optimize", "bottleneck", or "load time".
 ---
 
 # Optimizing Performance

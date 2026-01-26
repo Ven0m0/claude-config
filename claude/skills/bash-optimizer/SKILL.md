@@ -1,6 +1,6 @@
 ---
-name: bash-optimizer
-description: Analyze bash scripts for performance bottlenecks, enforce coding standards, identify consolidation opportunities, and suggest modern tool replacements. Use when optimizing shell scripts, merging multiple scripts, refactoring for performance, validating against standards, or preparing scripts for production. Analyzes subshell/fork waste, validates shellcheck compliance, checks indentation/style, and recommends fd/rg/sd over legacy tools.
+name: optimizing-bash-scripts
+description: Analyzes bash scripts for performance bottlenecks, coding standards, and modern tool replacements. Use when optimizing shell scripts, consolidating scripts, or preparing for production. Triggers include "optimize bash", "shellcheck", "script performance", or "consolidate scripts".
 ---
 
 # Bash Script Optimizer

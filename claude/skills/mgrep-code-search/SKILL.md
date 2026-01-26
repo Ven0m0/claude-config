@@ -1,6 +1,6 @@
 ---
-name: mgrep-code-search
-description: Semantic code search using mgrep for efficient codebase exploration. This skill should be used when searching or exploring codebases with more than 30 non-gitignored files and/or nested directory structures. It provides natural language semantic search that complements traditional grep/ripgrep for finding features, understanding intent, and exploring unfamiliar code.
+name: searching-with-mgrep
+description: Performs semantic code search using mgrep for natural language queries across codebases. Use when exploring codebases with 30+ files, searching for concepts rather than exact strings, or understanding unfamiliar code. Triggers include "semantic search", "mgrep", "find feature", or "where is X implemented".
 ---
 
 # mgrep Code Search

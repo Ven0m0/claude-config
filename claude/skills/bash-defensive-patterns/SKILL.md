@@ -1,6 +1,6 @@
 ---
-name: bash-defensive-patterns
-description: Master defensive Bash programming techniques for production-grade scripts. Use when writing robust shell scripts, CI/CD pipelines, or system utilities requiring fault tolerance and safety. Trigger with phrases like "bash script", "shell safety", "set -euo pipefail", or "argument parsing".
+name: writing-defensive-bash
+description: Implements defensive Bash programming techniques for production-grade scripts. Use when writing robust shell scripts, CI/CD pipelines, or fault-tolerant utilities. Triggers include "bash script", "shell safety", "set -euo pipefail", "error handling", or "argument parsing".
 ---
 
 # Bash Defensive Patterns
