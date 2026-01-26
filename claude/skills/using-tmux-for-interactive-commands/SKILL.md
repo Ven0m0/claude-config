@@ -131,6 +131,12 @@ tmux send-keys -t rebase 'Down' 'Home' 'squash' Escape
 tmux send-keys -t rebase ':wq' Enter
 ```
 
+## Progressive Details
+
+For advanced patterns including Claude Code orchestration, error handling, and remote monitoring protocols, see sections below.
+
+<!-- progressive: advanced-tmux-patterns -->
+
 ## Common Mistakes
 
 ### Not Waiting After Session Start
@@ -601,3 +607,5 @@ tmux capture-pane -t SESSION -p | tail -20
 - **Remote monitoring protocol for long-running multi-hour workflows**
 - **Automatic error recovery and continuation nudging**
 - No need to build custom PTY management - tmux handles it all
+
+<!-- /progressive -->
