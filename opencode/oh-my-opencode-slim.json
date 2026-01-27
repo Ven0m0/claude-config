@@ -1,0 +1,133 @@
+{
+  "preset": "openai",
+  "presets": {
+    "antigravity": {
+      "orchestrator": {
+        "model": "google/claude-opus-4-5-thinking",
+        "skills": ["*"]
+      },
+      "oracle": {
+        "model": "google/claude-opus-4-5-thinking",
+        "variant": "high",
+        "skills": ["*"]
+      },
+      "librarian": {
+        "model": "google/gemini-3-flash",
+        "variant": "low",
+        "skills": ["*"]
+      },
+      "explorer": {
+        "model": "google/gemini-3-flash",
+        "variant": "low",
+        "skills": ["*"]
+      },
+      "designer": {
+        "model": "google/gemini-3-flash",
+        "variant": "medium",
+        "skills": ["playwright"]
+      },
+      "fixer": {
+        "model": "google/gemini-3-flash",
+        "variant": "low",
+        "skills": ["*"]
+      }
+    },
+    "openai": {
+      "orchestrator": {
+        "model": "openai/gpt-5.2-codex",
+        "skills": [
+          "*"
+        ]
+      },
+      "oracle": {
+        "model": "openai/gpt-5.2-codex",
+        "variant": "high",
+        "skills": ["*"]
+      },
+      "librarian": {
+        "model": "openai/gpt-5.1-codex-mini",
+        "variant": "low",
+        "skills": ["*"]
+      },
+      "explorer": {
+        "model": "openai/gpt-5.1-codex-mini",
+        "variant": "low",
+        "skills": ["*"]
+      },
+      "designer": {
+        "model": "openai/gpt-5.1-codex-mini",
+        "variant": "medium",
+        "skills": [
+          "playwright"
+        ]
+      },
+      "fixer": {
+        "model": "openai/gpt-5.1-codex-mini",
+        "variant": "low",
+        "skills": []
+      }
+    },
+    "zen-free": {
+      "orchestrator": {
+        "model": "opencode/glm-4.7-free",
+        "skills": ["*"]
+      },
+      "oracle": {
+        "model": "opencode/glm-4.7-free",
+        "variant": "high",
+        "skills": ["*"]
+      },
+      "librarian": {
+        "model": "opencode/grok-code",
+        "variant": "low",
+        "skills": ["*"]
+      },
+      "explorer": {
+        "model": "opencode/grok-code",
+        "variant": "low",
+        "skills": ["*"]
+      },
+      "designer": {
+        "model": "opencode/grok-code",
+        "variant": "medium",
+        "skills": ["*"]
+      },
+      "fixer": {
+        "model": "opencode/grok-code",
+        "variant": "low",
+        "skills": ["*"]
+      }
+    },
+    "antigravity-openai": {
+      "orchestrator": {
+        "model": "google/claude-opus-4-5-thinking",
+        "skills": ["*"]
+      },
+      "oracle": {
+        "model": "openai/gpt-5.2-codex",
+        "variant": "high",
+        "skills": ["*"]
+      },
+      "librarian": {
+        "model": "google/gemini-3-flash",
+        "variant": "low",
+        "skills": []
+      },
+      "explorer": {
+        "model": "google/gemini-3-flash",
+        "variant": "low",
+        "skills": ["*"]
+      },
+      "designer": {
+        "model": "google/gemini-3-flash",
+        "variant": "medium",
+        "skills": ["*"]
+      },
+      "fixer": {
+        "model": "google/gemini-3-flash",
+        "variant": "low",
+        "skills": ["*"]
+      }
+    }
+  }
+}
