@@ -94,6 +94,7 @@
 		"defaultMode": "acceptEdits"
 	},
 	"model": "opusplan",
+  "allowManagedHooksOnly": "false"
 	"hooks": {
 		"SessionStart": [
 			{
