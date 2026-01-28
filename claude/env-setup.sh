@@ -21,7 +21,7 @@
 export PYTHONOPTIMIZE=2
 export PYTHONDONTWRITEBYTECODE=1
 export PYTHONUNBUFFERED=1
-export PYTHONPATH="${PYTHONPATH:+$PYTHONPATH:}."
+export PYTHONPATH="${PYTHONPATH}${PYTHONPATH:+:}."
 
 # Prefer uv for Python package management
 if command -v uv &> /dev/null; then
