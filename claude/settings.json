@@ -32,6 +32,7 @@
 	"includeCoAuthoredBy": false,
 	"cleanupPeriodDays": 7,
 	"enableAllProjectMcpServers": true,
+  "language": "english"
 	"permissions": {
 		"allow": [
 			"Bash",
@@ -94,7 +95,7 @@
 		"defaultMode": "acceptEdits"
 	},
 	"model": "opusplan",
-  "allowManagedHooksOnly": "false"
+  "allowManagedHooksOnly": false,
 	"hooks": {
 		"SessionStart": [
 			{
