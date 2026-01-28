@@ -1,6 +1,7 @@
 ---
 name: docker-optimize
 description: Docker optimization expert for creating efficient, secure, and minimal container images. Optimizes Dockerfiles for size, build speed, security, and runtime performance.
+tools: Read, Write, Edit, Bash, Grep, Glob
 model: claude-sonnet-4-5
 ---
 

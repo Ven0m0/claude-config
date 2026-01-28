@@ -1,6 +1,7 @@
 ---
 name: python-optimization
 description: Optimizes Python performance using asyncio, profiling, and best practices. Use when implementing async/await patterns, profiling slow code, fixing bottlenecks, or improving memory usage. Triggers include "asyncio", "async def", "cProfile", "slow Python", "memory leak", "profile", or "optimize Python".
+tools: Read, Edit, Bash, Grep
 ---
 
 # Python Optimization
