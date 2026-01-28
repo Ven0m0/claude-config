@@ -89,7 +89,7 @@ ACTION_VERBS = [
     "Visualize",
 ]
 
-DESCRIPTION_PATTERN = re.compile(r"(description: \|?\n)((?:\s+.+\n)+)")
+DESCRIPTION_PATTERN = re.compile(r"(description\s*:\s*\|?\s*\n)((?:\s+.+\n)+)")
 
 
 def has_action_verb(description: str) -> bool:
