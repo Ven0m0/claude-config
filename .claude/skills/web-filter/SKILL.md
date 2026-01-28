@@ -1,7 +1,7 @@
 ---
 name: web-filter
 triggers: ["optimize web", "filter search"]
-allowed-tools: [bash, str_replace]
+allowed-tools: [bash, str_replace, read, edit]
 ---
 
 # Web Response Filter
