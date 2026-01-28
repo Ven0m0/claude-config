@@ -1,6 +1,7 @@
 ---
 name: parallel-execution
 description: Executes parallel subagents using Task tool for concurrent operations. Use when facing multiple independent tasks, debugging separate failures, or parallelizing features. Triggers include "parallel tasks", "concurrent", "spawn subagent", "multiple failures", or "dispatch agents".
+tools: Task, TaskOutput, TodoWrite
 ---
 
 # Parallel Execution Patterns

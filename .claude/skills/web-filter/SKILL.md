@@ -1,7 +1,7 @@
 ---
 name: web-filter
-triggers: ["optimize web", "filter search"]
-allowed-tools: [bash, str_replace, read, edit]
+description: Filters large MCP web responses to reduce token usage by saving to /tmp/, filtering with jq, and loading subsets. Use when web search results are too large or need optimization. Triggers include "optimize web", "filter search".
+tools: Bash, Read, Edit
 ---
 
 # Web Response Filter
