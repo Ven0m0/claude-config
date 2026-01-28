@@ -9,3 +9,10 @@
   - `bunx @modelcontextprotocol/server-sequential-thinking`
   - `bunx @context7/mcp-server`
   - `bunx @modelcontextprotocol/server-filesystem`
+
+claude plugins:
+
+```bash
+claude plugin marketplace add https://github.com/secondsky/claude-skills
+claude plugin install bun@claude-skills
+```
