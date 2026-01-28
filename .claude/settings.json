@@ -3,7 +3,7 @@
     "exa": {
       "command": "uvx",
       "args": ["mcp-server-exa"],
-      "env": {"EXA_API_KEY": "YOUR_KEY_HERE"}
+      "env": {"EXA_API_KEY": "${EXA_API_KEY}"}
     }
   },
   "disallowed_tools": ["WebFetch", "WebSearch"]
