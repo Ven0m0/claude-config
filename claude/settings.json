@@ -30,7 +30,7 @@
 		"MAX_THINKING_TOKENS": "8000"
 	},
 	"includeCoAuthoredBy": false,
-	"cleanupPeriodDays": 90,
+	"cleanupPeriodDays": 7,
 	"enableAllProjectMcpServers": true,
 	"permissions": {
 		"allow": [
