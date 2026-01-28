@@ -6,6 +6,7 @@ skills:
   - python-cli-builder
   - python-packaging
   - python-performance-optimization
+  - async-python-patterns
   - uv
 ---
 
