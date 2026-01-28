@@ -23,11 +23,17 @@
 		"BASH_DEFAULT_TIMEOUT_MS": "120000",
 		"BASH_MAX_TIMEOUT_MS": "600000",
 		"BASH_MAX_OUTPUT_LENGTH": "50000",
-		"CLAUDE_CODE_MAX_OUTPUT_TOKENS": "74999",
+		"CLAUDE_CODE_MAX_OUTPUT_TOKENS": "63999",
+    "CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS": "8000",
+    "CLAUDE_CODE_SHELL": "bash",
 		"MCP_TIMEOUT": "30000",
 		"MCP_TOOL_TIMEOUT": "60000",
 		"MAX_MCP_OUTPUT_TOKENS": "14999",
-		"MAX_THINKING_TOKENS": "8000"
+		"MAX_THINKING_TOKENS": "8000",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50",
+    "CLAUDE_CODE_SKIP_BEDROCK_AUTH": "1",
+    "CLAUDE_CODE_SKIP_FOUNDRY_AUTH": "1",
+    "CLAUDE_CODE_SKIP_VERTEX_AUTH": "1"
 	},
 	"includeCoAuthoredBy": false,
 	"cleanupPeriodDays": 7,
@@ -88,8 +94,11 @@
 			"SlashCommand",
 			"KillShell",
 			"Task",
+      "TaskList",
+      "TaskUpdate",
 			"WebSearch",
 			"WebFetch",
+      "MCPSearch",
 			"mcp__*"
 		],
 		"defaultMode": "acceptEdits"
