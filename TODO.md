@@ -14,5 +14,5 @@ claude plugins:
 
 ```bash
 claude plugin marketplace add https://github.com/secondsky/claude-skills
-claude plugin install bun@claude-skills
+claude plugin install bun@claude-skills gemini-cli@claude-skills
 ```
