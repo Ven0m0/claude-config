@@ -38,8 +38,11 @@
 	"includeCoAuthoredBy": false,
 	"cleanupPeriodDays": 7,
 	"enableAllProjectMcpServers": true,
-  "language": "english"
+  "language": "english",
 	"permissions": {
+		"deny": [
+			"NotebookEdit"
+		],
 		"allow": [
 			"Bash",
 			"Bash(git:*)",
@@ -140,7 +143,7 @@
 		"vtsls@claude-code-lsps": true,
 	  "typescript-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
-		"rust-analyzer@claude-code-lsps": true,\
+		"rust-analyzer@claude-code-lsps": true,
 		"fact-checker@daymade-skills": true,
     "skill-creator@daymade-skills": true,
 		"thinking-partner@lifegenie-marketplace": true,
