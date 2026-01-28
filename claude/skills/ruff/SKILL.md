@@ -1,6 +1,7 @@
 ---
 name: linting-with-ruff
 description: Lints and formats Python code using ruff, the fast Python linter replacing Flake8, Black, and isort. Use when linting Python files, formatting code, fixing violations, or migrating from other tools. Triggers include "ruff", "lint Python", "format Python", or "[tool.ruff]" in pyproject.toml.
+tools: Bash, Read
 ---
 
 # ruff

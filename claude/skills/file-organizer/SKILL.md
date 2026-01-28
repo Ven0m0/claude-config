@@ -1,6 +1,7 @@
 ---
 name: organizing-files
 description: Organizes files and folders by understanding context, finding duplicates, and suggesting better structures. Use when Downloads is chaotic, files are scattered, duplicates waste space, or starting new project structures. Triggers include "organize files", "find duplicates", "clean up folder", or "file structure".
+tools: Bash, Read, Glob
 ---
 
 # File Organizer
