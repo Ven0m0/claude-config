@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "exa": {
+      "command": "uvx",
+      "args": ["mcp-server-exa"],
+      "env": {"EXA_API_KEY": "YOUR_KEY_HERE"}
+    }
+  },
+  "disallowed_tools": ["WebFetch", "WebSearch"]
+}
