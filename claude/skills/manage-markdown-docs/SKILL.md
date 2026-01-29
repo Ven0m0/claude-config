@@ -72,9 +72,8 @@ flowchart TD
 
 <path_behavior>
 If user provides a specific file path:
-- MUST use that path exactly
-- NEVER suggest alternatives
-- NEVER question the location
+- Use the provided path if it is within the allowed project documentation directories.
+- If a path appears to target sensitive system files or locations outside the project scope, ask for clarification or suggest a safer alternative.
 
 If NO path provided, determine based on document type and project structure.
 </path_behavior>
