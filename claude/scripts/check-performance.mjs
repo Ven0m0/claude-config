@@ -96,14 +96,14 @@ async function countRoutes() {
 			}
 		}
 
-		await Promise.all(
-			dirents.map(async (dirent) => {
-				if (dirent.isDirectory()) {
-					const fullPath = path.join(dir, dirent.name);
-					await walk(fullPath);
-				}
-			}),
-		);
+		const subdirectoryPromises = dirents
+			.filter((dirent) => dirent.isDirectory())
+			.map((dirent) => {
+				const fullPath = path.join(dir, dirent.name);
+				return walk(fullPath);
+			});
+
+		await Promise.all(subdirectoryPromises);
 	}
 
 	await walk(DIST_DIR);
