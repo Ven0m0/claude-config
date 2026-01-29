@@ -1,6 +1,7 @@
 ---
 name: generating-prds
 description: Generates Product Requirements Documents (PRDs) for new features suitable for AI implementation. Use when planning features, starting projects, or creating specifications. Triggers include "create PRD", "write prd", "plan feature", "requirements document", or "spec out".
+user-invocable: true
 ---
 
 # PRD Generator
