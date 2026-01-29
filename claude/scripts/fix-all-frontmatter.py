@@ -130,32 +130,33 @@ def rebuild_content(fm: Dict[str, Any], body: str) -> str:
     return "\n".join(lines) + body
 
 
+# Pre-compiled action patterns for capability generation
+ACTION_PATTERNS = [
+    (re.compile(r"analyz\w+"), "Code and configuration analysis"),
+    (re.compile(r"generat\w+"), "Content generation"),
+    (re.compile(r"creat\w+"), "Resource creation"),
+    (re.compile(r"valid\w+"), "Validation and verification"),
+    (re.compile(r"optimi\w+"), "Performance optimization"),
+    (re.compile(r"debug\w+"), "Debugging and troubleshooting"),
+    (re.compile(r"test\w+"), "Testing and quality assurance"),
+    (re.compile(r"deploy\w+"), "Deployment automation"),
+    (re.compile(r"monitor\w+"), "Monitoring and alerting"),
+    (re.compile(r"secur\w+"), "Security assessment"),
+    (re.compile(r"migrat\w+"), "Migration assistance"),
+    (re.compile(r"document\w+"), "Documentation generation"),
+    (re.compile(r"review\w+"), "Code review"),
+    (re.compile(r"audit\w+"), "Audit and compliance"),
+    (re.compile(r"scan\w+"), "Scanning and detection"),
+]
+
+
 def generate_capabilities_from_description(desc: str, name: str) -> List[str]:
     """Generate capabilities list from agent description."""
     capabilities = []
 
-    # Extract key action words from description
-    action_patterns = [
-        (r"analyz\w+", "Code and configuration analysis"),
-        (r"generat\w+", "Content generation"),
-        (r"creat\w+", "Resource creation"),
-        (r"valid\w+", "Validation and verification"),
-        (r"optimi\w+", "Performance optimization"),
-        (r"debug\w+", "Debugging and troubleshooting"),
-        (r"test\w+", "Testing and quality assurance"),
-        (r"deploy\w+", "Deployment automation"),
-        (r"monitor\w+", "Monitoring and alerting"),
-        (r"secur\w+", "Security assessment"),
-        (r"migrat\w+", "Migration assistance"),
-        (r"document\w+", "Documentation generation"),
-        (r"review\w+", "Code review"),
-        (r"audit\w+", "Audit and compliance"),
-        (r"scan\w+", "Scanning and detection"),
-    ]
-
     desc_lower = desc.lower()
-    for pattern, capability in action_patterns:
-        if re.search(pattern, desc_lower):
+    for pattern, capability in ACTION_PATTERNS:
+        if pattern.search(desc_lower):
             capabilities.append(capability)
 
     # Ensure at least 2 capabilities
