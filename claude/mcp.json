@@ -3,6 +3,10 @@
 		"git": {
 			"command": "uvx",
 			"args": ["mcp-server-git"]
-		}
+		},
+    "repomix": {
+      "command": "bunx",
+      "args": ["repomix@latest", "--mcp"]
+    }
 	}
 }
