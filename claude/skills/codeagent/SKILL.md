@@ -2,6 +2,7 @@
 name: running-codeagent-tasks
 description: Executes codeagent-wrapper for multi-backend AI code tasks supporting Codex, Claude, and Gemini. Use when running complex code analysis, large-scale refactoring, or parallel AI tasks with backend selection. Triggers include "codeagent", "multi-backend", or "parallel code tasks".
 tools: Bash, Read, Task, TaskOutput
+user-invocable: true
 ---
 
 # Codeagent Wrapper Integration
