@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<goals project="{PROJECT_NAME}" version="1">
+  <goal id="{GOAL_ID}" status="todo">
+    <title>{GOAL_TITLE}</title>
+    <description>{GOAL_DESCRIPTION}</description>
+
+    <acceptance>
+      <item>{ACCEPTANCE_ITEM_1}</item>
+      <item>{ACCEPTANCE_ITEM_2}</item>
+      <item>{ACCEPTANCE_ITEM_3}</item>
+    </acceptance>
+
+    <verify>
+      <cmd>{VERIFICATION_COMMAND_1}</cmd>
+      <cmd>{VERIFICATION_COMMAND_2}</cmd>
+      <cmd>{VERIFICATION_COMMAND_3}</cmd>
+    </verify>
+
+    <notes></notes>
+  </goal>
+
+  <goal id="G2" status="todo">
+    <title>{GOAL_2_TITLE}</title>
+    <description>{GOAL_2_DESCRIPTION}</description>
+
+    <acceptance>
+      <item>{ACCEPTANCE_2_ITEM_1}</item>
+      <item>{ACCEPTANCE_2_ITEM_2}</item>
+      <item>{ACCEPTANCE_2_ITEM_3}</item>
+    </acceptance>
+
+    <verify>
+      <cmd>{VERIFICATION_2_COMMAND_1}</cmd>
+      <cmd>{VERIFICATION_2_COMMAND_2}</cmd>
+      <cmd>{VERIFICATION_2_COMMAND_3}</cmd>
+    </verify>
+
+    <notes></notes>
+  </goal>
+
+  <goal id="G3" status="todo">
+    <title>{GOAL_3_TITLE}</title>
+    <description>{GOAL_3_DESCRIPTION}</description>
+
+    <acceptance>
+      <item>{ACCEPTANCE_3_ITEM_1}</item>
+      <item>{ACCEPTANCE_3_ITEM_2}</item>
+      <item>{ACCEPTANCE_3_ITEM_3}</item>
+    </acceptance>
+
+    <verify>
+      <cmd>{VERIFICATION_3_COMMAND_1}</cmd>
+      <cmd>{VERIFICATION_3_COMMAND_2}</cmd>
+      <cmd>{VERIFICATION_3_COMMAND_3}</cmd>
+    </verify>
+
+    <notes></notes>
+  </goal>
+</goals>

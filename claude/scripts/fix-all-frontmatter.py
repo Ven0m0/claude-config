@@ -53,9 +53,13 @@ CATEGORY_MAPPING = {
 }
 
 
+# Regex for extracting frontmatter
+FRONTMATTER_PATTERN = re.compile(r"^---\s*\n(.*?)\n---\s*\n(.*)$", re.DOTALL)
+
+
 def extract_frontmatter(content: str) -> tuple:
     """Extract frontmatter and body from markdown."""
-    match = re.match(r"^---\s*\n(.*?)\n---\s*\n(.*)$", content, re.DOTALL)
+    match = FRONTMATTER_PATTERN.match(content)
     if not match:
         return None, content
 
@@ -130,32 +134,33 @@ def rebuild_content(fm: Dict[str, Any], body: str) -> str:
     return "\n".join(lines) + body
 
 
+# Pre-compiled action patterns for capability generation
+ACTION_PATTERNS = [
+    (re.compile(r"\banalyz\w*"), "Code and configuration analysis"),
+    (re.compile(r"\bgenerat\w*"), "Content generation"),
+    (re.compile(r"\bcreat\w*"), "Resource creation"),
+    (re.compile(r"\bvalid\w*"), "Validation and verification"),
+    (re.compile(r"\boptimi\w*"), "Performance optimization"),
+    (re.compile(r"\bdebug\w*"), "Debugging and troubleshooting"),
+    (re.compile(r"\btest\w*"), "Testing and quality assurance"),
+    (re.compile(r"\bdeploy\w*"), "Deployment automation"),
+    (re.compile(r"\bmonitor\w*"), "Monitoring and alerting"),
+    (re.compile(r"\bsecur\w*"), "Security assessment"),
+    (re.compile(r"\bmigrat\w*"), "Migration assistance"),
+    (re.compile(r"\bdocument\w*"), "Documentation generation"),
+    (re.compile(r"\breview\w*"), "Code review"),
+    (re.compile(r"\baudit\w*"), "Audit and compliance"),
+    (re.compile(r"\bscan\w*"), "Scanning and detection"),
+]
+
+
 def generate_capabilities_from_description(desc: str, name: str) -> List[str]:
     """Generate capabilities list from agent description."""
     capabilities = []
 
-    # Extract key action words from description
-    action_patterns = [
-        (r"analyz\w+", "Code and configuration analysis"),
-        (r"generat\w+", "Content generation"),
-        (r"creat\w+", "Resource creation"),
-        (r"valid\w+", "Validation and verification"),
-        (r"optimi\w+", "Performance optimization"),
-        (r"debug\w+", "Debugging and troubleshooting"),
-        (r"test\w+", "Testing and quality assurance"),
-        (r"deploy\w+", "Deployment automation"),
-        (r"monitor\w+", "Monitoring and alerting"),
-        (r"secur\w+", "Security assessment"),
-        (r"migrat\w+", "Migration assistance"),
-        (r"document\w+", "Documentation generation"),
-        (r"review\w+", "Code review"),
-        (r"audit\w+", "Audit and compliance"),
-        (r"scan\w+", "Scanning and detection"),
-    ]
-
     desc_lower = desc.lower()
-    for pattern, capability in action_patterns:
-        if re.search(pattern, desc_lower):
+    for pattern, capability in ACTION_PATTERNS:
+        if pattern.search(desc_lower):
             capabilities.append(capability)
 
     # Ensure at least 2 capabilities
