@@ -1,3 +1,8 @@
+---
+name: token minifier
+user-invocable: true
+---
+
 Refactor the selected file(s) to minimize token usage using **Conditional Flow-Style** formatting. Follow these strict rules:
 
 ### 1. JSON & Code Block Formatting (Conditional Flow-Style)
