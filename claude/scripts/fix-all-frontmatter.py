@@ -53,9 +53,13 @@ CATEGORY_MAPPING = {
 }
 
 
+# Regex for extracting frontmatter
+FRONTMATTER_PATTERN = re.compile(r"^---\s*\n(.*?)\n---\s*\n(.*)$", re.DOTALL)
+
+
 def extract_frontmatter(content: str) -> tuple:
     """Extract frontmatter and body from markdown."""
-    match = re.match(r"^---\s*\n(.*?)\n---\s*\n(.*)$", content, re.DOTALL)
+    match = FRONTMATTER_PATTERN.match(content)
     if not match:
         return None, content
 
