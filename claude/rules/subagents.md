@@ -70,14 +70,14 @@ Use the security-reviewer agent to analyze src/auth/
 ```markdown
 Launch 3 agents in parallel:
 1. Security analysis of auth module
-2. Performance review of cache system  
+2. Performance review of cache system
 3. Type checking of utils
 ```
 
 ### With Task Tool
 
 ```markdown
-Task("Analyze auth module for vulnerabilities", 
+Task("Analyze auth module for vulnerabilities",
      tools=["Read", "Grep"],
      model="opus")
 ```

@@ -79,7 +79,7 @@ mcp__github__get_issue(owner="org", repo="repo", issue_number=123)
 # Create PR
 mcp__github__create_pull_request(
     owner="org",
-    repo="repo", 
+    repo="repo",
     title="Fix #123",
     body="Description",
     head="feature-branch",

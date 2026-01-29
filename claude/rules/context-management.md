@@ -43,7 +43,7 @@ Then implement feature  # Clean context with just the summary
 ```markdown
 # WRONG: Read everything
 Read(file1.py)  # 500 lines
-Read(file2.py)  # 800 lines  
+Read(file2.py)  # 800 lines
 Read(file3.py)  # 300 lines
 # 1600 lines in context for small change
 
@@ -133,7 +133,7 @@ claude --resume      # Pick specific session
 
 ```markdown
 # WRONG: Verbose
-Could you please take a look at the authentication system and analyze 
+Could you please take a look at the authentication system and analyze
 how it handles user sessions, paying particular attention to token refresh...
 
 # CORRECT: Direct

@@ -131,18 +131,18 @@ import sys
 def main():
     parser = argparse.ArgumentParser(description="My tool", prog="my-tool")
     parser.add_argument("--version", action="version", version="%(prog)s 1.0.0")
-    
+
     subparsers = parser.add_subparsers(dest="command", help="Commands")
-    
+
     process_parser = subparsers.add_parser("process", help="Process data")
     process_parser.add_argument("input_file", help="Input file")
     process_parser.add_argument("-o", "--output", default="output.txt")
-    
+
     args = parser.parse_args()
-    
+
     if args.command == "process":
         return process_data(args.input_file, args.output)
-    
+
     parser.print_help()
     return 1
 
