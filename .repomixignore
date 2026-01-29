@@ -65,3 +65,8 @@ temp/
 # Docs / extras not needed in packing
 docs/**/drafts/
 *.tmp
+
+CONTRIBUTING.md
+LICENSE
+CHANGELOG.md
+.repomixignore
