@@ -1,6 +1,7 @@
 ---
 name: running-gemini-cli
 description: Executes Gemini CLI for AI-powered code analysis and generation using Google's Gemini models. Use when needing alternative AI perspectives, complex reasoning, or code generation with Gemini. Triggers include "gemini", "Google AI", or when requesting Gemini-specific analysis.
+context: fork
 allowed-tools: Bash, Read
 ---
 
