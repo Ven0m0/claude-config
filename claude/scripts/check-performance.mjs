@@ -67,18 +67,34 @@ async function gzipSize(filePath) {
 }
 
 async function walkDir(dir, fileList = []) {
-	const files = fs.readdirSync(dir);
+	const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
 
-	for (const file of files) {
-		const filePath = path.join(dir, file);
-		const stat = fs.statSync(filePath);
+	await Promise.all(
+		dirents.map(async (dirent) => {
+			const filePath = path.join(dir, dirent.name);
 
-		if (stat.isDirectory()) {
-			await walkDir(filePath, fileList);
-		} else {
-			fileList.push(filePath);
-		}
-	}
+			let isDirectory = dirent.isDirectory();
+			if (dirent.isSymbolicLink()) {
+				try {
+					const stat = await fs.promises.stat(filePath);
+					isDirectory = stat.isDirectory();
+				} catch (e) {
+					// Only ignore errors that indicate a broken symlink
+					if (e && (e.code === "ENOENT" || e.code === "ENOTDIR")) {
+						isDirectory = false;
+					} else {
+						throw e;
+					}
+				}
+			}
+
+			if (isDirectory) {
+				await walkDir(filePath, fileList);
+			} else {
+				fileList.push(filePath);
+			}
+		}),
+	);
 
 	return fileList;
 }
