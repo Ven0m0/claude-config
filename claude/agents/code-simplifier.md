@@ -1,6 +1,7 @@
 ---
 name: code-simplifier
 description: Simplifies and refines code for clarity, consistency, and maintainability while preserving all functionality. Focuses on recently modified code unless instructed otherwise.
+allowed-tools: Read, Write, Edit, Grep, Glob
 model: opus
 ---
 

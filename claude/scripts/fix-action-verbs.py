@@ -89,6 +89,8 @@ ACTION_VERBS = [
     "Visualize",
 ]
 
+DESCRIPTION_PATTERN = re.compile(r"(description\s*:\s*\|?\s*\n)((?:\s+.+\n)+)")
+
 
 def has_action_verb(description: str) -> bool:
     """Check if description starts with an action verb."""
@@ -121,7 +123,7 @@ def fix_skill(filepath: Path) -> bool:
     content = filepath.read_text()
 
     # Extract description from frontmatter
-    desc_match = re.search(r"(description: \|?\n)((?:\s+.+\n)+)", content)
+    desc_match = DESCRIPTION_PATTERN.search(content)
     if not desc_match:
         return False
 

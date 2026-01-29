@@ -1,78 +1,79 @@
-Clean up technical debt in $ARGUMENTS.
+---
+description: Clean up code, artifacts, and technical debt
+category: utilities-maintenance
+allowed-tools: Read, Edit, Bash(git *), Bash(rm *), Grep, Glob
+---
 
-Steps:
+# Clean Project
 
-1. Identify cleanup targets:
+Clean up code and project artifacts in `$ARGUMENTS`.
 
-   - Scan for TODO, FIXME, HACK, XXX comments
-   - Find commented-out code blocks
-   - Locate unused imports and variables
-   - Detect unreachable/dead code
-   - Identify deprecated API usage
-   - Find console.log/print debug statements
+**Modes:**
+- `code` or no args: Clean technical debt
+- `artifacts`: Clean development artifacts (logs, temp files)
+- `all`: Both code and artifacts
 
-1. Code quality improvements:
+## Technical Debt Cleanup
 
+1. **Identify cleanup targets:**
+   - TODO, FIXME, HACK, XXX comments
+   - Commented-out code blocks
+   - Unused imports/variables
+   - Dead/unreachable code
+   - Deprecated API usage
+   - Debug statements (console.log, print)
+
+2. **Code quality:**
    - Fix linting errors and warnings
-   - Apply consistent code formatting
+   - Apply consistent formatting
    - Standardize naming conventions
-   - Convert var to let/const (JavaScript)
-   - Update to modern syntax (arrow functions, destructuring)
-   - Remove unnecessary type assertions
+   - Modernize syntax (let/const, arrow functions)
 
-1. Remove dead code:
+3. **Remove dead code:**
+   - Commented-out code older than 3 months
+   - Unused functions and methods
+   - Unreferenced files
+   - Obsolete configuration
+   - Shipped feature flags
 
-   - Delete commented-out code older than 3 months
-   - Remove unused functions and methods
-   - Clean up unreferenced files
-   - Delete obsolete configuration
-   - Remove feature flags for shipped features
-   - Clean up A/B test code for completed experiments
-
-1. Consolidate duplication:
-
-   - Identify duplicate code blocks
+4. **Consolidate duplication:**
    - Extract common functionality to utilities
-   - Merge similar functions with parameters
-   - Consolidate redundant type definitions
+   - Merge similar functions
    - Unify error handling patterns
 
-1. Update deprecated usage:
-
-   - Replace deprecated library methods
-   - Update to current API versions
-   - Migrate from legacy patterns
-   - Update outdated documentation references
-   - Fix deprecated test patterns
-
-1. File organization:
-
+5. **File organization:**
    - Remove empty files and directories
    - Organize imports (grouped and sorted)
-   - Move files to appropriate directories
-   - Update incorrect file extensions
    - Fix circular dependencies
 
-1. Documentation cleanup:
+## Development Artifacts
 
-   - Remove outdated comments
-   - Update incorrect documentation
-   - Add missing JSDoc/docstrings
-   - Fix broken links in docs
-   - Update example code
+1. **Temporary files:**
+   - `*.log`, `*.tmp`, `*~` files
+   - `.cache` directories (if safe)
+   - Debug/session files
 
-Safety measures:
+2. **Build artifacts:**
+   - `dist/`, `build/` (if rebuilding)
+   - `node_modules/.cache`
+   - Compiled output not in .gitignore
 
-- Create git commit before each cleanup type
-- Run tests after each change
+3. **Safety checks:**
+   - Verify with `git status` what's tracked vs untracked
+   - Check file age - older files are safer to remove
+   - Confirm no active processes using these files
+
+**Protected directories:** `.claude`, `.git`, `node_modules`, `vendor`
+
+## Safety Measures
+
+- Create git checkpoint before cleanup
+- Run tests after each change type
 - Keep refactoring commits separate
 - Document why code was removed
-- Preserve git history for deleted files
 
-Output:
-
-- Summary of cleaned items by category
-- Lines of code removed
-- Performance impact (if any)
-- Risk assessment for changes
-- Follow-up tasks identified
+**Output:**
+- Summary by category
+- Lines/files removed
+- Risk assessment
+- Follow-up tasks
