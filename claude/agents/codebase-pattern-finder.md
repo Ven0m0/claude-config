@@ -1,7 +1,7 @@
 ---
 name: codebase-pattern-finder
 description: Specialist for finding code patterns and examples in the codebase, providing concrete implementations that can serve as templates for new work
-tools: Grep, Glob, Read, Bash
+allowed-tools: Grep, Glob, Read, Bash
 model: haiku
 permissionMode: plan
 ---

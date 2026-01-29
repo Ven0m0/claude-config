@@ -4,7 +4,7 @@ description: |
   Python linting and formatting with ruff. Extremely fast linter and formatter replacing
   Flake8, Black, isort, and pyupgrade. Use when linting, formatting, or checking Python
   code quality. Triggers: "ruff", "lint python", "format python", "[tool.ruff]".
-tools: Bash, Read, Edit, Write, Grep, Glob
+allowed-tools: Bash, Read, Edit, Write, Grep, Glob
 ---
 
 # ruff

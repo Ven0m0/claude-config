@@ -4,7 +4,7 @@ description: |
   Modern Rust development with cargo, clippy, rustfmt, async programming, and memory-safe
   systems programming. Covers ownership patterns, concurrency, Tokio, and the Rust ecosystem.
   Triggers: "rust", "cargo", "clippy", "async rust", "tokio", "ownership", "lifetimes".
-tools: Bash, Read, Edit, Write, Grep, Glob, WebFetch, WebSearch
+allowed-tools: Bash, Read, Edit, Write, Grep, Glob, WebFetch, WebSearch
 ---
 
 # Rust Development

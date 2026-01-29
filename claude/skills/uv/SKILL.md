@@ -4,7 +4,7 @@ description: |
   Python package and project management with uv. Extremely fast tool replacing pip, poetry,
   pyenv, and virtualenv. Use when installing packages, running scripts, managing environments,
   or working with workspaces. Triggers: "uv", "pip install", "python project", "uv.lock".
-tools: Bash, Read, Edit, Write, Grep, Glob
+allowed-tools: Bash, Read, Edit, Write, Grep, Glob
 ---
 
 # uv

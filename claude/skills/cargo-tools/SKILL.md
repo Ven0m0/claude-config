@@ -4,7 +4,7 @@ description: |
   Cargo ecosystem tools for testing (nextest), coverage (llvm-cov), and dependency analysis (machete).
   Use when running tests, measuring coverage, detecting unused dependencies, or optimizing CI pipelines.
   Triggers: "nextest", "coverage", "llvm-cov", "unused dependencies", "cargo-machete".
-tools: Bash, Read, Edit, Write, Grep, Glob
+allowed-tools: Bash, Read, Edit, Write, Grep, Glob
 ---
 
 # Cargo Tools
