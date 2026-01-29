@@ -34,7 +34,7 @@ Parallel execution spawns multiple subagents simultaneously using the Task tool 
 ### Decision Flow
 
 ```
-Multiple tasks? 
+Multiple tasks?
   ├─ No → Single agent handles all
   └─ Yes → Are they independent?
               ├─ No (related) → Single agent investigates together
@@ -52,7 +52,7 @@ Group tasks by what's broken or what needs doing:
 ```
 Example - Test Failures:
 - File A tests: Tool approval flow
-- File B tests: Batch completion behavior  
+- File B tests: Batch completion behavior
 - File C tests: Abort functionality
 
 Each domain is independent - fixing one doesn't affect others.

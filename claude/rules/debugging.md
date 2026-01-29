@@ -175,7 +175,7 @@ Launch debugging agents:
 ### Focused Analysis
 
 ```markdown
-Task("Analyze the auth flow and identify where 
+Task("Analyze the auth flow and identify where
      the session token becomes invalid",
      tools=["Read", "Grep"])
 ```
