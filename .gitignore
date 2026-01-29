@@ -21,6 +21,11 @@ conversations/
 # Local settings overrides
 .claude/settings.local.json
 
+# Ralph
+.claude.ralph-*.local.md
+.ralph/
+.planning/
+
 # MCP configuration with API keys
 .mcp.json
 
@@ -51,6 +56,10 @@ pnpm-debug.log*
 tmp/
 temp/
 .cache/
+pids
+*.pid
+*.seed
+*.pid.lock
 
 # OS files
 .DS_Store
@@ -79,3 +88,5 @@ env/
 .pytest_cache/
 .coverage
 htmlcov/
+.eslintcache
+*.tgz
