@@ -1,6 +1,8 @@
 ---
 name: packaging-repos-with-repomix
 description: Packages entire repositories into single AI-friendly files using Repomix with multiple output formats. Use when packaging codebases for LLM analysis, creating repository snapshots, or preparing security audits. Triggers include "repomix", "package codebase", "AI-friendly", or "LLM context".
+tools: Bash, Read, Glob
+user-invocable: true
 ---
 
 # Repomix Skill

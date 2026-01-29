@@ -34,12 +34,23 @@ conversations/
 # Logs
 *.log
 logs/
+*.bak
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+**/.temp/
+*.backup-*
+*.backup
+*.old
 
 # Temporary files
 *.tmp
 *.temp
 tmp/
 temp/
+.cache/
 
 # OS files
 .DS_Store
@@ -54,6 +65,8 @@ ehthumbs.db
 node_modules/
 .npm
 package-lock.json
+.pnpm-store/
+.yarn/
 
 # Python
 __pycache__/
