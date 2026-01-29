@@ -83,33 +83,30 @@ async function walkDir(dir, fileList = []) {
 	return fileList;
 }
 
-function countRoutes() {
+async function countRoutes() {
 	let count = 0;
 
-	function walk(dir) {
-		const items = fs.readdirSync(dir);
+	async function walk(dir) {
+		const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
 
-		for (const item of items) {
-			const fullPath = path.join(dir, item);
-			const stat = fs.statSync(fullPath);
-
-			if (stat.isDirectory()) {
-				// Check if this directory has an index.html
-				const indexPath = path.join(fullPath, "index.html");
-				if (fs.existsSync(indexPath)) {
-					count++;
-				}
-				walk(fullPath);
+		for (const dirent of dirents) {
+			if (dirent.name === "index.html") {
+				count++;
+				break;
 			}
 		}
+
+		const subdirectoryPromises = dirents
+			.filter((dirent) => dirent.isDirectory())
+			.map((dirent) => {
+				const fullPath = path.join(dir, dirent.name);
+				return walk(fullPath);
+			});
+
+		await Promise.all(subdirectoryPromises);
 	}
 
-	// Root index.html
-	if (fs.existsSync(path.join(DIST_DIR, "index.html"))) {
-		count++;
-	}
-
-	walk(DIST_DIR);
+	await walk(DIST_DIR);
 	return count;
 }
 
@@ -237,7 +234,7 @@ async function main() {
 
 	// 4. Route Count
 	log("\n3. Counting routes...", "bold");
-	const routeCount = countRoutes();
+	const routeCount = await countRoutes();
 	log(`   Routes found: ${routeCount}`, "blue");
 
 	if (
