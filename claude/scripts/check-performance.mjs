@@ -79,8 +79,12 @@ async function walkDir(dir, fileList = []) {
 					const stat = await fs.promises.stat(filePath);
 					isDirectory = stat.isDirectory();
 				} catch (e) {
-					// Ignore broken links
-					isDirectory = false;
+					// Only ignore errors that indicate a broken symlink
+					if (e && (e.code === "ENOENT" || e.code === "ENOTDIR")) {
+						isDirectory = false;
+					} else {
+						throw e;
+					}
 				}
 			}
 
