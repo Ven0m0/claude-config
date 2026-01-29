@@ -21,7 +21,7 @@ name: skill-name
 description: Brief description
 disable-model-invocation: true  # Manual only
 model: opus                      # Preferred model
-tools: Read, Grep, Bash         # Tool restrictions
+allowed-tools: Read, Grep, Bash  # Tool restrictions
 ---
 ```
 
@@ -160,19 +160,19 @@ For React docs, use Context7:
 ### Read-Only Skills
 
 ```yaml
-tools: Read, Grep, Glob
+allowed-tools: Read, Grep, Glob
 ```
 
 ### Modification Skills
 
 ```yaml
-tools: Read, Grep, Edit, Bash
+allowed-tools: Read, Grep, Edit, Bash
 ```
 
 ### Full Access
 
 ```yaml
-tools: Read, Grep, Glob, Edit, Write, Bash, Task
+allowed-tools: Read, Grep, Glob, Edit, Write, Bash, Task
 ```
 
 ## Best Practices

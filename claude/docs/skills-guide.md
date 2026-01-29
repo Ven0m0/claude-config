@@ -39,7 +39,7 @@ name: skill-name
 description: Brief description
 disable-model-invocation: true  # Manual-only invocation
 model: opus                      # Preferred model
-tools: Read, Grep, Bash         # Allowed tools
+allowed-tools: Read, Grep, Bash  # Allowed tools
 ---
 ```
 
