@@ -1131,3 +1131,104 @@ URL patterns support wildcards using `*` to match any sequence of characters. Th
 <Note>
   **When using `managed-mcp.json`**: Users cannot add MCP servers through `claude mcp add` or configuration files. The `allowedMcpServers` and `deniedMcpServers` settings still apply to filter which managed servers are actually loaded.
 </Note>
+
+## Debugging MCP
+
+### Check Server Status
+
+```
+/mcp
+```
+
+### View Server Logs
+
+```
+/mcp logs memory
+```
+
+### Restart Server
+
+```
+/mcp restart memory
+```
+
+### Test Tool Manually
+
+```
+Use mcp__memory__search with query "test"
+```
+
+## Troubleshooting
+
+### Server Not Starting
+
+1. Verify command exists: `which npx`
+2. Check args syntax (JSON array)
+3. Verify env vars are set
+4. Check server logs: `/mcp logs servername`
+
+### Tool Not Found
+
+1. Verify server is running: `/mcp`
+2. Check tool name: `mcp__servername__toolname`
+3. Ensure tool is exposed by server
+
+### Permission Denied
+
+1. Check `permissions.deny` rules
+2. Verify `enableAllProjectMcpServers` setting
+3. Check `disabledMcpjsonServers` list
+
+### Timeout Errors
+
+1. Increase `MCP_TIMEOUT` for startup
+2. Increase `MCP_TOOL_TIMEOUT` for operations
+3. Check server performance
+
+## Security Best Practices
+
+### Principle of Least Privilege
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "mcp__github__search_*",
+      "mcp__github__get_*"
+    ],
+    "deny": [
+      "mcp__github__create_*",
+      "mcp__github__delete_*"
+    ]
+  }
+}
+```
+
+### Secrets Management
+
+Never commit secrets:
+
+```json
+{
+  "env": {
+    "API_KEY": "${API_KEY}"
+  }
+}
+```
+
+### Filesystem Isolation
+
+Limit filesystem server to specific directories:
+
+```json
+{
+  "filesystem": {
+    "command": "npx",
+    "args": [
+      "-y", "@anthropic/mcp-server-filesystem",
+      "./src",
+      "./tests"
+    ]
+  }
+}
+```

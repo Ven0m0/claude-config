@@ -576,6 +576,49 @@ Pay attention to what works. When Claude produces great output, notice what you 
 
 Over time, you'll develop intuition that no guide can capture. You'll know when to be specific and when to be open-ended, when to plan and when to explore, when to clear context and when to let it accumulate.
 
+## CLAUDE.md Authoring Best Practices
+
+This section covers research-backed guidance for writing effective CLAUDE.md files.
+
+### Core Principles
+
+1. **Structure & Length**: Under 300 lines ideal, under 500 acceptable. Use XML tags for machine parseability. Tables and bullets over dense prose.
+
+2. **Content Quality**: One code example beats paragraphs of explanation. Include commands with flags, not just tool names. Specify exact versions.
+
+3. **Boundaries**: Use the Always/Ask/Never structure:
+   ```markdown
+   ### ✅ Always Do
+   - [Required action with reason]
+
+   ### ⚠️ Ask First
+   - [Protected action] — [why confirmation needed]
+
+   ### ❌ Avoid
+   - [Action to avoid] (consequence)
+   ```
+
+4. **Claude 4.5 Optimization**: Avoid aggressive triggers (NEVER, MUST, CRITICAL). Use positive framing. Provide motivation/context for rules.
+
+### Language Patterns
+
+| Avoid | Use Instead |
+|-------|-------------|
+| "NEVER push to master" | "Direct pushes blocked by pre-push hook" |
+| "CRITICAL: NEVER assume" | "Verify in browser/console before diagnosing" |
+| "ALWAYS use X" | "X is the default approach" |
+| "YOU MUST run tests" | "Run tests before commits" |
+
+### Anti-Patterns to Avoid
+
+| Anti-Pattern | Impact | Solution |
+|--------------|--------|----------|
+| Aggressive language (15+ NEVER/MUST) | Over-cautious AI behavior | Soften with positive framing |
+| Rules without "Why" | Poor generalization | Add brief motivation |
+| No boundaries section | Unclear action limits | Add Always/Ask/Never |
+| Monolithic file (500+ lines) | Token waste, ignored rules | Extract to modules |
+| Duplicate instructions | Context dilution | Use hierarchy |
+
 ## Related resources
 
 <CardGroup cols={2}>
