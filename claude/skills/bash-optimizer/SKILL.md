@@ -2,6 +2,7 @@
 name: optimizing-bash-scripts
 description: Analyzes bash scripts for performance bottlenecks, coding standards, and modern tool replacements. Use when optimizing shell scripts, consolidating scripts, or preparing for production. Triggers include "optimize bash", "shellcheck", "script performance", or "consolidate scripts".
 tools: Bash, Read, Edit, Grep, Glob
+user-invocable: true
 ---
 
 # Bash Script Optimizer
