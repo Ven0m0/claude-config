@@ -2,6 +2,7 @@
 name: searching-with-mgrep
 description: Performs semantic code search using mgrep for natural language queries across codebases. Use when exploring codebases with 30+ files, searching for concepts rather than exact strings, or understanding unfamiliar code. Triggers include "semantic search", "mgrep", "find feature", or "where is X implemented".
 tools: Bash, Read
+user-invocable: false
 ---
 
 # mgrep Code Search
