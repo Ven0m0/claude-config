@@ -1,8 +1,13 @@
-# Fix TODOs
+# Find & Fix TODOs
 
-I'll systematically find and resolve TODO comments in your codebase with intelligent understanding and continuity across sessions.
+Find and optionally resolve TODO comments in your codebase with intelligent understanding and continuity across sessions.
 
-Arguments: `$ARGUMENTS` - files, directories, or specific TODO patterns to fix
+Arguments: `$ARGUMENTS` - files, directories, patterns, or commands:
+- `find` or no args: Find and list all TODOs (discovery only)
+- `fix`: Find and resolve TODOs systematically
+- `resume`: Continue from existing session
+- `status`: Check progress
+- `new`: Start fresh session
 
 ## Session Intelligence
 
@@ -33,20 +38,28 @@ I'll maintain TODO resolution progress across sessions:
    - Initialize progress tracking
 4. Show TODO summary before starting
 
-I'll find and categorize all TODOs:
+I'll use the Grep tool to search for task markers with context:
+- Pattern: `TODO|FIXME|HACK|XXX|NOTE`
+- Case insensitive across all source files
+- Show surrounding lines for understanding
 
 **TODO Detection:**
-- TODO, FIXME, HACK, XXX markers
+- TODO, FIXME, HACK, XXX, NOTE markers
 - Different priority levels
 - Context and complexity assessment
 - Related code understanding
 
 **Smart Categorization:**
+- **Critical** (FIXME, HACK, XXX): Issues that could cause problems
+- **Important** (TODO): Features or improvements needed
+- **Informational** (NOTE): Context that might need attention
 - **Quick fixes**: Simple validations, null checks
 - **Features**: Missing functionality
 - **Refactoring**: Code improvements
 - **Security**: Safety and validation needs
 - **Performance**: Optimization opportunities
+
+**Discovery Mode** (`find`): Shows file location, full comment with context, surrounding code, and priority assessment. After scanning, asks to convert to GitHub issues or switch to fix mode.
 
 ## Phase 2: Resolution Planning
 
@@ -127,11 +140,18 @@ Continuing resolution...
 
 ## Practical Examples
 
+**Discovery Only:**
+```
+/fix-todos                    # Find and list all TODOs
+/fix-todos find               # Same as above
+/fix-todos find src/          # Find TODOs in specific directory
+```
+
 **Start Fixing:**
 ```
-/fix-todos                    # Fix all TODOs
-/fix-todos src/              # Focus on directory
-/fix-todos "security"        # Fix security TODOs
+/fix-todos fix                # Find and fix all TODOs
+/fix-todos fix src/           # Focus on directory
+/fix-todos fix "security"     # Fix security TODOs
 ```
 
 **Session Control:**

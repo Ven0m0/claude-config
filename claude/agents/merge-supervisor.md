@@ -2,7 +2,7 @@
 name: merge-supervisor
 description: Git merge conflict resolution - analyzes both sides, preserves intent
 model: opus
-tools:
+allowed-tools:
   - Read
   - Write
   - Edit

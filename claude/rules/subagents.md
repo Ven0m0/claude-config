@@ -26,7 +26,7 @@
 ---
 name: security-reviewer
 description: Reviews code for security vulnerabilities
-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob, Bash
 model: opus
 ---
 
@@ -44,9 +44,9 @@ Provide specific line references and suggested fixes.
 Limit tools to minimum necessary:
 
 ```yaml
-tools: Read, Grep, Glob     # Read-only research
-tools: Read, Grep, Edit     # Research + modifications
-tools: Read, Bash           # Research + commands
+allowed-tools: Read, Grep, Glob     # Read-only research
+allowed-tools: Read, Grep, Edit     # Research + modifications
+allowed-tools: Read, Bash           # Research + commands
 ```
 
 ### Model Selection

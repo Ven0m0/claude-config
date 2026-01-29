@@ -302,7 +302,7 @@ Run `/fix-issue 1234` to invoke it. Use `disable-model-invocation: true` for wor
 ---
 name: security-reviewer
 description: Reviews code for security vulnerabilities
-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob, Bash
 model: opus
 ---
 You are a senior security engineer. Review code for:

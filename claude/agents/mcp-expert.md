@@ -1,7 +1,7 @@
 ---
 name: mcp-expert
 description: Model Context Protocol (MCP) integration specialist for the cli-tool components system. Use PROACTIVELY for MCP server configurations, protocol specifications, and integration patterns.
-tools: Read, Write, Edit
+allowed-tools: Read, Write, Edit
 model: sonnet
 skills:
   - mcp-builder
