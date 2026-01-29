@@ -1,3 +1,9 @@
+---
+description: Update and audit project dependencies with security scanning
+category: utilities-maintenance
+allowed-tools: Read, Bash(npm *), Bash(bun *), Bash(cargo *), Bash(uv *), Bash(uvx *)
+---
+
 # Update Dependencies
 
 Update and audit project dependencies in `$ARGUMENTS`.

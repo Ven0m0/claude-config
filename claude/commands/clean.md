@@ -1,3 +1,9 @@
+---
+description: Clean up code, artifacts, and technical debt
+category: utilities-maintenance
+allowed-tools: Read, Edit, Bash(git *), Bash(rm *), Grep, Glob
+---
+
 # Clean Project
 
 Clean up code and project artifacts in `$ARGUMENTS`.
