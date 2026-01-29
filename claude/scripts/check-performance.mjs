@@ -67,49 +67,62 @@ async function gzipSize(filePath) {
 }
 
 async function walkDir(dir, fileList = []) {
-	const files = fs.readdirSync(dir);
+	const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
 
-	for (const file of files) {
-		const filePath = path.join(dir, file);
-		const stat = fs.statSync(filePath);
+	await Promise.all(
+		dirents.map(async (dirent) => {
+			const filePath = path.join(dir, dirent.name);
 
-		if (stat.isDirectory()) {
-			await walkDir(filePath, fileList);
-		} else {
-			fileList.push(filePath);
-		}
-	}
+			let isDirectory = dirent.isDirectory();
+			if (dirent.isSymbolicLink()) {
+				try {
+					const stat = await fs.promises.stat(filePath);
+					isDirectory = stat.isDirectory();
+				} catch (e) {
+					// Only ignore errors that indicate a broken symlink
+					if (e && (e.code === "ENOENT" || e.code === "ENOTDIR")) {
+						isDirectory = false;
+					} else {
+						throw e;
+					}
+				}
+			}
+
+			if (isDirectory) {
+				await walkDir(filePath, fileList);
+			} else {
+				fileList.push(filePath);
+			}
+		}),
+	);
 
 	return fileList;
 }
 
-function countRoutes() {
+async function countRoutes() {
 	let count = 0;
 
-	function walk(dir) {
-		const items = fs.readdirSync(dir);
+	async function walk(dir) {
+		const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
 
-		for (const item of items) {
-			const fullPath = path.join(dir, item);
-			const stat = fs.statSync(fullPath);
-
-			if (stat.isDirectory()) {
-				// Check if this directory has an index.html
-				const indexPath = path.join(fullPath, "index.html");
-				if (fs.existsSync(indexPath)) {
-					count++;
-				}
-				walk(fullPath);
+		for (const dirent of dirents) {
+			if (dirent.name === "index.html") {
+				count++;
+				break;
 			}
 		}
+
+		const subdirectoryPromises = dirents
+			.filter((dirent) => dirent.isDirectory())
+			.map((dirent) => {
+				const fullPath = path.join(dir, dirent.name);
+				return walk(fullPath);
+			});
+
+		await Promise.all(subdirectoryPromises);
 	}
 
-	// Root index.html
-	if (fs.existsSync(path.join(DIST_DIR, "index.html"))) {
-		count++;
-	}
-
-	walk(DIST_DIR);
+	await walk(DIST_DIR);
 	return count;
 }
 
@@ -237,7 +250,7 @@ async function main() {
 
 	// 4. Route Count
 	log("\n3. Counting routes...", "bold");
-	const routeCount = countRoutes();
+	const routeCount = await countRoutes();
 	log(`   Routes found: ${routeCount}`, "blue");
 
 	if (

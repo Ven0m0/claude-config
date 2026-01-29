@@ -53,29 +53,13 @@ CATEGORY_MAPPING = {
 }
 
 
-# Action patterns for capability generation
-ACTION_PATTERNS = [
-    (re.compile(r"analyz\w+"), "Code and configuration analysis"),
-    (re.compile(r"generat\w+"), "Content generation"),
-    (re.compile(r"creat\w+"), "Resource creation"),
-    (re.compile(r"valid\w+"), "Validation and verification"),
-    (re.compile(r"optimi\w+"), "Performance optimization"),
-    (re.compile(r"debug\w+"), "Debugging and troubleshooting"),
-    (re.compile(r"test\w+"), "Testing and quality assurance"),
-    (re.compile(r"deploy\w+"), "Deployment automation"),
-    (re.compile(r"monitor\w+"), "Monitoring and alerting"),
-    (re.compile(r"secur\w+"), "Security assessment"),
-    (re.compile(r"migrat\w+"), "Migration assistance"),
-    (re.compile(r"document\w+"), "Documentation generation"),
-    (re.compile(r"review\w+"), "Code review"),
-    (re.compile(r"audit\w+"), "Audit and compliance"),
-    (re.compile(r"scan\w+"), "Scanning and detection"),
-]
+# Regex for extracting frontmatter
+FRONTMATTER_PATTERN = re.compile(r"^---\s*\n(.*?)\n---\s*\n(.*)$", re.DOTALL)
 
 
 def extract_frontmatter(content: str) -> tuple:
     """Extract frontmatter and body from markdown."""
-    match = re.match(r"^---\s*\n(.*?)\n---\s*\n(.*)$", content, re.DOTALL)
+    match = FRONTMATTER_PATTERN.match(content)
     if not match:
         return None, content
 
@@ -150,11 +134,30 @@ def rebuild_content(fm: Dict[str, Any], body: str) -> str:
     return "\n".join(lines) + body
 
 
+# Pre-compiled action patterns for capability generation
+ACTION_PATTERNS = [
+    (re.compile(r"\banalyz\w*"), "Code and configuration analysis"),
+    (re.compile(r"\bgenerat\w*"), "Content generation"),
+    (re.compile(r"\bcreat\w*"), "Resource creation"),
+    (re.compile(r"\bvalid\w*"), "Validation and verification"),
+    (re.compile(r"\boptimi\w*"), "Performance optimization"),
+    (re.compile(r"\bdebug\w*"), "Debugging and troubleshooting"),
+    (re.compile(r"\btest\w*"), "Testing and quality assurance"),
+    (re.compile(r"\bdeploy\w*"), "Deployment automation"),
+    (re.compile(r"\bmonitor\w*"), "Monitoring and alerting"),
+    (re.compile(r"\bsecur\w*"), "Security assessment"),
+    (re.compile(r"\bmigrat\w*"), "Migration assistance"),
+    (re.compile(r"\bdocument\w*"), "Documentation generation"),
+    (re.compile(r"\breview\w*"), "Code review"),
+    (re.compile(r"\baudit\w*"), "Audit and compliance"),
+    (re.compile(r"\bscan\w*"), "Scanning and detection"),
+]
+
+
 def generate_capabilities_from_description(desc: str, name: str) -> List[str]:
     """Generate capabilities list from agent description."""
     capabilities = []
 
-    # Extract key action words from description
     desc_lower = desc.lower()
     for pattern, capability in ACTION_PATTERNS:
         if pattern.search(desc_lower):
