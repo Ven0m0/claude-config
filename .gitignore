@@ -255,3 +255,22 @@ dist-ssr/
 # ===========================================
 .playwright-mcp
 theme.config.tsx
+
+build/
+dist/
+*.egg-info/
+*.egg
+*.eggs
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+.installed.cfg
+MANIFEST
