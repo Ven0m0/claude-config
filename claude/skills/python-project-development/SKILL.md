@@ -1,6 +1,9 @@
 ---
 name: python-project-development
 description: Creates production-ready Python projects including CLI tools, packages, and distributable libraries. Use when building CLI tools with argparse/click, packaging for PyPI, setting up pyproject.toml, or creating entry points. Triggers include "CLI tool", "Python package", "pyproject.toml", "publish to PyPI", "entry points", or "build wheel".
+compatibility: Designed for Claude Code
+allowed-tools: Read Grep Glob Bash mcp__context7__resolve-library-id mcp__context7__get-library-docs
+user-invocable: false
 ---
 
 # Python Project Development
