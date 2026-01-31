@@ -1,8 +1,10 @@
 ---
-model: haiku
 name: ast-grep Structural Code Search & Refactoring
 description: Find and replace code patterns structurally using ast-grep. Use when you need to match code by its AST structure (not just text), such as finding all functions with specific signatures, replacing API patterns across files, or detecting code anti-patterns that regex cannot reliably match.
-allowed-tools: Bash, Read, Grep, Glob
+model: haiku
+compatibility: Designed for Claude Code
+allowed-tools: Read Grep Glob Bash mcp__context7__resolve-library-id mcp__context7__get-library-docs
+user-invocable: false
 ---
 
 # ast-grep Structural Code Search & Refactoring
@@ -243,3 +245,15 @@ ast-grep scan -c sgconfig.yml
 # 5. Debug pattern
 ast-grep -p 'pattern' --debug-query --lang js
 ```
+
+### Context7 Integration
+
+For latest AST-Grep documentation, follow this two-step process.
+
+Step 1: Use mcp__context7__resolve-library-id with query ast-grep to resolve the library identifier.
+
+Step 2: Use mcp__context7__get-library-docs with the resolved library ID to fetch current documentation.
+
+### Reference
+
+For additional information, consult the AST-Grep Official Documentation at ast-grep.github.io, the AST-Grep GitHub Repository at github.com/ast-grep/ast-grep, the Pattern Playground at ast-grep.github.io/playground.html, and the Rule Configuration Reference at ast-grep.github.io/reference/yaml.html.
