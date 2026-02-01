@@ -1,0 +1,46 @@
+---
+# YAML Lint Configuration
+# https://yamllint.readthedocs.io/
+
+extends: default
+
+rules:
+  # Allow longer lines - questionnaires have descriptive text
+  line-length:
+    max: 120
+    allow-non-breakable-words: true
+    allow-non-breakable-inline-mappings: true
+
+  # Require document start marker (---)
+  document-start:
+    present: true
+
+  # Indentation: 2 spaces, consistent
+  indentation:
+    spaces: 2
+    indent-sequences: true
+    check-multi-line-strings: false
+
+  # Allow empty values (common in templates)
+  empty-values:
+    forbid-in-block-mappings: false
+    forbid-in-flow-mappings: false
+
+  # Truthy values - be explicit
+  truthy:
+    allowed-values: ['true', 'false', 'yes', 'no']
+    check-keys: false
+
+  # Comments formatting
+  comments:
+    require-starting-space: true
+    ignore-shebangs: true
+    min-spaces-from-content: 1
+
+  # Braces and brackets
+  braces:
+    min-spaces-inside: 0
+    max-spaces-inside: 1
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: 0
