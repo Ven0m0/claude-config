@@ -1,6 +1,7 @@
 ---
 name: sequential-thinking
 description: Enables systematic step-by-step reasoning with revision and branching capabilities. Use when complex problems require multi-stage analysis, design planning, problem decomposition, or when scope is initially unclear. Triggers include "think through step by step", "break this down", "complex problem", or "sequential reasoning".
+allowed-tools: mcp__reasoning__sequentialthinking
 ---
 
 # Sequential Thinking

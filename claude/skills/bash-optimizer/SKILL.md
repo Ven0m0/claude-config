@@ -1,6 +1,8 @@
 ---
 name: optimizing-bash-scripts
 description: Analyzes bash scripts for performance bottlenecks, coding standards, and modern tool replacements. Use when optimizing shell scripts, consolidating scripts, or preparing for production. Triggers include "optimize bash", "shellcheck", "script performance", or "consolidate scripts".
+allowed-tools: Bash, Read, Edit, Grep, Glob
+user-invocable: true
 ---
 
 # Bash Script Optimizer
@@ -32,8 +34,7 @@ Scripts must include:
 #!/usr/bin/env bash
 set -euo pipefail
 shopt -s nullglob globstar
-IFS=$'\n\t'
-export LC_ALL=C LANG=C
+IFS=$'\n\t' LC_ALL=C
 ```
 
 **Style:** 2-space indent, minimal blank lines, short CLI args, quoted variables
@@ -45,10 +46,12 @@ export LC_ALL=C LANG=C
 - fd/fdfind → find
 - rg → grep
 - sd → sed
-- fzf/sk for interactive
+- fzf for interactive
 - jaq → jq
 - choose → cut/awk
-- rust-parallel → parallel → xargs -P
+- parallel → xargs -P
+- gh → git
+- aria2/axel → curl → wget
 
 See `references/standards.md` for complete specification.
 

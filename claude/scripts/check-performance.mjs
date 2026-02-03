@@ -67,50 +67,63 @@ async function gzipSize(filePath) {
 }
 
 async function walkDir(dir, fileList = []) {
-  const files = fs.readdirSync(dir);
+	const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
 
-  for (const file of files) {
-    const filePath = path.join(dir, file);
-    const stat = fs.statSync(filePath);
+	await Promise.all(
+		dirents.map(async (dirent) => {
+			const filePath = path.join(dir, dirent.name);
 
-    if (stat.isDirectory()) {
-      await walkDir(filePath, fileList);
-    } else {
-      fileList.push(filePath);
-    }
-  }
+			let isDirectory = dirent.isDirectory();
+			if (dirent.isSymbolicLink()) {
+				try {
+					const stat = await fs.promises.stat(filePath);
+					isDirectory = stat.isDirectory();
+				} catch (e) {
+					// Only ignore errors that indicate a broken symlink
+					if (e && (e.code === "ENOENT" || e.code === "ENOTDIR")) {
+						isDirectory = false;
+					} else {
+						throw e;
+					}
+				}
+			}
+
+			if (isDirectory) {
+				await walkDir(filePath, fileList);
+			} else {
+				fileList.push(filePath);
+			}
+		}),
+	);
 
   return fileList;
 }
 
-function countRoutes() {
-  let count = 0;
+async function countRoutes() {
+	let count = 0;
 
-  function walk(dir) {
-    const items = fs.readdirSync(dir);
+	async function walk(dir) {
+		const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
 
-    for (const item of items) {
-      const fullPath = path.join(dir, item);
-      const stat = fs.statSync(fullPath);
+		for (const dirent of dirents) {
+			if (dirent.name === "index.html") {
+				count++;
+				break;
+			}
+		}
 
-      if (stat.isDirectory()) {
-        // Check if this directory has an index.html
-        const indexPath = path.join(fullPath, 'index.html');
-        if (fs.existsSync(indexPath)) {
-          count++;
-        }
-        walk(fullPath);
-      }
-    }
-  }
+		const subdirectoryPromises = dirents
+			.filter((dirent) => dirent.isDirectory())
+			.map((dirent) => {
+				const fullPath = path.join(dir, dirent.name);
+				return walk(fullPath);
+			});
 
-  // Root index.html
-  if (fs.existsSync(path.join(DIST_DIR, 'index.html'))) {
-    count++;
-  }
+		await Promise.all(subdirectoryPromises);
+	}
 
-  walk(DIST_DIR);
-  return count;
+	await walk(DIST_DIR);
+	return count;
 }
 
 async function analyzeBundleSize() {
@@ -151,133 +164,151 @@ async function analyzeBundleSize() {
 }
 
 async function main() {
-  const startTime = Date.now();
+	const startTime = Date.now();
 
-  log('\n=== Performance Budget Validation Gate ===\n', 'bold');
+	log("\n=== Performance Budget Validation Gate ===\n", "bold");
 
-  // Check if dist exists
-  if (!fs.existsSync(DIST_DIR)) {
-    log(`Error: Dist directory not found at ${DIST_DIR}`, 'red');
-    log('Run "cd marketplace && npm run build" first', 'yellow');
-    process.exit(1);
-  }
+	// Check if dist exists
+	if (!fs.existsSync(DIST_DIR)) {
+		log(`Error: Dist directory not found at ${DIST_DIR}`, "red");
+		log('Run "cd marketplace && npm run build" first', "yellow");
+		process.exit(1);
+	}
 
-  log('Performance budgets:', 'blue');
-  log(`  - Total size: < ${formatBytes(BUDGETS.totalSize)} (gzipped)`, 'blue');
-  log(`  - Largest file: < ${formatBytes(BUDGETS.largestFile)} (gzipped)`, 'blue');
-  log(`  - Build time: < ${BUDGETS.buildTime / 1000}s`, 'blue');
-  log(`  - Route count: ${BUDGETS.routeCount.min}-${BUDGETS.routeCount.max}`, 'blue');
-  log('');
+	log("Performance budgets:", "blue");
+	log(`  - Total size: < ${formatBytes(BUDGETS.totalSize)} (gzipped)`, "blue");
+	log(
+		`  - Largest file: < ${formatBytes(BUDGETS.largestFile)} (gzipped)`,
+		"blue",
+	);
+	log(`  - Build time: < ${BUDGETS.buildTime / 1000}s`, "blue");
+	log(
+		`  - Route count: ${BUDGETS.routeCount.min}-${BUDGETS.routeCount.max}`,
+		"blue",
+	);
+	log("");
 
-  const violations = [];
+	const violations = [];
 
-  // 1. Bundle Size Analysis
-  log('1. Analyzing bundle size...', 'bold');
-  const bundleAnalysis = await analyzeBundleSize();
+	// 1. Bundle Size Analysis
+	log("1. Analyzing bundle size...", "bold");
+	const bundleAnalysis = await analyzeBundleSize();
 
-  log(`   Total files: ${bundleAnalysis.fileCount}`, 'blue');
-  log(`   Total size (raw): ${formatBytes(bundleAnalysis.totalSize)}`, 'blue');
-  log(`   Total size (gzipped): ${formatBytes(bundleAnalysis.totalGzippedSize)}`, 'blue');
+	log(`   Total files: ${bundleAnalysis.fileCount}`, "blue");
+	log(`   Total size (raw): ${formatBytes(bundleAnalysis.totalSize)}`, "blue");
+	log(
+		`   Total size (gzipped): ${formatBytes(bundleAnalysis.totalGzippedSize)}`,
+		"blue",
+	);
 
-  if (bundleAnalysis.totalGzippedSize > BUDGETS.totalSize) {
-    const overage = bundleAnalysis.totalGzippedSize - BUDGETS.totalSize;
-    log(`   ✗ Over budget by ${formatBytes(overage)}`, 'red');
-    violations.push({
-      check: 'Total Bundle Size',
-      budget: formatBytes(BUDGETS.totalSize),
-      actual: formatBytes(bundleAnalysis.totalGzippedSize),
-      overage: formatBytes(overage),
-    });
-  } else {
-    const remaining = BUDGETS.totalSize - bundleAnalysis.totalGzippedSize;
-    log(`   ✓ Under budget by ${formatBytes(remaining)}`, 'green');
-  }
+	if (bundleAnalysis.totalGzippedSize > BUDGETS.totalSize) {
+		const overage = bundleAnalysis.totalGzippedSize - BUDGETS.totalSize;
+		log(`   ✗ Over budget by ${formatBytes(overage)}`, "red");
+		violations.push({
+			check: "Total Bundle Size",
+			budget: formatBytes(BUDGETS.totalSize),
+			actual: formatBytes(bundleAnalysis.totalGzippedSize),
+			overage: formatBytes(overage),
+		});
+	} else {
+		const remaining = BUDGETS.totalSize - bundleAnalysis.totalGzippedSize;
+		log(`   ✓ Under budget by ${formatBytes(remaining)}`, "green");
+	}
 
-  // 2. Largest File Check
-  log('\n2. Checking largest file...', 'bold');
+	// 2. Largest File Check
+	log("\n2. Checking largest file...", "bold");
 
-  if (bundleAnalysis.largestFile) {
-    const largest = bundleAnalysis.largestFile;
-    log(`   Largest file: ${largest.path}`, 'blue');
-    log(`   Size (raw): ${formatBytes(largest.size)}`, 'blue');
-    log(`   Size (gzipped): ${formatBytes(largest.gzipped)}`, 'blue');
+	if (bundleAnalysis.largestFile) {
+		const largest = bundleAnalysis.largestFile;
+		log(`   Largest file: ${largest.path}`, "blue");
+		log(`   Size (raw): ${formatBytes(largest.size)}`, "blue");
+		log(`   Size (gzipped): ${formatBytes(largest.gzipped)}`, "blue");
 
-    if (largest.gzipped > BUDGETS.largestFile) {
-      const overage = largest.gzipped - BUDGETS.largestFile;
-      log(`   ✗ Over budget by ${formatBytes(overage)}`, 'red');
-      violations.push({
-        check: 'Largest File',
-        budget: formatBytes(BUDGETS.largestFile),
-        actual: formatBytes(largest.gzipped),
-        file: largest.path,
-        overage: formatBytes(overage),
-      });
-    } else {
-      const remaining = BUDGETS.largestFile - largest.gzipped;
-      log(`   ✓ Under budget by ${formatBytes(remaining)}`, 'green');
-    }
-  } else {
-    log(`   No files found in dist`, 'yellow');
-  }
+		if (largest.gzipped > BUDGETS.largestFile) {
+			const overage = largest.gzipped - BUDGETS.largestFile;
+			log(`   ✗ Over budget by ${formatBytes(overage)}`, "red");
+			violations.push({
+				check: "Largest File",
+				budget: formatBytes(BUDGETS.largestFile),
+				actual: formatBytes(largest.gzipped),
+				file: largest.path,
+				overage: formatBytes(overage),
+			});
+		} else {
+			const remaining = BUDGETS.largestFile - largest.gzipped;
+			log(`   ✓ Under budget by ${formatBytes(remaining)}`, "green");
+		}
+	} else {
+		log(`   No files found in dist`, "yellow");
+	}
 
-  // 3. Top 5 largest files
-  if (bundleAnalysis.largestFiles.length > 0) {
-    log('\n   Top 5 largest files (gzipped):', 'blue');
-    for (let i = 0; i < Math.min(5, bundleAnalysis.largestFiles.length); i++) {
-      const file = bundleAnalysis.largestFiles[i];
-      log(`     ${i + 1}. ${file.path} - ${formatBytes(file.gzipped)}`, 'blue');
-    }
-  }
+	// 3. Top 5 largest files
+	if (bundleAnalysis.largestFiles.length > 0) {
+		log("\n   Top 5 largest files (gzipped):", "blue");
+		for (let i = 0; i < Math.min(5, bundleAnalysis.largestFiles.length); i++) {
+			const file = bundleAnalysis.largestFiles[i];
+			log(`     ${i + 1}. ${file.path} - ${formatBytes(file.gzipped)}`, "blue");
+		}
+	}
 
-  // 4. Route Count
-  log('\n3. Counting routes...', 'bold');
-  const routeCount = countRoutes();
-  log(`   Routes found: ${routeCount}`, 'blue');
+	// 4. Route Count
+	log("\n3. Counting routes...", "bold");
+	const routeCount = await countRoutes();
+	log(`   Routes found: ${routeCount}`, "blue");
 
-  if (routeCount < BUDGETS.routeCount.min || routeCount > BUDGETS.routeCount.max) {
-    log(`   ✗ Outside expected range (${BUDGETS.routeCount.min}-${BUDGETS.routeCount.max})`, 'red');
-    violations.push({
-      check: 'Route Count',
-      budget: `${BUDGETS.routeCount.min}-${BUDGETS.routeCount.max}`,
-      actual: routeCount,
-    });
-  } else {
-    log(`   ✓ Within expected range`, 'green');
-  }
+	if (
+		routeCount < BUDGETS.routeCount.min ||
+		routeCount > BUDGETS.routeCount.max
+	) {
+		log(
+			`   ✗ Outside expected range (${BUDGETS.routeCount.min}-${BUDGETS.routeCount.max})`,
+			"red",
+		);
+		violations.push({
+			check: "Route Count",
+			budget: `${BUDGETS.routeCount.min}-${BUDGETS.routeCount.max}`,
+			actual: routeCount,
+		});
+	} else {
+		log(`   ✓ Within expected range`, "green");
+	}
 
-  // 4. Build Time Check (note in output, but can't measure retroactively)
-  log('\n4. Build time check...', 'bold');
-  log('   Note: Build time must be measured externally', 'yellow');
-  log(`   Budget: < ${BUDGETS.buildTime / 1000}s`, 'blue');
-  log('   To measure: time npm run build', 'blue');
+	// 4. Build Time Check (note in output, but can't measure retroactively)
+	log("\n4. Build time check...", "bold");
+	log("   Note: Build time must be measured externally", "yellow");
+	log(`   Budget: < ${BUDGETS.buildTime / 1000}s`, "blue");
+	log("   To measure: time npm run build", "blue");
 
-  // Report results
-  const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
-  log(`\nValidation time: ${elapsedTime}s`, 'blue');
+	// Report results
+	const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
+	log(`\nValidation time: ${elapsedTime}s`, "blue");
 
-  if (violations.length === 0) {
-    log('\n✓ All performance budgets met', 'green');
-    log('');
-    process.exit(0);
-  } else {
-    log(`\n✗ ${violations.length} budget violation(s):\n`, 'red');
+	if (violations.length === 0) {
+		log("\n✓ All performance budgets met", "green");
+		log("");
+		process.exit(0);
+	} else {
+		log(`\n✗ ${violations.length} budget violation(s):\n`, "red");
 
-    for (const violation of violations) {
-      log(`  ${violation.check}:`, 'red');
-      log(`    Budget: ${violation.budget}`, 'red');
-      log(`    Actual: ${violation.actual}`, 'red');
-      if (violation.overage) {
-        log(`    Overage: ${violation.overage}`, 'red');
-      }
-      if (violation.file) {
-        log(`    File: ${violation.file}`, 'red');
-      }
-      log('');
-    }
+		for (const violation of violations) {
+			log(`  ${violation.check}:`, "red");
+			log(`    Budget: ${violation.budget}`, "red");
+			log(`    Actual: ${violation.actual}`, "red");
+			if (violation.overage) {
+				log(`    Overage: ${violation.overage}`, "red");
+			}
+			if (violation.file) {
+				log(`    File: ${violation.file}`, "red");
+			}
+			log("");
+		}
 
-    log(`Recommendation: Optimize assets, enable code splitting, or adjust budgets\n`, 'yellow');
-    process.exit(1);
-  }
+		log(
+			`Recommendation: Optimize assets, enable code splitting, or adjust budgets\n`,
+			"yellow",
+		);
+		process.exit(1);
+	}
 }
 
 main();

@@ -1,7 +1,7 @@
 ---
 name: dx-optimizer
 description: Developer Experience specialist for tooling, setup, and workflow optimization. Use PROACTIVELY when setting up projects, reducing friction, or improving development workflows and automation.
-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash
 model: sonnet
 ---
 

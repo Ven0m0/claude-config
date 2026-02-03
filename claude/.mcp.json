@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/claude-code/main/.mcp.schema.json",
+	"mcpServers": {
+		"git": {
+			"command": "uvx",
+      "command": "${SHELL:-/bin/bash}",
+      "args": ["-l", "-c", "uvx mcp-server-git"]
+		},
+    "repomix": {
+      "command": "bunx",
+      "command": "${SHELL:-/bin/bash}",
+      "args": ["-l", "-c", "exec bunx repomix@latest --mcp"]
+    }
+	},
+  "staggeredStartup": {
+    "enabled": true,
+    "delayMs": 500,
+    "connectionTimeout": 15000
+  }
+}

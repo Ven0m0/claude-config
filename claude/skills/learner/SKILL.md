@@ -1,6 +1,7 @@
 ---
 name: extracting-learned-skills
 description: Extracts reusable skills and decision-making heuristics from debugging sessions. Use after solving tricky bugs, discovering non-obvious workarounds, or finding hidden gotchas specific to a codebase. Triggers include "save this as a skill", "learn from this", or after significant debugging effort.
+allowed-tools: Read, Write
 ---
 
 # Learner Skill

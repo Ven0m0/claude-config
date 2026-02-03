@@ -100,3 +100,6 @@ dev-debug.log
 *.sw?
 tasks.json
 tasks/
+
+LICENSE
+LICENSE.txt

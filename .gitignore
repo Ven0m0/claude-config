@@ -21,6 +21,11 @@ conversations/
 # Local settings overrides
 .claude/settings.local.json
 
+# Ralph
+.claude.ralph-*.local.md
+.ralph/
+.planning/
+
 # MCP configuration with API keys
 .mcp.json
 
@@ -34,12 +39,27 @@ conversations/
 # Logs
 *.log
 logs/
+*.bak
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+**/.temp/
+*.backup-*
+*.backup
+*.old
 
 # Temporary files
 *.tmp
 *.temp
 tmp/
 temp/
+.cache/
+pids
+*.pid
+*.seed
+*.pid.lock
 
 # OS files
 .DS_Store
@@ -54,6 +74,8 @@ ehthumbs.db
 node_modules/
 .npm
 package-lock.json
+.pnpm-store/
+.yarn/
 
 # Python
 __pycache__/
@@ -66,3 +88,189 @@ env/
 .pytest_cache/
 .coverage
 htmlcov/
+.eslintcache
+*.tgz
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pot
+*.po
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+venv/
+.venv/
+env/
+.env/
+.uv_cache/
+.uv-cache/
+
+# Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+[Ss]ystem32/
+
+# Linux
+.directory
+
+# ===========================================
+# Logs & Temporary Files
+# ===========================================
+*.log
+*.log.*
+logs/
+*.tmp
+*.temp
+*.bak
+*.bak.*
+*.backup
+*.db
+*.sqlite
+*.sqlite3
+*.dbm
+*.rdb
+
+/backups/
+.moai-backups/
+*.backup/
+*-backup/
+*_backup_*/
+hooks_backup_*/
+docs_backup_*/
+
+# Environment files
+.env
+.env.*
+!.env.example
+.env.local
+.env.*.local
+.env.production.local
+.env.development.local
+.env.glm
+secrets/
+credentials/
+
+# Certificate files
+*.pem
+*.pfx
+*.p12
+*.jks
+
+# Private keys (specific patterns to avoid false positives)
+# FIXED: Issue #237 - Replaced overly broad *.key pattern
+*-key.*
+*_key.*
+*.key.*
+*-secret-key.*
+*-api-key.*
+api-key-*
+secret-key-*
+private-key*
+*-secret.*
+*_secret.*
+*.secret.*
+secret-*.*
+
+# Cloud provider credentials
+.aws/credentials
+.aws/config
+.gcloud/
+google-credentials.json
+firebase-key.json
+
+# API Keys and Tokens (file patterns only)
+*_api_key.txt
+*_api_key.json
+*.credentials
+*.tokens
+
+# Credential patterns in environment files
+*_token=*
+*_secret=*
+
+# Test credentials
+test_*_credentials.json
+test_*_keys.json
+mock_api_response_*.json
+
+# Skill-specific credentials
+.claude/skills/*/.env*
+.claude/skills/*/secrets/
+.claude/skills/*/*/*secret*
+.claude/skills/*/*/*key*
+.claude/skills/*/*/*token*
+.claude/local/
+.claude/settings.local.json
+.claude/settings.local.json_
+.claude/settings.local.*.json
+.claude/settings.json.backup.*
+.claude/.venv/
+.claude/.pytest_cache/
+.claude/.env.local*
+.claude/plans/
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+*.tsbuildinfo
+.tscache/
+
+# ===========================================
+# Build Tools & Frameworks
+# ===========================================
+.turbo/
+.next/
+out/
+.nuxt/
+dist-ssr/
+*.local
+
+# ===========================================
+# Deployment & CI/CD
+# ===========================================
+.vercel/
+.netlify/
+.firebase/
+
+# ===========================================
+# Miscellaneous
+# ===========================================
+.playwright-mcp
+theme.config.tsx
+
+build/
+dist/
+*.egg-info/
+*.egg
+*.eggs
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+.installed.cfg
+MANIFEST
