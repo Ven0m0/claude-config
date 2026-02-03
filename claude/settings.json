@@ -41,9 +41,6 @@
 	"enableAllProjectMcpServers": true,
   "language": "english",
 	"permissions": {
-		"deny": [
-			"NotebookEdit"
-		],
 		"allow": [
 			"Bash",
 			"Bash(git:*)",
@@ -102,7 +99,8 @@
     "deny": [
       "Read(./.env)",
       "Read(./.env.*)",
-      "Read(./secrets/**)"
+      "Read(./secrets/**)",
+      "NotebookEdit"
     ],
 		"defaultMode": "acceptEdits"
 	},
