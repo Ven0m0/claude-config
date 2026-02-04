@@ -391,6 +391,7 @@ This skill is designed to work with the `/code:antipatterns` command, which:
 
 ## Resources
 
+- **Detailed Pattern Library**: [REFERENCE.md](REFERENCE.md) - Complete ast-grep pattern library with YAML rules for all categories
 - **ast-grep Documentation**: https://ast-grep.github.io/
 - **ast-grep Playground**: https://ast-grep.github.io/playground.html
 - **OWASP Top 10**: https://owasp.org/www-project-top-ten/

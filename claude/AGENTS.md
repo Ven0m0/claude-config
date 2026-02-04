@@ -60,6 +60,7 @@ Agents live in `claude/agents/`. Delegate via `Task(subagent_type="agent-name", 
 | mcp-expert | MCP server config and integration |
 | dx-optimizer | Dev experience, tooling, workflow setup |
 | improve-agent | Agent performance optimization, prompt engineering, run optimizations on agents |
+| prompt-optimizer | Rewrite prompts to be clear, tight, and testable |
 | claudemd, claude-md-auditor | CLAUDE.md optimize/audit/migrate |
 | skill-auditor | Skill definitions and validation |
 | prd | Product requirements document |

@@ -7,7 +7,6 @@ Skills extend Claude's knowledge with project-specific information and reusable 
 ## Skill Basics
 
 Skills are Markdown files in `.claude/skills/` directories:
-
 ```
 .claude/skills/
 ├── api-conventions/
@@ -25,7 +24,6 @@ Skills are Markdown files in `.claude/skills/` directories:
 ## SKILL.md Structure
 
 ### Required Frontmatter
-
 ```yaml
 ---
 name: skill-name
@@ -34,7 +32,6 @@ description: Brief description of what this skill provides
 ```
 
 ### Optional Frontmatter
-
 ```yaml
 ---
 name: skill-name
@@ -50,7 +47,6 @@ allowed-tools: Read, Grep, Bash  # Allowed tools
 ### Knowledge Skills
 
 Provide domain knowledge Claude applies automatically when relevant:
-
 ```markdown
 ---
 name: api-conventions
@@ -77,7 +73,6 @@ description: REST API design conventions for our services
 ### Workflow Skills
 
 Define repeatable processes invoked with `/skill-name`:
-
 ```markdown
 ---
 name: fix-issue
@@ -93,21 +88,17 @@ Fix GitHub issue: $ARGUMENTS
    ```bash
    gh issue view $ARGUMENTS --json title,body,labels
    ```
-
 2. **Analyze the problem**
    - Read related files mentioned in issue
    - Search codebase for relevant code
    - Identify root cause
-
 3. **Implement fix**
    - Make minimal, focused changes
    - Follow existing patterns
-
 4. **Verify fix**
    - Run tests: `npm test`
    - Run linter: `npm run lint`
    - Manual verification if UI change
-
 5. **Create PR**
    ```bash
    git checkout -b fix/issue-$ARGUMENTS
@@ -120,7 +111,6 @@ Fix GitHub issue: $ARGUMENTS
 ### Reference Skills
 
 Include supporting materials in subdirectories:
-
 ```
 .claude/skills/testing-patterns/
 ├── SKILL.md
@@ -133,7 +123,6 @@ Include supporting materials in subdirectories:
 ```
 
 Reference in SKILL.md:
-
 ```markdown
 ---
 name: testing-patterns
@@ -151,13 +140,10 @@ Run helper: @scripts/test-helper.sh
 ## Skill Invocation
 
 ### Automatic (Knowledge Skills)
-
 Claude automatically applies relevant skills based on context.
 
 ### Manual (Workflow Skills)
-
 Invoke with slash command:
-
 ```
 /fix-issue 1234
 /deploy production
@@ -167,7 +153,6 @@ Invoke with slash command:
 ## Best Practices
 
 ### Keep Skills Focused
-
 ```markdown
 # GOOD: Focused skill
 ---
@@ -183,25 +168,17 @@ description: All backend development practices
 ```
 
 ### Use Action Verbs for Workflows
-
 ```markdown
 # Good names
-fix-issue
-deploy-service
-review-code
-generate-api-client
+fix-issue, deploy-service, review-code, generate-api-client
 
 # Avoid
-issue-fixer
-deployment
-code-review-helper
+issue-fixer, deployment, code-review-helper
 ```
 
 ### Include Verification Steps
-
 ```markdown
 ## Steps
-
 1. Make changes
 2. **Verify** (IMPORTANT)
    - Run tests
@@ -211,7 +188,6 @@ code-review-helper
 ```
 
 ### Reference External Docs
-
 ```markdown
 For API documentation, see: https://api.example.com/docs
 
@@ -222,41 +198,26 @@ Use Context7 for library docs:
 
 ## Skill Discovery
 
-### List Available Skills
-
-```
-/skill
-```
-
-### Search Skills
-
-```
-/skill search testing
-```
-
-### View Skill Content
-
-```
-/skill show api-conventions
-```
+| Command | Purpose |
+|---------|---------|
+| `/skill` | List available skills |
+| `/skill search testing` | Search skills |
+| `/skill show api-conventions` | View skill content |
 
 ## Debugging Skills
 
 ### Skill Not Loading
-
 1. Verify frontmatter syntax (YAML)
 2. Check file location (`.claude/skills/*/SKILL.md`)
 3. Verify `name` is unique
 4. Check `description` is present
 
 ### Skill Not Applied Automatically
-
 1. Ensure `disable-model-invocation` is not set
 2. Description should match relevant contexts
 3. Keep skill focused on specific domain
 
 ### Workflow Not Executing
-
 1. Check `$ARGUMENTS` placeholder usage
 2. Verify script permissions (`chmod +x`)
 3. Test scripts independently first
@@ -264,7 +225,6 @@ Use Context7 for library docs:
 ## Advanced Patterns
 
 ### Conditional Logic
-
 ```markdown
 ## Deployment Steps
 
@@ -279,7 +239,6 @@ If `$ARGUMENTS` is "staging":
 ```
 
 ### Multi-Step Workflows
-
 ```markdown
 ---
 name: feature-complete
@@ -308,7 +267,6 @@ disable-model-invocation: true
 ### Skill Composition
 
 Reference other skills within workflows:
-
 ```markdown
 ## Code Review Phase
 

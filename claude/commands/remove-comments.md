@@ -1,3 +1,12 @@
+---
+name: remove-comments
+description: >
+  Clean up redundant comments while preserving valuable documentation. Removes comments
+  that restate the obvious while keeping those that explain WHY, document business logic,
+  or warn about non-obvious behavior.
+allowed-tools: Read Glob Grep Edit
+---
+
 # Remove Obvious Comments
 
 I'll clean up redundant comments while preserving valuable documentation.
