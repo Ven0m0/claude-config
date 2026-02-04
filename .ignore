@@ -1,0 +1,6 @@
+# https://github.com/lgladysz/opencode-ignore
+
+**/node_modules/**
+**/dist/**
+**/build/**
+**/.cache/**
