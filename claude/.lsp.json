@@ -1,6 +1,6 @@
 {
   "$schema": "https://code.claude.com/schemas/lsp.json",
-  "_comment": "MoAI-ADK Language Server Protocol Configuration - Supports 16+ languages",
+  "_comment": "Language Server Protocol Configuration",
   "python": {
     "command": "pyright-langserver",
     "args": ["--stdio"],
@@ -45,9 +45,7 @@
   "rust": {
     "command": "rust-analyzer",
     "args": [],
-    "extensionToLanguage": {
-      ".rs": "rust"
-    }
+    "extensionToLanguage": { ".rs": "rust" }
   },
   "yaml": {
     "command": "yaml-language-server",
@@ -60,9 +58,7 @@
   "java": {
     "command": "jdtls",
     "args": [],
-    "extensionToLanguage": {
-      ".java": "java"
-    }
+    "extensionToLanguage": { ".java": "java" }
   },
   "kotlin": {
     "command": "kotlin-language-server",
@@ -81,18 +77,14 @@
   },
   "csharp": {
     "command": "OmniSharp",
-    "args": [
-      "-lsp"
-    ],
+    "args": ["-lsp"],
     "extensionToLanguage": {
       ".cs": "csharp"
     }
   },
   "cpp": {
     "command": "clangd",
-    "args": [
-      "--background-index"
-    ],
+    "args": ["--background-index"],
     "extensionToLanguage": {
       ".c": "c",
       ".cpp": "cpp",
@@ -105,9 +97,7 @@
   },
   "ruby": {
     "command": "solargraph",
-    "args": [
-      "stdio"
-    ],
+    "args": ["stdio"],
     "extensionToLanguage": {
       ".rb": "ruby",
       ".rake": "ruby",
@@ -116,9 +106,7 @@
   },
   "php": {
     "command": "intelephense",
-    "args": [
-      "--stdio"
-    ],
+    "args": ["--stdio"],
     "extensionToLanguage": {
       ".php": "php"
     }
@@ -154,13 +142,8 @@
   },
   "dart": {
     "command": "dart",
-    "args": [
-      "language-server",
-      "--protocol=lsp"
-    ],
-    "extensionToLanguage": {
-      ".dart": "dart"
-    }
+    "args": ["language-server", "--protocol=lsp"],
+    "extensionToLanguage": { ".dart": "dart" }
   },
   "cpp": {
     "command": "clangd",
@@ -175,5 +158,10 @@
       ".m": "objective-c",
       ".mm": "objective-cpp"
     }
-  }
+  },
+  "markdown": {
+    "command": "marksman",
+    "args": ["server"],
+    "extensionToLanguage": { ".md": "markdown" },
+    "transport": "stdio"
 }
