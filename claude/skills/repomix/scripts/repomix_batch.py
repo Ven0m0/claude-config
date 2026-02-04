@@ -201,10 +201,10 @@ class RepomixBatchProcessor:
         Returns:
             Command as list of strings
         """
-        cmd = ["npx" if is_remote else "repomix"]
+        cmd = ["repomix"]
 
         if is_remote:
-            cmd.extend(["repomix", "--remote", repo_path])
+            cmd.extend(["--remote", repo_path])
         else:
             cmd.append(repo_path)
 
