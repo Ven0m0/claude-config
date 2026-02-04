@@ -191,7 +191,7 @@ class ConditionBasedOptimizer:
 
             # Step 1: Perform optimization
             # Offload CPU-intensive work to executor
-            loop = asyncio.get_event_loop()
+            loop = asyncio.get_running_loop()
             optimization_result = await loop.run_in_executor(
                 None,
                 lambda: self.optimizer.optimize_content(
