@@ -121,7 +121,7 @@ class ConditionBasedOptimizer:
             },
         )
 
-    def wait_for_condition(
+    async def wait_for_condition(
         self,
         condition: Callable[[], Any],
         description: str,
@@ -141,8 +141,14 @@ class ConditionBasedOptimizer:
 
         while True:
             try:
-                result = condition()
-                if result:
+                # Support async conditions if provided
+                # Support async conditions if provided
+                if asyncio.iscoroutinefunction(condition):
+                    result = await condition()
+                else:
+                    result = condition()
+                    if asyncio.iscoroutine(result):
+                        result = await result
                     elapsed_ms = (time.time() - start_time) * 1000
                     self.logger.info(
                         f"Condition met: {description} (elapsed: {elapsed_ms:.0f}ms)",
@@ -157,9 +163,9 @@ class ConditionBasedOptimizer:
                     msg,
                 )
 
-            time.sleep(poll_interval)
+            await asyncio.sleep(poll_interval)
 
-    def optimize_with_conditions(
+    async def optimize_with_conditions(
         self,
         request: OptimizationRequest,
     ) -> OptimizationResult:
@@ -185,11 +191,16 @@ class ConditionBasedOptimizer:
             )
 
             # Step 1: Perform optimization
-            optimization_result = self.optimizer.optimize_content(
-                content_blocks=request.content_blocks,
-                max_tokens=request.max_tokens,
-                strategy=request.strategy,
-                preserve_structure=True,
+            # Offload CPU-intensive work to executor
+            loop = asyncio.get_running_loop()
+            optimization_result = await loop.run_in_executor(
+                None,
+                lambda: self.optimizer.optimize_content(
+                    content_blocks=request.content_blocks,
+                    max_tokens=request.max_tokens,
+                    strategy=request.strategy,
+                    preserve_structure=True,
+                )
             )
 
             # Step 2: Wait for optimization to complete successfully
@@ -202,14 +213,14 @@ class ConditionBasedOptimizer:
                 completion_condition = self.condition_checkers["compression_ratio"]
 
             # Wait for condition to be met
-            self.wait_for_condition(
+            await self.wait_for_condition(
                 condition=lambda: completion_condition(optimization_result),
                 description=f"optimization {optimization_id} completion",
                 timeout_ms=request.timeout_ms,
             )
 
             # Step 3: Validate result meets requirements
-            self.wait_for_condition(
+            await self.wait_for_condition(
                 condition=lambda: self._validate_optimization_result(
                     optimization_result,
                     request,
@@ -237,7 +248,11 @@ class ConditionBasedOptimizer:
                     "end_time": result.end_time,
                     "error_message": result.error_message,
                 }
-                request.callback(result_dict)
+                # Check if callback is async
+                if asyncio.iscoroutinefunction(request.callback):
+                    await request.callback(result_dict)
+                else:
+                    request.callback(result_dict)
 
             self.logger.info(
                 f"Optimization {optimization_id} completed successfully "
@@ -290,49 +305,20 @@ class ConditionBasedOptimizer:
 
         async def optimize_single(request: OptimizationRequest):
             async with semaphore:
-                # Run synchronous optimization in thread pool
-                loop = asyncio.get_event_loop()
-                return await loop.run_in_executor(
-                    None,
-                    self.optimize_with_conditions,
-                    request,
-                )
+                return await self.optimize_with_conditions(request)
 
         # Create tasks
         tasks = [optimize_single(req) for req in requests]
 
-        # Wait for all to complete using condition-based coordination
         self.logger.info(f"Starting batch optimization of {len(requests)} requests")
 
-        # Instead of: await asyncio.gather(*tasks) with arbitrary timeout
-        # We monitor completion and wait for actual conditions
-
-        completed_count = 0
-        total_count = len(tasks)
-
-        def completion_condition() -> bool:
-            nonlocal completed_count
-            # Check completion status for asyncio tasks
-            completed_tasks = sum(
-                1 for task in tasks if isinstance(task, asyncio.Task) and task.done()
-            )
-            completed_count = completed_tasks
-            return completed_tasks >= total_count
-
-        # Start tasks
-        task_results = asyncio.gather(*tasks, return_exceptions=True)
-
-        # Wait for completion condition
-        await asyncio.get_event_loop().run_in_executor(
-            None,
-            self.wait_for_condition,
-            completion_condition,
-            f"batch completion ({total_count} optimizations)",
-            60000,  # 60 second timeout for batch
-        )
+        # Wait for completion condition using asyncio.gather which is much more efficient
+        # than polling.
+        task_results = await asyncio.gather(*tasks, return_exceptions=True)
+        total_count = len(requests)
 
         # Collect results
-        for i, task_result in enumerate(await task_results):
+        for i, task_result in enumerate(task_results):
             if isinstance(task_result, Exception | BaseException):
                 # Create failed result
                 failed_result = OptimizationResult(
@@ -357,7 +343,7 @@ class ConditionBasedOptimizer:
 
         return results
 
-    def wait_for_plugin_coordination(
+    async def wait_for_plugin_coordination(
         self,
         plugins: list[str],
         coordination_type: str = "optimization",
@@ -373,7 +359,10 @@ class ConditionBasedOptimizer:
             """Check if a specific plugin is ready for coordination."""
             # In real implementation, this would check plugin state
             # For now, simulate varied readiness times
-            time.sleep(0.1)  # Simulate check time
+            # Note: sleeping in synchronous function blocks loop, but since we are refactoring,
+            # this helper should ideally be async or fast.
+            # Keeping it as is but removing sleep simulation or assuming it's fast check.
+            # If we want to simulate delay, we should not block.
             return True  # Assume ready for demo
 
         def coordination_condition():
@@ -383,13 +372,13 @@ class ConditionBasedOptimizer:
             all_ready = all(ready_plugins.values())
             return ready_plugins if all_ready else None
 
-        return self.wait_for_condition(
+        return await self.wait_for_condition(
             coordination_condition,
             f"{coordination_type} coordination for {plugins}",
             timeout_ms,
         )
 
-    def monitor_context_pressure(
+    async def monitor_context_pressure(
         self,
         threshold: float = 0.8,
         check_interval_ms: int = 100,
@@ -437,7 +426,7 @@ class ConditionBasedOptimizer:
                 }
             return None
 
-        return self.wait_for_condition(
+        return await self.wait_for_condition(
             pressure_condition,
             f"context pressure threshold {threshold}",
             timeout_ms,
@@ -456,7 +445,7 @@ condition_optimizer = ConditionBasedOptimizer()
 
 
 # Export key functions for easy import by other plugins
-def optimize_content_with_conditions(
+async def optimize_content_with_conditions(
     plugin_name: str,
     content_blocks: list[ContentBlock],
     max_tokens: int,
@@ -476,10 +465,10 @@ def optimize_content_with_conditions(
         **kwargs,
     )
 
-    return condition_optimizer.optimize_with_conditions(request)
+    return await condition_optimizer.optimize_with_conditions(request)
 
 
-def wait_for_optimal_conditions(
+async def wait_for_optimal_conditions(
     optimization_type: str = "context",
     **kwargs,
 ) -> dict[str, Any]:
@@ -488,9 +477,9 @@ def wait_for_optimal_conditions(
     Replaces arbitrary pre-optimization delays with intelligent waiting.
     """
     if optimization_type == "context":
-        return condition_optimizer.monitor_context_pressure(**kwargs)
+        return await condition_optimizer.monitor_context_pressure(**kwargs)
     if optimization_type == "coordination":
-        return condition_optimizer.wait_for_plugin_coordination(**kwargs)
+        return await condition_optimizer.wait_for_plugin_coordination(**kwargs)
     msg = f"Unknown optimization type: {optimization_type}"
     raise ValueError(msg)
 
@@ -499,49 +488,53 @@ def wait_for_optimal_conditions(
 if __name__ == "__main__":
     # Demonstration of condition-based optimization
 
-    # Create test content blocks
-    test_blocks = [
-        ContentBlock(
-            content="# Main function\ndef main():\n    pass",
-            priority=0.9,
-            source="core_code",
-            token_estimate=100,
-            metadata={"section": "main"},
-        ),
-        ContentBlock(
-            content="# TODO: Add error handling\n# Debug code",
-            priority=0.5,
-            source="comments",
-            token_estimate=50,
-            metadata={"section": "notes"},
-        ),
-        ContentBlock(
-            content="def helper():\n    return None",
-            priority=0.7,
-            source="helper_code",
-            token_estimate=60,
-            metadata={"section": "helpers"},
-        ),
-    ]
+    # Needs asyncio loop to run
+    async def main():
+        # Create test content blocks
+        test_blocks = [
+            ContentBlock(
+                content="# Main function\ndef main():\n    pass",
+                priority=0.9,
+                source="core_code",
+                token_estimate=100,
+                metadata={"section": "main"},
+            ),
+            ContentBlock(
+                content="# TODO: Add error handling\n# Debug code",
+                priority=0.5,
+                source="comments",
+                token_estimate=50,
+                metadata={"section": "notes"},
+            ),
+            ContentBlock(
+                content="def helper():\n    return None",
+                priority=0.7,
+                source="helper_code",
+                token_estimate=60,
+                metadata={"section": "helpers"},
+            ),
+        ]
 
-    # Example 1: Basic optimization with conditions
-    request = OptimizationRequest(
-        plugin_name="demo_plugin",
-        content_blocks=test_blocks,
-        max_tokens=150,
-        strategy="priority",
-    )
+        # Example 1: Basic optimization with conditions
+        request = OptimizationRequest(
+            plugin_name="demo_plugin",
+            content_blocks=test_blocks,
+            max_tokens=150,
+            strategy="priority",
+        )
 
-    result = condition_optimizer.optimize_with_conditions(request)
+        await condition_optimizer.optimize_with_conditions(request)
 
-    # Example 2: Plugin coordination
-    coordination = condition_optimizer.wait_for_plugin_coordination(
-        plugins=["abstract", "sanctum", "imbue"],
-        coordination_type="resource_optimization",
-    )
+        # Example 2: Plugin coordination
+        await condition_optimizer.wait_for_plugin_coordination(
+            plugins=["abstract", "sanctum", "imbue"],
+            coordination_type="resource_optimization",
+        )
 
-    # Example 3: Context pressure monitoring
-    pressure = condition_optimizer.monitor_context_pressure(
-        threshold=0.7,
-        check_interval_ms=50,
-    )
+        # Example 3: Context pressure monitoring
+        pressure = await condition_optimizer.monitor_context_pressure(
+            threshold=0.7,
+            check_interval_ms=50,
+        )
+
+    asyncio.run(main())
