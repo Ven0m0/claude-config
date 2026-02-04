@@ -4,6 +4,7 @@ Tests the ConditionBasedOptimizer which implements condition-based waiting
 to eliminate flaky optimization behavior caused by arbitrary timeouts.
 """
 
+import asyncio
 import importlib.util
 import sys
 import time
@@ -243,81 +244,115 @@ class TestWaitForCondition:
 
     def test_wait_for_condition_immediate_success(self, mock_optimizer) -> None:
         """Should return immediately when condition is already met."""
-        call_count = 0
+        async def _test():
+            call_count = 0
 
-        def condition():
-            nonlocal call_count
-            call_count += 1
-            return "success_value"
+            def condition():
+                nonlocal call_count
+                call_count += 1
+                return "success_value"
 
-        start = time.time()
-        result = mock_optimizer.wait_for_condition(
-            condition=condition,
-            description="immediate success",
-            timeout_ms=1000,
-        )
-        elapsed = time.time() - start
+            start = time.time()
+            result = await mock_optimizer.wait_for_condition(
+                condition=condition,
+                description="immediate success",
+                timeout_ms=1000,
+            )
+            elapsed = time.time() - start
 
-        assert result == "success_value"
-        assert call_count == 1
-        assert elapsed < 0.1  # Should be very fast
+            assert result == "success_value"
+            assert call_count == 1
+            assert elapsed < 0.1  # Should be very fast
+
+        asyncio.run(_test())
 
     def test_wait_for_condition_eventual_success(self, mock_optimizer) -> None:
         """Should poll until condition becomes true."""
-        call_count = 0
+        async def _test():
+            call_count = 0
 
-        def condition():
-            nonlocal call_count
-            call_count += 1
-            return call_count >= 3
+            def condition():
+                nonlocal call_count
+                call_count += 1
+                return call_count >= 3
 
-        result = mock_optimizer.wait_for_condition(
-            condition=condition,
-            description="eventual success",
-            timeout_ms=1000,
-            poll_interval_ms=10,
-        )
+            result = await mock_optimizer.wait_for_condition(
+                condition=condition,
+                description="eventual success",
+                timeout_ms=1000,
+                poll_interval_ms=10,
+            )
 
-        assert result is True
-        assert call_count == 3
+            assert result is True
+            assert call_count == 3
+
+        asyncio.run(_test())
+
+    def test_wait_for_condition_async_condition(self, mock_optimizer) -> None:
+        """Should handle async condition functions."""
+        async def _test():
+            call_count = 0
+
+            async def condition():
+                nonlocal call_count
+                call_count += 1
+                await asyncio.sleep(0.001)
+                return call_count >= 2
+
+            result = await mock_optimizer.wait_for_condition(
+                condition=condition,
+                description="async condition",
+                timeout_ms=1000,
+                poll_interval_ms=10,
+            )
+
+            assert result is True
+            assert call_count == 2
+
+        asyncio.run(_test())
 
     def test_wait_for_condition_timeout(self, mock_optimizer) -> None:
         """Should raise TimeoutError when condition never met."""
+        async def _test():
+            def never_true():
+                return False
 
-        def never_true():
-            return False
+            with pytest.raises(TimeoutError) as exc_info:
+                await mock_optimizer.wait_for_condition(
+                    condition=never_true,
+                    description="never met",
+                    timeout_ms=TIMEOUT_SHORT_MS,
+                    poll_interval_ms=POLL_INTERVAL_MS,
+                )
 
-        with pytest.raises(TimeoutError) as exc_info:
-            mock_optimizer.wait_for_condition(
-                condition=never_true,
-                description="never met",
-                timeout_ms=TIMEOUT_SHORT_MS,
-                poll_interval_ms=POLL_INTERVAL_MS,
-            )
+            assert "never met" in str(exc_info.value)
+            assert f"{TIMEOUT_SHORT_MS}ms" in str(exc_info.value)
 
-        assert "never met" in str(exc_info.value)
-        assert f"{TIMEOUT_SHORT_MS}ms" in str(exc_info.value)
+        asyncio.run(_test())
 
     def test_wait_for_condition_handles_exceptions(self, mock_optimizer) -> None:
         """Should continue polling if condition raises exception."""
-        call_count = 0
+        async def _test():
+            call_count = 0
 
-        def flaky_condition():
-            nonlocal call_count
-            call_count += 1
-            if call_count < 3:
-                raise ValueError("Temporary error")
-            return True
+            def flaky_condition():
+                nonlocal call_count
+                call_count += 1
+                if call_count < 3:
+                    raise ValueError("Temporary error")
+                return True
 
-        result = mock_optimizer.wait_for_condition(
-            condition=flaky_condition,
-            description="flaky condition",
-            timeout_ms=1000,
-            poll_interval_ms=10,
-        )
+            result = await mock_optimizer.wait_for_condition(
+                condition=flaky_condition,
+                description="flaky condition",
+                timeout_ms=1000,
+                poll_interval_ms=10,
+            )
 
-        assert result is True
-        assert call_count == 3
+            assert result is True
+            assert call_count == 3
+
+        asyncio.run(_test())
 
 
 class TestValidateOptimizationResult:
@@ -396,66 +431,81 @@ class TestContextPressureMonitoring:
 
     def test_monitor_returns_when_threshold_reached(self, mock_optimizer) -> None:
         """Should return when usage exceeds threshold."""
-        mock_optimizer._get_current_context_usage = MagicMock(return_value=0.85)
+        async def _test():
+            mock_optimizer._get_current_context_usage = MagicMock(return_value=0.85)
 
-        result = mock_optimizer.monitor_context_pressure(
-            threshold=0.8,
-            check_interval_ms=10,
-            timeout_ms=1000,
-        )
+            result = await mock_optimizer.monitor_context_pressure(
+                threshold=0.8,
+                check_interval_ms=10,
+                timeout_ms=1000,
+            )
 
-        assert result is not None
-        assert result["usage"] == 0.85
-        assert result["threshold"] == 0.8
-        assert "timestamp" in result
+            assert result is not None
+            assert result["usage"] == 0.85
+            assert result["threshold"] == 0.8
+            assert "timestamp" in result
+
+        asyncio.run(_test())
 
     def test_monitor_warning_level(self, mock_optimizer) -> None:
         """Should return warning level for usage >= 40%."""
-        mock_optimizer._get_current_context_usage = MagicMock(return_value=0.45)
+        async def _test():
+            mock_optimizer._get_current_context_usage = MagicMock(return_value=0.45)
 
-        result = mock_optimizer.monitor_context_pressure(
-            threshold=0.4,
-            timeout_ms=1000,
-        )
+            result = await mock_optimizer.monitor_context_pressure(
+                threshold=0.4,
+                timeout_ms=1000,
+            )
 
-        assert result["alert_level"] == "warning"
-        assert len(result["recommendations"]) > 0
-        assert any("optimize-context" in r for r in result["recommendations"])
+            assert result["alert_level"] == "warning"
+            assert len(result["recommendations"]) > 0
+            assert any("optimize-context" in r for r in result["recommendations"])
+
+        asyncio.run(_test())
 
     def test_monitor_critical_level(self, mock_optimizer) -> None:
         """Should return critical level for usage >= 50%."""
-        mock_optimizer._get_current_context_usage = MagicMock(return_value=0.55)
+        async def _test():
+            mock_optimizer._get_current_context_usage = MagicMock(return_value=0.55)
 
-        result = mock_optimizer.monitor_context_pressure(
-            threshold=0.5,
-            timeout_ms=1000,
-        )
+            result = await mock_optimizer.monitor_context_pressure(
+                threshold=0.5,
+                timeout_ms=1000,
+            )
 
-        assert result["alert_level"] == "critical"
-        assert len(result["recommendations"]) >= 2
-        assert any("subagent" in r.lower() for r in result["recommendations"])
+            assert result["alert_level"] == "critical"
+            assert len(result["recommendations"]) >= 2
+            assert any("subagent" in r.lower() for r in result["recommendations"])
+
+        asyncio.run(_test())
 
     def test_monitor_high_pressure_detection(self, mock_optimizer) -> None:
         """Should detect high pressure above 90%."""
-        mock_optimizer._get_current_context_usage = MagicMock(return_value=0.95)
+        async def _test():
+            mock_optimizer._get_current_context_usage = MagicMock(return_value=0.95)
 
-        result = mock_optimizer.monitor_context_pressure(
-            threshold=0.9,
-            timeout_ms=1000,
-        )
+            result = await mock_optimizer.monitor_context_pressure(
+                threshold=0.9,
+                timeout_ms=1000,
+            )
 
-        assert result["pressure_level"] == "high"
+            assert result["pressure_level"] == "high"
+
+        asyncio.run(_test())
 
     def test_monitor_moderate_pressure_detection(self, mock_optimizer) -> None:
         """Should detect moderate pressure below 90%."""
-        mock_optimizer._get_current_context_usage = MagicMock(return_value=0.85)
+        async def _test():
+            mock_optimizer._get_current_context_usage = MagicMock(return_value=0.85)
 
-        result = mock_optimizer.monitor_context_pressure(
-            threshold=0.8,
-            timeout_ms=1000,
-        )
+            result = await mock_optimizer.monitor_context_pressure(
+                threshold=0.8,
+                timeout_ms=1000,
+            )
 
-        assert result["pressure_level"] == "moderate"
+            assert result["pressure_level"] == "moderate"
+
+        asyncio.run(_test())
 
 
 class TestPluginCoordination:
@@ -468,18 +518,21 @@ class TestPluginCoordination:
 
     def test_coordination_returns_ready_status(self, mock_optimizer) -> None:
         """Should return ready status for all plugins."""
-        plugins = ["abstract", "sanctum", "imbue"]
+        async def _test():
+            plugins = ["abstract", "sanctum", "imbue"]
 
-        result = mock_optimizer.wait_for_plugin_coordination(
-            plugins=plugins,
-            coordination_type="optimization",
-            timeout_ms=5000,
-        )
+            result = await mock_optimizer.wait_for_plugin_coordination(
+                plugins=plugins,
+                coordination_type="optimization",
+                timeout_ms=5000,
+            )
 
-        assert result is not None
-        for plugin in plugins:
-            assert plugin in result
-            assert result[plugin] is True
+            assert result is not None
+            for plugin in plugins:
+                assert plugin in result
+                assert result[plugin] is True
+
+        asyncio.run(_test())
 
 
 class TestModuleExports:
@@ -497,12 +550,15 @@ class TestModuleExports:
 
     def test_wait_for_optimal_conditions_invalid_type(self, optimizer_module) -> None:
         """Should raise ValueError for unknown optimization type."""
-        with pytest.raises(ValueError) as exc_info:
-            optimizer_module.wait_for_optimal_conditions(
-                optimization_type="invalid_type"
-            )
+        async def _test():
+            with pytest.raises(ValueError) as exc_info:
+                await optimizer_module.wait_for_optimal_conditions(
+                    optimization_type="invalid_type"
+                )
 
-        assert "Unknown optimization type" in str(exc_info.value)
+            assert "Unknown optimization type" in str(exc_info.value)
+
+        asyncio.run(_test())
 
     def test_condition_optimizer_global_instance(self, optimizer_module) -> None:
         """Should create global condition_optimizer instance."""
