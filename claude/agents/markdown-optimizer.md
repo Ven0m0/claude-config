@@ -2,10 +2,10 @@
 name: markdown-optimizer
 description: Use when compressing markdown for LLM context efficiency or recommending split strategies for oversized docs.
 model: opus
-color: blue
 tools:
   - Read
   - Write
+  - Skill
 ---
 
 # Markdown Optimizer
