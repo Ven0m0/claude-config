@@ -31,6 +31,8 @@ Example use cases for hooks include:
 By encoding these rules as hooks rather than prompting instructions, you turn
 suggestions into app-level code that executes every time it is expected to run.
 
+**Config pack (this repo):** Hooks in `claude/hooks/hooks.json` use `${CLAUDE_PLUGIN_ROOT}` or `${PLUGIN_DIR}` so that script paths (e.g. `hooks/scripts/format_python_docstrings.py`) resolve. When using this repo as your config source, set the repo root (or the directory that contains `claude/`) as `CLAUDE_PLUGIN_ROOT` so that `claude/hooks/` and `claude/scripts/` are findable. When copying only `claude/` to `~/.claude/`, set `CLAUDE_PLUGIN_ROOT` to that copy's path or adjust hook commands to use relative paths. See [claude/README.md](../README.md).
+
 <Warning>
   You must consider the security implication of hooks as you add them, because hooks run automatically during the agent loop with your current environment's credentials.
   For example, malicious hooks code can exfiltrate your data. Always review your hooks implementation before registering them.

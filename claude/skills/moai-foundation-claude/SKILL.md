@@ -17,13 +17,13 @@ metadata:
   tags: "foundation, claude-code, skills, sub-agents, plugins, slash-commands, hooks, memory, settings, sandboxing, headless, agent-patterns"
   aliases: "moai-foundation-claude"
 
-# MoAI Extension: Progressive Disclosure
+# Extension: Progressive Disclosure
 progressive_disclosure:
   enabled: true
   level1_tokens: 100
   level2_tokens: 5000
 
-# MoAI Extension: Triggers
+# Extension: Triggers
 triggers:
   keywords:
     - "skill"
@@ -196,11 +196,11 @@ When using Explore agent or direct exploration tools (Grep, Glob, Read), apply t
 
 **Search Scope Limitation**
 - Always use `path` parameter to limit search scope
-- Example: `Grep(pattern="async def", path="src/moai_adk/core/")` instead of `Grep(pattern="async def")`
+- Example: `Grep(pattern="async def", path="src/")` instead of `Grep(pattern="async def")`
 
 **File Pattern Specificity**
 - Use specific Glob patterns instead of wildcards
-- Example: `Glob(pattern="src/moai_adk/core/*.py")` instead of `Glob(pattern="src/**/*.py")`
+- Example: `Glob(pattern="src/**/*.py")` with a narrow path when possible instead of whole repo
 
 **Parallel Processing**
 - Execute independent searches in parallel (single message, multiple tool calls)
@@ -216,21 +216,11 @@ Phase 3 Code: Implement iteratively, verify each step, handle edges
 
 Phase 4 Commit: Descriptive messages, logical groupings, clean history
 
-## MoAI-ADK Integration
+## Repo integration
 
-### Core Skills
-
-- moai-foundation-claude: This authoring kit
-- moai-foundation-core: SPEC system and workflows
-- moai-foundation-philosopher: Strategic thinking
-
-### Essential Sub-agents
-
-- spec-builder: EARS specifications
-- manager-ddd: DDD execution
-- expert-security: Security analysis
-- expert-backend: API development
-- expert-frontend: UI implementation
+- Agents: `claude/agents/` (see `claude/AGENTS.md`)
+- Skills: `claude/skills/` (foundation, workflow, language, tool skills)
+- Workflow: plan / run / sync phases in `claude/rules/workflow/`
 
 ## Security Features
 

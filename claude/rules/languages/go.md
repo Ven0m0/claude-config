@@ -56,7 +56,7 @@ linters-settings:
 - Use `sync.Once` for one-time initialization
 - Prefer channels for communication, mutexes for state
 
-## MoAI Integration
+## Related skills
 
-- Use Skill("moai-lang-go") for detailed patterns
+- Use language-specific skills under `claude/skills/` for detailed patterns.
 - Follow TRUST 5 quality gates

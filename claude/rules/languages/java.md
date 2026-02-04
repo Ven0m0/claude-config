@@ -55,7 +55,7 @@ try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
 }
 ```
 
-## MoAI Integration
+## Related skills
 
-- Use Skill("moai-lang-java") for detailed patterns
+- Use language-specific skills under `claude/skills/` for detailed patterns.
 - Follow TRUST 5 quality gates

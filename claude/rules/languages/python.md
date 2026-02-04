@@ -44,7 +44,7 @@ select = ["E", "F", "I", "B", "ANN", "S"]  # errors, pyflakes, isort, bugbear, a
 - Run `bandit -r src/` for vulnerability scanning
 - Validate all user inputs with Pydantic
 
-## MoAI Integration
+## Related skills
 
-- Use Skill("moai-lang-python") for detailed patterns
+- Use language-specific skills under `claude/skills/` for detailed patterns (e.g. python-optimization, python-project-development).
 - Follow TRUST 5 quality gates

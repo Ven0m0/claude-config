@@ -4,9 +4,7 @@ Three-phase SPEC-First DDD workflow for quality-driven development.
 
 ## Plan Phase
 
-Command: `/moai plan`
-Agent: manager-spec
-Purpose: Create comprehensive specification document
+Phase: Plan. Purpose: Create comprehensive specification document.
 
 ### Token Budget
 - Allocation: 30,000 tokens
@@ -21,7 +19,7 @@ Purpose: Create comprehensive specification document
 - Constraints and dependencies
 
 ### Output
-- SPEC document at `.moai/specs/SPEC-XXX/spec.md`
+- SPEC document at `docs/specs/SPEC-XXX/spec.md` or `.claude/specs/SPEC-XXX/spec.md`
 - EARS format requirements
 - Acceptance criteria
 - Technical approach
@@ -35,9 +33,7 @@ Purpose: Create comprehensive specification document
 
 ## Run Phase
 
-Command: `/moai run SPEC-XXX`
-Agent: manager-ddd
-Purpose: Implement specification with behavior preservation
+Phase: Run SPEC-XXX. Purpose: Implement specification with behavior preservation.
 
 ### Token Budget
 - Allocation: 180,000 tokens
@@ -70,7 +66,7 @@ Purpose: Implement specification with behavior preservation
 
 ## Sync Phase
 
-Command: `/moai sync SPEC-XXX`
+Phase: Sync SPEC-XXX.
 Agent: manager-docs
 Purpose: Generate documentation and prepare for deployment
 
@@ -96,10 +92,10 @@ Purpose: Generate documentation and prepare for deployment
 
 ### Plan to Run
 - Trigger: SPEC document approved
-- Action: Execute /clear, then /moai run SPEC-XXX
+- Action: Execute /clear, then run phase for SPEC-XXX
 - Handoff: SPEC document path, requirements summary
 
 ### Run to Sync
 - Trigger: Implementation complete, tests passing
-- Action: Execute /moai sync SPEC-XXX
+- Action: Execute sync phase for SPEC-XXX
 - Handoff: SPEC reference, implementation summary, test results

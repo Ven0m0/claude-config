@@ -61,7 +61,7 @@ pub enum AppError {
 }
 ```
 
-## MoAI Integration
+## Related skills
 
-- Use Skill("moai-lang-rust") for detailed patterns
+- Use language-specific skills under `claude/skills/` for detailed patterns (e.g. rust, rust-development).
 - Follow TRUST 5 quality gates

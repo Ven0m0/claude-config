@@ -39,7 +39,7 @@ Version: TypeScript 5.9+
 - Use `React.cache()` for request memoization
 - Implement streaming with Suspense boundaries
 
-## MoAI Integration
+## Related skills
 
-- Use Skill("moai-lang-typescript") for detailed patterns
+- Use language-specific skills under `claude/skills/` for detailed patterns (e.g. typescript).
 - Follow TRUST 5 quality gates

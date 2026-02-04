@@ -2,6 +2,8 @@
 
 Skills extend Claude's knowledge with project-specific information and reusable workflows.
 
+**In this repo:** For optimizing skills and docs, see the **skill-optimizer** skill (token efficiency, progressive disclosure), **llm-docs-optimizer** (doc restructuring), **manage-markdown-docs** (markdown consistency), and **hooks-configuration** (hook lifecycle). Full index: [skills-ref.md](skills-ref.md). Agent list: [../AGENTS.md](../AGENTS.md).
+
 ## Skill Basics
 
 Skills are Markdown files in `.claude/skills/` directories:

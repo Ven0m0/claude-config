@@ -80,7 +80,7 @@ Example - Quality Framework:
 ```markdown
 ## Quick Reference (30 seconds)
 
-TRUST 5 is MoAI-ADK's comprehensive quality assurance framework enforcing five pillars:
+TRUST 5 is a quality assurance framework enforcing five pillars:
 
 1. Test-first(T) - ≥85% coverage, ANALYZE-PRESERVE-IMPROVE cycle
 2. Readable(R) - Clear naming, ≤10 cyclomatic complexity
@@ -92,7 +92,7 @@ Integration Points:
 - Pre-commit hooks → Automated validation
 - CI/CD pipelines → Quality gate enforcement
 - quality-gate agent → TRUST 5 validation
-- /moai:2-run → Enforces ≥85% coverage
+- Run phase → Enforces ≥85% coverage
 
 Quick Validation:
 ```python
@@ -186,10 +186,10 @@ Purpose: Define clear, testable requirements in EARS format before coding.
 Workflow:
 ```bash
 # 1. Generate SPEC
-/moai:1-plan "Implement user authentication with JWT tokens"
+plan phase: "Implement user authentication with JWT tokens"
 
 # 2. spec-builder creates:
-.moai/specs/SPEC-001/
+docs/specs/SPEC-001/ or .claude/specs/SPEC-001/
  spec.md # EARS format requirements
  acceptance.md # Acceptance criteria
  complexity.yaml # Complexity analysis
@@ -477,7 +477,7 @@ class SKILLMDValidator:
 validator = SKILLMDValidator()
 
 # Validate skill
-result = validator.validate_skill(".claude/skills/moai-foundation-core")
+result = validator.validate_skill(".claude/skills/<skill-name>")
 
 if not result["valid"]:
  print(f" SKILL.md exceeds limit: {result['line_count']} lines")
@@ -485,7 +485,7 @@ if not result["valid"]:
  print(f" Recommendation: {result['recommendation']}")
  
  # Auto-split
- validator.auto_split_skill(".claude/skills/moai-foundation-core")
+ validator.auto_split_skill(".claude/skills/<skill-name>")
  print(" Skill automatically split into modules")
 ```
 
@@ -630,17 +630,17 @@ Available Modules:
 ## Works Well With
 
 Skills:
-- moai-foundation-modular-system - File organization patterns
-- moai-foundation-token-optimization - Content efficiency
-- moai-cc-skill-factory - Skill creation with progressive structure
+- Modular skill layout under `claude/skills/` - File organization patterns
+- Token optimization - Content efficiency (see `claude/skills/llm-docs-optimizer`, `markdown-optimizer` agent)
+- Skill authoring - See `claude/rules/development/skill-authoring.md`
 
 Agents:
 - skill-factory - Create skills with progressive disclosure
 - docs-manager - Generate documentation with layered structure
 
 Commands:
-- /moai:1-plan - Generate SPEC with progressive detail
-- /moai:3-sync - Create docs with layered structure
+- Plan phase - Generate SPEC with progressive detail
+- Sync phase - Create docs with layered structure
 
 ---
 

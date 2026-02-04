@@ -55,7 +55,7 @@ val responses = coroutineScope {
 - Use Hilt for dependency injection
 - Use Flow for reactive streams
 
-## MoAI Integration
+## Related skills
 
-- Use Skill("moai-lang-kotlin") for detailed patterns
+- Use language-specific skills under `claude/skills/` for detailed patterns.
 - Follow TRUST 5 quality gates

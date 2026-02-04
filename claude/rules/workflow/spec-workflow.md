@@ -1,14 +1,14 @@
 # SPEC Workflow
 
-MoAI's three-phase development workflow with token budget management.
+Three-phase development workflow with token budget management.
 
 ## Phase Overview
 
-| Phase | Command | Agent | Token Budget | Purpose |
-|-------|---------|-------|--------------|---------|
-| Plan | /moai plan | manager-spec | 30K | Create SPEC document |
-| Run | /moai run | manager-ddd | 180K | DDD implementation |
-| Sync | /moai sync | manager-docs | 40K | Documentation sync |
+| Phase | Purpose | Token Budget |
+|-------|---------|--------------|
+| Plan | Create SPEC document | 30K |
+| Run | DDD implementation | 180K |
+| Sync | Documentation sync | 40K |
 
 ## Plan Phase
 
@@ -21,7 +21,7 @@ Token Strategy:
 - Saves 45-50K tokens for implementation
 
 Output:
-- SPEC document at `.moai/specs/SPEC-XXX/spec.md`
+- SPEC document at `docs/specs/SPEC-XXX/spec.md` or `.claude/specs/SPEC-XXX/spec.md`
 - EARS format requirements
 - Acceptance criteria
 - Technical approach
@@ -64,13 +64,12 @@ Output:
 ## Completion Markers
 
 AI uses markers to signal task completion:
-- `<moai>DONE</moai>` - Task complete
-- `<moai>COMPLETE</moai>` - Full completion
+- Task complete / full completion markers as agreed in workflow
 
 ## Context Management
 
 /clear Strategy:
-- After /moai plan completion (mandatory)
+- After plan phase completion (mandatory)
 - When context exceeds 150K tokens
 - Before major phase transitions
 
@@ -83,8 +82,8 @@ Progressive Disclosure:
 
 Plan to Run:
 - Trigger: SPEC document approved
-- Action: Execute /clear, then /moai run SPEC-XXX
+- Action: Execute /clear, then run phase for SPEC-XXX
 
 Run to Sync:
 - Trigger: Implementation complete, tests passing
-- Action: Execute /moai sync SPEC-XXX
+- Action: Execute sync phase for SPEC-XXX

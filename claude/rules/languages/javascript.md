@@ -44,7 +44,7 @@ Version: ES2024+, Node.js 24 LTS (recommended)
 - `Promise.withResolvers()` for promise creation
 - `Atomics.waitSync()` for thread synchronization
 
-## MoAI Integration
+## Related skills
 
-- Use Skill("moai-lang-javascript") for detailed patterns
+- Use language-specific skills under `claude/skills/` for detailed patterns (e.g. javascript).
 - Follow TRUST 5 quality gates

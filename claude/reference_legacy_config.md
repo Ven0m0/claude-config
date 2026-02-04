@@ -19,20 +19,12 @@ The legacy configuration used the following structure:
 
 ## Migration to Claude Code Plugin Structure
 
-### Prompts → Plugin Reference Documentation
+### Prompts → Plugin and config reference
 
-The system prompts have been moved to their respective plugins:
+The system prompts have been moved into plugins and the shared config:
 
 - `prompts/coding_assistant.md` → `plugins/coding-assistant/reference/prompt.md`
-- `prompts/technical_writer.md` → `plugins/technical-writer/reference/prompt.md`
-- `prompts/data_analyst.md` → `plugins/data-analyst/reference/prompt.md`
-
-### Templates → Plugin Reference Guides
-
-Document templates are now stored as reference guides:
-
-- `templates/code_review.md` → `plugins/coding-assistant/reference/code_review_guide.md`
-- `templates/api_documentation.md` → `plugins/technical-writer/reference/api_documentation_guide.md`
+- Other prompts and reference material → `claude/docs/`, `claude/skills/`, and `plugins/prompt-improver/` as applicable. See [claude/docs/skills-guide.md](docs/skills-guide.md) and [claude/AGENTS.md](AGENTS.md) for current layout.
 
 ### Configuration Settings
 
