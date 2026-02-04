@@ -2,10 +2,7 @@
 name: skill-optimizer
 description: Use when compacting and optimizing markdown skills for LLM context efficiency or recommending split strategies for oversized skills.
 model: opus
-tools:
-  - Read
-  - Write
-  - Skill
+allowed-tools: Read, Write, Skill, Edit, Grep, Glob, LSP, MCPSearch, WebFetch, WebSearch, Bash
 ---
 
 # Skill optimizer
