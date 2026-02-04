@@ -1,6 +1,7 @@
 ---
 name: background-agent-pings
 description: Background Agent Pings
+user-invocable: false
 ---
 
 # Background Agent Pings
