@@ -523,7 +523,7 @@ if __name__ == "__main__":
             strategy="priority",
         )
 
-        result = await condition_optimizer.optimize_with_conditions(request)
+        await condition_optimizer.optimize_with_conditions(request)
 
         # Example 2: Plugin coordination
         coordination = await condition_optimizer.wait_for_plugin_coordination(
