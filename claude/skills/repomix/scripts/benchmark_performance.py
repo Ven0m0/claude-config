@@ -1,6 +1,5 @@
 import time
 import subprocess
-import os
 from pathlib import Path
 
 def measure_command(cmd, description):
