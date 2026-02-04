@@ -51,7 +51,7 @@ def main():
     if output_direct.exists(): output_direct.unlink()
 
     # Benchmark npx processing
-    # Note: repomix_batch.py constructs cmd as: ["npx", "repomix", "--remote", repo_path, ...]
+    # Note: repomix_batch.py now constructs cmd as: ["repomix", "--remote", repo_path, ...] without the npx wrapper
     npx_cmd = ["npx", "repomix", "--remote", "octocat/Hello-World", "--style", "plain", "-o", str(output_npx)]
     npx_process_time = measure_command(npx_cmd, "npx repomix --remote ...")
 
