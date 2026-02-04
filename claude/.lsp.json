@@ -208,5 +208,17 @@
         "initializationOptions": {},
         "settings": {},
         "maxRestarts": 3
+    },
+    "dockerfile": {
+        "command": "docker-langserver",
+        "args": ["--stdio"],
+        "extensionToLanguage": {
+            "Dockerfile": "dockerfile",
+            ".dockerfile": "dockerfile"
+        },
+        "transport": "stdio",
+        "initializationOptions": {},
+        "settings": {},
+        "maxRestarts": 3
     }
 }
