@@ -318,6 +318,7 @@ my-project/
 
 ## Documentation
 
+- **Advanced Reference**: [REFERENCE.md](REFERENCE.md) - Detailed async patterns, Tokio, unsafe code, WebAssembly, and embedded development
 - [Rust Book](https://doc.rust-lang.org/book/)
 - [Tokio Tutorial](https://tokio.rs/tokio/tutorial)
 - [Async Book](https://rust-lang.github.io/async-book/)

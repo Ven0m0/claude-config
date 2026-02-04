@@ -47,18 +47,71 @@ The `env-setup.sh` script is sourced before each Bash command, making environmen
 
 3. **Use SessionStart hooks** for team-shared configurations (see hooks section)
 
-### Configuration Structure
+### How to use this directory
+
+- **Config pack**: Copy or symlink this `claude/` directory (or its contents) into your Claude Code config: `~/.claude/` (user) or your project's `.claude/` (project). Then `CLAUDE.md`, `AGENTS.md`, agents, skills, rules, and hooks are loaded from there.
+- **Marketplace**: This repo is also a plugin marketplace. Plugins live under `plugins/`; adding the marketplace (`/plugin marketplace add Ven0m0/claude-config`) installs those plugins. The `claude/` directory is the shared config pack; to use it you still need to point Claude Code at this repo or copy `claude/` into your config (see [SETUP.md](../SETUP.md)).
+- **Hooks**: Hooks in `hooks/hooks.json` use `${CLAUDE_PLUGIN_ROOT}` or `${PLUGIN_DIR}`. When using the repo as the config source, set the repo root (or the directory containing `claude/`) as that variable so hook scripts resolve. When copying only `claude/` to `~/.claude/`, you may need to set `CLAUDE_PLUGIN_ROOT` to the directory that contains `hooks/` and `scripts/`, or adjust paths. See [docs/hooks.md](docs/hooks.md).
+
+### Key documentation
+
+| Doc | Purpose |
+|-----|---------|
+| [docs/progressive-disclosure.md](docs/progressive-disclosure.md) | Content architecture (quick ref, implementation, advanced) |
+| [docs/prompt-caching.md](docs/prompt-caching.md) | Prompt caching behavior and usage |
+| [docs/prompt-best-practices.md](docs/prompt-best-practices.md) | Prompt design best practices |
+| [docs/skills-guide.md](docs/skills-guide.md) | How to use and author skills |
+| [docs/skills-ref.md](docs/skills-ref.md) | Skills reference and index |
+| [docs/tools-reference.md](docs/tools-reference.md) | Tools usage reference |
+| [docs/toon.md](docs/toon.md) | TOON format and token-efficient data |
+| [docs/token-and-context-optimization.md](docs/token-and-context-optimization.md) | Token reduction, context, TOON/ZON consolidated |
+
+Start with `CLAUDE.md` (points to `AGENTS.md`) for project-wide rules and agent orchestration.
+
+### Agent and skill optimization
+
+| Use case | Agent or skill |
+|----------|----------------|
+| Optimize agents / run more optimizations | **improve-agent** |
+| Optimize markdown for tokens | **markdown-optimizer** |
+| CLAUDE.md audit/optimize/create/migrate | **claudemd**, **claude-md-auditor** |
+| Skill definitions and validation | **skill-auditor** |
+| Optimize skills for token efficiency | **skill-optimizer** skill |
+| Doc token analysis and restructuring | **llm-docs-optimizer** skill |
+| Standardize markdown creation/updates | **manage-markdown-docs** skill |
+| Tool substitution (fd, rg, bun, uv) | **modern-tool-substitution** skill |
+| Hook config and lifecycle | **hooks-configuration** skill |
+
+See [AGENTS.md](AGENTS.md) for the full agent table and when to delegate.
+
+### Token reduction and TOON/ZON
+
+| Use case | Resource |
+|----------|----------|
+| Choose ZON/TOON/PLOON for data dirs | **smart-format** skill (`decide-format [directory]`) |
+| Encode/validate TOON | **toon-formatter** skill; [scripts/validate-toon.py](scripts/validate-toon.py) |
+| TOON spec and agent handoffs | **ref-toon-format**, **use-toon** skills |
+| Context/token budget | **context-manager**, **context-architect** agents; **strategic-compact**, **moai-foundation-context** skills |
+| Model params by task type | [docs/llm-tuning.md](docs/llm-tuning.md), **llm-tuning-patterns** skill |
+
+See [docs/toon.md](docs/toon.md) and [AGENTS.md](AGENTS.md) (Workflow and doc optimization).
+
+### Configuration structure
 
 ```
 claude/
-├── settings.json          # Main config (permissions, env, plugins)
+├── AGENTS.md             # Agent list, tool prefs, code standards, orchestration
+├── CLAUDE.md             # Entry point (→ AGENTS.md)
+├── settings.json         # Permissions, env, model options
 ├── env-setup.sh          # Environment setup for CLAUDE_ENV_FILE
-├── .gitignore            # Prevents secrets/state from being committed
-├── commands/             # 17 ultra-short command macros
-├── hooks/                # 4 auto-format/lint hooks
-├── agents/               # 5 specialized AI agents
-├── skills/               # 22 capability extensions
-└── rules/                # Performance guidelines
+├── commands/             # Command macros
+├── hooks/                # Auto-format, lint, MCP load hooks
+├── agents/               # Specialized agents (see AGENTS.md)
+├── skills/               # Skill extensions (see docs/skills-guide.md)
+├── rules/                # Rules and workflow
+├── docs/                 # Reference docs (above)
+├── workflows/            # CLAUDE.md workflows (audit, create, optimize)
+└── scripts/              # Utilities (analyze-claude-md, validate-toon, etc.)
 ```
 
 ## Commands

@@ -1,3 +1,10 @@
+---
+name: cleanup-context
+description: >
+  Optimize memory bank and context files by removing duplicates, consolidating documentation,
+  eliminating obsolete content, and archiving resolved issues. Reduces token usage 15-25%.
+---
+
 # Memory Bank Context Optimization
 
 You are a memory bank optimization specialist tasked with reducing token usage in the project's documentation system while maintaining all essential information and improving organization.
