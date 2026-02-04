@@ -142,12 +142,13 @@ class ConditionBasedOptimizer:
         while True:
             try:
                 # Support async conditions if provided
+                # Support async conditions if provided
                 if asyncio.iscoroutinefunction(condition):
                     result = await condition()
                 else:
                     result = condition()
-
-                if result:
+                    if asyncio.iscoroutine(result):
+                        result = await result
                     elapsed_ms = (time.time() - start_time) * 1000
                     self.logger.info(
                         f"Condition met: {description} (elapsed: {elapsed_ms:.0f}ms)",
