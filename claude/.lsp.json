@@ -10,29 +10,19 @@
     }
   },
   "typescript": {
-    "command": "typescript-language-server",
-    "args": [
-      "--stdio"
-    ],
+    "command": "vtsls",
+    "args": ["--stdio"],
     "extensionToLanguage": {
       ".ts": "typescript",
       ".tsx": "typescriptreact",
       ".mts": "typescript",
-      ".cts": "typescript"
-    }
-  },
-  "javascript": {
-    "command": "typescript-language-server",
-    "args": [
-      "--stdio"
-    ],
-    "extensionToLanguage": {
+      ".cts": "typescript",
       ".js": "javascript",
       ".jsx": "javascriptreact",
       ".mjs": "javascript",
       ".cjs": "javascript"
     }
-  },
+  }
   "bash": {
     "command": "bash-language-server",
     "args": ["start"],
@@ -57,6 +47,14 @@
     "args": [],
     "extensionToLanguage": {
       ".rs": "rust"
+    }
+  },
+  "yaml": {
+    "command": "yaml-language-server",
+    "args": ["--stdio"],
+    "extensionToLanguage": {
+      ".yaml": "yaml",
+      ".yml": "yaml"
     }
   },
   "java": {
