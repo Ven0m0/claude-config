@@ -164,4 +164,24 @@
     "args": ["server"],
     "extensionToLanguage": { ".md": "markdown" },
     "transport": "stdio"
+  },
+    "json": {
+        "command": "vscode-json-language-server",
+        "args": ["--stdio"],
+        "extensionToLanguage": {
+            ".json": "json",
+            ".jsonc": "jsonc"
+        },
+        "transport": "stdio",
+        "initializationOptions": {},
+        "settings": {
+            "json": {
+                "validate": {
+                    "enable": true
+                },
+                "schemas": []
+            }
+        },
+        "maxRestarts": 3
+    }
 }
