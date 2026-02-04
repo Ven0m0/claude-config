@@ -2,6 +2,17 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "description": "Code formatting and quality hooks for Ultralytics development",
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/quality_gate.py"
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "matcher": ".*",
