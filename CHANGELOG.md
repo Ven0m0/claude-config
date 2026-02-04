@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-02-04
+
+### Added (claude/ config pack release readiness)
+
+- **Documentation:** [claude/README.md](claude/README.md) now includes how to use the config pack, key docs (progressive-disclosure, prompt-caching, prompt-best-practices, skills-guide, skills-ref, tools-reference, toon), agent/skill optimization table, and token reduction/TOON-ZON section. [SETUP.md](SETUP.md) updated with "Using the claude/ config pack" and correct plugin list (technical-writer/data-analyst removed from install examples).
+- **Workflows:** Added [claude/workflows/migrate-opus.md](claude/workflows/migrate-opus.md) and [claude/workflows/setup-enforcement.md](claude/workflows/setup-enforcement.md) stubs for claudemd agent.
+- **Validation:** Added [claude/scripts/check-release.sh](claude/scripts/check-release.sh) to verify required files, in-scope docs, and in-scope skills before release.
+- **Wiring:** AGENTS.md "Workflow and doc optimization" expanded with skill-optimizer, llm-docs-optimizer, manage-markdown-docs, modern-tool-substitution, hooks-configuration, ref-toon-format/use-toon, validate-toon, token-and-context-optimization. skills-guide.md, skills-ref.md, tools-reference.md, toon.md, and hooks.md updated with in-repo pointers and CLAUDE_PLUGIN_ROOT notes.
+- **Token and context:** Added [claude/docs/token-and-context-optimization.md](claude/docs/token-and-context-optimization.md); linked from README key docs and AGENTS.md.
+
+### Changed
+
+- **Marketplace:** Removed technical-writer and data-analyst from [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json) (plugins not present in repo). SETUP.md and README install examples use only existing plugins; SETUP.md Technical Writer and Data Analyst plugin requirements sections removed.
+- **Legacy:** [claude/reference_legacy_config.md](claude/reference_legacy_config.md) prompts/templates section now points to claude/docs and AGENTS.md instead of technical-writer/data-analyst.
+- **Claudemd:** [claude/agents/claudemd.md](claude/agents/claudemd.md) references `scripts/analyze-claude-md.ts` and documents CLAUDE_PLUGIN_ROOT resolution for config-pack usage.
+- **Hooks:** [claude/docs/hooks.md](claude/docs/hooks.md) documents CLAUDE_PLUGIN_ROOT/PLUGIN_DIR for config pack usage.
+
 ## [1.0.0] - 2026-01-21
 
 ### Added
@@ -80,5 +97,6 @@ ______________________________________________________________________
 
 ## Version History
 
+- **1.1.0** - Claude config pack (claude/) release readiness: docs, workflows, check-release script, skill/agent wiring
 - **1.0.0** - Full Claude Code marketplace with plugins and skills
 - **0.1.0** - Initial configuration-based repository

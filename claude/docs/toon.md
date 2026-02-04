@@ -3,6 +3,8 @@ url: /reference/spec.md
 ---
 # Specification
 
+**In this repo:** Use **ref-toon-format** and **use-toon** skills for TOON spec and agent-handoff patterns; **toon-formatter** for encoding/validation; **smart-format** (`decide-format [directory]`) to choose ZON/TOON/PLOON for data dirs. Validate files with `claude/scripts/validate-toon.py`.
+
 The [TOON specification](https://github.com/toon-format/spec) is the authoritative reference for implementing encoders, decoders, and validators. It defines the concrete syntax, normative encoding/decoding behavior, and strict-mode validation rules.
 
 You don't need this page to *use* TOON. It's mainly for implementers and contributors. If you're looking to learn how to use TOON, start with the [Getting Started](/guide/getting-started) guide instead.

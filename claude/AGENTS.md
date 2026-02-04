@@ -43,6 +43,47 @@
   - Good: "Implemented feature X, ready for testing"
   - Good: "Ran tests for feature X, they all completed successfully"
 
+## Agent Orchestration
+
+Agents live in `claude/agents/`. Delegate via `Task(subagent_type="agent-name", prompt="...")`.
+
+| Agent | When to use |
+| ----- | ----------- |
+| general-purpose | Default; complex multi-step tasks, delegation |
+| code-simplifier, simplifier | Simplify/refine code without changing behavior |
+| markdown-optimizer | Optimize markdown for LLM context efficiency |
+| janitor, unused-code-cleaner | Cleanup, tech debt, dead code removal |
+| merge-supervisor | Git merge conflict resolution |
+| code-explorer, codebase-pattern-finder | Trace execution, find patterns, map architecture |
+| context-manager, context-architect | Context engineering, multi-agent orchestration |
+| bash-pro, python-pro, javascript-pro, typescript-pro, rust-pro | Language-specific implementation |
+| mcp-expert | MCP server config and integration |
+| dx-optimizer | Dev experience, tooling, workflow setup |
+| improve-agent | Agent performance optimization, prompt engineering, run optimizations on agents |
+| claudemd, claude-md-auditor | CLAUDE.md optimize/audit/migrate |
+| skill-auditor | Skill definitions and validation |
+| prd | Product requirements document |
+| repomix-explorer | Analyze codebase via Repomix |
+| reverse-engineer | Binary analysis, RE toolchains, security research |
+| turbo | Maximum speed, parallelize everything |
+
+**Parallel execution**: Use parallel Task() for independent work (e.g. security analysis + performance review + type check in one turn).
+
+**Multi-perspective**: For hard problems, use split roles: factual reviewer, senior engineer, security expert, consistency reviewer.
+
+## Workflow and doc optimization
+
+- **Large markdown**: Use **markdown-optimizer** agent for token-heavy docs (e.g. long reference files).
+- **Data format (ZON/TOON/PLOON)**: Use **smart-format** skill (`decide-format [directory]`) to choose token-saving format for data files.
+- **Model parameters**: Evidence-based tuning by task type in `claude/docs/llm-tuning.md`; see **llm-tuning-patterns** skill.
+- **MCP without context bloat**: Use **mcp-mode** skill for many-tool servers; see `claude/rules/mcp.md` (Token-efficient MCP).
+- **Skill token efficiency**: **skill-optimizer** skill (progressive disclosure, 500-line rule); **llm-docs-optimizer** for doc restructuring.
+- **Markdown consistency**: **manage-markdown-docs** skill for non-SKILL/agent markdown (headers, footers, metadata).
+- **Tool substitution**: **modern-tool-substitution** skill (fd, rg, bun, uv in generated code); aligns with Tool Preferences above.
+- **Hooks**: **hooks-configuration** skill for hook lifecycle and config; see `claude/docs/hooks.md`.
+- **TOON reference**: **ref-toon-format**, **use-toon** skills; `claude/docs/toon.md`; `claude/scripts/validate-toon.py`.
+- **Token and context**: Consolidated list in `claude/docs/token-and-context-optimization.md`.
+
 ## Progressive Disclosure
 
 *Keep context lean and focused*

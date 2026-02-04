@@ -30,19 +30,17 @@
 		"MCP_TOOL_TIMEOUT": "60000",
 		"MAX_MCP_OUTPUT_TOKENS": "14999",
 		"MAX_THINKING_TOKENS": "8000",
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "60",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
     "CLAUDE_CODE_SKIP_BEDROCK_AUTH": "1",
     "CLAUDE_CODE_SKIP_FOUNDRY_AUTH": "1",
-    "CLAUDE_CODE_SKIP_VERTEX_AUTH": "1"
+    "CLAUDE_CODE_SKIP_VERTEX_AUTH": "1",
+    "CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD": "1"
 	},
 	"includeCoAuthoredBy": false,
 	"cleanupPeriodDays": 7,
 	"enableAllProjectMcpServers": true,
   "language": "english",
 	"permissions": {
-		"deny": [
-			"NotebookEdit"
-		],
 		"allow": [
 			"Bash",
 			"Bash(git:*)",
@@ -98,6 +96,12 @@
       "MCPSearch",
 			"mcp__*"
 		],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "NotebookEdit"
+    ],
 		"defaultMode": "acceptEdits"
 	},
 	"model": "opusplan",

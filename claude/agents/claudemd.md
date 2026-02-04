@@ -48,6 +48,8 @@ knowledge. CLAUDE.md is the ONLY file included by default in every conversation.
 
 ## Workflow Routing
 
+Path resolution: When this repo is the config source, `CLAUDE_PLUGIN_ROOT` should be the directory that contains `claude/` (so `workflows/` resolves to `claude/workflows/`). If unset, resolve workflows relative to project root, e.g. `claude/workflows/audit-claudemd.md`.
+
 Based on user intent or $ARGUMENTS, route to the appropriate workflow:
 
 | Intent                                | Workflow     | File                                                   |
@@ -83,7 +85,7 @@ Read the appropriate workflow file and execute its instructions.
 | `${CLAUDE_PLUGIN_ROOT}/templates/audit-report.md`             | Audit output format           |
 | `${CLAUDE_PLUGIN_ROOT}/templates/project-claudemd-starter.md` | Project template              |
 | `${CLAUDE_PLUGIN_ROOT}/templates/user-claudemd-starter.md`    | User template                 |
-| `${CLAUDE_PLUGIN_ROOT}/scripts/analyze.ts`                    | Deterministic analysis script |
+| `${CLAUDE_PLUGIN_ROOT}/scripts/analyze-claude-md.ts`           | Deterministic analysis script |
 
 ## Anti-Patterns
 

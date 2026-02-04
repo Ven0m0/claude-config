@@ -6,6 +6,8 @@
 
 > Create, manage, and share skills to extend Claude's capabilities in Claude Code. Includes custom slash commands.
 
+**In-scope skills (this repo):** manage-markdown-docs, llm-tuning-patterns, llm-docs-optimizer, modern-tool-substitution, hooks-configuration, ref-toon-format, skill-optimizer. See [../README.md](../README.md) (Agent and skill optimization, Token reduction and TOON/ZON) and [../AGENTS.md](../AGENTS.md) (Workflow and doc optimization).
+
 Skills extend what Claude can do. Create a `SKILL.md` file with instructions, and Claude adds it to its toolkit. Claude uses skills when relevant, or you can invoke one directly with `/skill-name`.
 
 <Note>
