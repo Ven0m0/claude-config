@@ -18,42 +18,33 @@
 # conda activate myenv
 
 # Python optimizations (reduce startup time, disable bytecode)
-export PYTHONOPTIMIZE=2
-export PYTHONDONTWRITEBYTECODE=1
-export PYTHONUNBUFFERED=1
+export PYTHONOPTIMIZE=2 PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 export PYTHONPATH="${PYTHONPATH}${PYTHONPATH:+:}."
 
 # Prefer uv for Python package management
-if command -v uv &> /dev/null; then
+if command -v uv &>/dev/null; then
     alias pip="uv pip"
 fi
-
 # -------------------------------------------------------------------
 # Node.js Environment
 # -------------------------------------------------------------------
-
 # Prefer bun for JavaScript tasks
-if command -v bun &> /dev/null; then
-    export npm_config_prefer_offline=true
+if command -v bun &>/dev/null; then
+  export npm_config_prefer_offline=true
 fi
-
 # -------------------------------------------------------------------
 # Tool Preferences
 # -------------------------------------------------------------------
-
 # Prefer modern CLI tools
 if command -v rg &> /dev/null; then
-    alias grep="rg"
+  alias grep="rg"
 fi
-
 if command -v fd &> /dev/null; then
-    alias find="fd"
+  alias find="fd"
 fi
-
 if command -v bat &> /dev/null; then
-    alias cat="bat --paging=never"
+    alias cat="bat -pp"
 fi
-
 if command -v eza &> /dev/null; then
     alias ls="eza"
 fi
