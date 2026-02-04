@@ -115,10 +115,6 @@ function analyzeFile(filePath: string): AnalysisResult {
 
   // Process line by line
   // Pre-compile regexes for performance optimization
-
-  // Pre-compile regexes for performance optimization
-
-  // Pre-compile regexes for performance optimization
   const aggressiveRegex = new RegExp(AGGRESSIVE_WORDS.source, 'g');
   const xmlRegex = new RegExp(XML_TAG_PATTERN.source, 'g');
   const linkRegex = new RegExp(EXTERNAL_LINK.source, 'g');
