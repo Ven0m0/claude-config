@@ -22,7 +22,7 @@ def benchmark_format(file_path: str) -> Dict[str, Any]:
     # 1. Test TOON (Readability King)
     if shutil.which("tooner"):
         try:
-            subprocess.run(f"tooner -i '{file_path}' -o '{temp_base}.toon'", shell=True, check=True, stderr=subprocess.DEVNULL)
+            subprocess.run(["tooner", "-i", file_path, "-o", f"{temp_base}.toon"], check=True, stderr=subprocess.DEVNULL)
             results["toon"] = get_file_size(f"{temp_base}.toon")
         except: pass
 
@@ -30,14 +30,16 @@ def benchmark_format(file_path: str) -> Dict[str, Any]:
     if shutil.which("zon"):
         try:
             # Assuming 'zon encode' syntax based on your notes
-            subprocess.run(f"zon encode '{file_path}' > '{temp_base}.zon'", shell=True, check=True, stderr=subprocess.DEVNULL)
+            with open(f"{temp_base}.zon", "wb") as f_out:
+                subprocess.run(["zon", "encode", file_path], stdout=f_out, check=True, stderr=subprocess.DEVNULL)
             results["zon"] = get_file_size(f"{temp_base}.zon")
         except: pass
 
     # 3. Test PLOON (Deep Nesting King)
     if shutil.which("ploon"):
         try:
-            subprocess.run(f"ploon stringify '{file_path}' > '{temp_base}.pln'", shell=True, check=True, stderr=subprocess.DEVNULL)
+            with open(f"{temp_base}.pln", "wb") as f_out:
+                subprocess.run(["ploon", "stringify", file_path], stdout=f_out, check=True, stderr=subprocess.DEVNULL)
             results["ploon"] = get_file_size(f"{temp_base}.pln")
         except: pass
 
