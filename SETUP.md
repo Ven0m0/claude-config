@@ -91,33 +91,6 @@ uv pip install ruff
 rustup component add rustfmt
 ```
 
-### Technical Writer
-
-**Required:**
-
-- No special requirements
-
-### Data Analyst
-
-**Required for analysis:**
-
-```bash
-uv pip install pandas numpy matplotlib seaborn
-```
-
-**Optional (for visualizations):**
-
-```bash
-uv pip install plotly
-```
-
-**Optional (for MCP database server):**
-
-```bash
-uv pip install uvx
-uvx mcp-server-sqlite
-```
-
 ## Verifying Installation
 
 After installing plugins, verify they're active:

@@ -82,6 +82,7 @@ Agents live in `claude/agents/`. Delegate via `Task(subagent_type="agent-name", 
 - **Tool substitution**: **modern-tool-substitution** skill (fd, rg, bun, uv in generated code); aligns with Tool Preferences above.
 - **Hooks**: **hooks-configuration** skill for hook lifecycle and config; see `claude/docs/hooks.md`.
 - **TOON reference**: **ref-toon-format**, **use-toon** skills; `claude/docs/toon.md`; `claude/scripts/validate-toon.py`.
+- **Token and context**: Consolidated list in `claude/docs/token-and-context-optimization.md`.
 
 ## Progressive Disclosure
 

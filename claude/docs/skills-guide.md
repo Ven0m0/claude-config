@@ -2,7 +2,7 @@
 
 Skills extend Claude's knowledge with project-specific information and reusable workflows.
 
-**In this repo:** For optimizing skills and docs, see the **skill-optimizer** skill (token efficiency, progressive disclosure), **llm-docs-optimizer** (doc restructuring), **manage-markdown-docs** (markdown consistency), and **hooks-configuration** (hook lifecycle). Full index: [skills-ref.md](skills-ref.md). Agent list: [../AGENTS.md](../AGENTS.md).
+**In this repo:** In-scope skills: manage-markdown-docs, llm-tuning-patterns, llm-docs-optimizer, modern-tool-substitution, hooks-configuration, ref-toon-format, skill-optimizer. For optimizing skills and docs: **skill-optimizer** (token efficiency, progressive disclosure), **llm-docs-optimizer** (doc restructuring), **manage-markdown-docs** (markdown consistency), **hooks-configuration** (hook lifecycle). Full index: [skills-ref.md](skills-ref.md). Agent list: [../AGENTS.md](../AGENTS.md).
 
 ## Skill Basics
 

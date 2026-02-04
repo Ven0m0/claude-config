@@ -64,6 +64,7 @@ The `env-setup.sh` script is sourced before each Bash command, making environmen
 | [docs/skills-ref.md](docs/skills-ref.md) | Skills reference and index |
 | [docs/tools-reference.md](docs/tools-reference.md) | Tools usage reference |
 | [docs/toon.md](docs/toon.md) | TOON format and token-efficient data |
+| [docs/token-and-context-optimization.md](docs/token-and-context-optimization.md) | Token reduction, context, TOON/ZON consolidated |
 
 Start with `CLAUDE.md` (points to `AGENTS.md`) for project-wide rules and agent orchestration.
 
