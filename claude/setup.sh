@@ -6,5 +6,4 @@ bunx tweakcc --apply
 
 bunx get-shit-done-cc --global
 
-
-
+bunx cclsp@latest setup --user
