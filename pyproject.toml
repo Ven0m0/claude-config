@@ -1,0 +1,13 @@
+[project]
+name = "LLM-configs"
+version = "1.0.0"
+description = "highly optimized llm config files."
+requires-python = ">=3.13"
+dependencies = [
+  "claudelint",
+]
+
+[dependency-groups]
+dev = [
+  "ruff",
+]
