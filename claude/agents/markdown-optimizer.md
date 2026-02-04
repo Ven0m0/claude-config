@@ -1,8 +1,8 @@
 ---
 name: markdown-optimizer
 description: Use when compressing markdown for LLM context efficiency or recommending split strategies for oversized docs.
-model: opus
-allowed-tools: Read, Write, Skill, Edit, Grep, Glob, LSP, MCPSearch, WebFetch, WebSearch, mcp__*
+model: opusplan
+allowed-tools: Read, Write, Skill, Edit, Grep, Glob, LSP, MCPSearch, WebFetch, WebSearch, Bash
 ---
 
 # Markdown Optimizer
