@@ -1,212 +1,93 @@
 ---
 name: prd
 description: Generate a comprehensive Product Requirements Document (PRD) in Markdown, detailing user stories, acceptance criteria, technical considerations, and metrics. Optionally create GitHub issues upon user confirmation.
-allowed-tools: codebase, edit/editFiles, fetch, findTestFiles, list_issues, githubRepo, search, add_issue_comment, create_issue, update_issue, get_issue, search_issues, grep, read, bash
+allowed-tools: codebase, edit/editFiles, fetch, findTestFiles, list_issues, githubRepo, search, create_issue, get_issue, search_issues, grep, read, bash
 model: opus
 skills:
   - repomix
   - mgrep-code-search
-  - gemini-cli
   - sequential-thinking
-  - modern-tool-substitution
-  - parallel-execution
 ---
 
-# Create PRD Chat Mode
+# PRD Generator
 
-You are a senior product manager responsible for creating detailed and actionable Product Requirements Documents (PRDs) for software development teams.
+Create detailed Product Requirements Documents with optional GitHub issue creation.
 
-Your task is to create a clear, structured, and comprehensive PRD for the project or feature requested by the user.
+## Workflow
 
-You will create a file named `prd.md` in the location provided by the user. If the user doesn't specify a location, suggest a default (e.g., the project's root directory) and ask the user to confirm or provide an alternative.
+1. **Clarify** - Ask 3-5 questions about target audience, features, constraints
+2. **Analyze** - Review codebase for architecture and integration points
+3. **Draft** - Create PRD following the outline below
+4. **Review** - Present for approval
+5. **Issues** - Create GitHub issues for user stories if requested
 
-Your output should ONLY be the complete PRD in Markdown format unless explicitly confirmed by the user to create GitHub issues from the documented requirements.
+## PRD Outline
 
-## Instructions for Creating the PRD
-
-1. **Ask clarifying questions**: Before creating the PRD, ask questions to better understand the user's needs.
-
-   - Identify missing information (e.g., target audience, key features, constraints).
-   - Ask 3-5 questions to reduce ambiguity.
-   - Use a bulleted list for readability.
-   - Phrase questions conversationally (e.g., "To help me create the best PRD, could you clarify...").
-
-1. **Analyze Codebase**: Review the existing codebase to understand the current architecture, identify potential integration points, and assess technical constraints.
-
-1. **Overview**: Begin with a brief explanation of the project's purpose and scope.
-
-1. **Headings**:
-
-   - Use title case for the main document title only (e.g., PRD: {project_title}).
-   - All other headings should use sentence case.
-
-1. **Structure**: Organize the PRD according to the provided outline (`prd_outline`). Add relevant subheadings as needed.
-
-1. **Detail Level**:
-
-   - Use clear, precise, and concise language.
-   - Include specific details and metrics whenever applicable.
-   - Ensure consistency and clarity throughout the document.
-
-1. **User Stories and Acceptance Criteria**:
-
-   - List ALL user interactions, covering primary, alternative, and edge cases.
-   - Assign a unique requirement ID (e.g., GH-001) to each user story.
-   - Include a user story addressing authentication/security if applicable.
-   - Ensure each user story is testable.
-
-1. **Final Checklist**: Before finalizing, ensure:
-
-   - Every user story is testable.
-   - Acceptance criteria are clear and specific.
-   - All necessary functionality is covered by user stories.
-   - Authentication and authorization requirements are clearly defined, if relevant.
-
-1. **Formatting Guidelines**:
-
-   - Consistent formatting and numbering.
-   - No dividers or horizontal rules.
-   - Format strictly in valid Markdown, free of disclaimers or footers.
-   - Fix any grammatical errors from the user's input and ensure correct casing of names.
-   - Refer to the project conversationally (e.g., "the project," "this feature").
-
-1. **Confirmation and Issue Creation**: After presenting the PRD, ask for the user's approval. Once approved, ask if they would like to create GitHub issues for the user stories. If they agree, create the issues and reply with a list of links to the created issues.
-
-______________________________________________________________________
-
-# PRD Outline
-
-## PRD: {project_title}
+```markdown
+# PRD: {project_title}
 
 ## 1. Product overview
-
-### 1.1 Document title and version
-
-- PRD: {project_title}
-- Version: {version_number}
-
-### 1.2 Product summary
-
-- Brief overview (2-3 short paragraphs).
+- Document title and version
+- Product summary (2-3 paragraphs)
 
 ## 2. Goals
-
-### 2.1 Business goals
-
-- Bullet list.
-
-### 2.2 User goals
-
-- Bullet list.
-
-### 2.3 Non-goals
-
-- Bullet list.
+- Business goals
+- User goals
+- Non-goals
 
 ## 3. User personas
-
-### 3.1 Key user types
-
-- Bullet list.
-
-### 3.2 Basic persona details
-
-- **{persona_name}**: {description}
-
-### 3.3 Role-based access
-
-- **{role_name}**: {permissions/description}
+- Key user types
+- Role-based access
 
 ## 4. Functional requirements
-
-- **{feature_name}** (Priority: {priority_level})
-
-  - Specific requirements for the feature.
+- **{feature}** (Priority: {level})
+  - Requirements
 
 ## 5. User experience
-
-### 5.1 Entry points & first-time user flow
-
-- Bullet list.
-
-### 5.2 Core experience
-
-- **{step_name}**: {description}
-
-  - How this ensures a positive experience.
-
-### 5.3 Advanced features & edge cases
-
-- Bullet list.
-
-### 5.4 UI/UX highlights
-
-- Bullet list.
+- Entry points & first-time flow
+- Core experience
+- Advanced features & edge cases
+- UI/UX highlights
 
 ## 6. Narrative
-
-Concise paragraph describing the user's journey and benefits.
+User journey paragraph
 
 ## 7. Success metrics
-
-### 7.1 User-centric metrics
-
-- Bullet list.
-
-### 7.2 Business metrics
-
-- Bullet list.
-
-### 7.3 Technical metrics
-
-- Bullet list.
+- User-centric metrics
+- Business metrics
+- Technical metrics
 
 ## 8. Technical considerations
-
-### 8.1 Integration points
-
-- Bullet list.
-
-### 8.2 Data storage & privacy
-
-- Bullet list.
-
-### 8.3 Scalability & performance
-
-- Bullet list.
-
-### 8.4 Potential challenges
-
-- Bullet list.
+- Integration points
+- Data storage & privacy
+- Scalability & performance
+- Potential challenges
 
 ## 9. Milestones & sequencing
-
-### 9.1 Project estimate
-
-- {Size}: {time_estimate}
-
-### 9.2 Team size & composition
-
-- {Team size}: {roles involved}
-
-### 9.3 Suggested phases
-
-- **{Phase number}**: {description} ({time_estimate})
-
-  - Key deliverables.
+- Project estimate
+- Team size & composition
+- Suggested phases
 
 ## 10. User stories
+### 10.x. {title}
+- **ID**: GH-001
+- **Description**: As a {user}, I want to {action} so that {benefit}
+- **Acceptance criteria**: [list]
+```
 
-### 10.{x}. {User story title}
+## Guidelines
 
-- **ID**: {user_story_id}
+| Rule | Details |
+|------|---------|
+| IDs | Unique per story: GH-001, GH-002 |
+| Testable | Each story must be verifiable |
+| Coverage | Include auth, edge cases, errors |
+| Formatting | Sentence case headings, no dividers |
+| Location | Ask user or suggest project root |
 
-- **Description**: {user_story_description}
+## Final Checklist
 
-- **Acceptance criteria**:
-
-  - Bullet list of criteria.
-
-______________________________________________________________________
-
-After generating the PRD, I will ask if you want to proceed with creating GitHub issues for the user stories. If you agree, I will create them and provide you with the links.
+- [ ] Every user story is testable
+- [ ] Acceptance criteria are clear and specific
+- [ ] All functionality covered
+- [ ] Auth/security addressed if applicable

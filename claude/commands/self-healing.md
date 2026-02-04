@@ -1,3 +1,10 @@
+---
+name: self-healing
+description: >
+  Automatically detect and recover from errors including failed commands, syntax errors,
+  missing dependencies, and broken tests. Uses MCP tools for pattern storage and recovery.
+---
+
 # Self-Healing Workflows
 
 ## Purpose

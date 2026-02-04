@@ -66,13 +66,16 @@ def find_files_walk(
     files: list[Path] = []
     root_depth = len(root.parts)
 
-    for dirpath, _, filenames in os.walk(root):
+    for dirpath, dirnames, filenames in os.walk(root):
         current_path = Path(dirpath)
 
         if max_depth is not None:
             depth = len(current_path.parts) - root_depth
             if depth > max_depth:
+                dirnames[:] = []
                 continue
+            if depth == max_depth:
+                dirnames[:] = []
 
         for filename in filenames:
             filepath = current_path / filename

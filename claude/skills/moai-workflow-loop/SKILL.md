@@ -186,6 +186,10 @@ The loop hook is located at .claude/hooks/moai/stop__loop_controller.py.
 
 LSP diagnostics are available for Python using pyright or pylsp, TypeScript and JavaScript using tsserver, Go using gopls, Rust using rust-analyzer, Java using jdtls, and additional languages via .lsp.json configuration.
 
+## Reference
+
+For detailed implementation patterns, hook configurations, and advanced workflows, see [reference.md](reference.md).
+
 ---
 
 Version: 1.2.0

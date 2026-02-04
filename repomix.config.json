@@ -1,38 +1,38 @@
 {
   "$schema": "https://repomix.com/schemas/latest/schema.json",
   "input": {
-    "maxFileSize": 50000000
+    "maxFileSize": 52428800
   },
   "output": {
     "filePath": "repomix-output.xml",
     "style": "xml",
     "parsableStyle": false,
-    "compress": true,
-    "headerText": "Custom header information for the packed file.",
     "fileSummary": true,
     "directoryStructure": true,
     "files": true,
     "removeComments": true,
     "removeEmptyLines": true,
+    "compress": true,
     "topFilesLength": 5,
     "showLineNumbers": false,
     "truncateBase64": true,
     "copyToClipboard": false,
-    "includeEmptyDirectories": false,
-    "instructionFilePath": "AGENTS.md",
+    "includeFullDirectoryStructure": false,
+    "tokenCountTree": true,
     "git": {
       "sortByChanges": true,
       "sortByChangesMaxCommits": 50,
       "includeDiffs": false,
       "includeLogs": false,
-      "includeLogsCount": 50
+      "includeLogsCount": 25
     }
   },
-  "include": ["**/*"],
+  "include": [],
   "ignore": {
     "useGitignore": true,
+    "useDotIgnore": true,
     "useDefaultPatterns": true,
-    "customPatterns": ["**/*.log"],
+    "customPatterns": []
   },
   "security": {
     "enableSecurityCheck": true
