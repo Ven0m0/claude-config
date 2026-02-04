@@ -7,7 +7,7 @@ allowed-tools: Read, Write, Skill, Edit, Grep, Glob, LSP, MCPSearch, WebFetch, W
 
 # Skill optimizer
 
-**Best Practice**: Keep SKILL.md lean (~2-5KB). Move lengthy content to separate files and reference them. Claude will load only what's needed.
+**Best Practice**: Keep SKILL.md lean (~2-5KB). Move lengthy content to separate files and reference them. Claude will load only what's needed. kebab-case name
 
 ## When to Use
 
