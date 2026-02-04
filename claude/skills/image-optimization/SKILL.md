@@ -18,6 +18,16 @@ Images typically comprise 50% of page weight. Optimization dramatically improves
 - Mobile experience enhancement
 - Before deployment
 
+## Format Selection
+
+| Format | Best For | Compression |
+|--------|----------|-------------|
+| JPEG | Photos | Lossy, 50-70% reduction |
+| PNG | Icons, transparency | Lossless, 10-30% |
+| WebP | Modern browsers | 25-35% better than JPEG |
+| AVIF | Next-gen | 50% better than JPEG |
+| SVG | Logos, icons | Vector, scalable |
+
 ## Instructions
 
 ### 1. **Image Compression & Formats**
