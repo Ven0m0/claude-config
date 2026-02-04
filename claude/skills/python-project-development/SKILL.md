@@ -311,7 +311,12 @@ Use battle-tested components from `scripts/`:
 - `subprocess_helpers.py` - Safe subprocess wrappers with retry/timeout
 - `common_utils.py` - has(), find_files(), safe file ops
 
-See `references/patterns.md` for common CLI patterns and `references/stdlib_perf.md` for performance tips.
+## Reference Materials
+
+- [CLI Patterns](references/patterns.md) - Common CLI patterns and best practices
+- [stdlib Performance](references/stdlib_perf.md) - Performance tips for standard library usage
+- [Examples](references/examples.md) - Complete example implementations
+- [Full Reference](references/reference.md) - Comprehensive API and configuration reference
 
 ## Resources
 

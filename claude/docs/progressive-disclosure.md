@@ -47,7 +47,6 @@ Content Requirements:
 - Cross-references to deeper content
 
 Structure Template:
-
 ```markdown
 ## Quick Reference (30 seconds)
 
@@ -76,7 +75,6 @@ result = function(params)
 ```
 
 Example - Quality Framework:
-
 ```markdown
 ## Quick Reference (30 seconds)
 
@@ -122,7 +120,6 @@ Content Requirements:
 - Troubleshooting basics
 
 Structure Template:
-
 ```markdown
 ## Implementation Guide (5 minutes)
 
@@ -175,7 +172,6 @@ solution_b()
 ```
 
 Example - DDD Workflow:
-
 ```markdown
 ## Implementation Guide (5 minutes)
 
@@ -256,7 +252,6 @@ Content Requirements:
 - Best practices and anti-patterns
 
 Structure Template:
-
 ```markdown
 ## Advanced Implementation (10+ minutes)
 
@@ -328,7 +323,6 @@ Token Budget: ~5,000 tokens
 Critical Rule: SKILL.md MUST be ≤500 lines.
 
 Line Budget Breakdown:
-
 ```
 SKILL.md (500 lines maximum)
  Frontmatter (4-6 lines)
@@ -358,7 +352,6 @@ SKILL.md (500 lines maximum)
 ```
 
 Overflow Handling Strategy:
-
 ```python
 class SKILLMDValidator:
  """Validate and enforce 500-line SKILL.md limit."""
@@ -367,124 +360,62 @@ class SKILLMDValidator:
  
  def validate_skill(self, skill_path: str) -> dict:
  """Validate SKILL.md compliance."""
- 
  skill_file = f"{skill_path}/SKILL.md"
- 
- # Count lines
  with open(skill_file) as f:
- lines = f.readlines()
- 
+  lines = f.readlines()
  line_count = len(lines)
- 
  if line_count > self.MAX_LINES:
- return {
- "valid": False,
- "line_count": line_count,
- "overflow": line_count - self.MAX_LINES,
- "action": "SPLIT_REQUIRED",
- "recommendation": self._generate_split_recommendation(lines)
- }
- 
- return {
- "valid": True,
- "line_count": line_count,
- "remaining": self.MAX_LINES - line_count
- }
+  return {"valid": False, "line_count": line_count, "overflow": line_count - self.MAX_LINES,
+    "action": "SPLIT_REQUIRED", "recommendation": self._generate_split_recommendation(lines)}
+ return {"valid": True, "line_count": line_count, "remaining": self.MAX_LINES - line_count}
  
  def _generate_split_recommendation(self, lines: list) -> dict:
  """Generate file splitting recommendation."""
- 
  sections = self._analyze_sections(lines)
- 
  recommendations = []
- 
- # Check Advanced Patterns section size
  advanced = sections.get("Advanced Patterns", 0)
  if advanced > 100:
- recommendations.append({
- "target": "modules/advanced-patterns.md",
- "content": "Advanced Patterns section",
- "lines_saved": advanced - 20 # Keep brief intro
- })
- 
- # Check code examples
+  recommendations.append({"target": "modules/advanced-patterns.md", "content": "Advanced Patterns section",
+         "lines_saved": advanced - 20})
  example_lines = self._count_code_blocks(lines)
  if example_lines > 100:
- recommendations.append({
- "target": "examples.md",
- "content": "Code examples",
- "lines_saved": example_lines - 30 # Keep key examples
- })
- 
- # Check reference links
+  recommendations.append({"target": "examples.md", "content": "Code examples", "lines_saved": example_lines - 30})
  reference_lines = self._count_references(lines)
  if reference_lines > 50:
- recommendations.append({
- "target": "reference.md",
- "content": "External references",
- "lines_saved": reference_lines - 10
- })
- 
- return {
- "recommendations": recommendations,
- "total_lines_saved": sum(r["lines_saved"] for r in recommendations),
- "resulting_size": len(lines) - sum(r["lines_saved"] for r in recommendations)
- }
+  recommendations.append({"target": "reference.md", "content": "External references", "lines_saved": reference_lines - 10})
+ return {"recommendations": recommendations, "total_lines_saved": sum(r["lines_saved"] for r in recommendations),
+   "resulting_size": len(lines) - sum(r["lines_saved"] for r in recommendations)}
  
  def auto_split_skill(self, skill_path: str):
  """Automatically split SKILL.md into modules."""
- 
  skill_file = f"{skill_path}/SKILL.md"
- 
  with open(skill_file) as f:
- content = f.read()
- 
- # Extract sections
+  content = f.read()
  sections = self._extract_sections(content)
- 
- # Keep core sections in SKILL.md
- core_content = {
- "frontmatter": sections["frontmatter"],
- "quick_reference": sections["quick_reference"],
- "implementation_guide": sections["implementation_guide"],
- "advanced_intro": self._create_brief_intro(sections["advanced_patterns"]),
- "works_well_with": sections["works_well_with"]
- }
- 
- # Move overflow to modules
+ core_content = {"frontmatter": sections["frontmatter"], "quick_reference": sections["quick_reference"],
+     "implementation_guide": sections["implementation_guide"],
+     "advanced_intro": self._create_brief_intro(sections["advanced_patterns"]),
+     "works_well_with": sections["works_well_with"]}
  modules_dir = f"{skill_path}/modules"
  os.makedirs(modules_dir, exist_ok=True)
- 
- # Advanced patterns → modules/advanced-patterns.md
  with open(f"{modules_dir}/advanced-patterns.md", "w") as f:
- f.write(sections["advanced_patterns"])
- 
- # Examples → examples.md
+  f.write(sections["advanced_patterns"])
  if "examples" in sections:
- with open(f"{skill_path}/examples.md", "w") as f:
- f.write(sections["examples"])
- 
- # References → reference.md
+  with open(f"{skill_path}/examples.md", "w") as f:
+  f.write(sections["examples"])
  if "references" in sections:
- with open(f"{skill_path}/reference.md", "w") as f:
- f.write(sections["references"])
- 
- # Rewrite SKILL.md with core content + cross-references
+  with open(f"{skill_path}/reference.md", "w") as f:
+  f.write(sections["references"])
  with open(skill_file, "w") as f:
- f.write(self._assemble_core_skill(core_content))
+  f.write(self._assemble_core_skill(core_content))
 
 # Usage
 validator = SKILLMDValidator()
-
-# Validate skill
 result = validator.validate_skill(".claude/skills/<skill-name>")
-
 if not result["valid"]:
  print(f" SKILL.md exceeds limit: {result['line_count']} lines")
  print(f" Overflow: {result['overflow']} lines")
  print(f" Recommendation: {result['recommendation']}")
- 
- # Auto-split
  validator.auto_split_skill(".claude/skills/<skill-name>")
  print(" Skill automatically split into modules")
 ```
@@ -492,7 +423,6 @@ if not result["valid"]:
 ### Progressive Loading Strategy
 
 Token-Efficient Content Access:
-
 ```python
 class ProgressiveContentLoader:
  """Load skill content progressively based on user needs."""
@@ -503,95 +433,64 @@ class ProgressiveContentLoader:
  
  def load_level_1(self) -> str:
  """Load Quick Reference only (30 seconds, ~1K tokens)."""
- 
  if "level_1" in self.loaded_levels:
- return # Already loaded
- 
+  return
  with open(f"{self.skill_path}/SKILL.md") as f:
- content = f.read()
- 
- # Extract only Quick Reference section
+  content = f.read()
  quick_ref = self._extract_section(content, "Quick Reference")
- 
  self.loaded_levels.add("level_1")
  return quick_ref
  
  def load_level_2(self) -> str:
  """Load Implementation Guide (~3K additional tokens)."""
- 
  if "level_2" not in self.loaded_levels:
- with open(f"{self.skill_path}/SKILL.md") as f:
- content = f.read()
- 
- impl_guide = self._extract_section(content, "Implementation Guide")
- self.loaded_levels.add("level_2")
- return impl_guide
+  with open(f"{self.skill_path}/SKILL.md") as f:
+  content = f.read()
+  impl_guide = self._extract_section(content, "Implementation Guide")
+  self.loaded_levels.add("level_2")
+  return impl_guide
  
  def load_level_3(self) -> str:
  """Load Advanced Patterns (~5K additional tokens)."""
- 
  if "level_3" not in self.loaded_levels:
- # Check if in SKILL.md or split to module
- advanced_path = f"{self.skill_path}/modules/advanced-patterns.md"
- 
- if os.path.exists(advanced_path):
- # Load from module
- with open(advanced_path) as f:
- advanced = f.read()
- else:
- # Load from SKILL.md
- with open(f"{self.skill_path}/SKILL.md") as f:
- content = f.read()
- advanced = self._extract_section(content, "Advanced Patterns")
- 
- self.loaded_levels.add("level_3")
- return advanced
+  advanced_path = f"{self.skill_path}/modules/advanced-patterns.md"
+  if os.path.exists(advanced_path):
+  with open(advanced_path) as f:
+   advanced = f.read()
+  else:
+  with open(f"{self.skill_path}/SKILL.md") as f:
+   content = f.read()
+  advanced = self._extract_section(content, "Advanced Patterns")
+  self.loaded_levels.add("level_3")
+  return advanced
  
  def load_examples(self) -> str:
  """Load examples.md if exists."""
  examples_path = f"{self.skill_path}/examples.md"
  if os.path.exists(examples_path):
- with open(examples_path) as f:
- return f.read()
+  with open(examples_path) as f:
+  return f.read()
  
  def load_on_demand(self, user_expertise: str, time_available: int) -> str:
  """Load appropriate level based on user context."""
- 
- if time_available <= 30: # seconds
- return self.load_level_1()
- 
- elif time_available <= 300: # 5 minutes
- return self.load_level_1() + "\n\n" + self.load_level_2()
- 
- else: # 10+ minutes
- return (
- self.load_level_1() + "\n\n" +
- self.load_level_2() + "\n\n" +
- self.load_level_3()
- )
+ if time_available <= 30:
+  return self.load_level_1()
+ elif time_available <= 300:
+  return self.load_level_1() + "\n\n" + self.load_level_2()
+ else:
+  return self.load_level_1() + "\n\n" + self.load_level_2() + "\n\n" + self.load_level_3()
 
 # Usage
 loader = ProgressiveContentLoader(".claude/skills/moai-foundation-core")
-
-# User with 30 seconds
-quick_help = loader.load_level_1() # ~1K tokens
-
-# User with 5 minutes
-practical_guide = loader.load_on_demand(expertise="intermediate", time_available=300)
-# ~4K tokens (Level 1 + Level 2)
-
-# Expert user with time
-comprehensive = loader.load_on_demand(expertise="expert", time_available=900)
-# ~9K tokens (All levels)
+quick_help = loader.load_level_1()  # ~1K tokens
+practical_guide = loader.load_on_demand(expertise="intermediate", time_available=300)  # ~4K tokens
+comprehensive = loader.load_on_demand(expertise="expert", time_available=900)  # ~9K tokens
 ```
 
 ### Cross-Reference Architecture
 
 Effective Cross-Linking:
-
 ```markdown
-<!-- In SKILL.md -->
-
 ## Quick Reference (30 seconds)
 
 Quick Access:
@@ -644,6 +543,4 @@ Commands:
 
 ---
 
-Version: 1.0.0
-Last Updated: 2025-11-25
-Status: Production Ready
+Version: 1.0.0 | Last Updated: 2025-11-25 | Status: Production Ready

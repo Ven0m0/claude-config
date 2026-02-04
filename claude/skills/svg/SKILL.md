@@ -402,10 +402,15 @@ For detailed patterns on each topic, see the modules directory.
 
 ## Module Index
 
-- modules/svg-basics.md: Document structure, coordinate system, shapes, paths, text
-- modules/svg-styling.md: Fills, strokes, gradients, patterns, filters, clipping, masking
-- modules/svg-optimization.md: SVGO configuration, compression, sprites, performance
-- modules/svg-animation.md: CSS animations, SMIL, JavaScript, interaction patterns
+- [SVG Basics](modules/svg-basics.md): Document structure, coordinate system, shapes, paths, text
+- [SVG Styling](modules/svg-styling.md): Fills, strokes, gradients, patterns, filters, clipping, masking
+- [SVG Optimization](modules/svg-optimization.md): SVGO configuration, compression, sprites, performance
+- [SVG Animation](modules/svg-animation.md): CSS animations, SMIL, JavaScript, interaction patterns
+
+## Reference Materials
+
+- [Examples](references/examples.md) - Complete SVG examples
+- [Full Reference](references/reference.md) - Comprehensive SVG element reference
 
 ---
 
