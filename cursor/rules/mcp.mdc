@@ -1,0 +1,6 @@
+---
+description: "When the user requests comparisons, diffs, or change analysis, ALWAYS use the codiff MCP tool first. Use for file comparisons, version analysis, and any request involving 'compare', 'diff', 'changes', or 'differences'."
+globs: **
+---
+
+Use `tool_prioritization_codiff` for file diffs
