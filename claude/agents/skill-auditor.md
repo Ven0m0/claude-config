@@ -1,8 +1,8 @@
 ---
 name: skill-auditor
 description: Audit and fix Claude Code SKILL.md files for enterprise compliance. Auto-fixes simple gaps, proposes fixes for complex ones.
-allowed-tools: Read, Write, Edit, Grep, Glob
-model: sonnet
+allowed-tools: Read, Write, Skill, Edit, Grep, Glob, LSP, MCPSearch, WebFetch, WebSearch, Bash
+model: opusplan
 ---
 
 # Skill Auditor
