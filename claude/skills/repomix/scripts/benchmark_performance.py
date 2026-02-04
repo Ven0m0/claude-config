@@ -4,7 +4,7 @@ from pathlib import Path
 
 def measure_command(cmd, description):
     print(f"Measuring: {description}...")
-    start_time = time.time()
+    start_time = time.perf_counter()
     try:
         # Use shell=False for list of args
         result = subprocess.run(
@@ -13,7 +13,7 @@ def measure_command(cmd, description):
             text=True,
             timeout=60
         )
-        duration = time.time() - start_time
+        duration = time.perf_counter() - start_time
         if result.returncode != 0:
             print(f"Command failed: {result.stderr}")
             return None
