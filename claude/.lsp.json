@@ -3,9 +3,7 @@
   "_comment": "MoAI-ADK Language Server Protocol Configuration - Supports 16+ languages",
   "python": {
     "command": "pyright-langserver",
-    "args": [
-      "--stdio"
-    ],
+    "args": ["--stdio"],
     "extensionToLanguage": {
       ".py": "python",
       ".pyi": "python"
@@ -164,6 +162,20 @@
     ],
     "extensionToLanguage": {
       ".dart": "dart"
+    }
+  },
+  "cpp": {
+    "command": "clangd",
+    "extensionToLanguage": {
+      ".c": "c",
+      ".h": "c",
+      ".cpp": "cpp",
+      ".hpp": "cpp",
+      ".cc": "cpp",
+      ".cxx": "cpp",
+      ".hxx": "cpp",
+      ".m": "objective-c",
+      ".mm": "objective-cpp"
     }
   }
 }
