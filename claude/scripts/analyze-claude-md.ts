@@ -114,6 +114,15 @@ function analyzeFile(filePath: string): AnalysisResult {
   let tableRowCount = 0;
 
   // Process line by line
+  // Pre-compile regexes for performance optimization
+
+  // Pre-compile regexes for performance optimization
+
+  // Pre-compile regexes for performance optimization
+  const aggressiveRegex = new RegExp(AGGRESSIVE_WORDS.source, 'g');
+  const xmlRegex = new RegExp(XML_TAG_PATTERN.source, 'g');
+  const linkRegex = new RegExp(EXTERNAL_LINK.source, 'g');
+
   lines.forEach((line, index) => {
     const lineNum = index + 1;
 
@@ -131,7 +140,7 @@ function analyzeFile(filePath: string): AnalysisResult {
 
     // Check for aggressive language
     let match;
-    const aggressiveRegex = new RegExp(AGGRESSIVE_WORDS.source, 'g');
+
     while ((match = aggressiveRegex.exec(line)) !== null) {
       result.aggressiveLanguage.count++;
       result.aggressiveLanguage.instances.push({
@@ -142,7 +151,7 @@ function analyzeFile(filePath: string): AnalysisResult {
     }
 
     // Check for XML tags
-    const xmlRegex = new RegExp(XML_TAG_PATTERN.source, 'g');
+
     while ((match = xmlRegex.exec(line)) !== null) {
       if (!result.xmlTags.includes(match[1])) {
         result.xmlTags.push(match[1]);
@@ -186,7 +195,7 @@ function analyzeFile(filePath: string): AnalysisResult {
     }
 
     // Check for external links
-    const linkRegex = new RegExp(EXTERNAL_LINK.source, 'g');
+
     while ((match = linkRegex.exec(line)) !== null) {
       const link = match[1];
       if (!link.startsWith('#') && !result.externalLinks.includes(link)) {
