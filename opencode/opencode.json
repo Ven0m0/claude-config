@@ -9,7 +9,7 @@
         "@spoons-and-mirrors/pocket-universe@latest",
         "@ramarivera/opencode-model-announcer",
         "opencode-pty",
-        "opencode-antigravity-auth",
+        "opencode-antigravity-auth@beta",
         "opencode-optimal-model-temps",
         "opencode-gemini-auth",
         "@f97/opencode-morph-fast-apply",
@@ -231,7 +231,18 @@
                 "apiKey": "$ZAI_API_KEY"
             }
         }
-    },
+        "glm": {
+            "npm": "@ai-sdk/openai-compatible",
+           "options": {
+                "baseURL": "https://open.z.ai/api/paas/v4",
+                "apiKey": "YOUR_GLM_API_KEY_HERE"
+           },
+           "models": {
+               "glm-4-plus": { "name": "GLM-4 Plus" },
+               "glm-4-flash": { "name": "GLM-4 Flash" }
+               }
+           }
+        },
     "model": "zai-coding-plan/glm-4.7",
     "small_model": "zai-coding-plan/glm-4.5-air",
     "permission": {
