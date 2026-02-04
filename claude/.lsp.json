@@ -35,6 +35,16 @@
       ".cjs": "javascript"
     }
   },
+  "bash": {
+    "command": "bash-language-server",
+    "args": ["start"],
+    "extensionToLanguage": {
+      ".sh": "shellscript",
+      ".bash": "shellscript",
+      ".zsh": "shellscript",
+      ".ksh": "shellscript"
+    }
+  }
   "go": {
     "command": "gopls",
     "args": [
