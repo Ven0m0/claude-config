@@ -25,34 +25,6 @@
 			"category": "productivity"
 		},
 		{
-			"name": "technical-writer",
-			"description": "Technical documentation and API documentation writer",
-			"version": "1.0.0",
-			"author": {
-				"name": "Ven0m0"
-			},
-			"homepage": "https://github.com/Ven0m0/claude-config",
-			"repository": "https://github.com/Ven0m0/claude-config",
-			"license": "MIT",
-			"source": "technical-writer",
-			"keywords": ["documentation", "technical-writing", "api-docs"],
-			"category": "productivity"
-		},
-		{
-			"name": "data-analyst",
-			"description": "Data analysis and visualization assistant",
-			"version": "1.0.0",
-			"author": {
-				"name": "Ven0m0"
-			},
-			"homepage": "https://github.com/Ven0m0/claude-config",
-			"repository": "https://github.com/Ven0m0/claude-config",
-			"license": "MIT",
-			"source": "data-analyst",
-			"keywords": ["data-analysis", "visualization", "statistics"],
-			"category": "productivity"
-		},
-		{
 			"name": "conserve",
 			"description": "Resource optimization and performance monitoring toolkit for efficient Claude Code workflows",
 			"version": "1.3.0",

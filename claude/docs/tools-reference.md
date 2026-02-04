@@ -2,6 +2,8 @@
 
 Comprehensive reference for all available Claude Code tools and their proper usage.
 
+**Tool substitution:** The **modern-tool-substitution** skill (fd, rg, bun, uv, etc.) aligns generated commands with project preferences; see [../AGENTS.md](../AGENTS.md) Tool Preferences and [../README.md](../README.md) Agent and skill optimization.
+
 ## File Operations
 
 ### Read

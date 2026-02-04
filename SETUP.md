@@ -21,8 +21,8 @@ claude
 # Add this marketplace
 /plugin marketplace add Ven0m0/claude-config
 
-# Install all plugins
-/plugin install coding-assistant technical-writer data-analyst @claude-config-marketplace
+# Install all plugins (see marketplace for full list)
+/plugin install coding-assistant prompt-improver conserve config-wizard dependency-blocker block-dotfiles gemini-delegation @claude-config-marketplace
 ```
 
 ### Option 2: Install Individual Plugins
@@ -35,11 +35,11 @@ claude
 # Install just the coding assistant
 /plugin install coding-assistant@claude-config-marketplace
 
-# Or install the technical writer
-/plugin install technical-writer@claude-config-marketplace
+# Or install prompt improver
+/plugin install prompt-improver@claude-config-marketplace
 
-# Or install the data analyst
-/plugin install data-analyst@claude-config-marketplace
+# Or install conserve (context optimization)
+/plugin install conserve@claude-config-marketplace
 ```
 
 ### Option 3: Local Development/Testing
@@ -58,6 +58,14 @@ claude
 # Install plugins from local marketplace
 /plugin install coding-assistant@claude-config-marketplace
 ```
+
+### Using the claude/ config pack
+
+To use the shared config (agents, skills, rules, hooks) from this repo without installing plugins:
+
+1. Clone the repo and open your project (or use the repo as your project).
+2. Point Claude Code at the repo so that the `claude/` directory is used as config (e.g. set your project root to the repo, or copy/symlink the contents of `claude/` into `~/.claude/` or your project's `.claude/`).
+3. If you use hooks, set `CLAUDE_PLUGIN_ROOT` (or `PLUGIN_DIR`) to the path that contains `claude/hooks/` and `claude/scripts/` so hook commands resolve. See [claude/README.md](claude/README.md) and [claude/docs/hooks.md](claude/docs/hooks.md).
 
 ## Plugin Requirements
 
@@ -81,33 +89,6 @@ uv pip install ruff
 # Go (included with Go installation)
 # Rust
 rustup component add rustfmt
-```
-
-### Technical Writer
-
-**Required:**
-
-- No special requirements
-
-### Data Analyst
-
-**Required for analysis:**
-
-```bash
-uv pip install pandas numpy matplotlib seaborn
-```
-
-**Optional (for visualizations):**
-
-```bash
-uv pip install plotly
-```
-
-**Optional (for MCP database server):**
-
-```bash
-uv pip install uvx
-uvx mcp-server-sqlite
 ```
 
 ## Verifying Installation

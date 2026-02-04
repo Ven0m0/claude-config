@@ -1,5 +1,15 @@
 # MCP Server Rules
 
+## Token-efficient MCP (MCP Mode)
+
+When a server exposes **many tools** or you want to **avoid loading schemas into context**, use **MCP Mode** so tools are invoked on-demand without context bloat.
+
+- **When**: Servers with many tools; procedural workflows (filter → join → iterate); token-limited sessions.
+- **How**: Use the `mcp-mode` skill. Commands: `cm index --server X`, `cm hydrate <tool> --server X`, `cm call tool --server X` (preferred for single calls). Workspace path: `./.claude/skills/mcp-mode/bin/cm`; fallback: `~/.claude/skills/mcp-mode/bin/cm`.
+- **Config**: MCP Mode uses `~/.claude/mcp.json` (or `.claude/mcp.json`); servers there are not auto-injected into Claude Code context.
+
+Use native MCP (this rule) for few-tool servers and simple flows; use MCP Mode for discovery-heavy or many-tool usage.
+
 ## Configuration Principles
 
 ### Minimal Permissions

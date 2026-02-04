@@ -15,13 +15,13 @@ metadata:
   aliases: "moai-foundation-context"
   replaces: "moai-core-context-budget, moai-core-session-state"
 
-# MoAI Extension: Progressive Disclosure
+# Extension: Progressive Disclosure
 progressive_disclosure:
   enabled: true
   level1_tokens: 100
   level2_tokens: 5000
 
-# MoAI Extension: Triggers
+# Extension: Triggers
 triggers:
   keywords:
     - "token"
@@ -135,7 +135,7 @@ Use Case: Prevent context overflow in long-running SPEC-First workflows.
 
 Concept: Proactive context clearing at strategic checkpoints to maintain efficiency.
 
-Mandatory /clear Points: After /moai:1-plan completion to save 45-50K tokens. When context exceeds 150K tokens to prevent overflow. When conversation exceeds 50 messages to remove stale history. Before major phase transitions for clean slate. During model switches for Haiku to Sonnet handoffs.
+Mandatory /clear Points: After plan phase completion to save 45-50K tokens. When context exceeds 150K tokens to prevent overflow. When conversation exceeds 50 messages to remove stale history. Before major phase transitions for clean slate. During model switches when handoffs are needed.
 
 Use Case: Maximize token efficiency across SPEC-Run-Sync cycles.
 
@@ -224,7 +224,7 @@ Execute context compression or clearing when usage reaches 85% threshold. This m
 
 Session Initialization: Initialize token budget with Pattern 1, load session state with Pattern 3, setup progressive disclosure with Pattern 5, configure handoff protocols with Pattern 4.
 
-SPEC-First Workflow: Execute /moai:1-plan, then mandatory /clear to save 45-50K tokens, then /moai:2-run SPEC-XXX, then multi-agent handoffs with Pattern 4, then /moai:3-sync SPEC-XXX, then session state persistence with Pattern 3.
+SPEC-First Workflow: Execute plan phase, then mandatory /clear to save 45-50K tokens, then run phase for SPEC-XXX, then multi-agent handoffs with Pattern 4, then sync phase for SPEC-XXX, then session state persistence with Pattern 3.
 
 Context Monitoring: Continuously track token usage with Pattern 1, apply progressive disclosure with Pattern 5, execute /clear at thresholds with Pattern 2, validate handoffs with Pattern 4.
 
@@ -243,4 +243,3 @@ Context Monitoring: Continuously track token usage with Pattern 1, apply progres
 Status: Production Ready (Enterprise)
 Modular Architecture: SKILL.md + 6 modules
 Integration: Plan-Run-Sync workflow optimized
-Generated with: MoAI-ADK Skill Factory

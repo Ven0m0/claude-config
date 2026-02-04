@@ -4,66 +4,66 @@
 // Purpose: Prevent bundle bloat and performance regressions
 // Exit codes: 0 = All budgets met, 1 = Budget violations detected
 
-import { exec } from "child_process";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-import { promisify } from "util";
-import zlib from "zlib";
+import { exec } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { promisify } from 'util';
+import zlib from 'zlib';
 
 const execAsync = promisify(exec);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const REPO_ROOT = path.resolve(__dirname, "..");
-const DIST_DIR = path.join(REPO_ROOT, "marketplace", "dist");
+const REPO_ROOT = path.resolve(__dirname, '..');
+const DIST_DIR = path.join(REPO_ROOT, 'marketplace', 'dist');
 
 // Performance budgets
 const BUDGETS = {
-	totalSize: 3 * 1024 * 1024, // 3MB gzipped (increased for SaaS skill packs)
-	largestFile: 150 * 1024, // 150KB gzipped (accommodates explore page)
-	buildTime: 10 * 1000, // 10 seconds (ms)
-	routeCount: {
-		min: 500,
-		max: 650, // Increased for /learn/ hub pages
-	},
+  totalSize: 3 * 1024 * 1024, // 3MB gzipped (increased for SaaS skill packs)
+  largestFile: 150 * 1024, // 150KB gzipped (accommodates explore page)
+  buildTime: 10 * 1000, // 10 seconds (ms)
+  routeCount: {
+    min: 500,
+    max: 650, // Increased for /learn/ hub pages
+  },
 };
 
 // ANSI color codes
 const colors = {
-	reset: "\x1b[0m",
-	red: "\x1b[31m",
-	green: "\x1b[32m",
-	yellow: "\x1b[33m",
-	blue: "\x1b[34m",
-	bold: "\x1b[1m",
+  reset: '\x1b[0m',
+  red: '\x1b[31m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  bold: '\x1b[1m',
 };
 
-function log(message, color = "reset") {
-	console.log(`${colors[color]}${message}${colors.reset}`);
+function log(message, color = 'reset') {
+  console.log(`${colors[color]}${message}${colors.reset}`);
 }
 
 function formatBytes(bytes, decimals = 2) {
-	if (bytes === 0) return "0 Bytes";
+  if (bytes === 0) return '0 Bytes';
 
-	const k = 1024;
-	const dm = decimals < 0 ? 0 : decimals;
-	const sizes = ["Bytes", "KB", "MB", "GB"];
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
 
-	const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-	return parseFloat((bytes / k ** i).toFixed(dm)) + " " + sizes[i];
+  return parseFloat((bytes / k ** i).toFixed(dm)) + ' ' + sizes[i];
 }
 
 async function gzipSize(filePath) {
-	const content = fs.readFileSync(filePath);
-	return new Promise((resolve, reject) => {
-		zlib.gzip(content, (err, compressed) => {
-			if (err) reject(err);
-			else resolve(compressed.length);
-		});
-	});
+  const content = await fs.promises.readFile(filePath);
+  return new Promise((resolve, reject) => {
+    zlib.gzip(content, (err, compressed) => {
+      if (err) reject(err);
+      else resolve(compressed.length);
+    });
+  });
 }
 
 async function walkDir(dir, fileList = []) {
@@ -96,7 +96,7 @@ async function walkDir(dir, fileList = []) {
 		}),
 	);
 
-	return fileList;
+  return fileList;
 }
 
 async function countRoutes() {
@@ -127,37 +127,40 @@ async function countRoutes() {
 }
 
 async function analyzeBundleSize() {
-	log("Analyzing bundle size...", "blue");
+  log('Analyzing bundle size...', 'blue');
 
-	const files = await walkDir(DIST_DIR);
-	const fileSizes = [];
-	let totalSize = 0;
-	let totalGzippedSize = 0;
+  const files = await walkDir(DIST_DIR);
 
-	for (const file of files) {
-		const stat = fs.statSync(file);
-		const gzipped = await gzipSize(file);
+  const results = await Promise.all(
+    files.map(async (file) => {
+      const stat = await fs.promises.stat(file);
+      const gzipped = await gzipSize(file);
+      return {
+        path: path.relative(DIST_DIR, file),
+        size: stat.size,
+        gzipped,
+      };
+    })
+  );
 
-		totalSize += stat.size;
-		totalGzippedSize += gzipped;
+  let totalSize = 0;
+  let totalGzippedSize = 0;
 
-		fileSizes.push({
-			path: path.relative(DIST_DIR, file),
-			size: stat.size,
-			gzipped,
-		});
-	}
+  for (const result of results) {
+    totalSize += result.size;
+    totalGzippedSize += result.gzipped;
+  }
 
-	// Sort by gzipped size
-	fileSizes.sort((a, b) => b.gzipped - a.gzipped);
+  // Sort by gzipped size
+  results.sort((a, b) => b.gzipped - a.gzipped);
 
-	return {
-		totalSize,
-		totalGzippedSize,
-		fileCount: files.length,
-		largestFiles: fileSizes.slice(0, 10),
-		largestFile: fileSizes[0],
-	};
+  return {
+    totalSize,
+    totalGzippedSize,
+    fileCount: files.length,
+    largestFiles: results.slice(0, 10),
+    largestFile: results[0],
+  };
 }
 
 async function main() {
