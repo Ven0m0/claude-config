@@ -13,7 +13,7 @@ jobs:
       CLAUDELINT_VERSION: "0.3.3"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v5
