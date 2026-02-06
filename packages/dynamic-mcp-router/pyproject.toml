@@ -1,0 +1,91 @@
+[project]
+name = "dynamic-mcp-router"
+version = "2.1.0"
+description = "High-performance, lazy-loading MCP Router with advanced AI integrations"
+requires-python = ">=3.11"
+dependencies = [
+    "fastmcp>=1.0.0",
+    "orjson>=3.9.10",
+    "httpx>=0.27.0",
+    "tomli>=2.0.1; python_version < '3.11'",
+    "json-repair>=0.1.0", # Added json-repair
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501"] # Ignore line length violations
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+# =============================================================================
+# ROUTER CONFIGURATION (TOML Format)
+# =============================================================================
+[tool.mcp-router]
+hot_reload = true
+hot_reload_interval = 5
+default_idle_timeout = 300
+max_loaded_servers = 15
+
+# --- Server Definitions ---
+
+[tool.mcp-router.servers.exa]
+command = "bunx"
+args = ["--bun", "@modelcontextprotocol/server-exa"]
+description = "Web search and company research using Exa"
+tags = ["search", "web", "research", "exa"]
+auto_load = true
+idle_timeout = 300
+
+[tool.mcp-router.servers.serena]
+command = "bunx"
+args = ["--bun", "@modelcontextprotocol/server-serena"]
+description = "Serena AI for conversational tasks"
+tags = ["ai", "conversational", "serena"]
+
+[tool.mcp-router.servers.sequential_thinking]
+command = "bunx"
+args = ["--bun", "@modelcontextprotocol/server-sequential-thinking"]
+description = "Sequential Thinking tool for problem-solving"
+tags = ["ai", "planning", "sequential", "thinking"]
+
+[tool.mcp-router.servers.morph_lmm]
+command = "bunx"
+args = ["--bun", "@modelcontextprotocol/server-morph-lmm"]
+description = "Morph-LMM AI for faster concept application"
+tags = ["ai", "morph-lmm", "concepts"]
+
+[tool.mcp-router.servers.github]
+command = "bunx"
+args = ["--bun", "@modelcontextprotocol/server-github"]
+env = { GITHUB_PERSONAL_ACCESS_TOKEN = "${GITHUB_TOKEN}" }
+description = "GitHub API integration"
+tags = ["git", "code"]
+idle_timeout = 600
+
+[tool.mcp-router.servers.filesystem]
+command = "bunx"
+args = ["--bun", "@modelcontextprotocol/server-filesystem", "/tmp"]
+description = "Local file system access"
+tags = ["files", "local"]
+idle_timeout = 300
+
+[tool.mcp-router.servers.memory]
+command = "bunx"
+args = ["--bun", "@modelcontextprotocol/server-memory"]
+description = "Persistent memory/knowledge graph"
+tags = ["memory", "knowledge"],
+idle_timeout = 0 # Never auto-shutdown
+
+[tool.mcp-router.servers.custom-python]
+command = "python"
+args = ["-m", "my_custom_mcp_server"]
+working_dir = "/workspace/mcp_router"
+description = "Example custom Python MCP server"
+tags = ["custom", "python"],
+enabled = false
