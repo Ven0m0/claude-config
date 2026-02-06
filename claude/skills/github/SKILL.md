@@ -363,6 +363,24 @@ gh issue create --title "Bug: X fails" --body "..."
 gh pr create --body "Closes #123"
 ```
 
+## Agentic Patterns (JSON Output)
+
+For AI agent consumption, always use `--json <fields>` for machine-readable output. The `--jq` filter is built-in.
+
+```bash
+# PR check statuses (structured)
+gh pr checks $PR_NUMBER --json name,state,conclusion,detailsUrl
+
+# Filter to failed only
+gh pr checks $PR_NUMBER --json name,state,conclusion --jq '.[] | select(.conclusion == "FAILURE")'
+
+# PR details with specific fields
+gh pr view $PR_NUMBER --json title,state,mergeable,reviewDecision,statusCheckRollup
+
+# Issues as JSON
+gh issue list --json number,title,state,labels --jq '.[].number'
+```
+
 ## Notes
 
 - `gh` respects your current Git repository context

@@ -176,7 +176,7 @@ deadcode .                      # Precise detection
 
 **Tools**: ruff (unused imports), mypy (type checking), pytest-cov (coverage)
 **Skills**: python-optimization, linter-autofix, code-antipatterns-analysis
-**Agents**: unused-code-cleaner, code-simplifier
+**Agents**: janitor, code-simplifier
 
 ---
 

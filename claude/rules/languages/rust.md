@@ -63,5 +63,5 @@ pub enum AppError {
 
 ## Related skills
 
-- Use language-specific skills under `claude/skills/` for detailed patterns (e.g. rust, rust-development).
+- Use language-specific skills under `claude/skills/` for detailed patterns (e.g. rust).
 - Follow TRUST 5 quality gates

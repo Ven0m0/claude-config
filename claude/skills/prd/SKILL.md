@@ -214,6 +214,15 @@ Frontend stories default to `["playwright", "devtools"]`.
 
 ---
 
+## Alternative Output: PRD.md (Markdown)
+
+For projects not using Ralph, generate a markdown PRD instead:
+
+1. Receive a feature description from the user
+2. Ask 3-5 essential clarifying questions (with lettered options)
+3. Generate a structured PRD with: overview, user stories, acceptance criteria, technical approach
+4. Save to `PRD.md` with empty `progress.txt`
+
 ## Reference Materials
 
 - [Full JSON Schema & Field Reference](reference.md)

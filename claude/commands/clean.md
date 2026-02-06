@@ -72,6 +72,18 @@ Clean up code and project artifacts in `$ARGUMENTS`.
 - Keep refactoring commits separate
 - Document why code was removed
 
+## Refactor Mode
+
+When `$ARGUMENTS` is `refactor` or `refactor <target>`:
+
+1. Analyze current code, tests, dependencies
+2. Ensure test coverage exists (write tests if missing)
+3. Create refactor branch: `git checkout -b refactor/<target>`
+4. Make small incremental changes, testing after each
+5. Improve naming, reduce duplication, simplify logic
+6. Update docs and commit with clear messages
+7. Run full test suite to verify no regressions
+
 **Output:**
 - Summary by category
 - Lines/files removed

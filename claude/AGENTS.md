@@ -24,18 +24,20 @@
 - **Function Size**: Keep functions small and focused on a single task. Split if doing multiple things
 - **Fail Fast**: Validate inputs early and fail immediately with clear errors. Don't let invalid data propagate
 - **Security**: Never log/commit secrets, validate all inputs, redact sensitive data in logs
-- **Imports**: Group (stdlib → third-party → local), sort alphabetically within groups
+- **Imports**: Group (stdlib -> third-party -> local), sort alphabetically within groups
 - **Error Handling**: Handle errors gracefully with meaningful, actionable messages
 - **Comments**: Explain "why" decisions were made, not "what" the code does
 - **Testing**: Add tests following existing project patterns before marking work complete
 - **Changes**: Make minimal, focused changes that solve one problem at a time
+- **Immutability**: Create new objects, never mutate existing ones
+- **File Size**: 200-400 lines typical, 800 max; extract utilities from large files
 
 ## Communication Style
 
 *Preferences for code, comments, and documentation*
 
 - **No Emojis**: Never use emojis in code, comments, commit messages, or documentation
-- **No Em Dashes**: Avoid em dashes (—) in writing; use hyphens (-) or restructure sentences
+- **No Em Dashes**: Avoid em dashes in writing; use hyphens (-) or restructure sentences
 - **Clarity**: Write in clear, direct language without unnecessary embellishment
 - **Review First**: When asked to review or analyze something, do that first and report findings before making any changes
 - **Humble Language**: Avoid claiming "success" without verification. Only use "successfully" when tests prove it
@@ -50,21 +52,16 @@ Agents live in `claude/agents/`. Delegate via `Task(subagent_type="agent-name", 
 | Agent | When to use |
 | ----- | ----------- |
 | general-purpose | Default; complex multi-step tasks, delegation |
-| code-simplifier, simplifier | Simplify/refine code without changing behavior |
-| markdown-optimizer | Optimize markdown for LLM context efficiency |
-| janitor, unused-code-cleaner | Cleanup, tech debt, dead code removal |
+| code-simplifier | Simplify/refine code without changing behavior |
+| janitor | Cleanup, tech debt, dead code removal (includes safety rules for framework preservation) |
 | merge-supervisor | Git merge conflict resolution |
-| code-explorer, codebase-pattern-finder | Trace execution, find patterns, map architecture |
-| context-manager, context-architect | Context engineering, multi-agent orchestration |
+| code-explorer | Trace execution, find patterns, map architecture (has feature-tracing and pattern-discovery modes) |
+| context-manager | Context engineering, token optimization, multi-agent orchestration |
 | bash-pro, python-pro, javascript-pro, typescript-pro, rust-pro | Language-specific implementation |
 | mcp-expert | MCP server config and integration |
 | dx-optimizer | Dev experience, tooling, workflow setup |
-| improve-agent | Agent performance optimization, prompt engineering, run optimizations on agents |
-| prompt-optimizer | Rewrite prompts to be clear, tight, and testable |
-| claudemd, claude-md-auditor | CLAUDE.md optimize/audit/migrate |
-| skill-auditor | Skill definitions and validation |
+| llm-boost | LLM optimization: CLAUDE.md audit, skill/agent improvement, markdown compression |
 | prd | Product requirements document |
-| repomix-explorer | Analyze codebase via Repomix |
 | reverse-engineer | Binary analysis, RE toolchains, security research |
 | turbo | Maximum speed, parallelize everything |
 
@@ -75,15 +72,15 @@ Agents live in `claude/agents/`. Delegate via `Task(subagent_type="agent-name", 
 ## Workflow and doc optimization
 
 - **Large markdown**: Use **markdown-optimizer** agent for token-heavy docs (e.g. long reference files).
-- **Data format (ZON/TOON/PLOON)**: Use **smart-format** skill (`decide-format [directory]`) to choose token-saving format for data files.
-- **Model parameters**: Evidence-based tuning by task type in `claude/docs/llm-tuning.md`; see **llm-tuning-patterns** skill.
-- **MCP without context bloat**: Use **mcp-mode** skill for many-tool servers; see `claude/rules/mcp.md` (Token-efficient MCP).
-- **Skill token efficiency**: **skill-optimizer** skill (progressive disclosure, 500-line rule); **llm-docs-optimizer** for doc restructuring.
+- **Data format (ZON/TOON/PLOON)**: Use **toon-formatter** skill for token-saving formats; see `claude/docs/toon.md`.
+- **Model parameters**: Evidence-based tuning by task type in `claude/docs/llm-tuning.md`.
+- **MCP without context bloat**: Use **mcp-mode** skill for many-tool servers; see `claude/rules/mcp.md`.
+- **Skill token efficiency**: **skill-optimizer** skill (progressive disclosure, 500-line rule).
 - **Markdown consistency**: **manage-markdown-docs** skill for non-SKILL/agent markdown (headers, footers, metadata).
 - **Tool substitution**: **modern-tool-substitution** skill (fd, rg, bun, uv in generated code); aligns with Tool Preferences above.
 - **Hooks**: **hooks-configuration** skill for hook lifecycle and config; see `claude/docs/hooks.md`.
 - **TOON reference**: **ref-toon-format**, **use-toon** skills; `claude/docs/toon.md`; `claude/scripts/validate-toon.py`.
-- **Token and context**: Consolidated list in `claude/docs/token-and-context-optimization.md`.
+- **CLAUDE.md guide**: `claude/docs/claude-md-guide.md` for authoring best practices and scoring rubric.
 
 ## Progressive Disclosure
 

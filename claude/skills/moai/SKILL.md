@@ -301,7 +301,7 @@ For detailed workflow orchestration steps, read the corresponding workflow file:
 - workflows/project.md: Project documentation workflow
 - workflows/feedback.md: Feedback and issue creation workflow
 
-For SPEC workflow overview: See .claude/rules/moai/workflow/spec-workflow.md
+For SPEC workflow overview: See .claude/rules/workflow/workflow-modes.md
 For quality standards: See .claude/rules/moai/core/moai-constitution.md
 
 ---

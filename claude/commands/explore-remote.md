@@ -1,69 +1,40 @@
 ---
-description: Explore and analyze a remote GitHub repository
+description: Pack and/or explore a remote GitHub repository using Repomix
 ---
 
-Analyze a remote GitHub repository using the repomix-explorer:explorer agent.
-
-When the user runs this command, they want to explore and understand a remote repository's code structure, patterns, and content.
-
-**Note**: This command is part of the repomix-explorer plugin, so the repomix-explorer:explorer agent is guaranteed to be available.
+Fetch a remote GitHub repository using Repomix and optionally analyze it with a sub-agent.
 
 ## Usage
 
-The user should provide a GitHub repository in one of these formats:
-- `owner/repo` (e.g., yamadashy/repomix)
-- Full GitHub URL (e.g., https://github.com/facebook/react)
-- URL with branch (e.g., https://github.com/user/repo/tree/develop)
-
-## Your Responsibilities
-
-1. **Extract repository information** from the user's input
-2. **Launch the repomix-explorer:explorer agent** to analyze the repository
-3. **Provide the agent with clear instructions** about what to analyze
-
-## Example Usage
-
 ```
-/explore-remote yamadashy/repomix
-/explore-remote https://github.com/facebook/react
+/explore-remote owner/repo [options]
+/explore-remote https://github.com/facebook/react --compress
 /explore-remote microsoft/vscode - show me the main architecture
 ```
 
-## What to Tell the Agent
+Accepts: `owner/repo`, full GitHub URL, or URL with branch/commit. Add analysis focus after `-` separator.
 
-Provide the repomix-explorer:explorer agent with a task that includes:
-- The repository to analyze (URL or owner/repo format)
-- Any specific focus areas mentioned by the user
-- Clear instructions about what analysis is needed
+## Workflow
 
-Default instruction template:
-```
-"Analyze this remote repository: [repo]
+1. **Pack**: Run `npx repomix@latest --remote <repo> [options]`
+2. **Analyze** (if user wants exploration): Launch code-explorer agent to analyze the output incrementally using Grep and Read tools
 
-Task: Provide an overview of the repository structure, main components, and key patterns.
+If the user only wants to pack (no analysis), stop after step 1.
 
-Steps:
-1. Run `npx repomix@latest --remote [repo]` to pack the repository
-2. Note the output file location
-3. Use Grep and Read tools to analyze the output incrementally
-4. Report your findings
+## Available Options
 
-[Add any specific focus areas if mentioned by user]
-"
-```
+| Option | Purpose |
+|--------|---------|
+| `--style <format>` | Output format: xml (default), markdown, json, plain |
+| `--include <patterns>` | Include only matching patterns |
+| `--ignore <patterns>` | Additional ignore patterns |
+| `--compress` | Tree-sitter compression (~70% token reduction) |
+| `--output <path>` | Custom output path |
+| `--copy` | Copy output to clipboard |
 
-## Command Flow
+## Analysis
 
-1. Parse the repository information from user input (owner/repo or full URL)
-2. Identify any specific questions or focus areas from the user's request
-3. Launch the repomix-explorer:explorer agent with:
-   - The Task tool
-   - A clear task description following the template above
-   - Any specific analysis requirements
-
-The agent will:
-- Run `npx repomix@latest --remote <repo>`
-- Analyze the generated output file efficiently using Grep and Read tools
-- Provide comprehensive findings based on the analysis
-
-Remember: The repomix-explorer:explorer agent is optimized for this workflow. It will handle all the details of running repomix CLI, searching with grep, and reading specific sections. Your job is to launch it with clear context about which repository to analyze and what specific insights are needed.
+**DO NOT** read the entire output file directly. Launch a sub-agent to analyze incrementally:
+- Use `code-explorer` agent (preferred) or `general-purpose` agent
+- Agent should use Grep and Read tools on the output file
+- Provide any specific focus areas from the user's request

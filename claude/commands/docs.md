@@ -206,6 +206,14 @@ I can manage:
 # Creates component, tests it, documents the new API
 ```
 
+## Mode 5: README Badge Enhancement
+
+When run as `/docs badges`:
+- Analyze project to detect: version (npm/crates/pypi), license, CI status, primary language
+- Generate appropriate shields.io badges (version, license, build, language, stars, downloads)
+- Add context-specific badges: Claude Code Plugin (if plugin.json exists), coverage, docs site
+- Insert badges at top of README.md
+
 ### Simple Usage
 
 Just run `/docs` and I'll figure out what you need:
@@ -213,7 +221,6 @@ Just run `/docs` and I'll figure out what you need:
 - Just coded? I'll update the relevant docs
 - Long session? I'll document everything
 - Just fixed bugs? I'll update CHANGELOG
-
-No need to remember arguments - I understand context!
+- `/docs badges` - Add shields.io marketing badges
 
 This keeps your documentation as current as your code while supporting your entire development lifecycle.

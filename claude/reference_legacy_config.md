@@ -24,7 +24,7 @@ The legacy configuration used the following structure:
 The system prompts have been moved into plugins and the shared config:
 
 - `prompts/coding_assistant.md` → `plugins/coding-assistant/reference/prompt.md`
-- Other prompts and reference material → `claude/docs/`, `claude/skills/`, and `plugins/prompt-improver/` as applicable. See [claude/docs/skills-guide.md](docs/skills-guide.md) and [claude/AGENTS.md](AGENTS.md) for current layout.
+- Other prompts and reference material → `claude/docs/`, `claude/skills/`, and `plugins/prompt-improver/` as applicable. See [claude/docs/skills-ref.md](docs/skills-ref.md) and [claude/AGENTS.md](AGENTS.md) for current layout.
 
 ### Configuration Settings
 

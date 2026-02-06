@@ -60,11 +60,10 @@ The `env-setup.sh` script is sourced before each Bash command, making environmen
 | [docs/progressive-disclosure.md](docs/progressive-disclosure.md) | Content architecture (quick ref, implementation, advanced) |
 | [docs/prompt-caching.md](docs/prompt-caching.md) | Prompt caching behavior and usage |
 | [docs/prompt-best-practices.md](docs/prompt-best-practices.md) | Prompt design best practices |
-| [docs/skills-guide.md](docs/skills-guide.md) | How to use and author skills |
 | [docs/skills-ref.md](docs/skills-ref.md) | Skills reference and index |
-| [docs/tools-reference.md](docs/tools-reference.md) | Tools usage reference |
 | [docs/toon.md](docs/toon.md) | TOON format and token-efficient data |
-| [docs/token-and-context-optimization.md](docs/token-and-context-optimization.md) | Token reduction, context, TOON/ZON consolidated |
+| [docs/claude-md-guide.md](docs/claude-md-guide.md) | CLAUDE.md authoring best practices and scoring rubric |
+| [docs/claude-code-settings.md](docs/claude-code-settings.md) | Settings, permissions, and plugin reference |
 
 Start with `CLAUDE.md` (points to `AGENTS.md`) for project-wide rules and agent orchestration.
 
@@ -88,10 +87,10 @@ See [AGENTS.md](AGENTS.md) for the full agent table and when to delegate.
 
 | Use case | Resource |
 |----------|----------|
-| Choose ZON/TOON/PLOON for data dirs | **smart-format** skill (`decide-format [directory]`) |
+| Choose ZON/TOON/PLOON for data dirs | **toon-formatter** skill |
 | Encode/validate TOON | **toon-formatter** skill; [scripts/validate-toon.py](scripts/validate-toon.py) |
 | TOON spec and agent handoffs | **ref-toon-format**, **use-toon** skills |
-| Context/token budget | **context-manager**, **context-architect** agents; **strategic-compact**, **moai-foundation-context** skills |
+| Context/token budget | **context-manager** agent; **strategic-compact**, **moai-foundation-context** skills |
 | Model params by task type | [docs/llm-tuning.md](docs/llm-tuning.md), **llm-tuning-patterns** skill |
 
 See [docs/toon.md](docs/toon.md) and [AGENTS.md](AGENTS.md) (Workflow and doc optimization).
@@ -107,7 +106,7 @@ claude/
 ├── commands/             # Command macros
 ├── hooks/                # Auto-format, lint, MCP load hooks
 ├── agents/               # Specialized agents (see AGENTS.md)
-├── skills/               # Skill extensions (see docs/skills-guide.md)
+├── skills/               # Skill extensions (see docs/skills-ref.md)
 ├── rules/                # Rules and workflow
 ├── docs/                 # Reference docs (above)
 ├── workflows/            # CLAUDE.md workflows (audit, create, optimize)

@@ -1,3 +1,3 @@
 - https://opencode.ai/docs/ecosystem
-- https://gihub.com/awesome-opencode/awesome-opencode
+- https://github.com/awesome-opencode/awesome-opencode
 - https://opencode.cafe

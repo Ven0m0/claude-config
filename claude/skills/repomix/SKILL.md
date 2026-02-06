@@ -236,6 +236,25 @@ For detailed information, see:
 - [Configuration Reference](./references/configuration.md) - Config files, include/exclude patterns, output formats, advanced options
 - [Usage Patterns](./references/usage-patterns.md) - AI analysis workflows, security audit preparation, documentation generation, library evaluation
 
+## Exploration and Analysis
+
+After packing, analyze the output incrementally - never read the entire output file at once.
+
+```bash
+# Search for patterns in output
+rg -i "export.*function|class " repomix-output.xml
+
+# Read sections incrementally
+Read("repomix-output.xml", offset=0, limit=500)
+
+# Common searches
+rg -i "auth|login|jwt|token" repomix-output.xml
+rg -i "router|route|endpoint" repomix-output.xml
+rg -i "config|Config" repomix-output.xml
+```
+
+Report findings: file count, token metrics, structure overview, pattern matches with file references.
+
 ## Additional Resources
 
 - GitHub: https://github.com/yamadashy/repomix
