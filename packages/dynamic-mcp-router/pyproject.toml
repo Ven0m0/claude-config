@@ -8,7 +8,7 @@ dependencies = [
     "orjson>=3.9.10",
     "httpx>=0.27.0",
     "tomli>=2.0.1; python_version < '3.11'",
-    "json-repair>=0.1.0", # Added json-repair
+    "json-repair>=0.1.0",
 ]
 
 [tool.ruff]
