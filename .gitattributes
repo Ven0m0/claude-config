@@ -22,3 +22,5 @@
 *.jpg binary
 *.gif binary
 *.ico binary
+
+.beads/issues.jsonl merge=beads
