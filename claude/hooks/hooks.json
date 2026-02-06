@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${PLUGIN_DIR}/hooks/load-mcp-skills.sh"
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/load-mcp-skills.sh"
           }
         ]
       }
