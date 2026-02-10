@@ -43,15 +43,18 @@ import hashlib
 import json
 import logging
 import os
+import time
 import subprocess
 import time
 from dataclasses import dataclass, field
-from datetime import datetime
-from pathlib import Path
-from typing import Any
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("mcp_router")
+from datetime import datetime, timedelta
+from contextlib import asynccontextmanager
+from functools import wraps
+import threading
+import logging
+logger = logging.getLogger(__name__)
+if not logging.getLogger().handlers:
+    logging.basicConfig(level=logging.INFO)
 
 # Optimized imports
 try:
@@ -428,8 +431,9 @@ class ServerManager:
             if loaded.session: await loaded.session.__aexit__(None, None, None)
             if loaded.process and loaded.process.poll() is None:
                 loaded.process.terminate()
-                try: await asyncio.wait_for(loaded.process.wait(), timeout=5.0)
-                except TimeoutError: loaded.process.kill()
+                try:
+                    await asyncio.wait_for(loaded.process.wait(), timeout=5.0)
+                except asyncio.TimeoutError: loaded.process.kill()
                 logger.info(f"Terminated subprocess for server: {name}")
         except Exception as e: logger.error(f"Error unloading server {name}: {e}")
         del self.loaded_servers[name]
