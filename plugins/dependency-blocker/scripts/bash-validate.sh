@@ -337,13 +337,14 @@ validate_command() {
   return 0
 }
 
-# Parse command from JSON input
-parse_json_command() {
+# Parse command from JSON input using Bash (fallback/vulnerable)
+parse_json_bash() {
   local json="$1"
   local command
 
   # Extract command from JSON: {"tool_input": {"command": "..."}}
-  # Always use the robust method that handles escaped quotes properly
+  # This implementation uses simple string matching which is less robust
+  # but works as a fallback if Python is missing.
 
   # Extract everything after "command":
   local temp="${json#*\"command\"}"
@@ -373,6 +374,56 @@ parse_json_command() {
 
   command="$result"
   echo "$command"
+}
+
+# Parse command from JSON input using Python (robust)
+parse_json_python() {
+  local json="$1"
+  local interpreter="$2"
+
+  # Use python to robustly parse JSON and extract the "command" key
+  # Supports nested structures by recursively searching for "command" key
+  "$interpreter" -c '
+import sys, json
+
+def find_command(obj):
+    if isinstance(obj, dict):
+        if "command" in obj:
+            return obj["command"]
+        for k, v in obj.items():
+            res = find_command(v)
+            if res is not None:
+                return res
+    return None
+
+try:
+    data = json.load(sys.stdin)
+    cmd = find_command(data)
+    if cmd:
+        print(cmd)
+except Exception:
+    sys.exit(1)
+' <<< "$json"
+}
+
+# Parse command from JSON input
+# Tries Python first (robust), falls back to Bash (fragile)
+parse_json_command() {
+  local json="$1"
+
+  # Try Python if available
+  if command -v python3 >/dev/null 2>&1; then
+    if parse_json_python "$json" "python3"; then
+      return 0
+    fi
+  elif command -v python >/dev/null 2>&1; then
+    if parse_json_python "$json" "python"; then
+      return 0
+    fi
+  fi
+
+  # Fallback to Bash implementation
+  parse_json_bash "$json"
 }
 
 # ============================================
