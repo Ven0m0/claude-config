@@ -603,8 +603,7 @@ def create_example_config():
     filename = "pyproject.toml"
     try:
         with open(filename, 'w') as f:
-            f.write("[project]\nname = \"dynamic-mcp-router\"\nversion = \"2.1.0\"\ndescription = \"High-performance, lazy-loading MCP Router with advanced AI integrations\"\nrequires-python = \">=3.11\"\ndependencies = [\n    \"fastmcp>=1.0.0\",\n    \"orjson>=3.9.10\",\n    \"httpx>=0.27.0\",\n    \"tomli>=2.0.1; python_version < '3.11'\",\n    \"json-repair>=0.1.0\", # Added json-repair\n]\n\n[tool.ruff]\nline-length = 100\ntarget-version = \"py311\"\n[tool.ruff.lint]\nselect = [\"E\", \"W\", \"F\", \"I\", \"B\", \"UP\", \"SIM\"]\nignore = [\"E501\"]\n[tool.ruff.format]\nquote-style = \"double\"\nindent-style = \"space\"\n\n[tool.mcp-router]\nhot_reload = true\nhot_reload_interval = 5\ndefault_idle_timeout = 300\nmax_loaded_servers = 15\n\n# --- Server Definitions ---\
-")
+            f.write("[project]\nname = \"dynamic-mcp-router\"\nversion = \"2.1.0\"\ndescription = \"High-performance, lazy-loading MCP Router with advanced AI integrations\"\nrequires-python = \">=3.11\"\ndependencies = [\n    \"fastmcp>=1.0.0\",\n    \"orjson>=3.9.10\",\n    \"httpx>=0.27.0\",\n    \"tomli>=2.0.1; python_version < '3.11'\",\n    \"json-repair>=0.1.0\", # Added json-repair\n]\n\n[tool.ruff]\nline-length = 100\ntarget-version = \"py311\"\n[tool.ruff.lint]\nselect = [\"E\", \"W\", \"F\", \"I\", \"B\", \"UP\", \"SIM\"]\nignore = [\"E501\"]\n[tool.ruff.format]\nquote-style = \"double\"\nindent-style = \"space\"\n\n[tool.mcp-router]\nhot_reload = true\nhot_reload_interval = 5\ndefault_idle_timeout = 300\nmax_loaded_servers = 15\n\n# --- Server Definitions ---\n")
             for name, cfg in example_config['servers'].items():
                 f.write(f"\n[tool.mcp-router.servers.{name}]\n")
                 if cfg.get('command'):
