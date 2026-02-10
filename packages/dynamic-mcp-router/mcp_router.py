@@ -189,6 +189,12 @@ class ConfigManager:
 
     def _find_config(self) -> str | None:
         search_paths = [
+            Path.home() / ".config" / "mcp-router" / "pyproject.toml",
+            Path("/etc/mcp-router/pyproject.toml"),
+            Path.cwd() / "pyproject.toml",
+            Path.cwd() / "config" / "pyproject.toml",
+        ]
+        search_paths = [
             Path.cwd() / "pyproject.toml",
             Path.cwd() / "config" / "pyproject.toml",
             Path.home() / ".config" / "mcp-router" / "pyproject.toml",
