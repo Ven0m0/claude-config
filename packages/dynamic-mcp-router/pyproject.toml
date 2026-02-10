@@ -79,7 +79,7 @@ idle_timeout = 300
 command = "bunx"
 args = ["--bun", "@modelcontextprotocol/server-memory"]
 description = "Persistent memory/knowledge graph"
-tags = ["memory", "knowledge"],
+tags = ["memory", "knowledge"]
 idle_timeout = 0 # Never auto-shutdown
 
 [tool.mcp-router.servers.custom-python]
@@ -87,5 +87,5 @@ command = "python"
 args = ["-m", "my_custom_mcp_server"]
 working_dir = "/workspace/mcp_router"
 description = "Example custom Python MCP server"
-tags = ["custom", "python"],
+tags = ["custom", "python"]
 enabled = false
