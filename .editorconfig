@@ -18,6 +18,8 @@ binary_next_line = true
 switch_case_indent = true
 space_redirects = false
 function_next_line = false
+curly_bracket_next_line = false
+
 
 [[shell],**/*.{sh,bash,zsh}]
 spaces_around_operators = true
