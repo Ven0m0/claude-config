@@ -39,13 +39,13 @@ Architecture:
 """
 
 import asyncio
+import hashlib
 import json
+import logging
 import os
 import time
 import subprocess
-import hashlib
-from pathlib import Path
-from typing import Dict, List, Optional, Any, Set, Tuple, Union
+import time
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from contextlib import asynccontextmanager
@@ -73,7 +73,7 @@ except ImportError:
     logger.warning("httpx not found. Remote server support disabled. Install with: pip install httpx")
 
 try:
-    import tomli # For reading pyproject.toml
+    import tomli  # For reading pyproject.toml
     TOMLI_AVAILABLE = True
 except ImportError:
     TOMLI_AVAILABLE = False
@@ -97,7 +97,7 @@ def orjson_dumps_safe(obj: Any, **kwargs) -> str:
         return json.dumps(obj, indent=2)
 
 # Function to safely parse JSON, with fallback to json_repair
-def safe_json_loads(data: Union[str, bytes]) -> Any:
+def safe_json_loads(data: str | bytes) -> Any:
     if isinstance(data, bytes):
         data = data.decode('utf-8', errors='ignore')
     try:
@@ -118,11 +118,32 @@ def safe_json_loads(data: Union[str, bytes]) -> Any:
 
 # MCP imports
 from mcp.server.fastmcp import FastMCP
-from mcp.client.stdio import stdio_client, StdioServerParameters
-from mcp.client.sse import SseClient, SseServerParameters
-from mcp.client.session import ClientSession
-from mcp import ClientSession # For type hinting
 
+try:
+    from mcp.client.sse import SseClient, SseServerParameters
+    SSE_AVAILABLE = True
+except ImportError:
+    # Handle API changes or missing module
+    try:
+        # Try newer API if available?
+        # For now, just disable remote support gracefully.
+        from mcp.client.sse import sse_client  # type: ignore[import-not-found]
+        logger.warning("mcp.client.sse.SseClient not found. Remote server support disabled.")
+    except ImportError:
+        logger.warning("mcp.client.sse not found. Remote server support disabled.")
+    SSE_AVAILABLE = False
+
+    class _SseUnavailable:
+        def __init__(self, *args: object, **kwargs: object) -> None:
+            raise RuntimeError(
+                "MCP SSE client support is not available but a remote server URL was requested. "
+                "Install the MCP client SSE dependencies (e.g. `pip install mcp[client] httpx`) "
+                "or remove the `url` configuration for this server."
+            )
+
+    SseClient = _SseUnavailable  # type: ignore[assignment]
+    SseServerParameters = _SseUnavailable  # type: ignore[assignment]
+from mcp.client.session import ClientSession
 
 # =============================================================================
 # Configuration Models
@@ -131,17 +152,17 @@ from mcp import ClientSession # For type hinting
 @dataclass
 class ServerConfig:
     name: str
-    command: Optional[str] = None
-    args: List[str] = field(default_factory=list)
-    env: Dict[str, str] = field(default_factory=dict)
-    url: Optional[str] = None  # For remote SSE servers
+    command: str | None = None
+    args: list[str] = field(default_factory=list)
+    env: dict[str, str] = field(default_factory=dict)
+    url: str | None = None  # For remote SSE servers
     description: str = ""
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
     auto_load: bool = False
     idle_timeout: int = 300
     enabled: bool = True
-    working_dir: Optional[str] = None
-    
+    working_dir: str | None = None
+
     def to_dict(self) -> dict:
         return {
             "command": self.command,
@@ -158,8 +179,8 @@ class ServerConfig:
 
 @dataclass
 class RouterConfig:
-    servers: Dict[str, ServerConfig] = field(default_factory=dict)
-    config_path: Optional[str] = None
+    servers: dict[str, ServerConfig] = field(default_factory=dict)
+    config_path: str | None = None
     hot_reload: bool = True
     hot_reload_interval: int = 5
     default_idle_timeout: int = 300
@@ -171,13 +192,19 @@ class RouterConfig:
 # =============================================================================
 
 class ConfigManager:
-    def __init__(self, config_path: Optional[str] = None):
+    def __init__(self, config_path: str | None = None):
         self.config_path = config_path or self._find_config()
-        self._config_hash: Optional[str] = None
+        self._config_hash: str | None = None
         self._last_check: float = 0
         self._check_interval = 5
-        
-    def _find_config(self) -> Optional[str]:
+
+    def _find_config(self) -> str | None:
+        search_paths = [
+            Path.home() / ".config" / "mcp-router" / "pyproject.toml",
+            Path("/etc/mcp-router/pyproject.toml"),
+            Path.cwd() / "pyproject.toml",
+            Path.cwd() / "config" / "pyproject.toml",
+        ]
         search_paths = [
             Path.cwd() / "pyproject.toml",
             Path.cwd() / "config" / "pyproject.toml",
@@ -190,28 +217,36 @@ class ConfigManager:
                 return str(path)
         logger.warning("No pyproject.toml found with [tool.mcp-router] section.")
         return None
-    
+
     def _compute_hash(self, content: str) -> str:
         return hashlib.md5(content.encode()).hexdigest()
-    
-    def load(self) -> RouterConfig:
+
+    async def load(self) -> RouterConfig:
         if not self.config_path or not Path(self.config_path).exists():
             logger.warning("No config file found. Using empty configuration.")
             return RouterConfig()
-        
+
         try:
-            with open(self.config_path, 'rb') as f:
-                content_bytes = f.read()
-            self._config_hash = self._compute_hash(content_bytes.decode(errors='ignore'))
-            if not TOMLI_AVAILABLE:
-                raise RuntimeError("TOML config requires tomli: pip install tomli")
-            data = tomli.loads(content_bytes)
+            def _read_and_parse():
+                with open(self.config_path, 'rb') as f:
+                    content_bytes = f.read()
+                content_str = content_bytes.decode(errors='ignore')
+                new_hash = self._compute_hash(content_str)
+
+                if not TOMLI_AVAILABLE:
+                    raise RuntimeError("TOML config requires tomli: pip install tomli")
+                # Fixed: tomli.loads expects str, not bytes
+                data = tomli.loads(content_str)
+                return new_hash, data
+
+            self._config_hash, data = await asyncio.to_thread(_read_and_parse)
+
             mcp_router_data = data.get("tool", {}).get("mcp-router", {})
             return self._parse_config(mcp_router_data)
         except Exception as e:
             logger.error(f"Failed to load config: {e}")
             raise
-    
+
     def _parse_config(self, data: dict) -> RouterConfig:
         config = RouterConfig(
             config_path=self.config_path,
@@ -237,16 +272,21 @@ class ConfigManager:
                     working_dir=server_data.get("working_dir"),
                 )
         return config
-    
-    def has_changed(self) -> bool:
+
+    async def has_changed(self) -> bool:
         if not self.config_path or not Path(self.config_path).exists(): return False
         current_time = time.time()
         if current_time - self._last_check < self._check_interval: return False
         self._last_check = current_time
         try:
-            with open(self.config_path, 'rb') as f: content_bytes = f.read()
-            new_hash = self._compute_hash(content_bytes.decode(errors='ignore'))
-            if new_hash != self._config_hash: self._config_hash = new_hash; return True
+            def _check():
+                with open(self.config_path, 'rb') as f: content_bytes = f.read()
+                return self._compute_hash(content_bytes.decode(errors='ignore'))
+
+            new_hash = await asyncio.to_thread(_check)
+            if new_hash != self._config_hash:
+                self._config_hash = new_hash
+                return True
         except Exception as e: logger.error(f"Error checking config changes: {e}")
         return False
 
@@ -258,15 +298,15 @@ class ConfigManager:
 @dataclass
 class LoadedServer:
     config: ServerConfig
-    session: Optional[ClientSession] = None
-    process: Optional[subprocess.Popen] = None
-    tools: List[Dict[str, Any]] = field(default_factory=list)
-    resources: List[Dict[str, Any]] = field(default_factory=list)
-    prompts: List[Dict[str, Any]] = field(default_factory=list)
+    session: ClientSession | None = None
+    process: subprocess.Popen | None = None
+    tools: list[dict[str, Any]] = field(default_factory=list)
+    resources: list[dict[str, Any]] = field(default_factory=list)
+    prompts: list[dict[str, Any]] = field(default_factory=list)
     loaded_at: datetime = field(default_factory=datetime.now)
     last_used: datetime = field(default_factory=datetime.now)
     is_loading: bool = False
-    load_error: Optional[str] = None
+    load_error: str | None = None
     _read_stream: Any = None
     _write_stream: Any = None
     is_remote: bool = False
@@ -275,18 +315,18 @@ class LoadedServer:
 class ServerManager:
     def __init__(self, config: RouterConfig):
         self.config = config
-        self.loaded_servers: Dict[str, LoadedServer] = {}
+        self.loaded_servers: dict[str, LoadedServer] = {}
         self._lock = asyncio.Lock()
         self._shutdown_event = asyncio.Event()
-        self._idle_checker_task: Optional[asyncio.Task] = None
-        
+        self._idle_checker_task: asyncio.Task | None = None
+
     async def start(self):
         self._idle_checker_task = asyncio.create_task(self._idle_checker())
         for name, server_config in self.config.servers.items():
             if server_config.auto_load and server_config.enabled and (server_config.command or server_config.url):
                 logger.info(f"Auto-loading server: {name}")
                 await self.load_server(name)
-    
+
     async def stop(self):
         self._shutdown_event.set()
         if self._idle_checker_task:
@@ -294,7 +334,7 @@ class ServerManager:
             try: await self._idle_checker_task
             except asyncio.CancelledError: pass
         for name in list(self.loaded_servers.keys()): await self.unload_server(name)
-    
+
     async def _idle_checker(self):
         while not self._shutdown_event.is_set():
             try:
@@ -312,7 +352,7 @@ class ServerManager:
                     await self.unload_server(name)
             except asyncio.CancelledError: break
             except Exception as e: logger.error(f"Error in idle checker: {e}")
-    
+
     async def load_server(self, name: str) -> LoadedServer:
         async with self._lock:
             if name in self.loaded_servers: server = self.loaded_servers[name]; server.last_used = datetime.now(); return server
@@ -332,11 +372,11 @@ class ServerManager:
             return loaded
         except Exception as e:
             loaded.is_loading = False; loaded.load_error = str(e); logger.error(f"❌ Failed to load server {name}: {e}"); raise
-    
+
     async def _connect_to_server(self, loaded: LoadedServer):
         config = loaded.config
         env = os.environ.copy(); env.update(config.env)
-        
+
         if config.url: # Remote SSE server
             if not HTTPX_AVAILABLE: raise RuntimeError("httpx is required for remote servers. Install with: pip install httpx")
             loaded.is_remote = True
@@ -349,11 +389,11 @@ class ServerManager:
 
         elif config.command: # Local subprocess server
             cmd_parts = []
-            if config.command == "python": cmd_parts.extend(["uv", "run"]) 
+            if config.command == "python": cmd_parts.extend(["uv", "run"])
             elif config.command == "bunx": cmd_parts.extend(["bunx", "--bun"])
             else: cmd_parts.append(config.command)
             cmd_parts.extend(config.args)
-            
+
             process = await asyncio.create_subprocess_exec(
                 *cmd_parts, env=env, cwd=config.working_dir,
                 stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
@@ -379,11 +419,11 @@ class ServerManager:
             prompts_result = await session.list_prompts()
             loaded.prompts = [{"name": prompt.name, "description": prompt.description or ""} for prompt in prompts_result.prompts]
         except Exception as e: logger.debug(f"Could not list prompts for {config.name}: {e}")
-    
+
     async def unload_server(self, name: str) -> bool:
         async with self._lock:
             return await self._unload_server_internal(name)
-    
+
     async def _unload_server_internal(self, name: str) -> bool:
         if name not in self.loaded_servers: return False
         loaded = self.loaded_servers[name]
@@ -396,8 +436,10 @@ class ServerManager:
                 except asyncio.TimeoutError: loaded.process.kill()
                 logger.info(f"Terminated subprocess for server: {name}")
         except Exception as e: logger.error(f"Error unloading server {name}: {e}")
-        del self.loaded_servers[name]; logger.info(f"🔌 Unloaded server: {name}"); return True
-    
+        del self.loaded_servers[name]
+        logger.info(f"🔌 Unloaded server: {name}")
+        return True
+
     async def call_tool(self, server_name: str, tool_name: str, arguments: dict) -> Any:
         if server_name not in self.loaded_servers: await self.load_server(server_name)
         loaded = self.loaded_servers[server_name]; loaded.last_used = datetime.now()
@@ -411,14 +453,14 @@ class ServerManager:
         if not loaded.session: raise RuntimeError(f"Server {server_name} not properly connected")
         result = await loaded.session.read_resource(uri)
         return safe_json_loads(result)
-    
+
     def update_config(self, new_config: RouterConfig):
         self.config = new_config; logger.info("Configuration updated")
-    
-    def get_all_tools(self) -> Dict[str, List[Dict]]:
+
+    def get_all_tools(self) -> dict[str, list[dict]]:
         return {name: server.tools for name, server in self.loaded_servers.items()}
-    
-    def get_server_status(self) -> Dict[str, Dict]:
+
+    def get_server_status(self) -> dict[str, dict]:
         status = {}
         for name, config in self.config.servers.items():
             loaded = self.loaded_servers.get(name)
@@ -438,19 +480,19 @@ class ServerManager:
 # Main Router MCP Server
 # =============================================================================
 
-config_manager: Optional[ConfigManager] = None
-server_manager: Optional[ServerManager] = None
+config_manager: ConfigManager | None = None
+server_manager: ServerManager | None = None
 mcp = FastMCP("MCPRouter")
 
 # --- Router Tools ---
 
-@mcp.tool
+@mcp.tool()
 async def list_available_servers() -> dict:
     if not server_manager: return {"error": "Server manager not initialized"}
     status = server_manager.get_server_status()
     return {"servers": status, "loaded_count": len(server_manager.loaded_servers), "max_loaded": server_manager.config.max_loaded_servers, "config_path": config_manager.config_path if config_manager else None}
 
-@mcp.tool
+@mcp.tool()
 async def load_server(server_name: str) -> dict:
     if not server_manager: return {"error": "Server manager not initialized"}
     try:
@@ -458,13 +500,13 @@ async def load_server(server_name: str) -> dict:
         return {"success": True, "server": server_name, "tools": loaded.tools, "resources": loaded.resources, "prompts": loaded.prompts, "is_remote": loaded.is_remote, "message": f"Server '{server_name}' loaded with {len(loaded.tools)} tools"}
     except Exception as e: return {"success": False, "server": server_name, "error": str(e)}
 
-@mcp.tool
+@mcp.tool()
 async def unload_server(server_name: str) -> dict:
     if not server_manager: return {"error": "Server manager not initialized"}
     success = await server_manager.unload_server(server_name)
     return {"success": success, "server": server_name, "message": f"Server '{server_name}' {'unloaded' if success else 'was not loaded'}"}
 
-@mcp.tool
+@mcp.tool()
 async def list_server_tools(server_name: str) -> dict:
     if not server_manager: return {"error": "Server manager not initialized"}
     try:
@@ -472,16 +514,16 @@ async def list_server_tools(server_name: str) -> dict:
         return {"server": server_name, "tools": loaded.tools, "count": len(loaded.tools)}
     except Exception as e: return {"server": server_name, "error": str(e)}
 
-@mcp.tool
-async def call_server_tool(server_name: str, tool_name: str, arguments: Optional[dict] = None) -> dict:
+@mcp.tool()
+async def call_server_tool(server_name: str, tool_name: str, arguments: dict | None = None) -> dict:
     if not server_manager: return {"error": "Server manager not initialized"}
     try:
         result = await server_manager.call_tool(server_name, tool_name, arguments or {})
         return {"success": True, "server": server_name, "tool": tool_name, "result": result}
     except Exception as e: return {"success": False, "server": server_name, "tool": tool_name, "error": str(e)}
 
-@mcp.tool
-async def search_tools(query: str, tags: Optional[List[str]] = None) -> dict:
+@mcp.tool()
+async def search_tools(query: str, tags: list[str] | None = None) -> dict:
     if not server_manager: return {"error": "Server manager not initialized"}
     results = []
     query_lower = query.lower()
@@ -500,23 +542,23 @@ async def search_tools(query: str, tags: Optional[List[str]] = None) -> dict:
             results.append({"server": name, "tool": None, "description": config.description, "loaded": False, "hint": "Load this server to discover its tools"})
     return {"query": query, "results": results, "count": len(results)}
 
-@mcp.tool
+@mcp.tool()
 async def get_router_status() -> dict:
     if not server_manager: return {"error": "Server manager not initialized"}
     status = server_manager.get_server_status()
     return {"router": "MCPRouter", "version": "2.1.0", "config_path": config_manager.config_path if config_manager else None, "hot_reload_enabled": server_manager.config.hot_reload, "loaded_servers": list(server_manager.loaded_servers.keys()), "loaded_count": len(server_manager.loaded_servers), "configured_count": len(server_manager.config.servers), "max_loaded": server_manager.config.max_loaded_servers, "servers": status}
 
-@mcp.tool
+@mcp.tool()
 async def reload_config() -> dict:
     global config_manager, server_manager
     if not config_manager: return {"error": "Config manager not initialized"}
     try:
-        new_config = config_manager.load()
+        new_config = await config_manager.load()
         server_manager.update_config(new_config)
         return {"success": True, "message": "Configuration reloaded", "servers_count": len(new_config.servers), "servers": list(new_config.servers.keys())}
     except Exception as e: return {"success": False, "error": str(e)}
 
-# --- Resources --- 
+# --- Resources ---
 
 @mcp.resource("router://config")
 async def get_config_resource() -> str:
@@ -538,27 +580,27 @@ async def get_status_resource() -> str:
 # Main Entry Point & Server Runner
 # =============================================================================
 
-async def run_router(config_path: Optional[str] = None, transport: str = "stdio", 
-                     host: str = "0.0.0.0", port: int = 8000):
+async def run_router(config_path: str | None = None, transport: str = "stdio",
+                     host: str = "127.0.0.1", port: int = 8000):
     global config_manager, server_manager
     config_manager = ConfigManager(config_path)
-    config = config_manager.load()
+    config = await config_manager.load()
     server_manager = ServerManager(config)
     await server_manager.start()
     logger.info(f"🚀 MCP Router started with {len(config.servers)} configured servers")
-    
+
     async def hot_reload_checker():
         while True:
             await asyncio.sleep(config.hot_reload_interval)
-            if config.hot_reload and config_manager.has_changed():
+            if config.hot_reload and await config_manager.has_changed():
                 logger.info("🔄 Configuration changed, reloading...")
                 try:
-                    new_config = config_manager.load()
+                    new_config = await config_manager.load()
                     server_manager.update_config(new_config)
                 except Exception as e: logger.error(f"Failed to reload config: {e}")
-    
+
     if config.hot_reload: asyncio.create_task(hot_reload_checker())
-    
+
     try:
         if transport == "http":
             mcp.run(transport="http", host=host, port=port)
@@ -577,14 +619,14 @@ def main():
     parser.add_argument("--host", default="0.0.0.0", help="Host for HTTP/SSE transport")
     parser.add_argument("--port", type=int, default=8000, help="Port for HTTP/SSE transport")
     parser.add_argument("--create-example-config", action="store_true", help="Create an example pyproject.toml")
-    
+
     args = parser.parse_args()
     if args.create_example_config:
         create_example_config()
         return
     asyncio.run(run_router(config_path=args.config, transport=args.transport, host=args.host, port=args.port))
 
-# --- Example Config Generation --- 
+# --- Example Config Generation ---
 def create_example_config():
     example_config = {
         "hot_reload": True, "hot_reload_interval": 5, "default_idle_timeout": 300, "max_loaded_servers": 15,
@@ -600,7 +642,7 @@ def create_example_config():
             "custom-python": {"command": "python", "args": ["-m", "my_custom_mcp_server"], "working_dir": "/workspace/mcp_router", "description": "Example custom Python MCP server", "tags": ["custom", "python"], "enabled": False}
         }
     }
-    
+
     filename = "pyproject.toml"
     try:
         with open(filename, 'w') as f:
@@ -610,9 +652,9 @@ def create_example_config():
                 if cfg.get('command'):
                     cmd = cfg['command']
                     if cmd == "python":
-                        f.write(f"command = \"uv run python\"\n")
+                        f.write("command = \"uv run python\"\n")
                     elif cmd == "bunx --bun":
-                        f.write(f"command = \"bunx --bun\"\n")
+                        f.write("command = \"bunx --bun\"\n")
                     else:
                         f.write(f"command = \"{cmd}\"\n")
                 if cfg.get('args'): f.write(f"args = {json.dumps(cfg['args'])}\n")

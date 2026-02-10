@@ -126,13 +126,49 @@ async function countRoutes() {
 	return count;
 }
 
+
+// Simple concurrency limiter
+function pLimit(concurrency) {
+  const queue = [];
+  let activeCount = 0;
+
+  const next = () => {
+    activeCount--;
+    if (queue.length > 0) {
+      queue.shift()();
+    }
+  };
+
+  const run = async (fn, resolve, args) => {
+    activeCount++;
+    const result = (async () => fn(...args))();
+    resolve(result);
+    try {
+      await result;
+    } catch {}
+    next();
+  };
+
+  const generator = (fn, ...args) =>
+    new Promise((resolve) => {
+      queue.push(() => run(fn, resolve, args));
+      if (activeCount < concurrency) {
+        queue.shift()();
+      }
+    });
+
+  return generator;
+}
+
 async function analyzeBundleSize() {
   log('Analyzing bundle size...', 'blue');
 
   const files = await walkDir(DIST_DIR);
 
+  const limit = pLimit(50);
+
   const results = await Promise.all(
-    files.map(async (file) => {
+    files.map((file) => limit(async () => {
       const stat = await fs.promises.stat(file);
       const gzipped = await gzipSize(file);
       return {
@@ -140,7 +176,7 @@ async function analyzeBundleSize() {
         size: stat.size,
         gzipped,
       };
-    })
+    }))
   );
 
   let totalSize = 0;
