@@ -50,7 +50,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 import logging
 logger = logging.getLogger("mcp_router")
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 # Optimized imports
 try:
