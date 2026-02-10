@@ -31,6 +31,12 @@
       "command":"npx",
       "args": ["-y", "think-tool-mcp"],
       "tools": ["*"]
+    },
+    "code-mode-toon":{
+      "type":"stdio",
+      "command":"npx",
+      "args": ["-y", "code-mode-toon"],
+      "tools": ["*"]
     }
   }
 }
