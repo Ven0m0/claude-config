@@ -118,19 +118,28 @@ from mcp.server.fastmcp import FastMCP
 
 try:
     from mcp.client.sse import SseClient, SseServerParameters
+    SSE_AVAILABLE = True
 except ImportError:
     # Handle API changes or missing module
     try:
         # Try newer API if available?
         # For now, just disable remote support gracefully.
-        from mcp.client.sse import sse_client
-        # If sse_client exists, maybe we can adapt?
-        # But for now, just fallback to None to prevent crash.
+        from mcp.client.sse import sse_client  # type: ignore[import-not-found]
         logger.warning("mcp.client.sse.SseClient not found. Remote server support disabled.")
     except ImportError:
-        pass
-    SseClient = None
-    SseServerParameters = None
+        logger.warning("mcp.client.sse not found. Remote server support disabled.")
+    SSE_AVAILABLE = False
+
+    class _SseUnavailable:
+        def __init__(self, *args: object, **kwargs: object) -> None:
+            raise RuntimeError(
+                "MCP SSE client support is not available but a remote server URL was requested. "
+                "Install the MCP client SSE dependencies (e.g. `pip install mcp[client] httpx`) "
+                "or remove the `url` configuration for this server."
+            )
+
+    SseClient = _SseUnavailable  # type: ignore[assignment]
+    SseServerParameters = _SseUnavailable  # type: ignore[assignment]
 from mcp.client.session import ClientSession
 
 # =============================================================================
