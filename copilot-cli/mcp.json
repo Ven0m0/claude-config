@@ -1,0 +1,36 @@
+{
+  "mcpServers": {
+    "github-mcp-server": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp",
+      "tools": ["*"],
+      "headers": {
+        "X-MCP-Toolsets": "repos,issues,users,pull_requests,code_security,secret_protection,actions,web_search"
+      }
+    },
+    "sequential-thinking": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "tools": ["*"]
+    },
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "tools": ["*"]
+    },
+    "read-website": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@just-every/mcp-read-website-fast"],
+      "tools": ["*"]
+    },
+    "think-tool":{
+      "type":"stdio",
+      "command":"npx",
+      "args": ["-y", "think-tool-mcp"],
+      "tools": ["*"]
+    }
+  }
+}
