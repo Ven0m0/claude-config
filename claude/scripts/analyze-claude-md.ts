@@ -306,11 +306,11 @@ if (args.length === 0) {
 }
 
 (async () => {
-    try {
-      const result = await analyzeFile(args[0]);
-      console.log(JSON.stringify(result, null, 2));
-    } catch (error) {
-      console.error('Error:', (error as Error).message);
-      process.exit(1);
-    }
+  try {
+    const result = await analyzeFile(args[0]);
+    console.log(JSON.stringify(result, null, 2));
+  } catch (error) {
+    console.error('Error:', (error as Error).message);
+    process.exit(1);
+  }
 })();
