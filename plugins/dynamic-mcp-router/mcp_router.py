@@ -47,6 +47,7 @@ import time
 import subprocess
 import time
 from dataclasses import dataclass, field
+from typing import Any
 from datetime import datetime, timedelta
 from contextlib import asynccontextmanager
 from functools import wraps
@@ -484,47 +485,56 @@ config_manager: ConfigManager | None = None
 server_manager: ServerManager | None = None
 mcp = FastMCP("MCPRouter")
 
+# Decorator to ensure server_manager is initialized
+def require_server_manager(func):
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        if not server_manager:
+            return {"error": "Server manager not initialized"}
+        return await func(*args, **kwargs)
+    return wrapper
+
 # --- Router Tools ---
 
 @mcp.tool()
+@require_server_manager
 async def list_available_servers() -> dict:
-    if not server_manager: return {"error": "Server manager not initialized"}
     status = server_manager.get_server_status()
     return {"servers": status, "loaded_count": len(server_manager.loaded_servers), "max_loaded": server_manager.config.max_loaded_servers, "config_path": config_manager.config_path if config_manager else None}
 
 @mcp.tool()
+@require_server_manager
 async def load_server(server_name: str) -> dict:
-    if not server_manager: return {"error": "Server manager not initialized"}
     try:
         loaded = await server_manager.load_server(server_name)
         return {"success": True, "server": server_name, "tools": loaded.tools, "resources": loaded.resources, "prompts": loaded.prompts, "is_remote": loaded.is_remote, "message": f"Server '{server_name}' loaded with {len(loaded.tools)} tools"}
     except Exception as e: return {"success": False, "server": server_name, "error": str(e)}
 
 @mcp.tool()
+@require_server_manager
 async def unload_server(server_name: str) -> dict:
-    if not server_manager: return {"error": "Server manager not initialized"}
     success = await server_manager.unload_server(server_name)
     return {"success": success, "server": server_name, "message": f"Server '{server_name}' {'unloaded' if success else 'was not loaded'}"}
 
 @mcp.tool()
+@require_server_manager
 async def list_server_tools(server_name: str) -> dict:
-    if not server_manager: return {"error": "Server manager not initialized"}
     try:
         loaded = await server_manager.load_server(server_name)
         return {"server": server_name, "tools": loaded.tools, "count": len(loaded.tools)}
     except Exception as e: return {"server": server_name, "error": str(e)}
 
 @mcp.tool()
+@require_server_manager
 async def call_server_tool(server_name: str, tool_name: str, arguments: dict | None = None) -> dict:
-    if not server_manager: return {"error": "Server manager not initialized"}
     try:
         result = await server_manager.call_tool(server_name, tool_name, arguments or {})
         return {"success": True, "server": server_name, "tool": tool_name, "result": result}
     except Exception as e: return {"success": False, "server": server_name, "tool": tool_name, "error": str(e)}
 
 @mcp.tool()
+@require_server_manager
 async def search_tools(query: str, tags: list[str] | None = None) -> dict:
-    if not server_manager: return {"error": "Server manager not initialized"}
     results = []
     query_lower = query.lower()
     for name, loaded in server_manager.loaded_servers.items():
@@ -543,8 +553,8 @@ async def search_tools(query: str, tags: list[str] | None = None) -> dict:
     return {"query": query, "results": results, "count": len(results)}
 
 @mcp.tool()
+@require_server_manager
 async def get_router_status() -> dict:
-    if not server_manager: return {"error": "Server manager not initialized"}
     status = server_manager.get_server_status()
     return {"router": "MCPRouter", "version": "2.1.0", "config_path": config_manager.config_path if config_manager else None, "hot_reload_enabled": server_manager.config.hot_reload, "loaded_servers": list(server_manager.loaded_servers.keys()), "loaded_count": len(server_manager.loaded_servers), "configured_count": len(server_manager.config.servers), "max_loaded": server_manager.config.max_loaded_servers, "servers": status}
 
