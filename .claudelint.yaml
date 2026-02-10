@@ -1,6 +1,6 @@
 # Example claudelint configuration
 # Copy this file to your repository root and customize as needed
-# TODO: add https://github.com/stbenjam/claudelint/tree/main
+# Documentation: https://github.com/stbenjam/claudelint
 rules:
   plugin-json-required:
     enabled: true
