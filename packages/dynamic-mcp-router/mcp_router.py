@@ -272,7 +272,9 @@ class ConfigManager:
                 return self._compute_hash(content_bytes.decode(errors='ignore'))
 
             new_hash = await asyncio.to_thread(_check)
-            if new_hash != self._config_hash: self._config_hash = new_hash; return True
+            if new_hash != self._config_hash:
+                self._config_hash = new_hash
+                return True
         except Exception as e: logger.error(f"Error checking config changes: {e}")
         return False
 
