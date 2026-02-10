@@ -50,7 +50,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-logging.basicConfig(level=logging.INFO); logger = logging.getLogger("mcp_router")
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("mcp_router")
 
 # Optimized imports
 try:
