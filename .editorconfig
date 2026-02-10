@@ -13,15 +13,15 @@ tab_width = 2
 max_line_length = 120
 quote_type = double
 spelling_language = en
-shell_variant = bash
+shell_variant = auto
 binary_next_line = true
 switch_case_indent = true
 space_redirects = false
 function_next_line = false
 curly_bracket_next_line = false
 
-
 [[shell],**/*.{sh,bash,zsh}]
+shell_variant = bash
 spaces_around_operators = true
 spaces_around_brackets = false
 binary_next_line = true
@@ -29,6 +29,8 @@ switch_case_indent = true
 keep_padding = false
 space_redirects = false
 function_next_line = false
+simplify = true
+minify = true
 
 [**/*.fish]
 indent_size = 4
