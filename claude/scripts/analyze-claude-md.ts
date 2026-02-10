@@ -124,14 +124,16 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
   const xmlRegex = new RegExp(XML_TAG_PATTERN.source, 'g');
   const linkRegex = new RegExp(EXTERNAL_LINK.source, 'g');
 
+  // Compute characterCount from the raw file size to avoid newline handling discrepancies.
+  // This provides deterministic parity with the previous content.length-based approach.
+  result.characterCount = fs.statSync(filePath).size;
+
   for await (const line of rl) {
     lineIndex++;
     const lineNum = lineIndex;
 
     // Update basic stats
     result.lineCount++;
-    // readline strips the newline character(s), so we add 1 to approximate the original file length.
-    result.characterCount += line.length + 1;
 
     // Track code blocks
     if (CODE_BLOCK.test(line)) {
