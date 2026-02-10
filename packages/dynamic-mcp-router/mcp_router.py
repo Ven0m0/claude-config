@@ -421,7 +421,9 @@ class ServerManager:
                 except TimeoutError: loaded.process.kill()
                 logger.info(f"Terminated subprocess for server: {name}")
         except Exception as e: logger.error(f"Error unloading server {name}: {e}")
-        del self.loaded_servers[name]; logger.info(f"🔌 Unloaded server: {name}"); return True
+        del self.loaded_servers[name]
+        logger.info(f"🔌 Unloaded server: {name}")
+        return True
 
     async def call_tool(self, server_name: str, tool_name: str, arguments: dict) -> Any:
         if server_name not in self.loaded_servers: await self.load_server(server_name)
