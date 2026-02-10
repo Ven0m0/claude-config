@@ -558,7 +558,7 @@ async def get_status_resource() -> str:
 # =============================================================================
 
 async def run_router(config_path: str | None = None, transport: str = "stdio",
-                     host: str = "0.0.0.0", port: int = 8000):
+                     host: str = "127.0.0.1", port: int = 8000):
     global config_manager, server_manager
     config_manager = ConfigManager(config_path)
     config = await config_manager.load()
