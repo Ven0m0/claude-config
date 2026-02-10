@@ -53,7 +53,8 @@ from functools import wraps
 import threading
 import logging
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
+if not logging.getLogger().handlers:
+    logging.basicConfig(level=logging.INFO)
 
 # Optimized imports
 try:
