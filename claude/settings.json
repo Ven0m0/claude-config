@@ -2,6 +2,7 @@
 	"$schema": "https://json.schemastore.org/claude-code-settings.json",
 	"env": {
 		"DISABLE_INSTALLATION_CHECKS": "true",
+    "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1",
     "FORCE_AUTOUPDATE_PLUGINS": "true",
     "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}",
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
