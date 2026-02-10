@@ -5,6 +5,7 @@
 - **File Search**: Use `fd` over `find` - faster, respects .gitignore, better defaults
 - **Text Search**: Use `rg` over `grep` - faster, respects .gitignore, better output formatting
 - **Code Structure Search**: Use `ast-grep` for finding specific code patterns (classes, functions, interfaces)
+- **Semantic Code Navigation**: Use LSP operations (goToDefinition, findReferences) for symbol navigation and refactoring - see LSP Enforcement below
 - **Interactive Selection**: Use `fzf` for fuzzy finding and selecting from lists/results
 - **Data Processing**: Use `jq` for JSON parsing/manipulation, `yq` for YAML/XML
 - **File Listing**: Use `eza` over `ls` - better formatting, git integration, tree views
@@ -12,6 +13,46 @@
 - **Text Processing**: Use `sed` for stream editing, `awk` for pattern scanning and processing
 - **Cloud Platforms**: Use `aws` CLI for AWS, `az` CLI for Azure
 - **Infrastructure**: Use `terraform` for IaC provisioning, `terraform-docs` for generating documentation
+
+## LSP Enforcement
+
+*Language Server Protocol for safe code operations*
+
+**The Three Iron Laws:**
+```
+1. NO MODIFYING UNFAMILIAR CODE WITHOUT goToDefinition FIRST
+2. NO REFACTORING WITHOUT findReferences IMPACT ANALYSIS FIRST
+3. NO CLAIMING CODE WORKS WITHOUT LSP DIAGNOSTICS VERIFICATION
+```
+
+**When to Use LSP vs Grep/Glob:**
+- **Symbol navigation**: LSP goToDefinition (not grep)
+- **Find all usages**: LSP findReferences (not grep)
+- **Type info/docs**: LSP hover (not reading multiple files)
+- **File structure**: LSP documentSymbol (not grep)
+- **Call graphs**: LSP incomingCalls/outgoingCalls (not grep)
+- **Literal text search**: Grep (TODOs, strings, config)
+- **File patterns**: Glob (discovering files by name)
+
+**Pre-Edit Protocol (Mandatory):**
+1. LSP goToDefinition → understand implementation
+2. LSP findReferences → assess change impact
+3. LSP hover → verify type signatures
+4. THEN make changes
+
+**Post-Edit Verification (Mandatory):**
+1. LSP diagnostics → check for errors
+2. Verify no new type errors
+3. Confirm imports resolve
+4. Validate interface contracts
+
+**Usage:**
+- Skill: `/lsp-enable` for enforcement and guidance
+- Setup: `/lsp-setup` for project configuration
+- Docs: `claude/docs/lsp-tools-integration.md`
+- Reference: `claude/skills/lsp-enable/references/`
+
+**Why LSP:** ~50ms vs 45s grep, exact semantic matches, no false positives, saves tokens on large codebases
 
 ## Code Standards
 
