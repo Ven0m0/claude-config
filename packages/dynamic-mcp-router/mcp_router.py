@@ -131,7 +131,6 @@ except ImportError:
         pass
     SseClient = None
     SseServerParameters = None
-from mcp import ClientSession  # For type hinting
 from mcp.client.session import ClientSession
 
 # =============================================================================
