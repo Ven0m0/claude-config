@@ -16,6 +16,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import * as readline from 'readline';
 
 interface AggressiveLanguageResult {
   count: number;
@@ -73,21 +74,18 @@ const WHY_CONTEXT_PATTERNS = [
 const VERSION_PATTERN = /Version[:\s]+(\d+\.\d+\.\d+)/i;
 const DATE_PATTERN = /Updated[:\s]+(\d{4}-\d{2}-\d{2})/i;
 
-function analyzeFile(filePath: string): AnalysisResult {
+async function analyzeFile(filePath: string): Promise<AnalysisResult> {
   const absolutePath = path.resolve(filePath);
 
   if (!fs.existsSync(absolutePath)) {
     throw new Error(`File not found: ${absolutePath}`);
   }
 
-  const content = fs.readFileSync(absolutePath, 'utf-8');
-  const lines = content.split('\n');
-
   // Initialize result
   const result: AnalysisResult = {
     filePath: absolutePath,
-    lineCount: lines.length,
-    characterCount: content.length,
+    lineCount: 0,
+    characterCount: 0,
     aggressiveLanguage: { count: 0, instances: [] },
     xmlTags: [],
     sections: [],
@@ -110,17 +108,32 @@ function analyzeFile(filePath: string): AnalysisResult {
     },
   };
 
+  const fileStream = fs.createReadStream(absolutePath);
+
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity
+  });
+
   let inCodeBlock = false;
   let tableRowCount = 0;
+  let lineIndex = 0;
 
-  // Process line by line
   // Pre-compile regexes for performance optimization
   const aggressiveRegex = new RegExp(AGGRESSIVE_WORDS.source, 'g');
   const xmlRegex = new RegExp(XML_TAG_PATTERN.source, 'g');
   const linkRegex = new RegExp(EXTERNAL_LINK.source, 'g');
 
-  lines.forEach((line, index) => {
-    const lineNum = index + 1;
+  // Compute characterCount from the raw file size to avoid newline handling discrepancies.
+  // This provides deterministic parity with the previous content.length-based approach.
+  result.characterCount = fs.statSync(filePath).size;
+
+  for await (const line of rl) {
+    lineIndex++;
+    const lineNum = lineIndex;
+
+    // Update basic stats
+    result.lineCount++;
 
     // Track code blocks
     if (CODE_BLOCK.test(line)) {
@@ -128,15 +141,16 @@ function analyzeFile(filePath: string): AnalysisResult {
         result.codeBlocks++;
       }
       inCodeBlock = !inCodeBlock;
-      return;
+      continue;
     }
 
     // Skip analysis inside code blocks
-    if (inCodeBlock) return;
+    if (inCodeBlock) continue;
 
     // Check for aggressive language
     let match;
 
+    aggressiveRegex.lastIndex = 0;
     while ((match = aggressiveRegex.exec(line)) !== null) {
       result.aggressiveLanguage.count++;
       result.aggressiveLanguage.instances.push({
@@ -147,7 +161,7 @@ function analyzeFile(filePath: string): AnalysisResult {
     }
 
     // Check for XML tags
-
+    xmlRegex.lastIndex = 0;
     while ((match = xmlRegex.exec(line)) !== null) {
       if (!result.xmlTags.includes(match[1])) {
         result.xmlTags.push(match[1]);
@@ -191,7 +205,7 @@ function analyzeFile(filePath: string): AnalysisResult {
     }
 
     // Check for external links
-
+    linkRegex.lastIndex = 0;
     while ((match = linkRegex.exec(line)) !== null) {
       const link = match[1];
       if (!link.startsWith('#') && !result.externalLinks.includes(link)) {
@@ -208,17 +222,21 @@ function analyzeFile(filePath: string): AnalysisResult {
     }
 
     // Check for version info
-    const versionMatch = line.match(VERSION_PATTERN);
-    if (versionMatch && !result.versionInfo) {
-      result.versionInfo = versionMatch[1];
+    if (!result.versionInfo) {
+      const versionMatch = line.match(VERSION_PATTERN);
+      if (versionMatch) {
+        result.versionInfo = versionMatch[1];
+      }
     }
 
     // Check for last updated date
-    const dateMatch = line.match(DATE_PATTERN);
-    if (dateMatch && !result.lastUpdated) {
-      result.lastUpdated = dateMatch[1];
+    if (!result.lastUpdated) {
+        const dateMatch = line.match(DATE_PATTERN);
+        if (dateMatch) {
+            result.lastUpdated = dateMatch[1];
+        }
     }
-  });
+  }
 
   // Handle any remaining table
   if (tableRowCount >= 2) {
@@ -287,10 +305,12 @@ if (args.length === 0) {
   process.exit(1);
 }
 
-try {
-  const result = analyzeFile(args[0]);
-  console.log(JSON.stringify(result, null, 2));
-} catch (error) {
-  console.error('Error:', (error as Error).message);
-  process.exit(1);
-}
+(async () => {
+  try {
+    const result = await analyzeFile(args[0]);
+    console.log(JSON.stringify(result, null, 2));
+  } catch (error) {
+    console.error('Error:', (error as Error).message);
+    process.exit(1);
+  }
+})();
