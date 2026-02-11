@@ -1,37 +1,12 @@
-{
-	"$schema": "https://developers.google.com/gemini-code-assist/docs/config-schema",
-	"codeReview": {
-		"enabled": true,
-		"autoReview": true,
-		"maxFilesToReview": 30,
-		"excludePatterns": [
-			"**/.git/**",
-			"**/.cache/**",
-			"**/.idea/**",
-			"**/.vscode/**",
-			"**/.venv/**",
-			"**/__pycache__/**",
-			"**/.pytest_cache/**",
-			"**/.ruff_cache/**",
-			"**/dist/**",
-			"**/build/**",
-			"**/coverage/**",
-			"**/node_modules/**",
-			"**/target/**",
-			"**/vendor/**",
-			"**/*.min.js",
-			"**/*.min.css",
-			"**/*.lock",
-			"**/bun.lockb",
-			"**/package-lock.json",
-			"**/pnpm-lock.yaml",
-			"**/yarn.lock",
-			"**/uv.lock",
-			"**/poetry.lock"
-		]
-	},
-	"pullRequestSummary": {
-		"enabled": true,
-		"includeStats": true
-	}
-}
+# Config for the Gemini Pull Request Review Bot.
+# https://github.com/marketplace/gemini-code-assist
+have_fun: false
+code_review:
+  disable: false
+  comment_severity_threshold: 'MEDIUM'
+  max_review_comments: -1
+  pull_request_opened:
+    help: false
+    summary: false
+    code_review: true
+ignore_patterns: []
