@@ -4,12 +4,6 @@ Purpose: Generate project documentation from codebase analysis. Creates product.
 
 ## Context Loading
 
-Before execution, load these essential files:
-
-- .moai/config/sections/language.yaml (conversation_language for documentation)
-- .moai/config/sections/user.yaml (user name for authorship)
-- .moai/config/sections/quality.yaml (LSP quality gates for environment check)
-
 Pre-execution commands: git status, git branch.
 
 ---
@@ -219,8 +213,3 @@ All of the following must be verified:
 - Phase 3: manager-docs subagent (documentation generation)
 - Phase 3.5: expert-devops subagent (optional LSP installation)
 - Phase 4: manager-git subagent (optional commit)
-
----
-
-Version: 1.1.0
-Source: Added context loading, task tracking, git operations, completion criteria, graceful exit.
