@@ -338,42 +338,6 @@ validate_command() {
 }
 
 # Parse command from JSON input
-parse_json_command() {
-  local json="$1"
-  local command
-
-  # Extract command from JSON: {"tool_input": {"command": "..."}}
-  # Always use the robust method that handles escaped quotes properly
-
-  # Extract everything after "command":
-  local temp="${json#*\"command\"}"
-  temp="${temp#*:}"
-  temp="${temp#*\"}"
-
-  # Find the closing quote, accounting for escaped quotes
-  local result=""
-  local escaped=false
-  local i
-  for ((i = 0; i < ${#temp}; i++)); do
-    local char="${temp:i:1}"
-    if "$escaped"; then
-      # Previous character was backslash, so this character is escaped
-      result+="$char"
-      escaped=false
-    elif [[ $char == '\' ]]; then
-      # This is a backslash, next character will be escaped
-      escaped=true
-    elif [[ $char == '"' ]]; then
-      # Unescaped quote - end of command string
-      break
-    else
-      result+="$char"
-    fi
-  done
-
-  command="$result"
-  echo "$command"
-}
 
 # ============================================
 # Main Logic
@@ -384,9 +348,15 @@ if [[ $# -gt 0 ]]; then
   # Command-line arguments provided (testing mode)
   CMD="$*"
 else
+  # Check if jq is available
+  if ! command -v jq &> /dev/null; then
+    echo "Error: jq is required for JSON parsing but not found." >&2
+    exit 1
+  fi
+
   # No arguments, read JSON from stdin (Claude Code hook mode)
   INPUT=$(cat)
-  CMD=$(parse_json_command "$INPUT")
+CMD=$(echo "$INPUT" | jq -r ".tool_input.command // empty" | tr '\t\r' ' ')
 fi
 
 # Skip check if no command was extracted
