@@ -2,9 +2,6 @@
 
 Purpose: Disk space management, memory-efficient operations, performance optimization, and error handling patterns for worktree management.
 
-Version: 1.0.0
-Last Updated: 2026-01-06
-
 ---
 
 ## Quick Reference (30 seconds)
@@ -14,7 +11,6 @@ Optimization Areas:
 - Memory: Streaming operations and caching patterns
 - Performance: Parallel operations and efficient queries
 - Error Handling: Recovery patterns and resilience
-
 ---
 
 ## Disk Space Management
@@ -52,7 +48,7 @@ Build Artifact Removal:
 
 Cache Cleanup:
 - pytest_cache and __pycache__ directories
-- .npm and .yarn cache
+- .npm and .yarn and .bun cache
 - IDE index files
 
 Git Repository Optimization:
@@ -81,7 +77,6 @@ Cleanup Priority:
 2. Stale worktrees (not accessed in N days)
 3. Error state worktrees
 4. Large worktrees with available archives
-
 ---
 
 ## Memory Efficiency
@@ -122,7 +117,6 @@ Defer expensive operations until needed:
 - Git status queries only when status requested
 - Disk usage calculation only when size analysis needed
 - Remote fetch only when sync check requested
-
 ---
 
 ## Performance Optimization
@@ -177,7 +171,6 @@ Batch Cleanup:
 - Identify all candidates first
 - Remove worktrees in parallel
 - Single registry update at end
-
 ---
 
 ## Error Handling
@@ -244,7 +237,6 @@ Consistency Checks:
 - Periodic registry validation
 - Filesystem consistency checks
 - Automatic repair for common issues
-
 ---
 
 ## Analytics and Monitoring
@@ -292,9 +284,4 @@ Based on Performance:
 - Suggest disk optimization for slow operations
 - Recommend parallel operation adjustments
 - Identify resource bottlenecks
-
 ---
-
-Version: 1.0.0
-Last Updated: 2026-01-06
-Module: Resource optimization patterns for disk, memory, performance, and error handling
