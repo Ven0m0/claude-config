@@ -2,9 +2,6 @@
 
 Purpose: Development patterns and workflows for parallel SPEC development including independent features, sequential dependencies, and multi-developer coordination.
 
-Version: 1.0.0
-Last Updated: 2026-01-06
-
 ---
 
 ## Quick Reference (30 seconds)
@@ -294,9 +291,3 @@ Memory-Efficient Switching:
 - Pre-load worktree metadata in background
 - Immediate switch without waiting
 - Complete loading while user works
-
----
-
-Version: 1.0.0
-Last Updated: 2026-01-06
-Module: Parallel development workflow patterns and coordination strategies
