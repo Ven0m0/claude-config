@@ -27,17 +27,6 @@ Flag priority: --worktree takes precedence over --branch, which takes precedence
 
 ## Context Loading
 
-Before execution, load these essential files:
-
-- .moai/config/config.yaml (git strategy, language settings)
-- .moai/config/sections/quality.yaml (LSP quality gates, coverage targets)
-- .moai/config/sections/git-strategy.yaml (auto_branch, branch creation policy)
-- .moai/config/sections/language.yaml (git_commit_messages setting)
-- .moai/project/product.md (product context)
-- .moai/project/structure.md (architecture context)
-- .moai/project/tech.md (technology context)
-- .moai/specs/ directory listing (existing SPECs for deduplication)
-
 Pre-execution commands: git status, git branch, git log, git diff, find .moai/specs.
 
 ---
@@ -275,8 +264,3 @@ All of the following must be verified:
 - Phase 1B: manager-spec subagent (SPEC planning)
 - Phase 2: manager-spec subagent (SPEC file creation)
 - Phase 3: manager-git subagent (branch/worktree setup, conditional)
-
----
-
-Version: 1.1.0
-Source: Extracted from .claude/commands/moai/1-plan.md v5.1.0. Added LSP baseline capture, lifecycle_level field, task tracking, graceful exit.
