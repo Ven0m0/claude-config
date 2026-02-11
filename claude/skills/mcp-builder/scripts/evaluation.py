@@ -235,6 +235,7 @@ async def run_evaluation(
     eval_path: Path,
     connection: Any,
     model: str = "claude-3-7-sonnet-20250219",
+    concurrency: int = 5,
 ) -> str:
     """Run evaluation with MCP server tools."""
     print("🚀 Starting Evaluation")
@@ -247,13 +248,18 @@ async def run_evaluation(
     qa_pairs = parse_evaluation_file(eval_path)
     print(f"📋 Loaded {len(qa_pairs)} evaluation tasks")
 
-    results = []
-    for i, qa_pair in enumerate(qa_pairs):
-        print(f"Processing task {i + 1}/{len(qa_pairs)}")
-        result = await evaluate_single_task(
-            client, model, qa_pair, tools, connection, i
-        )
-        results.append(result)
+    if concurrency < 1:
+        raise ValueError(f"concurrency must be at least 1; got {concurrency}")
+    semaphore = asyncio.Semaphore(concurrency)
+
+    async def run_task(i, qa_pair):
+        async with semaphore:
+            return await evaluate_single_task(
+                client, model, qa_pair, tools, connection, i
+            )
+
+    tasks = [run_task(i, qa_pair) for i, qa_pair in enumerate(qa_pairs)]
+    results = await asyncio.gather(*tasks)
 
     correct = sum(r["score"] for r in results)
     accuracy = (correct / len(results)) * 100 if results else 0
@@ -341,6 +347,7 @@ Examples:
         """,
     )
 
+    parser.add_argument("--concurrency", type=int, default=5, help="Number of concurrent tasks (default: 5)")
     parser.add_argument("eval_file", type=Path, help="Path to evaluation XML file")
     parser.add_argument(
         "-t",
@@ -413,7 +420,7 @@ Examples:
 
     async with connection:
         print("✅ Connected successfully")
-        report = await run_evaluation(args.eval_file, connection, args.model)
+        report = await run_evaluation(args.eval_file, connection, args.model, args.concurrency)
 
         if args.output:
             args.output.write_text(report)
