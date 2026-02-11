@@ -16,12 +16,6 @@ Flow: Check Completion -> Memory Check -> Diagnose -> Fix -> Verify -> Repeat
 
 ## Context Loading
 
-Before execution, load these essential files:
-
-- .moai/config/sections/quality.yaml (LSP thresholds, coverage targets, TRUST 5 settings)
-- .moai/config/sections/language.yaml (conversation_language)
-- .moai/config/sections/ralph.yaml (loop settings, iteration defaults)
-
 Pre-execution commands: git status, git diff.
 
 ## Per-Iteration Cycle
@@ -177,8 +171,3 @@ All of the following must be verified:
 - Diagnostics: Bash (parallel background tasks)
 - Fixes: expert-debug, expert-backend, expert-frontend, expert-testing, expert-security, expert-performance subagents
 - Completion: manager-git subagent (optional commit)
-
----
-
-Version: 1.1.0
-Source: loop.md command v2.2.0. Added context loading, quality.yaml threshold references, next steps, graceful exit, completion criteria.
