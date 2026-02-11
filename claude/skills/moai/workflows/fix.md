@@ -16,11 +16,6 @@ Flow: Parallel Scan -> Classify -> Fix -> Verify -> Report
 
 ## Context Loading
 
-Before execution, load these essential files:
-
-- .moai/config/sections/quality.yaml (LSP thresholds, coverage targets)
-- .moai/config/sections/language.yaml (conversation_language, code_comments)
-
 Pre-execution commands: git status, git diff.
 
 ## Phase 1: Parallel Scan
@@ -168,8 +163,3 @@ All of the following must be verified:
 - Phase 1: Bash (parallel diagnostic scans)
 - Phase 3: expert-backend, expert-frontend, expert-refactoring, expert-debug subagents (fix execution)
 - Phase 5: manager-git subagent (optional commit)
-
----
-
-Version: 1.1.0
-Source: fix.md command v2.2.0. Added context loading, LSP quality gate verification, next steps, graceful exit, completion criteria.
