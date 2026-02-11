@@ -136,8 +136,3 @@ Auto-routing based on llm.yaml settings:
 9. Phase 2: DDD implementation loop via expert agents
 10. Phase 3: Documentation sync via manager-docs
 11. Terminate with completion marker
-
----
-
-Version: 1.3.0
-Source: Unified plan->run->sync pipeline. Added SPEC/project document update in sync phase. Added LSP quality gates per-phase reference.
