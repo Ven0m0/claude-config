@@ -17,14 +17,6 @@ Implement SPEC requirements through Domain-Driven Development (DDD) methodology 
 
 ## Context Loading
 
-Before execution, load these essential files:
-
-- .moai/config/config.yaml (git strategy, automation settings)
-- .moai/config/sections/quality.yaml (coverage targets, TRUST 5 settings)
-- .moai/config/sections/git-strategy.yaml (auto_branch, branch creation policy)
-- .moai/config/sections/language.yaml (git_commit_messages setting)
-- .moai/specs/SPEC-{ID}/ directory (spec.md, plan.md, acceptance.md)
-
 Pre-execution commands: git status, git branch, git log, git diff.
 
 ---
@@ -231,8 +223,4 @@ All of the following must be verified:
 - Quality gate blocked Phase 3 if status was CRITICAL
 - Phase 3: manager-git created commits (branch or direct) only if quality permitted
 - Phase 4: User presented with next step options
-
----
-
-Version: 1.2.0
-Source: Extracted from .claude/commands/moai/2-run.md v5.0.0. Added implementation divergence tracking, LSP quality gate validation with baseline comparison.
+ 
