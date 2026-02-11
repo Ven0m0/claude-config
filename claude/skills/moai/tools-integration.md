@@ -2,9 +2,6 @@
 
 Purpose: Integration patterns for moai-worktree with development tools, IDEs, terminals, CI/CD pipelines, and monitoring systems.
 
-Version: 1.0.0
-Last Updated: 2026-01-06
-
 ---
 
 ## Quick Reference (30 seconds)
@@ -15,7 +12,6 @@ Tool Integration Points:
 - Git Hooks: Post-checkout, pre-push validation
 - CI/CD: GitHub Actions, parallel testing, SPEC-aware builds
 - Monitoring: Usage analytics, performance tracking
-
 ---
 
 ## IDE Integration
@@ -47,13 +43,6 @@ Task Generation Per Worktree:
 - Sync Worktree: Run moai-worktree sync command
 - Switch to Worktree: Change active directory
 
-### JetBrains IDE Integration
-
-For IntelliJ, PyCharm, and WebStorm:
-- Configure separate project modules for each worktree
-- Share run configurations across worktrees
-- Set worktree-specific interpreter paths
-
 ---
 
 ## Terminal Integration
@@ -83,7 +72,6 @@ Quick Functions:
 - mwnew: Create and switch to new worktree in one command
 - mwdev: Switch to worktree and start development with /moai:2-run
 - mwpush: Sync worktree and push to remote branch
-
 ---
 
 ## Git Hooks Integration
@@ -109,7 +97,6 @@ Hook Actions:
 3. Verify sync status with base branch
 4. Prompt for confirmation if behind base branch
 5. Update registry with push timestamp
-
 ---
 
 ## CI/CD Pipeline Integration
@@ -156,7 +143,6 @@ Build Artifacts:
 - Per-worktree build directories
 - Independent deployment artifacts
 - Version tracking per SPEC
-
 ---
 
 ## Monitoring and Analytics
@@ -202,7 +188,6 @@ Push metrics to external monitoring:
 - Prometheus Pushgateway support
 - Custom webhook integration
 - Scheduled metric updates
-
 ---
 
 ## Resource Management
@@ -246,7 +231,6 @@ Cleanup Patterns:
 - Python cache cleanup (__pycache__, .pytest_cache)
 - Node modules pruning
 - Build directory cleanup
-
 ---
 
 ## Error Handling
@@ -272,9 +256,4 @@ Monitoring Integration Errors:
 - Pushgateway connection failures
 - Metric format errors
 - Resolution: Verify endpoint configuration and data format
-
 ---
-
-Version: 1.0.0
-Last Updated: 2026-01-06
-Module: Development tools and external system integration patterns
