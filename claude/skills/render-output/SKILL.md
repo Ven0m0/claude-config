@@ -2,10 +2,8 @@
 name: render-output
 description: Renders structured data to terminal with optimal formatting. Use when presenting agent results, displaying data to users, formatting command output, or showing validation reports. Transforms raw data into clear, scannable terminal output.
 ---
-
 <objective>
 Transform structured data from agents into clear, scannable terminal output. This skill provides patterns for presenting information to users in the most readable format based on data type and context.
-
 Key principle: Output should be scannable in under 5 seconds. Choose the simplest pattern that communicates the information effectively.
 </objective>
 
@@ -19,10 +17,8 @@ Select pattern based on data type:
 | Action result | Status line | Single operation outcome |
 | Validation | Box report | Multi-check with pass/fail |
 | Counts | Summary line | Aggregates, distributions |
-
 Default to the simplest pattern. Escalate complexity only when needed.
 </quickstart>
-
 <patterns>
 <toon-pattern>
 For structured data returned to subagents or machine processing:
@@ -31,32 +27,27 @@ For structured data returned to subagents or machine processing:
 @type: [SchemaType]
 @id: [unique-identifier]
 [scalar properties]
-
 [table]{columns|tab}:
 [row1 tab-separated]
 [row2 tab-separated]
 ```
-
 Rules:
 - ALWAYS include `@type` and `@id`
 - Use tab-separated tables for arrays
 - Prefer flat structure (avoid nesting >2 levels)
 - No prose - data only
 - Use `toon` language tag for syntax highlighting
-
 Example:
 ```toon
 @type: AssessAction
 @id: 005-auth
 actionStatus: CompletedActionStatus
-
 validationStatus: VALID
 checksPerformed: 10
 issues.critical: 0
 issues.warning: 1
 ```
 </toon-pattern>
-
 <table-pattern>
 For human-readable listings and comparisons:
 
@@ -65,14 +56,12 @@ For human-readable listings and comparisons:
 |---------|---------|---------|
 | value1  | value2  | value3  |
 ```
-
 Rules:
 - Maximum 6 columns (truncate or split if more)
 - Align columns consistently
 - Truncate cells >30 chars with `...`
 - Right-align numbers
 - Keep header row concise
-
 Example:
 ```markdown
 | ID         | Name           | Stage       | Priority |
@@ -81,20 +70,17 @@ Example:
 | 006-mgmt   | User Management| ready       | P2       |
 ```
 </table-pattern>
-
 <status-pattern>
 For single action outcomes:
 
 ```
 [symbol] [action verb] [target]: [brief result]
 ```
-
 Symbols:
 - `✓` success
 - `✗` failure
 - `⚠` warning
 - `→` transition
-
 Examples:
 ```
 ✓ Created outcome 005-auth in queued/
@@ -111,7 +97,6 @@ For short lists (<5 items), use indented bullets:
   - 007-report (queued)
 ```
 </status-pattern>
-
 <box-pattern>
 For validation reports and multi-section results:
 
@@ -119,29 +104,23 @@ For validation reports and multi-section results:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [Title]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
 Section1:     [✓/✗] [details]
 Section2:     [✓/✗] [details]
 Section3:     [✓/✗] [details]
-
 Overall: [PASS ✓ / FAIL ✗ / NEEDS_ATTENTION ⚠]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-
 Use box drawing characters:
-- `━` horizontal line
+- `=` horizontal line
 - `│` vertical line (if needed)
 - `┌┐└┘` corners (if needed)
-
 Reserve for:
 - Validation reports (>3 checks)
 - Multi-section summaries
 - Error reports with details
 </box-pattern>
-
 <summary-pattern>
 For counts, distributions, and quick stats:
-
 Single line for simple counts:
 ```
 Summary: 11 total | 3 queued | 2 ready | 1 in-progress | 5 completed
@@ -152,16 +131,14 @@ Two lines for distributions:
 Summary: 11 total | 3 queued | 2 ready | 1 in-progress | 5 completed
          9 parent | 2 child | P1: 6 | P2: 4 | P3: 1
 ```
-
 Rules:
 - Use `|` as separator
 - Align related groups
 - Maximum two lines
 </summary-pattern>
-
 <distribution-pattern>
 For visual distribution of values:
-
+  
 ```
 Maturity Distribution:
   0-29%:   ### (3)
@@ -169,21 +146,17 @@ Maturity Distribution:
   60-79%:  ### (3)
   80-100%: # (1)
 ```
-
 Rules:
 - Use `#` for bar chart
 - Include count in parentheses
 - Align labels and bars
 </distribution-pattern>
 </patterns>
-
 <pattern-selection>
 Choose pattern based on:
-
 1. **Audience**: Subagent (TOON) vs Human (table/status/box)
 2. **Complexity**: Simple (status) → Complex (box)
 3. **Data shape**: List (table) vs Result (status) vs Validation (box)
-
 Decision tree:
 ```
 Is output for another agent?
@@ -197,7 +170,6 @@ Is output for another agent?
                         └─ No → Summary line
 ```
 </pattern-selection>
-
 <symbols>
 Standard symbols for consistent output:
 
@@ -208,7 +180,7 @@ Standard symbols for consistent output:
 | ⚠ | Warning | U+26A0 | Needs attention, non-critical |
 | → | Transition | U+2192 | State changes, version bumps |
 | • | Bullet | U+2022 | List items |
-| ━ | Horizontal | U+2501 | Box borders |
+| = | Horizontal | U+2501 | Box borders |
 | │ | Vertical | U+2502 | Box borders |
 
 DO NOT use emoji. Stick to these standard symbols.
@@ -241,31 +213,25 @@ Output meets quality standards when:
 - Human output is scannable in <5 seconds
 - No mixed patterns in single output
 </success-criteria>
-
 <examples>
 <example name="outcome_list">
+
 Outcomes Overview (synced: 2025-12-02T10:30:00Z)
-
 Summary: 11 total | 3 queued | 2 ready | 1 in-progress | 0 blocked | 5 completed
-
 Current Focus: 005-implement-auth (in-progress)
-
 | ID                 | Name              | Stage       | Priority | Capabilities    |
 |--------------------|-------------------|-------------|----------|-----------------|
 | 005-implement-auth | Implement Auth    | in-progress | P1       | auth-system:30% |
 | 006-user-mgmt      | User Management   | ready       | P2       | user-mgmt:25%   |
 | 007-reporting      | Reporting         | queued      | P3       | reporting:20%   |
-
 Blocked: None
 </example>
-
 <example name="action_result">
-ws Plugin Published
 
-4745a58 feat(ws): add out/list command
-0.9.2 → 0.9.3 (minor)
-
-✓ Committed, pushed, synced
+ws Plugin Published 
+4745a58 feat(ws): add out/list command 
+0.9.2 → 0.9.3 (minor) 
+✓ Committed, pushed, synced 
 </example>
 
 <example name="validation_report">
@@ -284,15 +250,14 @@ Overall: NEEDS_ATTENTION ⚠
 </example>
 
 <example name="toon_return">
+  
 ```toon
 @type: ItemList
 @id: outcome-list-result
 numberOfItems: 11
-
 summary.total: 11
 summary.queued: 3
 summary.completed: 5
-
 outcome{id,name,stage|tab}:
 005-auth	Implement Auth	in-progress
 006-mgmt	User Management	ready
