@@ -352,8 +352,3 @@ All of the following must be verified:
 - Phase 2: Safety backup created and verified, documents synchronized, SPEC documents updated per lifecycle level, project documents updated (if applicable), quality verified, SPEC status updated
 - Phase 3: Changes committed, PR transitioned (Team mode), auto-merge executed (if flagged)
 - Phase 4: Completion report displayed, appropriate next steps presented based on mode
-
----
-
-Version: 1.1.0
-Source: Extracted from .claude/commands/moai/3-sync.md v3.4.0. Added SPEC divergence analysis, project document updates, and SPEC lifecycle awareness.
