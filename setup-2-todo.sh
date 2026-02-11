@@ -63,7 +63,7 @@ main() {
   fi
   # 4. Synthesize LLM Workflows
   setup_workflows
-  # 5. MCP Configuration (Excluding Brave, TODO sources)
+  # 5. MCP Configuration (Brave and additional sources can be added separately)
   setup_mcp
   msg "Setup Complete. Review WORKFLOW_TOKEN_OPT.md for usage."
 }

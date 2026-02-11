@@ -14,9 +14,9 @@
  * Output: JSON object with metrics
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import * as readline from 'readline';
+import * as fs from "node:fs";
+import * as path from "node:path";
+import * as readline from "node:readline";
 
 interface AggressiveLanguageResult {
   count: number;
@@ -65,11 +65,11 @@ const CODE_BLOCK = /^```/;
 const TABLE_ROW = /^\|.+\|$/;
 const EXTERNAL_LINK = /\[.+?\]\(([^)]+)\)/g;
 const WHY_CONTEXT_PATTERNS = [
-  /—\s*.+$/,           // em-dash explanation
-  /\(.+?\)$/,          // parenthetical at end
-  /because\s/i,        // explicit "because"
-  /since\s/i,          // explicit "since"
-  /to\s+(ensure|prevent|enable|improve|reduce)/i,  // purpose phrases
+  /—\s*.+$/, // em-dash explanation
+  /\(.+?\)$/, // parenthetical at end
+  /because\s/i, // explicit "because"
+  /since\s/i, // explicit "since"
+  /to\s+(ensure|prevent|enable|improve|reduce)/i, // purpose phrases
 ];
 const VERSION_PATTERN = /Version[:\s]+(\d+\.\d+\.\d+)/i;
 const DATE_PATTERN = /Updated[:\s]+(\d{4}-\d{2}-\d{2})/i;
@@ -112,7 +112,7 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
 
   const rl = readline.createInterface({
     input: fileStream,
-    crlfDelay: Infinity
+    crlfDelay: Infinity,
   });
 
   let inCodeBlock = false;
@@ -120,9 +120,9 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
   let lineIndex = 0;
 
   // Pre-compile regexes for performance optimization
-  const aggressiveRegex = new RegExp(AGGRESSIVE_WORDS.source, 'g');
-  const xmlRegex = new RegExp(XML_TAG_PATTERN.source, 'g');
-  const linkRegex = new RegExp(EXTERNAL_LINK.source, 'g');
+  const aggressiveRegex = new RegExp(AGGRESSIVE_WORDS.source, "g");
+  const xmlRegex = new RegExp(XML_TAG_PATTERN.source, "g");
+  const linkRegex = new RegExp(EXTERNAL_LINK.source, "g");
 
   // Compute characterCount from the raw file size to avoid newline handling discrepancies.
   // This provides deterministic parity with the previous content.length-based approach.
@@ -180,16 +180,23 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
 
       // Check for boundaries-related sections
       const lowerTitle = title.toLowerCase();
-      if (lowerTitle.includes('boundaries') || lowerTitle.includes('action boundaries')) {
+      if (
+        lowerTitle.includes("boundaries") ||
+        lowerTitle.includes("action boundaries")
+      ) {
         result.hasBoundariesSection = true;
       }
-      if (lowerTitle.includes('always do') || lowerTitle.includes('✅')) {
+      if (lowerTitle.includes("always do") || lowerTitle.includes("✅")) {
         result.hasAlwaysDoSection = true;
       }
-      if (lowerTitle.includes('ask first') || lowerTitle.includes('⚠️')) {
+      if (lowerTitle.includes("ask first") || lowerTitle.includes("⚠️")) {
         result.hasAskFirstSection = true;
       }
-      if (lowerTitle.includes('avoid') || lowerTitle.includes('never do') || lowerTitle.includes('❌')) {
+      if (
+        lowerTitle.includes("avoid") ||
+        lowerTitle.includes("never do") ||
+        lowerTitle.includes("❌")
+      ) {
         result.hasAvoidSection = true;
       }
     }
@@ -198,7 +205,8 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
     if (TABLE_ROW.test(line)) {
       tableRowCount++;
     } else if (tableRowCount > 0) {
-      if (tableRowCount >= 2) { // Header + at least one row
+      if (tableRowCount >= 2) {
+        // Header + at least one row
         result.tables++;
       }
       tableRowCount = 0;
@@ -208,7 +216,7 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
     linkRegex.lastIndex = 0;
     while ((match = linkRegex.exec(line)) !== null) {
       const link = match[1];
-      if (!link.startsWith('#') && !result.externalLinks.includes(link)) {
+      if (!link.startsWith("#") && !result.externalLinks.includes(link)) {
         result.externalLinks.push(link);
       }
     }
@@ -231,10 +239,10 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
 
     // Check for last updated date
     if (!result.lastUpdated) {
-        const dateMatch = line.match(DATE_PATTERN);
-        if (dateMatch) {
-            result.lastUpdated = dateMatch[1];
-        }
+      const dateMatch = line.match(DATE_PATTERN);
+      if (dateMatch) {
+        result.lastUpdated = dateMatch[1];
+      }
     }
   }
 
@@ -249,7 +257,7 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
   return result;
 }
 
-function calculateScores(result: AnalysisResult): AnalysisResult['scores'] {
+function calculateScores(result: AnalysisResult): AnalysisResult["scores"] {
   // Length score (5 points)
   let lengthScore: number;
   if (result.lineCount < 250) lengthScore = 5;
@@ -300,8 +308,8 @@ function calculateScores(result: AnalysisResult): AnalysisResult['scores'] {
 const args = process.argv.slice(2);
 
 if (args.length === 0) {
-  console.error('Usage: npx ts-node analyze.ts <path-to-claudemd>');
-  console.error('Example: npx ts-node analyze.ts ./CLAUDE.md');
+  console.error("Usage: npx ts-node analyze.ts <path-to-claudemd>");
+  console.error("Example: npx ts-node analyze.ts ./CLAUDE.md");
   process.exit(1);
 }
 
@@ -310,7 +318,7 @@ if (args.length === 0) {
     const result = await analyzeFile(args[0]);
     console.log(JSON.stringify(result, null, 2));
   } catch (error) {
-    console.error('Error:', (error as Error).message);
+    console.error("Error:", (error as Error).message);
     process.exit(1);
   }
 })();
