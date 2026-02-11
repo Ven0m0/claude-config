@@ -47,7 +47,7 @@ import time
 import subprocess
 import time
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Awaitable, Callable
 from datetime import datetime, timedelta
 from contextlib import asynccontextmanager
 from functools import wraps
