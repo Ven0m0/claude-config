@@ -2,10 +2,13 @@
 """Tool: Quick Start Generator.
 
 Description: Automated quick-start generator for existing skills. Creates
-lightweight variants focused on essential information.
+lightweight variants focused on essential information with token optimization.
 
 Usage: scripts/quick_start_generator.py [--skill-path PATH] [--output PATH]
-[--template TEMPLATE].
+[--token-target TARGET] [--show-stats].
+
+Based on the conditional-loading performance optimization research plan.
+Target: <300 tokens for Quick Start variants (70% reduction).
 """
 
 import argparse
@@ -18,21 +21,34 @@ import yaml
 
 logger = logging.getLogger(__name__)
 
+# Performance targets from research plan
+DEFAULT_TOKEN_TARGET = 300
+IDEAL_TOKEN_RANGE = (200, 300)
+MAX_SECTIONS = 5
+MAX_BULLETS_PER_SECTION = 4
+
 
 class QuickStartGenerator:
-    """Generates quick-start variants of skills with essential information only."""
+    """Generates quick-start variants of skills with essential information only.
 
-    def __init__(self, skill_path: str) -> None:
+    Implements progressive loading strategy from conditional-loading research plan.
+    Targets <300 tokens for Quick Start variants with 70% token reduction.
+    """
+
+    def __init__(self, skill_path: str, token_target: int = DEFAULT_TOKEN_TARGET) -> None:
         """Initialize quick start generator.
 
         Args:
             skill_path: Path to the skill file to process.
+            token_target: Target token count for generated Quick Start (default: 300).
 
         """
         self.skill_path = Path(skill_path)
         self.skill_dir = self.skill_path.parent
+        self.token_target = token_target
         self.skill_content = self._load_skill_content()
         self.frontmatter, self.content = self._parse_skill_content()
+        self.generated_tokens = 0
 
     def _load_skill_content(self) -> list[str]:
         """Load skill content as lines."""
@@ -67,12 +83,52 @@ class QuickStartGenerator:
         except yaml.YAMLError:
             return {}, content_lines
 
+    def _estimate_tokens(self, text: str) -> int:
+        """Estimate token count for text.
+
+        Uses rough approximation: 1 token ≈ 4 characters.
+
+        Args:
+            text: Text to estimate tokens for.
+
+        Returns:
+            Estimated token count.
+
+        """
+        return len(text) // 4
+
+    def _is_within_budget(self, additional_text: str) -> bool:
+        """Check if adding text would exceed token budget.
+
+        Args:
+            additional_text: Text to potentially add.
+
+        Returns:
+            True if within budget, False otherwise.
+
+        """
+        potential_tokens = self.generated_tokens + self._estimate_tokens(additional_text)
+        return potential_tokens <= self.token_target
+
     def generate_quick_start(self) -> str:
-        """Generate quick-start content focusing on essential information."""
+        """Generate quick-start content focusing on essential information.
+
+        Implements tiered content structure from research plan:
+        - Frontmatter + Essential info (~100 tokens)
+        - Quick Start section (~200 tokens)
+        - Reference to full content
+
+        Returns:
+            Generated quick-start content as string.
+
+        """
         quick_start_lines = []
+        self.generated_tokens = 0
 
         # Add optimized frontmatter
-        quick_start_lines.extend(self._generate_quick_start_frontmatter())
+        frontmatter_lines = self._generate_quick_start_frontmatter()
+        quick_start_lines.extend(frontmatter_lines)
+        self.generated_tokens += self._estimate_tokens("".join(frontmatter_lines))
 
         # Add title
         if self.content:
@@ -81,61 +137,101 @@ class QuickStartGenerator:
             for line in self.content:
                 if line.strip().startswith("#"):
                     title = line.strip() + " (Quick Start)\n"
-                    quick_start_lines.append(title)
+                    if self._is_within_budget(title):
+                        quick_start_lines.append(title)
+                        self.generated_tokens += self._estimate_tokens(title)
                     break
 
-        # Add purpose section
-        quick_start_lines.extend(self._extract_purpose_section())
+        # Add essential sections (priority-ordered)
+        sections_to_add = [
+            ("purpose", self._extract_purpose_section),
+            ("when_to_use", self._extract_when_to_use),
+            ("quick_usage", self._extract_quick_usage),
+            ("essential_tools", self._extract_essential_tools),
+        ]
 
-        # Add when to use
-        quick_start_lines.extend(self._extract_when_to_use())
+        for section_name, extractor_func in sections_to_add:
+            section_lines = extractor_func()
+            section_text = "".join(section_lines)
 
-        # Add quick usage examples
-        quick_start_lines.extend(self._extract_quick_usage())
+            if self._is_within_budget(section_text):
+                quick_start_lines.extend(section_lines)
+                self.generated_tokens += self._estimate_tokens(section_text)
+            else:
+                logger.warning(
+                    f"Skipping {section_name} section - would exceed token budget "
+                    f"({self.generated_tokens + self._estimate_tokens(section_text)} "
+                    f"> {self.token_target})"
+                )
+                break
 
-        # Add essential tools
-        quick_start_lines.extend(self._extract_essential_tools())
-
-        # Add key benefits (brief)
-        quick_start_lines.extend(self._extract_key_benefits())
-
-        # Add loading marker for full content
-        quick_start_lines.append("\n<!-- FULL_CONTENT_AVAILABLE -->\n")
-        quick_start_lines.append(
+        # Add loading marker for full content (as per research plan)
+        marker_text = (
+            "\n<!-- FULL_CONTENT_AVAILABLE -->\n"
             "<!-- Implementation details, examples, and workflows "
-            "available in full SKILL.md -->\n",
+            "available in full SKILL.md -->\n"
         )
-
-        # Add optional quick implementation steps
-        quick_start_lines.extend(self._extract_quick_implementation())
+        quick_start_lines.append(marker_text)
 
         return "".join(quick_start_lines)
 
+    def get_performance_metrics(self) -> dict[str, int | float]:
+        """Get performance metrics for generated Quick Start.
+
+        Returns:
+            Dictionary with token counts and reduction percentage.
+
+        """
+        original_tokens = self._estimate_tokens("".join(self.skill_content))
+        return {
+            "original_tokens": original_tokens,
+            "quick_start_tokens": self.generated_tokens,
+            "tokens_saved": original_tokens - self.generated_tokens,
+            "reduction_percentage": (
+                (original_tokens - self.generated_tokens) / original_tokens * 100
+                if original_tokens > 0
+                else 0
+            ),
+            "target_met": self.generated_tokens <= self.token_target,
+        }
+
     def _generate_quick_start_frontmatter(self) -> list[str]:
-        """Generate optimized frontmatter for quick-start."""
+        """Generate optimized frontmatter for quick-start.
+
+        Reduces estimated_tokens to match target and adds Quick Start designation.
+
+        Returns:
+            List of frontmatter lines.
+
+        """
         quick_frontmatter = dict(self.frontmatter)
 
-        # Optimize for quick usage
+        # Optimize for quick usage (research plan: <300 tokens)
         quick_frontmatter.update(
             {
                 "estimated_tokens": min(
                     quick_frontmatter.get("estimated_tokens", 800),
-                    300,
+                    self.token_target,
                 ),
-                "complexity": quick_frontmatter.get("complexity", "intermediate"),
+                "complexity": quick_frontmatter.get("complexity", "basic"),
                 "description": (
-                    f"{quick_frontmatter.get('description', '')} (Quick Start)"
+                    f"{quick_frontmatter.get('description', '')} (Quick Start variant)"
                 ),
             },
         )
 
-        # Add tools only if they exist
+        # Preserve essential metadata
         if "tools" not in quick_frontmatter and self.frontmatter:
             quick_frontmatter["tools"] = self.frontmatter.get("tools", [])
 
         frontmatter_lines = ["---\n"]
         for key, value in quick_frontmatter.items():
-            frontmatter_lines.append(f"{key}: {value}\n")
+            if isinstance(value, list):
+                frontmatter_lines.append(f"{key}:\n")
+                for item in value:
+                    frontmatter_lines.append(f"  - {item}\n")
+            else:
+                frontmatter_lines.append(f"{key}: {value}\n")
         frontmatter_lines.append("---\n")
 
         return frontmatter_lines
@@ -180,7 +276,14 @@ class QuickStartGenerator:
         return purpose_lines
 
     def _extract_when_to_use(self) -> list[str]:
-        """Extract concise when to use section."""
+        """Extract concise when to use section.
+
+        Limits to MAX_BULLETS_PER_SECTION bullets for token efficiency.
+
+        Returns:
+            List of when-to-use section lines.
+
+        """
         when_to_use_lines = ["\n## When to Use\n"]
 
         content_text = "".join(self.content)
@@ -196,25 +299,30 @@ class QuickStartGenerator:
             if match:
                 use_text = match.group(1).strip()
                 # Extract bullet points or create them
-                bullets = re.findall(r"[OK-]\s*(.*?)(?=\n|$)", use_text)
+                bullets = re.findall(r"[•\-*]\s*(.*?)(?=\n|$)", use_text)
                 if bullets:
-                    for bullet in bullets[:4]:  # Limit to 4 key points
+                    # Limit to MAX_BULLETS_PER_SECTION for token efficiency
+                    for bullet in bullets[:MAX_BULLETS_PER_SECTION]:
                         cleaned_bullet = re.sub(r"\s+", " ", bullet.strip())
                         if cleaned_bullet:
-                            prefix = (
-                                "" if not cleaned_bullet.startswith(("", "")) else ""
-                            )
-                            when_to_use_lines.append(f"{prefix} {cleaned_bullet}\n")
+                            when_to_use_lines.append(f"• {cleaned_bullet}\n")
                     return when_to_use_lines
 
-        # Generate generic when to use
-        when_to_use_lines.append(" Common use cases and scenarios\n")
-        when_to_use_lines.append(" Not suitable for alternative approaches\n")
+        # Generate minimal generic when to use
+        when_to_use_lines.append("• Use for common scenarios\n")
+        when_to_use_lines.append("• Not for alternative approaches\n")
 
         return when_to_use_lines
 
     def _extract_quick_usage(self) -> list[str]:
-        """Extract quick usage examples."""
+        """Extract quick usage examples.
+
+        Limits to 2 examples for token efficiency.
+
+        Returns:
+            List of quick usage section lines.
+
+        """
         usage_lines = ["\n## Quick Usage\n"]
 
         content_text = "".join(self.content)
@@ -223,25 +331,29 @@ class QuickStartGenerator:
         usage_patterns = [
             r"##\s*(?:Quick Start|Usage|Quick Usage|Getting Started)\s*\n"
             r"(.*?)(?=\n##|\n\n)",
-            r"```bash\s*\n(.*?)(?=```)",
-            r"```python\s*\n(.*?)(?=```)",
+            r"```(?:bash|python|shell)\s*\n(.*?)```",
         ]
 
+        examples_found = 0
         for pattern in usage_patterns:
             matches = re.findall(pattern, content_text, re.DOTALL | re.IGNORECASE)
-            if matches:
-                for match in matches[:3]:  # Limit to 3 examples
+            if matches and examples_found == 0:
+                # Limit to 2 examples for token efficiency
+                for match in matches[:2]:
                     usage_text = match.strip()
-                    if usage_text:
+                    if usage_text and len(usage_text) < 200:  # Keep examples concise
                         usage_lines.append(f"```bash\n{usage_text}\n```\n")
-                return usage_lines
+                        examples_found += 1
+                if examples_found > 0:
+                    return usage_lines
 
-        # Check for tools in frontmatter
+        # Check for tools in frontmatter as fallback
         if self.frontmatter and "tools" in self.frontmatter:
             tools = self.frontmatter["tools"]
             if isinstance(tools, list) and tools:
-                usage_lines.append("```bash\n# Available tools\n")
-                for tool in tools[:3]:  # Show first 3 tools
+                usage_lines.append("```bash\n")
+                # Show first 2 tools only
+                for tool in tools[:2]:
                     if isinstance(tool, str):
                         usage_lines.append(f"# {tool}\n")
                 usage_lines.append("```\n")
@@ -249,19 +361,27 @@ class QuickStartGenerator:
         return usage_lines
 
     def _extract_essential_tools(self) -> list[str]:
-        """Extract essential tools information."""
+        """Extract essential tools information.
+
+        Limits to MAX_BULLETS_PER_SECTION tools for token efficiency.
+
+        Returns:
+            List of essential tools section lines.
+
+        """
         tools_lines = ["\n## Essential Tools\n"]
 
         if self.frontmatter and "tools" in self.frontmatter:
             tools = self.frontmatter["tools"]
             if isinstance(tools, list) and tools:
-                for tool in tools[:4]:  # Limit to 4 essential tools
+                # Limit to MAX_BULLETS_PER_SECTION for token efficiency
+                for tool in tools[:MAX_BULLETS_PER_SECTION]:
                     if isinstance(tool, str):
                         tool_desc = self._get_tool_description(tool)
                         tools_lines.append(f"- `{tool}`: {tool_desc}\n")
                     elif isinstance(tool, dict) and "name" in tool:
                         name = tool["name"]
-                        desc = tool.get("description", "Essential tool functionality")
+                        desc = tool.get("description", "Essential functionality")
                         tools_lines.append(f"- `{name}`: {desc}\n")
         else:
             tools_lines.append("- Essential tools for skill functionality\n")
@@ -292,97 +412,40 @@ class QuickStartGenerator:
 
         return generic_descriptions.get(tool_name, "Essential tool functionality")
 
-    def _extract_key_benefits(self) -> list[str]:
-        """Extract key benefits section."""
-        benefits_lines = ["\n## Key Benefits\n"]
-
-        # Look for benefits section in content
-        content_text = "".join(self.content)
-
-        benefits_patterns = [
-            r"##\s*(?:Key Benefits|Benefits|Advantages)\s*\n(.*?)(?=\n##|\n\n)",
-            r"###?\s*(?:Key Benefits|Benefits)\s*\n(.*?)(?=\n#|\n\n)",
-        ]
-
-        for pattern in benefits_patterns:
-            match = re.search(pattern, content_text, re.DOTALL | re.IGNORECASE)
-            if match:
-                benefits_text = match.group(1).strip()
-                # Extract bullet points
-                bullets = re.findall(
-                    r"[*-]\s*\*\*(.*?)\*\*:\s*(.*?)(?=\n|$)",
-                    benefits_text,
-                )
-                if bullets:
-                    for benefit, desc in bullets[:3]:  # Limit to 3 benefits
-                        benefits_lines.append(
-                            f"- **{benefit.strip()}**: {desc.strip()}\n",
-                        )
-                    return benefits_lines
-
-        # Generate generic benefits
-        benefits_lines.extend(
-            [
-                "- **Quality Assurance**: Systematic evaluation against standards\n",
-                "- **Performance Optimization**: Token usage analysis and "
-                "recommendations\n",
-                "- **Maintainability**: Clear structure for easier management\n",
-            ],
-        )
-
-        return benefits_lines
-
-    def _extract_quick_implementation(self) -> list[str]:
-        """Extract quick implementation steps."""
-        impl_lines = ["\n## Quick Implementation\n"]
-
-        content_text = "".join(self.content)
-
-        # Look for workflow or implementation steps
-        workflow_patterns = [
-            r"##\s*(?:Implementation|Workflow|Quick Implementation)\s*\n"
-            r"(.*?)(?=\n##|\n\n)",
-            r"###?\s*(?:Implementation|Workflow)\s*\n(.*?)(?=\n#|\n\n)",
-        ]
-
-        for pattern in workflow_patterns:
-            match = re.search(pattern, content_text, re.DOTALL | re.IGNORECASE)
-            if match:
-                workflow_text = match.group(1).strip()
-                # Extract numbered steps
-                steps = re.findall(r"\d+\.\s*(.*?)(?=\n\d+\.|\n\n|\n#)", workflow_text)
-                if steps:
-                    for step in steps[:4]:  # Limit to 4 steps
-                        impl_lines.append(f"{len(impl_lines)}. {step.strip()}\n")
-                    return impl_lines
-
-        # Generate generic steps
-        impl_lines.extend(
-            [
-                "1. **Assess**: Analyze current skill structure and complexity\n",
-                "2. **Design**: Plan modular architecture based on single "
-                "responsibility\n",
-                "3. **Validate**: Run quality checks and compliance validation\n",
-            ],
-        )
-
-        return impl_lines
-
     def save_quick_start(self, output_path: str | None = None) -> str:
-        """Save quick-start variant."""
+        """Save quick-start variant.
+
+        Args:
+            output_path: Optional custom output path. Defaults to QUICK_START.md.
+
+        Returns:
+            Path where Quick Start was saved.
+
+        """
         if output_path is None:
             output_path = self.skill_dir / "QUICK_START.md"
 
         quick_start_content = self.generate_quick_start()
 
-        with open(output_path, "w", encoding="utf-8") as f:
-            f.write(quick_start_content)
+        try:
+            with open(output_path, "w", encoding="utf-8") as f:
+                f.write(quick_start_content)
+        except OSError as err:
+            msg = f"Failed to save quick start to {output_path}"
+            raise OSError(msg) from err
 
         return str(output_path)
 
 
-def _process_batch_directory(batch_path: str, show_stats: bool) -> None:
-    """Process all SKILL.md files in a directory."""
+def _process_batch_directory(batch_path: str, show_stats: bool, token_target: int) -> None:
+    """Process all SKILL.md files in a directory.
+
+    Args:
+        batch_path: Directory containing SKILL.md files.
+        show_stats: Whether to show performance statistics.
+        token_target: Target token count for Quick Starts.
+
+    """
     batch_dir = Path(batch_path)
     if not batch_dir.exists():
         msg = f"Directory not found: {batch_path}"
@@ -390,68 +453,122 @@ def _process_batch_directory(batch_path: str, show_stats: bool) -> None:
 
     skill_files = list(batch_dir.glob("**/SKILL.md"))
     if not skill_files:
+        logger.warning(f"No SKILL.md files found in {batch_path}")
         sys.exit(1)
 
     generated_count = 0
     total_tokens_saved = 0
+    total_reduction = 0.0
 
     for skill_file in skill_files:
         try:
-            generator = QuickStartGenerator(str(skill_file))
+            generator = QuickStartGenerator(str(skill_file), token_target)
             output_path = generator.save_quick_start()
             generated_count += 1
 
-            # Calculate estimated savings
-            original_size = skill_file.stat().st_size
-            quick_size = Path(output_path).stat().st_size
-            tokens_saved = (original_size - quick_size) // 4
-            total_tokens_saved += tokens_saved
+            # Get performance metrics
+            metrics = generator.get_performance_metrics()
+            total_tokens_saved += metrics["tokens_saved"]
+            total_reduction += metrics["reduction_percentage"]
+
+            if show_stats:
+                logger.info(
+                    f"Generated {output_path}:\n"
+                    f"  Original: {metrics['original_tokens']} tokens\n"
+                    f"  Quick Start: {metrics['quick_start_tokens']} tokens\n"
+                    f"  Saved: {metrics['tokens_saved']} tokens "
+                    f"({metrics['reduction_percentage']:.1f}% reduction)\n"
+                    f"  Target met: {metrics['target_met']}"
+                )
 
         except Exception as e:
-            logger.debug(f"Failed to process {output_path}: {e}")
+            logger.error(f"Failed to process {skill_file}: {e}")
 
-    if show_stats:
-        total_tokens_saved // generated_count
+    if show_stats and generated_count > 0:
+        avg_tokens_saved = total_tokens_saved // generated_count
+        avg_reduction = total_reduction / generated_count
+        logger.info(
+            f"\nBatch summary:\n"
+            f"  Files processed: {generated_count}\n"
+            f"  Average tokens saved: {avg_tokens_saved}\n"
+            f"  Average reduction: {avg_reduction:.1f}%"
+        )
 
 
 def _process_single_skill(
     skill_path: str,
     output_path: str | None,
     show_stats: bool,
+    token_target: int,
 ) -> None:
-    """Process a single skill file."""
-    generator = QuickStartGenerator(skill_path)
+    """Process a single skill file.
+
+    Args:
+        skill_path: Path to SKILL.md file.
+        output_path: Optional output path for Quick Start.
+        show_stats: Whether to show performance statistics.
+        token_target: Target token count for Quick Start.
+
+    """
+    generator = QuickStartGenerator(skill_path, token_target)
     output = generator.save_quick_start(output_path)
 
     if show_stats:
-        original_size = Path(skill_path).stat().st_size
-        quick_size = Path(output).stat().st_size
-        (original_size - quick_size) // 4
+        metrics = generator.get_performance_metrics()
+        logger.info(
+            f"Quick Start generated: {output}\n"
+            f"Original tokens: {metrics['original_tokens']}\n"
+            f"Quick Start tokens: {metrics['quick_start_tokens']}\n"
+            f"Tokens saved: {metrics['tokens_saved']} "
+            f"({metrics['reduction_percentage']:.1f}% reduction)\n"
+            f"Target ({token_target} tokens) met: {metrics['target_met']}"
+        )
 
 
 def main() -> None:
-    """Generate quick-start variants of skills."""
+    """Generate quick-start variants of skills.
+
+    Implements progressive loading strategy from conditional-loading research plan.
+    """
     parser = argparse.ArgumentParser(
-        description="Generate quick-start variants of skills",
+        description="Generate quick-start variants of skills with token optimization",
     )
-    parser.add_argument("skill_path", help="Path to skill file")
+    parser.add_argument("skill_path", help="Path to skill file or directory")
     parser.add_argument("--output", help="Output path for quick-start variant")
-    parser.add_argument("--batch", help="Process all skills in directory")
+    parser.add_argument("--batch", action="store_true", help="Process all skills in directory")
     parser.add_argument(
         "--stats",
         action="store_true",
-        help="Show generation statistics",
+        help="Show generation statistics and performance metrics",
+    )
+    parser.add_argument(
+        "--token-target",
+        type=int,
+        default=DEFAULT_TOKEN_TARGET,
+        help=f"Target token count for Quick Start (default: {DEFAULT_TOKEN_TARGET})",
     )
 
     args = parser.parse_args()
 
+    # Configure logging
+    logging.basicConfig(
+        level=logging.INFO if args.stats else logging.WARNING,
+        format="%(message)s",
+    )
+
     try:
         if args.batch:
-            _process_batch_directory(args.batch, args.stats)
+            _process_batch_directory(args.skill_path, args.stats, args.token_target)
         else:
-            _process_single_skill(args.skill_path, args.output, args.stats)
+            _process_single_skill(
+                args.skill_path,
+                args.output,
+                args.stats,
+                args.token_target,
+            )
 
-    except Exception:
+    except Exception as e:
+        logger.error(f"Error: {e}")
         sys.exit(1)
 
 
