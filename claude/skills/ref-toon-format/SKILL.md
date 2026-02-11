@@ -274,10 +274,6 @@ Components using this skill should demonstrate:
 - TOON Playground: https://toon-format.github.io/playground
 - Original Analysis: https://devtoolhub.com/toon-vs-json-token-efficient-ai-format/
 
-### Related Skills
-- pm-workflow:workflow-patterns - Agent handoff workflow patterns
-- plan-marshall:manage-memories - Memory layer operations
-
 ### Internal References (Load On-Demand)
 All references are in `knowledge/` directory:
 - toon-specification.md - Complete TOON format technical reference
