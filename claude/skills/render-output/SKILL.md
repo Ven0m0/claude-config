@@ -9,7 +9,7 @@ Transform structured data from agents into clear, scannable terminal output. Thi
 Key principle: Output should be scannable in under 5 seconds. Choose the simplest pattern that communicates the information effectively.
 </objective>
 
-<quick_start>
+<quickstart>
 Select pattern based on data type:
 
 | Data Type | Pattern | Use When |
@@ -21,10 +21,10 @@ Select pattern based on data type:
 | Counts | Summary line | Aggregates, distributions |
 
 Default to the simplest pattern. Escalate complexity only when needed.
-</quick_start>
+</quickstart>
 
 <patterns>
-<toon_pattern>
+<toon-pattern>
 For structured data returned to subagents or machine processing:
 
 ```toon
@@ -55,9 +55,9 @@ checksPerformed: 10
 issues.critical: 0
 issues.warning: 1
 ```
-</toon_pattern>
+</toon-pattern>
 
-<table_pattern>
+<table-pattern>
 For human-readable listings and comparisons:
 
 ```markdown
@@ -80,9 +80,9 @@ Example:
 | 005-auth   | Implement Auth | in-progress | P1       |
 | 006-mgmt   | User Management| ready       | P2       |
 ```
-</table_pattern>
+</table-pattern>
 
-<status_pattern>
+<status-pattern>
 For single action outcomes:
 
 ```
@@ -110,9 +110,9 @@ For short lists (<5 items), use indented bullets:
   - 006-mgmt (queued)
   - 007-report (queued)
 ```
-</status_pattern>
+</status-pattern>
 
-<box_pattern>
+<box-pattern>
 For validation reports and multi-section results:
 
 ```
@@ -137,9 +137,9 @@ Reserve for:
 - Validation reports (>3 checks)
 - Multi-section summaries
 - Error reports with details
-</box_pattern>
+</box-pattern>
 
-<summary_pattern>
+<summary-pattern>
 For counts, distributions, and quick stats:
 
 Single line for simple counts:
@@ -157,9 +157,9 @@ Rules:
 - Use `|` as separator
 - Align related groups
 - Maximum two lines
-</summary_pattern>
+</summary-pattern>
 
-<distribution_pattern>
+<distribution-pattern>
 For visual distribution of values:
 
 ```
@@ -174,7 +174,7 @@ Rules:
 - Use `#` for bar chart
 - Include count in parentheses
 - Align labels and bars
-</distribution_pattern>
+</distribution-pattern>
 </patterns>
 
 <pattern_selection>
