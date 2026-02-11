@@ -3,7 +3,7 @@
 PreToolUse hook: Quality gate for git commit operations.
 Runs lint and type checks before allowing git commits.
 
-Implements TODO item: "Quality gate (e.g. lint/type-check before commit)"
+Implements quality gate with lint and type-check before commit.
 """
 
 import json

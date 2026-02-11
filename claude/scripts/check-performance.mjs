@@ -66,8 +66,53 @@ async function gzipSize(filePath) {
   });
 }
 
-async function walkDir(dir, fileList = []) {
-	const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
+// Simple concurrency limiter with O(1) queue operations
+function pLimit(concurrency) {
+  let activeCount = 0;
+  let head = null;
+  let tail = null;
+
+  const next = () => {
+    activeCount--;
+    if (head) {
+      const fn = head.fn;
+      head = head.next;
+      if (!head) tail = null;
+      fn();
+    }
+  };
+
+  const run = async (fn, resolve, args) => {
+    activeCount++;
+    const result = (async () => fn(...args))();
+    resolve(result);
+    try {
+      await result;
+    } catch {}
+    next();
+  };
+
+  const generator = (fn, ...args) =>
+    new Promise((resolve) => {
+      const task = () => run(fn, resolve, args);
+      if (activeCount < concurrency) {
+        task();
+      } else {
+        const node = { fn: task, next: null };
+        if (tail) tail.next = node;
+        else head = node;
+        tail = node;
+      }
+    });
+
+  return generator;
+}
+
+async function walkDir(dir, fileList = [], limit = null) {
+	if (!limit) limit = pLimit(50); // Default shared limiter if none provided
+
+	// Limit readdir concurrency
+	const dirents = await limit(() => fs.promises.readdir(dir, { withFileTypes: true }));
 
 	await Promise.all(
 		dirents.map(async (dirent) => {
@@ -76,7 +121,8 @@ async function walkDir(dir, fileList = []) {
 			let isDirectory = dirent.isDirectory();
 			if (dirent.isSymbolicLink()) {
 				try {
-					const stat = await fs.promises.stat(filePath);
+					// Limit stat concurrency
+					const stat = await limit(() => fs.promises.stat(filePath));
 					isDirectory = stat.isDirectory();
 				} catch (e) {
 					// Only ignore errors that indicate a broken symlink
@@ -89,7 +135,9 @@ async function walkDir(dir, fileList = []) {
 			}
 
 			if (isDirectory) {
-				await walkDir(filePath, fileList);
+				// Recursive call passes the shared limit, but does NOT wrap itself in limit
+				// to avoid deadlocks (waiting for children while holding a parent slot).
+				await walkDir(filePath, fileList, limit);
 			} else {
 				fileList.push(filePath);
 			}
@@ -124,40 +172,6 @@ async function countRoutes() {
 
 	await walk(DIST_DIR);
 	return count;
-}
-
-
-// Simple concurrency limiter
-function pLimit(concurrency) {
-  const queue = [];
-  let activeCount = 0;
-
-  const next = () => {
-    activeCount--;
-    if (queue.length > 0) {
-      queue.shift()();
-    }
-  };
-
-  const run = async (fn, resolve, args) => {
-    activeCount++;
-    const result = (async () => fn(...args))();
-    resolve(result);
-    try {
-      await result;
-    } catch {}
-    next();
-  };
-
-  const generator = (fn, ...args) =>
-    new Promise((resolve) => {
-      queue.push(() => run(fn, resolve, args));
-      if (activeCount < concurrency) {
-        queue.shift()();
-      }
-    });
-
-  return generator;
 }
 
 async function analyzeBundleSize() {

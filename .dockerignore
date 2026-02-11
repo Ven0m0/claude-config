@@ -177,3 +177,29 @@ INTENT_SOLUTIONS_*.md
 *.tmp
 *.temp
 .cache
+
+# Documentation (except README.md)
+*.md
+/docs/
+LICENSE
+!README.md
+
+# Hidden files and directories
+.*
+__pycache__
+
+.git/
+.gitignore
+
+# Rust build artifacts
+target/
+
+.DS_Store
+Thumbs.db
+.env.example
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
