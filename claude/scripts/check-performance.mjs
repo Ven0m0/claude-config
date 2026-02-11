@@ -66,19 +66,120 @@ async function gzipSize(filePath) {
   });
 }
 
-// Simple concurrency limiter with O(1) queue operations
+async function walkDir(dir, fileList = []) {
+	const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
+
+	await Promise.all(
+		dirents.map(async (dirent) => {
+			const filePath = path.join(dir, dirent.name);
+
+			let isDirectory = dirent.isDirectory();
+			if (dirent.isSymbolicLink()) {
+				try {
+					const stat = await fs.promises.stat(filePath);
+					isDirectory = stat.isDirectory();
+				} catch (e) {
+					// Only ignore errors that indicate a broken symlink
+					if (e && (e.code === "ENOENT" || e.code === "ENOTDIR")) {
+						isDirectory = false;
+					} else {
+						throw e;
+					}
+				}
+			}
+
+			if (isDirectory) {
+				await walkDir(filePath, fileList);
+			} else {
+				fileList.push(filePath);
+			}
+		}),
+	);
+
+  return fileList;
+}
+
+async function countRoutes() {
+	let count = 0;
+
+	async function walk(dir) {
+		const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
+
+		for (const dirent of dirents) {
+			if (dirent.name === "index.html") {
+				count++;
+				break;
+			}
+		}
+
+		const subdirectoryPromises = dirents
+			.filter((dirent) => dirent.isDirectory())
+			.map((dirent) => {
+				const fullPath = path.join(dir, dirent.name);
+				return walk(fullPath);
+			});
+
+		await Promise.all(subdirectoryPromises);
+	}
+
+	await walk(DIST_DIR);
+	return count;
+}
+
+
+// Queue implementation for O(1) operations
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = undefined;
+  }
+}
+
+class Queue {
+  constructor() {
+    this.head = undefined;
+    this.tail = undefined;
+    this.size = 0;
+  }
+
+  enqueue(value) {
+    const node = new Node(value);
+
+    if (this.head) {
+      this.tail.next = node;
+      this.tail = node;
+    } else {
+      this.head = node;
+      this.tail = node;
+    }
+
+    this.size++;
+  }
+
+  dequeue() {
+    const current = this.head;
+    if (!current) {
+      return;
+    }
+
+    this.head = this.head.next;
+    this.size--;
+
+    return current.value;
+  }
+}
+
+// Simple concurrency limiter
 function pLimit(concurrency) {
+  const queue = new Queue();
   let activeCount = 0;
   let head = null;
   let tail = null;
 
   const next = () => {
     activeCount--;
-    if (head) {
-      const fn = head.fn;
-      head = head.next;
-      if (!head) tail = null;
-      fn();
+    if (queue.size > 0) {
+      queue.dequeue()();
     }
   };
 
@@ -94,14 +195,13 @@ function pLimit(concurrency) {
 
   const generator = (fn, ...args) =>
     new Promise((resolve) => {
-      const task = () => run(fn, resolve, args);
+      const enqueue = () => queue.enqueue(() => run(fn, resolve, args));
+      const runImmediate = () => run(fn, resolve, args);
+
       if (activeCount < concurrency) {
-        task();
+        runImmediate();
       } else {
-        const node = { fn: task, next: null };
-        if (tail) tail.next = node;
-        else head = node;
-        tail = node;
+        enqueue();
       }
     });
 
