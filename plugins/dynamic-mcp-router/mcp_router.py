@@ -45,7 +45,12 @@ import hashlib
 import json
 import logging
 import os
-import subprocess
+import time
+from typing import Any
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from contextlib import asynccontextmanager
+from functools import wraps
 import threading
 import time
 from typing import Any
@@ -296,7 +301,7 @@ class ConfigManager:
 class LoadedServer:
     config: ServerConfig
     session: ClientSession | None = None
-    process: subprocess.Popen | None = None
+    process: asyncio.subprocess.Process | None = None
     tools: list[dict[str, Any]] = field(default_factory=list)
     resources: list[dict[str, Any]] = field(default_factory=list)
     prompts: list[dict[str, Any]] = field(default_factory=list)
@@ -426,7 +431,7 @@ class ServerManager:
         loaded = self.loaded_servers[name]
         try:
             if loaded.session: await loaded.session.__aexit__(None, None, None)
-            if loaded.process and loaded.process.poll() is None:
+            if loaded.process and loaded.process.returncode is None:
                 loaded.process.terminate()
                 try:
                     await asyncio.wait_for(loaded.process.wait(), timeout=5.0)
