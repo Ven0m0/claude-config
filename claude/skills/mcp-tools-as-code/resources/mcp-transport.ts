@@ -5,8 +5,8 @@
  * Manages client connections, caching, and error handling.
  */
 
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 
 // Server configuration registry
 interface ServerConfig {
@@ -31,12 +31,12 @@ const transports = new Map<string, StdioClientTransport>();
 export class MCPError extends Error {
   constructor(
     message: string,
-    public readonly code: string = 'MCP_ERROR',
+    public readonly code: string = "MCP_ERROR",
     public readonly serverName?: string,
-    public readonly toolName?: string
+    public readonly toolName?: string,
   ) {
     super(message);
-    this.name = 'MCPError';
+    this.name = "MCPError";
   }
 }
 
@@ -54,8 +54,8 @@ async function getClient(serverName: string): Promise<Client> {
   if (!config) {
     throw new MCPError(
       `Unknown server: ${serverName}. Add configuration to SERVER_CONFIGS.`,
-      'UNKNOWN_SERVER',
-      serverName
+      "UNKNOWN_SERVER",
+      serverName,
     );
   }
 
@@ -68,8 +68,8 @@ async function getClient(serverName: string): Promise<Client> {
 
   // Create and connect client
   const client = new Client({
-    name: 'mcp-tools-as-code',
-    version: '1.0.0',
+    name: "mcp-tools-as-code",
+    version: "1.0.0",
   });
 
   await client.connect(transport);
@@ -92,7 +92,7 @@ async function getClient(serverName: string): Promise<Client> {
 export async function mcpCall<T>(
   serverName: string,
   toolName: string,
-  input: unknown
+  input: unknown,
 ): Promise<T> {
   const client = await getClient(serverName);
 
@@ -106,16 +106,18 @@ export async function mcpCall<T>(
     if (result.isError) {
       const errorContent = result.content?.[0];
       const errorMessage =
-        typeof errorContent === 'object' && errorContent !== null && 'text' in errorContent
+        typeof errorContent === "object" &&
+        errorContent !== null &&
+        "text" in errorContent
           ? String(errorContent.text)
-          : 'Unknown MCP error';
+          : "Unknown MCP error";
 
-      throw new MCPError(errorMessage, 'TOOL_ERROR', serverName, toolName);
+      throw new MCPError(errorMessage, "TOOL_ERROR", serverName, toolName);
     }
 
     // Parse successful result
     const content = result.content?.[0];
-    if (typeof content === 'object' && content !== null && 'text' in content) {
+    if (typeof content === "object" && content !== null && "text" in content) {
       try {
         return JSON.parse(String(content.text)) as T;
       } catch {
@@ -131,10 +133,10 @@ export async function mcpCall<T>(
     }
 
     throw new MCPError(
-      `Failed to call ${toolName}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      'CALL_FAILED',
+      `Failed to call ${toolName}: ${error instanceof Error ? error.message : "Unknown error"}`,
+      "CALL_FAILED",
       serverName,
-      toolName
+      toolName,
     );
   }
 }

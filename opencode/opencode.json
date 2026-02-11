@@ -1,13 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": [
-    "AGENTS.md",
-    "CLAUDE.md",
-    "GEMINI.md",
-    ".claude/rules/*.md",
-    ".cursor/rules/*.md",
-    ".github/instructions/*.md"
-  ],
+  "instructions": ["AGENTS.md", "CLAUDE.md"],
   "plugin": [
     "@franlol/opencode-md-table-formatter@latest",
     "@zenobius/opencode-skillful@latest",
@@ -20,17 +13,12 @@
     "opencode-anthropic-auth",
     "opencode-copilot-auth",
     "opencode-cursor-auth",
-    "@f97/opencode-morph-fast-apply",
     "opencode-ignore",
     "opencode-beads",
     "opencode-agent-skills",
     "opencode-agent-memory",
     "@zenobius/opencode-background",
-    "opencode-skills",
-    "@0xsero/open-queue",
-    "oh-my-opencode-slim",
-    "github:gunnarnordqvist/opencode-context-filter",
-    "github:JRedeker/opencode-shell-strategy"
+    "oh-my-opencode-slim"
   ],
   "agent": {
     "explore": {
@@ -52,7 +40,7 @@
       }
     },
     "general": {
-      "disable": true
+      "disable": false
     },
     "researcher": {
       "permission": {
@@ -99,7 +87,7 @@
       }
     },
     "reviewer": {
-      "temperature": 0.1,
+      "temperature": 0.2,
       "permission": {
         "edit": "deny",
         "write": "deny",
@@ -156,19 +144,9 @@
       },
       "enabled": true
     },
-    "morph": {
-      "type": "remote",
-      "url": "https://mcp.morph.so/mcp",
-      "enabled": true
-    },
     "MCP_DOCKER": {
       "type": "local",
-      "command": [
-        "docker",
-        "mcp",
-        "gateway",
-        "run"
-      ],
+      "command": ["docker", "mcp", "gateway", "run"],
       "enabled": true
     }
   },

@@ -1,5 +1,4 @@
-
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@opencode-ai/plugin";
 
 const SKILL = `
 ---
@@ -43,11 +42,20 @@ export default tool({
   description: SKILL,
   args: {
     q: tool.schema.string().describe("The semantic search query."),
-    m: tool.schema.number().default(10).describe("The number of chunks to return."),
-    a: tool.schema.boolean().default(false).describe("If an answer should be generated based of the chunks. Useful for questions."),
+    m: tool.schema
+      .number()
+      .default(10)
+      .describe("The number of chunks to return."),
+    a: tool.schema
+      .boolean()
+      .default(false)
+      .describe(
+        "If an answer should be generated based of the chunks. Useful for questions.",
+      ),
   },
   async execute(args) {
-    const result = await Bun.$`mgrep search -m ${args.m} ${args.a ? '-a ' : ''}${args.q}`.text()
-    return result.trim()
+    const result =
+      await Bun.$`mgrep search -m ${args.m} ${args.a ? "-a " : ""}${args.q}`.text();
+    return result.trim();
   },
-})
+});

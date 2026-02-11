@@ -1,39 +1,39 @@
 {
-	"hooks": {
-		"PermissionRequest": [
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/permission_request.py",
-						"timeout": 2
-					}
-				]
-			}
-		],
-		"PreToolUse": [
-			{
-				"matcher": ".*",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/context_warning.py",
-						"timeout": 1
-					}
-				]
-			}
-		],
-		"SessionStart": [
-			{
-				"matcher": "startup|resume|clear|compact",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh",
-						"timeout": 2
-					}
-				]
-			}
-		]
-	}
+  "hooks": {
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/permission_request.py",
+            "timeout": 2
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/context_warning.py",
+            "timeout": 1
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh",
+            "timeout": 2
+          }
+        ]
+      }
+    ]
+  }
 }

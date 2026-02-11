@@ -1,22 +1,22 @@
 {
-	"name": "coding-assistant",
-	"version": "1.0.0",
-	"description": "Advanced coding assistant with code review, refactoring, debugging, and best practices guidance",
-	"author": {
-		"name": "Ven0m0",
-		"url": "https://github.com/Ven0m0"
-	},
-	"homepage": "https://github.com/Ven0m0/claude-config",
-	"repository": "https://github.com/Ven0m0/claude-config",
-	"license": "MIT",
-	"keywords": [
-		"coding",
-		"development",
-		"code-review",
-		"refactoring",
-		"debugging",
-		"testing"
-	],
-	"skills": ["./skills/"],
-	"hooks": "./hooks/hooks.json"
+  "name": "coding-assistant",
+  "version": "1.0.0",
+  "description": "Advanced coding assistant with code review, refactoring, debugging, and best practices guidance",
+  "author": {
+    "name": "Ven0m0",
+    "url": "https://github.com/Ven0m0"
+  },
+  "homepage": "https://github.com/Ven0m0/claude-config",
+  "repository": "https://github.com/Ven0m0/claude-config",
+  "license": "MIT",
+  "keywords": [
+    "coding",
+    "development",
+    "code-review",
+    "refactoring",
+    "debugging",
+    "testing"
+  ],
+  "skills": ["./skills/"],
+  "hooks": "./hooks/hooks.json"
 }

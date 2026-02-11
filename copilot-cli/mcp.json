@@ -26,26 +26,26 @@
       "args": ["-y", "@just-every/mcp-read-website-fast"],
       "tools": ["*"]
     },
-    "think-tool":{
-      "type":"stdio",
-      "command":"npx",
+    "think-tool": {
+      "type": "stdio",
+      "command": "npx",
       "args": ["-y", "think-tool-mcp"],
       "tools": ["*"]
     },
-    "exa": { 
+    "exa": {
       "type": "http",
       "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa,deep_researcher_start,deep_researcher_check",
       "tools": ["*"]
     },
-    "fast-filesystem-mcp":{
-      "type":"stdio",
-      "command":"npx",
+    "fast-filesystem-mcp": {
+      "type": "stdio",
+      "command": "npx",
       "args": ["-y", "fast-filesystem-mcp"],
       "tools": ["*"]
     },
-    "code-mode-toon":{
-      "type":"stdio",
-      "command":"npx",
+    "code-mode-toon": {
+      "type": "stdio",
+      "command": "npx",
       "args": ["-y", "code-mode-toon"],
       "tools": ["*"]
     }
