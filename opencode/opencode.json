@@ -146,12 +146,7 @@
     },
     "MCP_DOCKER": {
       "type": "local",
-      "command": [
-        "docker",
-        "mcp",
-        "gateway",
-        "run"
-      ],
+      "command": ["docker", "mcp", "gateway", "run"],
       "enabled": true
     }
   },

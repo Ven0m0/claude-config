@@ -1,4 +1,5 @@
 #!/usr/bin/env npx ts-node
+
 /**
  * MCP Server to TypeScript API Generator
  *
@@ -11,11 +12,11 @@
  *   npx ts-node generate-server.ts google-drive "npx @anthropic/mcp-server-gdrive" ./servers
  */
 
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
-import { spawn } from 'child_process';
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import { spawn } from "node:child_process";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 
 interface MCPTool {
   name: string;
@@ -49,12 +50,12 @@ function schemaToInterface(schema: JSONSchema, name: string): string {
   const required = new Set(schema.required ?? []);
   const properties = Object.entries(schema.properties)
     .map(([propName, prop]) => {
-      const optional = required.has(propName) ? '' : '?';
+      const optional = required.has(propName) ? "" : "?";
       const tsType = jsonTypeToTs(prop);
-      const jsdoc = prop.description ? `  /** ${prop.description} */\n` : '';
+      const jsdoc = prop.description ? `  /** ${prop.description} */\n` : "";
       return `${jsdoc}  ${propName}${optional}: ${tsType};`;
     })
-    .join('\n');
+    .join("\n");
 
   return `export interface ${name} {\n${properties}\n}`;
 }
@@ -64,25 +65,25 @@ function schemaToInterface(schema: JSONSchema, name: string): string {
  */
 function jsonTypeToTs(prop: JSONSchemaProperty): string {
   switch (prop.type) {
-    case 'string':
+    case "string":
       if (prop.enum) {
-        return prop.enum.map(v => `'${v}'`).join(' | ');
+        return prop.enum.map((v) => `'${v}'`).join(" | ");
       }
-      return 'string';
-    case 'number':
-    case 'integer':
-      return 'number';
-    case 'boolean':
-      return 'boolean';
-    case 'array':
+      return "string";
+    case "number":
+    case "integer":
+      return "number";
+    case "boolean":
+      return "boolean";
+    case "array":
       if (prop.items) {
         return `${jsonTypeToTs(prop.items)}[]`;
       }
-      return 'unknown[]';
-    case 'object':
-      return 'Record<string, unknown>';
+      return "unknown[]";
+    case "object":
+      return "Record<string, unknown>";
     default:
-      return 'unknown';
+      return "unknown";
   }
 }
 
@@ -92,8 +93,8 @@ function jsonTypeToTs(prop: JSONSchemaProperty): string {
 function toPascalCase(str: string): string {
   return str
     .split(/[-_]/)
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join('');
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join("");
 }
 
 /**
@@ -113,8 +114,8 @@ function generateToolModule(serverName: string, tool: MCPTool): string {
   const outputName = `${toPascalCase(tool.name)}Output`;
 
   const inputInterface = schemaToInterface(
-    tool.inputSchema ?? { type: 'object', properties: {} },
-    inputName
+    tool.inputSchema ?? { type: "object", properties: {} },
+    inputName,
   );
 
   // Default output interface (MCP doesn't define output schemas)
@@ -161,11 +162,11 @@ export async function ${funcName}(input: ${inputName}): Promise<${outputName}> {
  */
 function generateServerIndex(tools: MCPTool[]): string {
   const exports = tools
-    .map(tool => {
+    .map((tool) => {
       const funcName = toCamelCase(tool.name);
       return `export { ${funcName} } from './${tool.name}';`;
     })
-    .join('\n');
+    .join("\n");
 
   return `/**
  * Server index - re-exports all tools
@@ -202,8 +203,11 @@ export interface MCPResult<T> {
  */
 function generateReadme(serverName: string, tools: MCPTool[]): string {
   const toolList = tools
-    .map(tool => `- \`${toCamelCase(tool.name)}\` - ${tool.description ?? 'No description'}`)
-    .join('\n');
+    .map(
+      (tool) =>
+        `- \`${toCamelCase(tool.name)}\` - ${tool.description ?? "No description"}`,
+    )
+    .join("\n");
 
   return `# ${serverName}
 
@@ -216,10 +220,13 @@ ${toolList}
 ## Usage
 
 \`\`\`typescript
-import { ${tools.slice(0, 3).map(t => toCamelCase(t.name)).join(', ')} } from './servers/${serverName}';
+import { ${tools
+    .slice(0, 3)
+    .map((t) => toCamelCase(t.name))
+    .join(", ")} } from './servers/${serverName}';
 
 // Example usage
-const result = await ${toCamelCase(tools[0]?.name ?? 'exampleTool')}({
+const result = await ${toCamelCase(tools[0]?.name ?? "exampleTool")}({
   // input parameters
 });
 \`\`\`
@@ -241,18 +248,18 @@ npx ts-node generate-server.ts ${serverName} "<server-command>"
 async function generateServer(
   serverName: string,
   serverCommand: string,
-  outputDir: string
+  outputDir: string,
 ): Promise<void> {
   console.log(`Generating TypeScript API for: ${serverName}`);
   console.log(`Server command: ${serverCommand}`);
   console.log(`Output directory: ${outputDir}`);
 
   // Parse command
-  const [cmd, ...args] = serverCommand.split(' ');
+  const [cmd, ...args] = serverCommand.split(" ");
 
   // Start MCP server process
   const serverProcess = spawn(cmd, args, {
-    stdio: ['pipe', 'pipe', 'pipe'],
+    stdio: ["pipe", "pipe", "pipe"],
   });
 
   // Create MCP client
@@ -262,8 +269,8 @@ async function generateServer(
   });
 
   const client = new Client({
-    name: 'mcp-generator',
-    version: '1.0.0',
+    name: "mcp-generator",
+    version: "1.0.0",
   });
 
   try {
@@ -287,18 +294,18 @@ async function generateServer(
 
     // Generate index file
     const indexContent = generateServerIndex(tools);
-    await fs.writeFile(path.join(serverDir, 'index.ts'), indexContent);
-    console.log('  Generated: index.ts');
+    await fs.writeFile(path.join(serverDir, "index.ts"), indexContent);
+    console.log("  Generated: index.ts");
 
     // Generate types file
     const typesContent = generateTypesFile(serverName);
-    await fs.writeFile(path.join(serverDir, 'types.ts'), typesContent);
-    console.log('  Generated: types.ts');
+    await fs.writeFile(path.join(serverDir, "types.ts"), typesContent);
+    console.log("  Generated: types.ts");
 
     // Generate README
     const readmeContent = generateReadme(serverName, tools);
-    await fs.writeFile(path.join(serverDir, 'README.md'), readmeContent);
-    console.log('  Generated: README.md');
+    await fs.writeFile(path.join(serverDir, "README.md"), readmeContent);
+    console.log("  Generated: README.md");
 
     console.log(`\nSuccessfully generated ${serverName} API in ${serverDir}`);
   } finally {
@@ -308,17 +315,22 @@ async function generateServer(
 }
 
 // CLI entry point
-const [serverName, serverCommand, outputDir = './servers'] = process.argv.slice(2);
+const [serverName, serverCommand, outputDir = "./servers"] =
+  process.argv.slice(2);
 
 if (!serverName || !serverCommand) {
-  console.error('Usage: npx ts-node generate-server.ts <server-name> <server-command> [output-dir]');
-  console.error('');
-  console.error('Example:');
-  console.error('  npx ts-node generate-server.ts google-drive "npx @anthropic/mcp-server-gdrive"');
+  console.error(
+    "Usage: npx ts-node generate-server.ts <server-name> <server-command> [output-dir]",
+  );
+  console.error("");
+  console.error("Example:");
+  console.error(
+    '  npx ts-node generate-server.ts google-drive "npx @anthropic/mcp-server-gdrive"',
+  );
   process.exit(1);
 }
 
-generateServer(serverName, serverCommand, outputDir).catch(err => {
-  console.error('Generation failed:', err);
+generateServer(serverName, serverCommand, outputDir).catch((err) => {
+  console.error("Generation failed:", err);
   process.exit(1);
 });
