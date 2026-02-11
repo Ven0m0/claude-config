@@ -44,14 +44,6 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 - `grep -l pattern` → `rg -l pattern`
 - rg excludes .git, node_modules by default
 
-**wget/curl → aria2**
-
-- `wget URL` → `aria2c URL`
-- `curl -O URL` → `aria2c URL`
-- `curl URL` → `aria2c -d- -o- URL` (stdout)
-- Multi-connection: `aria2c -x16 -s16 URL`
-- Parallel: `aria2c -j5 URL1 URL2 URL3`
-
 **jq → jaq**
 
 - `jq '.field'` → `jaq '.field'`
