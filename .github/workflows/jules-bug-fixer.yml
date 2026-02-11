@@ -19,7 +19,7 @@ jobs:
     
     steps:
       - name: Invoke Jules
-        if: ${{ contains(fromJSON('["your-username", "trusted-collaborator"]'), github.event.issue.user.login) }}
+        if: ${{ contains(fromJSON('["Ven0m0", "trusted-collaborator"]'), github.event.issue.user.login) }}
         uses: BeksOmega/jules-action@v1.0.0
         with:
           prompt: |
