@@ -248,6 +248,8 @@ async def run_evaluation(
     qa_pairs = parse_evaluation_file(eval_path)
     print(f"📋 Loaded {len(qa_pairs)} evaluation tasks")
 
+    if concurrency < 1:
+        raise ValueError(f"concurrency must be at least 1; got {concurrency}")
     semaphore = asyncio.Semaphore(concurrency)
 
     async def run_task(i, qa_pair):
