@@ -25,8 +25,9 @@
     "opencode-beads",
     "opencode-agent-skills",
     "opencode-agent-memory",
-    "opencode-qwen-auth",
     "@zenobius/opencode-background",
+    "opencode-skills",
+    "@0xsero/open-queue",
     "oh-my-opencode-slim",
     "github:gunnarnordqvist/opencode-context-filter",
     "github:JRedeker/opencode-shell-strategy"
