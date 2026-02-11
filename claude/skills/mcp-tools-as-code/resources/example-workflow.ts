@@ -14,9 +14,9 @@
  * Tools-as-code approach: ~2,000 tokens (transcript stays in sandbox)
  */
 
-import * as gdrive from '../servers/google-drive';
-import * as salesforce from '../servers/salesforce';
-import * as slack from '../servers/slack';
+import * as gdrive from "../servers/google-drive";
+import * as salesforce from "../servers/salesforce";
+import * as slack from "../servers/slack";
 
 interface MeetingContext {
   documentId: string;
@@ -43,9 +43,12 @@ interface ActionItem {
  * Extract key information from meeting transcript
  * This runs entirely in the sandbox - transcript never leaves
  */
-function extractMeetingInfo(transcript: string, title: string): ProcessedMeeting {
+function extractMeetingInfo(
+  transcript: string,
+  title: string,
+): ProcessedMeeting {
   // Simple extraction logic (in practice, could use local LLM or regex)
-  const lines = transcript.split('\n');
+  const lines = transcript.split("\n");
 
   const keyPoints: string[] = [];
   const actionItems: ActionItem[] = [];
@@ -59,28 +62,29 @@ function extractMeetingInfo(transcript: string, title: string): ProcessedMeeting
     }
 
     // Extract action items (lines containing "action item" or "TODO")
-    if (line.toLowerCase().includes('action item') || line.includes('TODO')) {
+    if (line.toLowerCase().includes("action item") || line.includes("TODO")) {
       const assigneeMatch = line.match(/@(\w+)/);
       actionItems.push({
-        task: line.replace(/^.*?:/, '').trim(),
-        assignee: assigneeMatch?.[1] ?? 'Unassigned',
+        task: line.replace(/^.*?:/, "").trim(),
+        assignee: assigneeMatch?.[1] ?? "Unassigned",
       });
     }
 
     // Extract key points (lines starting with "Key:" or bullet points after "Summary")
-    if (line.startsWith('Key:') || line.startsWith('- ')) {
-      keyPoints.push(line.replace(/^(Key:|-)/, '').trim());
+    if (line.startsWith("Key:") || line.startsWith("- ")) {
+      keyPoints.push(line.replace(/^(Key:|-)/, "").trim());
     }
   }
 
   // Generate summary (first 500 chars, truncated at sentence boundary)
   const summaryText = transcript.slice(0, 500);
-  const lastPeriod = summaryText.lastIndexOf('.');
-  const summary = lastPeriod > 0 ? summaryText.slice(0, lastPeriod + 1) : summaryText;
+  const lastPeriod = summaryText.lastIndexOf(".");
+  const summary =
+    lastPeriod > 0 ? summaryText.slice(0, lastPeriod + 1) : summaryText;
 
   return {
     title,
-    date: new Date().toISOString().split('T')[0],
+    date: new Date().toISOString().split("T")[0],
     summary,
     keyPoints: keyPoints.slice(0, 5), // Top 5 key points
     actionItems,
@@ -95,37 +99,41 @@ function formatForSalesforce(meeting: ProcessedMeeting): string {
   const sections = [
     `## Meeting: ${meeting.title}`,
     `**Date:** ${meeting.date}`,
-    `**Participants:** ${meeting.participants.join(', ')}`,
-    '',
-    '### Summary',
+    `**Participants:** ${meeting.participants.join(", ")}`,
+    "",
+    "### Summary",
     meeting.summary,
-    '',
-    '### Key Points',
-    ...meeting.keyPoints.map(point => `- ${point}`),
-    '',
-    '### Action Items',
+    "",
+    "### Key Points",
+    ...meeting.keyPoints.map((point) => `- ${point}`),
+    "",
+    "### Action Items",
     ...meeting.actionItems.map(
-      item => `- [ ] ${item.task} (@${item.assignee}${item.dueDate ? ` - Due: ${item.dueDate}` : ''})`
+      (item) =>
+        `- [ ] ${item.task} (@${item.assignee}${item.dueDate ? ` - Due: ${item.dueDate}` : ""})`,
     ),
   ];
 
-  return sections.join('\n');
+  return sections.join("\n");
 }
 
 /**
  * Format meeting info for Slack notification
  */
-function formatForSlack(meeting: ProcessedMeeting, salesforceUrl: string): string {
+function formatForSlack(
+  meeting: ProcessedMeeting,
+  salesforceUrl: string,
+): string {
   return [
     `:memo: *Meeting Notes Updated: ${meeting.title}*`,
-    '',
+    "",
     `> ${meeting.summary.slice(0, 200)}...`,
-    '',
+    "",
     `*Action Items:* ${meeting.actionItems.length}`,
     `*Key Points:* ${meeting.keyPoints.length}`,
-    '',
+    "",
     `<${salesforceUrl}|View in Salesforce>`,
-  ].join('\n');
+  ].join("\n");
 }
 
 /**
@@ -143,14 +151,14 @@ export async function processMeetingNotes(context: MeetingContext): Promise<{
   meeting: ProcessedMeeting;
   salesforceUrl: string;
 }> {
-  console.log('Starting meeting notes processing...');
+  console.log("Starting meeting notes processing...");
 
   // Step 1: Fetch transcript from Google Drive
   // The full transcript stays in the sandbox
   console.log(`Fetching document: ${context.documentId}`);
   const document = await gdrive.getDocument({
     documentId: context.documentId,
-    format: 'text',
+    format: "text",
   });
 
   const transcript = String(document.content);
@@ -158,21 +166,23 @@ export async function processMeetingNotes(context: MeetingContext): Promise<{
 
   // Step 2: Extract key information (runs locally, no tokens used)
   const meeting = extractMeetingInfo(transcript, String(document.content));
-  console.log(`Extracted: ${meeting.keyPoints.length} key points, ${meeting.actionItems.length} action items`);
+  console.log(
+    `Extracted: ${meeting.keyPoints.length} key points, ${meeting.actionItems.length} action items`,
+  );
 
   // Step 3: Update Salesforce with summary (only ~500 chars sent)
   const salesforceNotes = formatForSalesforce(meeting);
   console.log(`Updating Salesforce record: ${context.salesforceRecordId}`);
 
   await salesforce.updateRecord({
-    objectType: 'SalesMeeting',
+    objectType: "SalesMeeting",
     recordId: context.salesforceRecordId,
     data: {
       Notes: salesforceNotes,
       MeetingDate: meeting.date,
-      Participants: meeting.participants.join('; '),
+      Participants: meeting.participants.join("; "),
       ActionItemCount: meeting.actionItems.length,
-      Status: 'Processed',
+      Status: "Processed",
     },
   });
 
@@ -188,7 +198,7 @@ export async function processMeetingNotes(context: MeetingContext): Promise<{
     unfurlLinks: false,
   });
 
-  console.log('Meeting notes processing complete!');
+  console.log("Meeting notes processing complete!");
 
   // Return summary to model (transcript never exposed)
   return {
@@ -204,7 +214,7 @@ export async function processMeetingNotes(context: MeetingContext): Promise<{
  * Native loops replace sequential tool calls - much more efficient!
  */
 export async function batchProcessMeetings(
-  meetings: MeetingContext[]
+  meetings: MeetingContext[],
 ): Promise<Map<string, { success: boolean; error?: string }>> {
   const results = new Map<string, { success: boolean; error?: string }>();
 
@@ -215,13 +225,16 @@ export async function batchProcessMeetings(
       await processMeetingNotes(meeting);
       results.set(meeting.documentId, { success: true });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
       console.error(`Failed to process ${meeting.documentId}: ${errorMessage}`);
       results.set(meeting.documentId, { success: false, error: errorMessage });
     }
   }
 
-  const successCount = Array.from(results.values()).filter(r => r.success).length;
+  const successCount = Array.from(results.values()).filter(
+    (r) => r.success,
+  ).length;
   console.log(`Completed: ${successCount}/${meetings.length} successful`);
 
   return results;
@@ -230,13 +243,13 @@ export async function batchProcessMeetings(
 // Example usage
 async function main() {
   const context: MeetingContext = {
-    documentId: 'abc123',
-    salesforceRecordId: '00Q5f000001abcXYZ',
-    slackChannel: '#sales-meetings',
+    documentId: "abc123",
+    salesforceRecordId: "00Q5f000001abcXYZ",
+    slackChannel: "#sales-meetings",
   };
 
   const result = await processMeetingNotes(context);
-  console.log('Result:', JSON.stringify(result, null, 2));
+  console.log("Result:", JSON.stringify(result, null, 2));
 }
 
 // Run if executed directly

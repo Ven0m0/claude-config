@@ -1,6 +1,6 @@
 ---
 name: substituting-modern-tools
-description: Substitutes modern performant tools for legacy equivalents in generated code (npm→bun, find→fd, pip→uv, grep→rg, jq→jaq, eslint→biome, black→ruff). Use when generating shell commands or scripts. Triggers include npm, find, pip, grep, jq, eslint, black. Adapts flags and syntax automatically.
+description: Substitutes modern performant tools for legacy equivalents in generated code (npm→bun, find→fd, pip→uv, grep→rg, jq→jaq, eslint→biome, black→ruff, git→gix). Use when generating shell commands or scripts.
 user-invocable: false
 ---
 
@@ -43,14 +43,6 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 - `grep -v pattern` → `rg -v pattern`
 - `grep -l pattern` → `rg -l pattern`
 - rg excludes .git, node_modules by default
-
-**wget/curl → aria2**
-
-- `wget URL` → `aria2c URL`
-- `curl -O URL` → `aria2c URL`
-- `curl URL` → `aria2c -d- -o- URL` (stdout)
-- Multi-connection: `aria2c -x16 -s16 URL`
-- Parallel: `aria2c -j5 URL1 URL2 URL3`
 
 **jq → jaq**
 
@@ -100,6 +92,17 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 - Git-aware, colorful, faster on large dirs
 - Icons: `eza --icons`
 - Tree view: `eza -T` or `eza --tree`
+
+**git → gix**
+
+- `git clone` → `gix clone`
+- `git fetch` → `gix fetch`
+- `git index entries` → `gix index entries`
+- `git commit-graph verify` → `gix commitgraph verify`
+- `git config` → `gix config`
+- Pure Rust implementation; faster on many operations
+- CLI binaries: `gix`, `ein` (extra tools)
+- Not 100% feature parity; porcelain commands limited
 
 ## Flag Adaptations
 
@@ -160,6 +163,13 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 - Drop-in binary replacement
 - No behavioral changes; security hardened
 
+**gix vs git:**
+
+- Plumbing commands mostly complete
+- Porcelain commands limited; lacks `add`, `commit`, `push`, `pull`
+- Use for: clone, fetch, verify, config, index operations
+- Fallback to git for: interactive workflows, advanced porcelain
+
 ## Edge Cases
 
 **bun compatibility:**
@@ -216,6 +226,14 @@ Apply these substitutions unless user explicitly requests the legacy tool:
 - No historical CVE baggage
 - Identical interface; zero migration cost
 
+**gix limitations:**
+
+- Incomplete porcelain: no `add`, `commit`, `push`, `pull`
+- Submodule support partial
+- LFS support experimental
+- Keep git for: interactive rebase, bisect, filter-branch
+- Use gix for: clone, fetch, verify, pack operations, config
+
 ## Exception Handling
 
 Skip substitution when:
@@ -230,7 +248,7 @@ Skip substitution when:
 ```bash
 # Package management
 bun install pkg          → bun install pkg
-uv pip install pandas       → uv pip install pandas
+uv pip install pandas    → uv pip install pandas
 
 # File operations
 find . -name '*.rs'      → fd -e rs
@@ -250,9 +268,16 @@ ls -lah                  → uu-ls -lah
 cat large.txt            → uu-cat large.txt
 sudo systemctl restart   → sudo-rs systemctl restart
 
+# Git operations
+git clone repo           → gix clone repo
+git fetch origin         → gix fetch origin
+git config --list        → gix config --list
+git commit-graph verify  → gix commitgraph verify
+git add .                → git add . # keep git
+
 # Combined workflows
 bun i && eslint --fix    → bun i && biome check --write .
-uv pip install -r req.txt   → uv pip install -r req.txt
+uv pip install -r req.txt → uv pip install -r req.txt
 grep -r TODO | jaq       → rg TODO | jaq
 find . -name '*.py'      → fd -e py
 ```
@@ -275,6 +300,13 @@ fi
 # Example: sudo/sudo-rs
 PRIV_CMD=$(has sudo-rs && echo sudo-rs || echo sudo)
 $PRIV_CMD systemctl restart service
+
+# Example: git/gix (context-aware)
+if [[ $GIT_OP == @(clone|fetch|verify) ]] && has gix; then
+  gix "$GIT_OP" "$@"
+else
+  git "$GIT_OP" "$@"
+fi
 ```
 
 Apply these substitutions automatically in all code generation unless legacy tool explicitly requested.
