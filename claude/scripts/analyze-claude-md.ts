@@ -108,6 +108,9 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
     },
   };
 
+  const xmlTagsSet = new Set<string>();
+  const externalLinksSet = new Set<string>();
+
   const fileStream = fs.createReadStream(absolutePath);
 
   const rl = readline.createInterface({
@@ -163,9 +166,7 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
     // Check for XML tags
     xmlRegex.lastIndex = 0;
     while ((match = xmlRegex.exec(line)) !== null) {
-      if (!result.xmlTags.includes(match[1])) {
-        result.xmlTags.push(match[1]);
-      }
+      xmlTagsSet.add(match[1]);
     }
 
     // Check for markdown headers
@@ -208,8 +209,8 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
     linkRegex.lastIndex = 0;
     while ((match = linkRegex.exec(line)) !== null) {
       const link = match[1];
-      if (!link.startsWith('#') && !result.externalLinks.includes(link)) {
-        result.externalLinks.push(link);
+      if (!link.startsWith('#')) {
+        externalLinksSet.add(link);
       }
     }
 
@@ -242,6 +243,10 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
   if (tableRowCount >= 2) {
     result.tables++;
   }
+
+  // Convert Sets to arrays
+  result.xmlTags = Array.from(xmlTagsSet);
+  result.externalLinks = Array.from(externalLinksSet);
 
   // Calculate mechanical scores
   result.scores = calculateScores(result);

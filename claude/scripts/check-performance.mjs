@@ -127,15 +127,57 @@ async function countRoutes() {
 }
 
 
+// Queue implementation for O(1) operations
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = undefined;
+  }
+}
+
+class Queue {
+  constructor() {
+    this.head = undefined;
+    this.tail = undefined;
+    this.size = 0;
+  }
+
+  enqueue(value) {
+    const node = new Node(value);
+
+    if (this.head) {
+      this.tail.next = node;
+      this.tail = node;
+    } else {
+      this.head = node;
+      this.tail = node;
+    }
+
+    this.size++;
+  }
+
+  dequeue() {
+    const current = this.head;
+    if (!current) {
+      return;
+    }
+
+    this.head = this.head.next;
+    this.size--;
+
+    return current.value;
+  }
+}
+
 // Simple concurrency limiter
 function pLimit(concurrency) {
-  const queue = [];
+  const queue = new Queue();
   let activeCount = 0;
 
   const next = () => {
     activeCount--;
-    if (queue.length > 0) {
-      queue.shift()();
+    if (queue.size > 0) {
+      queue.dequeue()();
     }
   };
 
@@ -151,9 +193,13 @@ function pLimit(concurrency) {
 
   const generator = (fn, ...args) =>
     new Promise((resolve) => {
-      queue.push(() => run(fn, resolve, args));
+      const enqueue = () => queue.enqueue(() => run(fn, resolve, args));
+      const runImmediate = () => run(fn, resolve, args);
+
       if (activeCount < concurrency) {
-        queue.shift()();
+        runImmediate();
+      } else {
+        enqueue();
       }
     });
 
