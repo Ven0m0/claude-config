@@ -670,9 +670,9 @@ def create_example_config():
                 if cfg.get('enabled') is not None: f.write(f"enabled = {str(cfg['enabled']).lower()}\n")
                 if cfg.get('working_dir'): f.write(f"working_dir = \"{cfg['working_dir']}\"\n")
     except Exception as e: logger.error(f"Failed to create example config file: {e}"); return
-    logger.info(f"✅ Created example configuration: {filename}")
-    logger.info("Edit this file to configure your MCP servers.")
-    logger.info("Then run: python mcp_router.py")
+    print(f"\n✅ Created example configuration: {filename}")
+    print("\nEdit this file to configure your MCP servers.")
+    print("Then run: python mcp_router.py")
 
 if __name__ == "__main__":
     main()
