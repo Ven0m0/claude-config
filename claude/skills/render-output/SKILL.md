@@ -177,7 +177,7 @@ Rules:
 </distribution-pattern>
 </patterns>
 
-<pattern_selection>
+<pattern-selection>
 Choose pattern based on:
 
 1. **Audience**: Subagent (TOON) vs Human (table/status/box)
@@ -196,7 +196,7 @@ Is output for another agent?
                         ├─ Yes → Markdown table
                         └─ No → Summary line
 ```
-</pattern_selection>
+</pattern-selection>
 
 <symbols>
 Standard symbols for consistent output:
@@ -214,7 +214,7 @@ Standard symbols for consistent output:
 DO NOT use emoji. Stick to these standard symbols.
 </symbols>
 
-<anti_patterns>
+<anti-patterns>
 Avoid these common mistakes:
 
 - **Excessive whitespace**: Don't add blank lines between every element
@@ -226,9 +226,9 @@ Avoid these common mistakes:
 - **Inconsistent alignment**: Align columns and values consistently
 - **Over-engineering**: Don't use box for simple status
 - **Column overflow**: Keep tables under 6 columns
-</anti_patterns>
+</anti-patterns>
 
-<success_criteria>
+<success-criteria>
 Output meets quality standards when:
 
 - Pattern matches data type (use decision tree)
@@ -240,7 +240,7 @@ Output meets quality standards when:
 - TOON used for machine-readable returns
 - Human output is scannable in <5 seconds
 - No mixed patterns in single output
-</success_criteria>
+</success-criteria>
 
 <examples>
 <example name="outcome_list">
