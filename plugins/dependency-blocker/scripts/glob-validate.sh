@@ -21,7 +21,7 @@ EXCLUDED_DIRS=(
 if [[ $# -gt 0 ]]; then
   # Command-line arguments provided (testing mode)
   PATTERN="$1"
-  PATH_ARG="$2"
+  PATH_ARG="${2:-}"
 else
   # No arguments, read JSON from stdin (Claude Code hook mode)
   INPUT=$(cat)
