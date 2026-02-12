@@ -66,67 +66,6 @@ async function gzipSize(filePath) {
   });
 }
 
-async function walkDir(dir, fileList = []) {
-	const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
-
-	await Promise.all(
-		dirents.map(async (dirent) => {
-			const filePath = path.join(dir, dirent.name);
-
-			let isDirectory = dirent.isDirectory();
-			if (dirent.isSymbolicLink()) {
-				try {
-					const stat = await fs.promises.stat(filePath);
-					isDirectory = stat.isDirectory();
-				} catch (e) {
-					// Only ignore errors that indicate a broken symlink
-					if (e && (e.code === "ENOENT" || e.code === "ENOTDIR")) {
-						isDirectory = false;
-					} else {
-						throw e;
-					}
-				}
-			}
-
-			if (isDirectory) {
-				await walkDir(filePath, fileList);
-			} else {
-				fileList.push(filePath);
-			}
-		}),
-	);
-
-  return fileList;
-}
-
-async function countRoutes() {
-	let count = 0;
-
-	async function walk(dir) {
-		const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
-
-		for (const dirent of dirents) {
-			if (dirent.name === "index.html") {
-				count++;
-				break;
-			}
-		}
-
-		const subdirectoryPromises = dirents
-			.filter((dirent) => dirent.isDirectory())
-			.map((dirent) => {
-				const fullPath = path.join(dir, dirent.name);
-				return walk(fullPath);
-			});
-
-		await Promise.all(subdirectoryPromises);
-	}
-
-	await walk(DIST_DIR);
-	return count;
-}
-
-
 // Queue implementation for O(1) operations
 class Node {
   constructor(value) {
@@ -208,26 +147,30 @@ function pLimit(concurrency) {
   return generator;
 }
 
-async function walkDir(dir, fileList = [], limit = null) {
-  if (!limit) limit = pLimit(50); // Default shared limiter if none provided
+/**
+ * Optimizes directory traversal by combining file discovery,
+ * size calculation, and route counting into a single pass.
+ */
+async function analyzeDirectory(dir) {
+  log("Analyzing bundle size and counting routes...", "blue");
 
-  // Limit readdir concurrency
-  const dirents = await limit(() =>
-    fs.promises.readdir(dir, { withFileTypes: true }),
-  );
+  // Phase 1: Fast Scan (collect paths & count routes)
+  let routeCount = 0;
+  const filePaths = [];
 
-  await Promise.all(
-    dirents.map(async (dirent) => {
-      const filePath = path.join(dir, dirent.name);
+  async function scan(currentDir) {
+    // Unbounded recursion for maximum speed (replicates original countRoutes behavior)
+    const dirents = await fs.promises.readdir(currentDir, { withFileTypes: true });
+
+    const promises = dirents.map(async (dirent) => {
+      const fullPath = path.join(currentDir, dirent.name);
 
       let isDirectory = dirent.isDirectory();
       if (dirent.isSymbolicLink()) {
         try {
-          // Limit stat concurrency
-          const stat = await limit(() => fs.promises.stat(filePath));
+          const stat = await fs.promises.stat(fullPath);
           isDirectory = stat.isDirectory();
         } catch (e) {
-          // Only ignore errors that indicate a broken symlink
           if (e && (e.code === "ENOENT" || e.code === "ENOTDIR")) {
             isDirectory = false;
           } else {
@@ -237,83 +180,54 @@ async function walkDir(dir, fileList = [], limit = null) {
       }
 
       if (isDirectory) {
-        // Recursive call passes the shared limit, but does NOT wrap itself in limit
-        // to avoid deadlocks (waiting for children while holding a parent slot).
-        await walkDir(filePath, fileList, limit);
+        await scan(fullPath);
       } else {
-        fileList.push(filePath);
+        filePaths.push(fullPath);
+        if (dirent.name === "index.html") {
+          routeCount++;
+        }
       }
-    }),
-  );
+    });
 
-  return fileList;
-}
-
-async function countRoutes() {
-  let count = 0;
-
-  async function walk(dir) {
-    const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
-
-    for (const dirent of dirents) {
-      if (dirent.name === "index.html") {
-        count++;
-        break;
-      }
-    }
-
-    const subdirectoryPromises = dirents
-      .filter((dirent) => dirent.isDirectory())
-      .map((dirent) => {
-        const fullPath = path.join(dir, dirent.name);
-        return walk(fullPath);
-      });
-
-    await Promise.all(subdirectoryPromises);
+    await Promise.all(promises);
   }
 
-  await walk(DIST_DIR);
-  return count;
-}
+  await scan(dir);
 
-async function analyzeBundleSize() {
-  log("Analyzing bundle size...", "blue");
-
-  const files = await walkDir(DIST_DIR);
-
-  const limit = pLimit(50);
-
-  const results = await Promise.all(
-    files.map((file) =>
-      limit(async () => {
-        const stat = await fs.promises.stat(file);
-        const gzipped = await gzipSize(file);
-        return {
-          path: path.relative(DIST_DIR, file),
-          size: stat.size,
-          gzipped,
-        };
-      }),
-    ),
-  );
-
+  // Phase 2: Process Files
   let totalSize = 0;
   let totalGzippedSize = 0;
+  const files = [];
+  const fileLimit = pLimit(50);
 
-  for (const result of results) {
-    totalSize += result.size;
-    totalGzippedSize += result.gzipped;
-  }
+  await Promise.all(
+    filePaths.map((filePath) =>
+      fileLimit(async () => {
+        const stat = await fs.promises.stat(filePath);
+        const gzipped = await gzipSize(filePath);
+
+        totalSize += stat.size;
+        totalGzippedSize += gzipped;
+
+        files.push({
+          path: path.relative(dir, filePath),
+          size: stat.size,
+          gzipped,
+        });
+      })
+    )
+  );
 
   // Sort by gzipped size
-  results.sort((a, b) => b.gzipped - a.gzipped);
+  files.sort((a, b) => b.gzipped - a.gzipped);
 
   return {
     totalSize,
     totalGzippedSize,
     fileCount: files.length,
-    largestFiles: results.slice(0, 10),
-    largestFile: results[0],
+    largestFiles: files.slice(0, 10),
+    largestFile: files[0],
+    routeCount,
   };
 }
 
@@ -344,36 +258,36 @@ async function main() {
 
   const violations = [];
 
-  // 1. Bundle Size Analysis
+  // 1. Bundle Size & Route Analysis
   log("1. Analyzing bundle size...", "bold");
-  const bundleAnalysis = await analyzeBundleSize();
+  const analysis = await analyzeDirectory(DIST_DIR);
 
-  log(`   Total files: ${bundleAnalysis.fileCount}`, "blue");
-  log(`   Total size (raw): ${formatBytes(bundleAnalysis.totalSize)}`, "blue");
+  log(`   Total files: ${analysis.fileCount}`, "blue");
+  log(`   Total size (raw): ${formatBytes(analysis.totalSize)}`, "blue");
   log(
-    `   Total size (gzipped): ${formatBytes(bundleAnalysis.totalGzippedSize)}`,
+    `   Total size (gzipped): ${formatBytes(analysis.totalGzippedSize)}`,
     "blue",
   );
 
-  if (bundleAnalysis.totalGzippedSize > BUDGETS.totalSize) {
-    const overage = bundleAnalysis.totalGzippedSize - BUDGETS.totalSize;
+  if (analysis.totalGzippedSize > BUDGETS.totalSize) {
+    const overage = analysis.totalGzippedSize - BUDGETS.totalSize;
     log(`   ✗ Over budget by ${formatBytes(overage)}`, "red");
     violations.push({
       check: "Total Bundle Size",
       budget: formatBytes(BUDGETS.totalSize),
-      actual: formatBytes(bundleAnalysis.totalGzippedSize),
+      actual: formatBytes(analysis.totalGzippedSize),
       overage: formatBytes(overage),
     });
   } else {
-    const remaining = BUDGETS.totalSize - bundleAnalysis.totalGzippedSize;
+    const remaining = BUDGETS.totalSize - analysis.totalGzippedSize;
     log(`   ✓ Under budget by ${formatBytes(remaining)}`, "green");
   }
 
   // 2. Largest File Check
   log("\n2. Checking largest file...", "bold");
 
-  if (bundleAnalysis.largestFile) {
-    const largest = bundleAnalysis.largestFile;
+  if (analysis.largestFile) {
+    const largest = analysis.largestFile;
     log(`   Largest file: ${largest.path}`, "blue");
     log(`   Size (raw): ${formatBytes(largest.size)}`, "blue");
     log(`   Size (gzipped): ${formatBytes(largest.gzipped)}`, "blue");
@@ -397,17 +311,18 @@ async function main() {
   }
 
   // 3. Top 5 largest files
-  if (bundleAnalysis.largestFiles.length > 0) {
+  if (analysis.largestFiles.length > 0) {
     log("\n   Top 5 largest files (gzipped):", "blue");
-    for (let i = 0; i < Math.min(5, bundleAnalysis.largestFiles.length); i++) {
-      const file = bundleAnalysis.largestFiles[i];
+    for (let i = 0; i < Math.min(5, analysis.largestFiles.length); i++) {
+      const file = analysis.largestFiles[i];
       log(`     ${i + 1}. ${file.path} - ${formatBytes(file.gzipped)}`, "blue");
     }
   }
 
   // 4. Route Count
   log("\n3. Counting routes...", "bold");
-  const routeCount = await countRoutes();
+  // Route count is already available from analysis
+  const routeCount = analysis.routeCount;
   log(`   Routes found: ${routeCount}`, "blue");
 
   if (
