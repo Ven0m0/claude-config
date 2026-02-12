@@ -1,0 +1,41 @@
+{
+  "skill_name": "json-repair",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm getting broken JSON back from an LLM API. The output looks like this: {name: \"John\", age: 30, hobbies: ['reading', 'coding',]}. Can you write me a Python script to fix it?",
+      "expected_output": "A Python script that uses json_repair to fix the malformed JSON string",
+      "files": [],
+      "assertions": [
+        "Uses json_repair library (import json_repair or from json_repair import repair_json)",
+        "Does NOT use a try/except with json.loads() before json_repair (the anti-pattern)",
+        "Handles the specific input correctly (single quotes, trailing comma, unquoted keys)",
+        "Outputs valid JSON or a Python object"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I need to parse streaming JSON from an LLM that sends chunks incrementally. The JSON might be incomplete at any point. How do I handle this in Python?",
+      "expected_output": "Code using json_repair with stream_stable=True for incremental parsing",
+      "files": [],
+      "assertions": [
+        "Uses json_repair with stream_stable=True parameter",
+        "Shows a streaming/incremental pattern (buffer accumulation)",
+        "Calls repair_json or loads on partial input",
+        "Does not suggest manually fixing JSON or using regex"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Write a Python function that takes LLM output and validates it against a Pydantic model, repairing any JSON issues automatically. The model has fields: name (str), score (int), tags (list[str]).",
+      "expected_output": "A function using json_repair with schema parameter and a Pydantic model",
+      "files": [],
+      "assertions": [
+        "Defines a Pydantic v2 BaseModel with the specified fields",
+        "Uses repair_json with schema= parameter pointing to the Pydantic model",
+        "Uses return_objects=True for direct object return",
+        "Mentions or includes pip install json-repair[schema] for the schema dependency"
+      ]
+    }
+  ]
+}
