@@ -171,11 +171,11 @@ async function analyzeDirectory(dir) {
           const stat = await fs.promises.stat(fullPath);
           isDirectory = stat.isDirectory();
         } catch (e) {
-           if (e && (e.code === "ENOENT" || e.code === "ENOTDIR")) {
-             isDirectory = false;
-           } else {
-             throw e;
-           }
+          if (e && (e.code === "ENOENT" || e.code === "ENOTDIR")) {
+            isDirectory = false;
+          } else {
+            throw e;
+          }
         }
       }
 
