@@ -119,3 +119,6 @@ bun a -g --trust pm2 @github/copilot @ai-sdk/openai-compatible @blowmage/cursor-
 # UV
 source ~/.venv/bin/activate
 uv pip install -U --compile-bytecode zon-format superclaude mdminify mcp gemini-bridge claudelint
+
+# Pacman & Paru
+paru -S docker-language-server vtsls
