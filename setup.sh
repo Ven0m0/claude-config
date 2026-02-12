@@ -40,142 +40,31 @@ for marketplace in "${MARKETPLACES[@]}"; do
   echo "  📥 Adding $marketplace..."
   claude plugin marketplace add "$marketplace" 2>/dev/null || echo "    ⚠️  Failed to add $marketplace (may already exist)"
 done
-
 echo "  ✅ Marketplaces installation complete"
-echo ""
-
 # Install MCP servers using bunx (Node.js) and uvx (Python)
 echo "📦 Installing MCP servers..."
-
 # Node.js-based MCP servers (using bunx)
 NODE_MCP_SERVERS=(
   "@modelcontextprotocol/server-sequential-thinking"
   "@morph-llm/morph-fast-apply"
   "@just-every/mcp-read-website-fast"
-  "@modelcontextprotocol/server-brave-search"
-  "@modelcontextprotocol/server-memory"
   "gemini-mcp-tool"
   "@upstash/context7-mcp"
 )
 
 for server in "${NODE_MCP_SERVERS[@]}"; do
   echo "  Installing $server (bunx)..."
-  bunx --bun "$server" --version 2>/dev/null || echo "    Note: $server will be installed on first use"
+  bunx "$server" --version 2>/dev/null || echo "    Note: $server will be installed on first use"
 done
 
 # Python-based MCP servers (using uvx)
 echo "  Installing serena (uvx)..."
 uvx --from git+https://github.com/oraios/serena serena --help 2>/dev/null || echo "    Note: serena will be installed on first use"
-
 echo "  ✅ MCP servers configured"
-echo ""
 
 # Create/update settings.json
 echo "⚙️  Creating settings.json..."
-cat >"$SETTINGS_FILE" <<'EOF'
-{
-	"$schema": "https://json.schemastore.org/claude-code-settings.json",
-	"env": {
-		"CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
-		"DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
-		"USE_BUILTIN_RIPGREP": "0",
-		"DISABLE_PROMPT_CACHING": "0",
-		"DISABLE_TELEMETRY": "1",
-		"DISABLE_ERROR_REPORTING": "1",
-		"ENABLE_LSP_TOOL": "1",
-		"CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1",
-		"DISABLE_BUG_COMMAND": "1",
-		"PYTHONPATH": ".",
-		"BASH_DEFAULT_TIMEOUT_MS": "120000",
-		"BASH_MAX_TIMEOUT_MS": "600000",
-		"BASH_MAX_OUTPUT_LENGTH": "100000",
-		"CLAUDE_CODE_MAX_OUTPUT_TOKENS": "8000",
-		"MCP_TIMEOUT": "30000",
-		"MCP_TOOL_TIMEOUT": "60000",
-		"MAX_MCP_OUTPUT_TOKENS": "20000"
-	},
-	"includeCoAuthoredBy": false,
-	"permissions": {
-		"allow": [
-			"Bash",
-			"Bash(git:*)",
-			"Bash(gh:*)",
-			"Bash(cat:*)",
-			"Bash(ls:*)",
-			"Bash(eza:*)",
-			"Bash(rg:*)",
-			"Bash(fd:*)",
-			"Bash(find:*)",
-			"Bash(grep:*)",
-			"Bash(head:*)",
-			"Bash(tail:*)",
-			"Bash(cp:*)",
-			"Bash(bun:*)",
-			"Bash(uv:*)",
-			"Bash(python3:*)",
-			"Bash(python:*)",
-			"Bash(ruff:*)",
-			"Bash(cargo fmt:*)",
-			"Bash(rustfmt:*)",
-			"Bash(jaq:*)",
-			"Bash(jq:*)",
-			"Bash(curl:*)",
-			"Bash(wget:*)",
-			"Bash(aria2c:*)",
-			"Bash(axel:*)",
-			"BashOutput",
-			"Edit",
-			"MultiEdit",
-			"TodoWrite",
-			"Write",
-			"Glob",
-			"Grep",
-			"Read",
-			"LS",
-			"Skill",
-			"SlashCommand",
-			"KillShell",
-			"Task",
-			"WebSearch",
-			"WebFetch",
-			"mcp__*"
-		],
-		"defaultMode": "acceptEdits"
-	},
-	"model": "claude-sonnet-4.5",
-	"enabledPlugins": {
-		"context7@claude-plugins-official": true,
-		"serena@claude-plugins-official": true,
-		"prompt-optimizer@daymade-skills": true,
-		"claude-code-tools@claudex": true,
-		"repomix-explorer@repomix": true,
-		"repomix-mcp@repomix": true,
-		"general-dev@claude-settings": true,
-		"ultralytics-dev@claude-settings": true,
-		"claude-md-progressive-disclosurer@daymade-skills": true,
-		"docs-cleaner@daymade-skills": true,
-		"optimize-claude-md@lifegenie-marketplace": true,
-		"conserve@claude-night-market": true,
-		"github@claude-plugins-official": true,
-		"vscode-langservers@claude-code-lsps": true,
-		"rust-analyzer@claude-code-lsps": true,
-		"bash-language-server@claude-code-lsps": true,
-		"yaml-language-server@claude-code-lsps": true,
-		"plugin-dev@claude-settings": true,
-		"fact-checker@daymade-skills": true,
-		"thinking-partner@lifegenie-marketplace": true,
-		"block-dotfiles@wombat9000-marketplace": true,
-		"config-wizard@wombat9000-marketplace": true,
-		"dependency-blocker@wombat9000-marketplace": true,
-		"superpowers@claude-plugins-official": true,
-		"frontend-design@claude-plugins-official": true,
-		"feature-dev@claude-plugins-official": true
-	},
-	"forceLoginMethod": "claudeai",
-	"spinnerTipsEnabled": false,
-	"alwaysThinkingEnabled": true
-}
-EOF
+# TODO: use config file from this repo
 
 echo "  ✅ settings.json created"
 
@@ -188,79 +77,7 @@ if [ -f "$CLAUDE_JSON" ]; then
 fi
 
 # Create/update .claude.json with MCP servers
-cat >"$CLAUDE_JSON" <<'EOF'
-{
-  "installMethod": "native",
-  "autoUpdates": true,
-  "mcpServers": {
-    "sequential-thinking": {
-      "type": "stdio",
-      "command": "bunx",
-      "args": [
-        "--bun",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ],
-      "env": {}
-    },
-    "morphllm-fast-apply": {
-      "type": "stdio",
-      "command": "bunx",
-      "args": [
-        "--bun",
-        "@morph-llm/morph-fast-apply"
-      ],
-      "env": {}
-    },
-    "read-website-fast": {
-      "type": "stdio",
-      "command": "bunx",
-      "args": [
-        "--bun",
-        "@just-every/mcp-read-website-fast"
-      ],
-      "env": {}
-    },
-    "search": {
-      "type": "stdio",
-      "command": "bunx",
-      "args": [
-        "--bun",
-        "@modelcontextprotocol/server-brave-search"
-      ],
-      "env": {}
-    },
-    "memory": {
-      "type": "stdio",
-      "command": "bunx",
-      "args": [
-        "--bun",
-        "@modelcontextprotocol/server-memory"
-      ],
-      "env": {}
-    },
-    "gemini-cli": {
-      "type": "stdio",
-      "command": "bunx",
-      "args": [
-        "--bun",
-        "gemini-mcp-tool"
-      ],
-      "env": {}
-    },
-    "serena": {
-      "type": "stdio",
-      "command": "uvx",
-      "args": [
-        "--from",
-        "git+https://github.com/oraios/serena",
-        "serena",
-        "start-mcp-server"
-      ],
-      "env": {}
-    }
-  }
-}
-EOF
+# TODO: use config file from this repo
 
 echo "  ✅ MCP servers configured in .claude.json"
 
@@ -294,3 +111,7 @@ if [[ -d ~/.cursor ]]; then
 else
   mkdir -p ~/.cursor
 fi
+
+# Other software
+bun a -g --trust pm2 @github/copilot @ai-sdk/openai-compatible @blowmage/cursor-agent-acp @openchamber/web @th0rgal/ralph-wiggum @toon-format/cli \
+  fish-lsp openclaw zon-format @zed-industries/claude-code-acp fast-filesystem-mcp code-mode-toon happy-coder @twsxtd/hapi
