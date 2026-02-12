@@ -210,7 +210,7 @@ async function analyzeDirectory(dir) {
         totalGzippedSize += gzipped;
 
         files.push({
-          path: path.relative(DIST_DIR, filePath),
+          path: path.relative(dir, filePath),
           size: stat.size,
           gzipped,
         });
