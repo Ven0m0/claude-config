@@ -112,6 +112,10 @@ else
   mkdir -p ~/.cursor
 fi
 
-# Other software
+# Bun
 bun a -g --trust pm2 @github/copilot @ai-sdk/openai-compatible @blowmage/cursor-agent-acp @openchamber/web @th0rgal/ralph-wiggum @toon-format/cli \
   fish-lsp openclaw zon-format @zed-industries/claude-code-acp fast-filesystem-mcp code-mode-toon happy-coder @twsxtd/hapi
+
+# UV
+source ~/.venv/bin/activate
+uv pip install -U --compile-bytecode zon-format superclaude mdminify mcp gemini-bridge claudelint
