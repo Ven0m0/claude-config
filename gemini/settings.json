@@ -1,82 +1,98 @@
 {
-  "mcpServers": {
-    "serena": {
-      "command": "uvx",
-      "args": [
-        "--from",
-        "git+https://github.com/oraios/serena",
-        "serena",
-        "start-mcp-server"
-      ],
-      "trust": true
-    },
-    "sequential-thinking": {
-      "command": "bunx",
-      "args": ["@modelcontextprotocol/server-sequential-thinking"],
-      "trust": true
-    },
-    "read-website-fast": {
-      "command": "bunx",
-      "args": ["@just-every/mcp-read-website-fast"],
-      "trust": true
+    "mcpServers": {
+        "serena": {
+            "command": "uvx",
+            "args": [
+                "--from",
+                "git+https://github.com/oraios/serena",
+                "serena",
+                "start-mcp-server"
+            ],
+            "trust": true
+        },
+        "sequential-thinking": {
+            "command": "bunx",
+            "args": [
+                "@modelcontextprotocol/server-sequential-thinking"
+            ],
+            "trust": true
+        },
+        "read-website-fast": {
+            "command": "bunx",
+            "args": [
+                "@just-every/mcp-read-website-fast"
+            ],
+            "trust": true
+        },
+        "security": {
+            "auth": {
+                "selectedType": "oauth-personal"
+            },
+            "enablePermanentToolApproval": true
+        },
+        "general": {
+            "previewFeatures": true,
+            "enableAutoUpdate": false,
+            "devtools": true,
+            "sessionRetention": {
+                "enabled": true
+            },
+            "enablePromptCompletion": true
+        },
+        "output": {
+            "format": "text"
+        },
+        "ui": {
+            "hideTips": true,
+            "hideBanner": true,
+            "hideContextSummary": true,
+            "footer": {
+                "hideContextPercentage": false
+            },
+            "showMemoryUsage": true,
+            "showModelInfoInChat": true,
+            "accessibility": {
+                "enableLoadingPhrases": false
+            }
+        },
+        "context": {
+            "discoveryMaxDirs": 100,
+            "fileName": [
+                "AGENTS.md",
+                "CONTEXT.md",
+                "GEMINI.md"
+            ]
+        },
+        "tools": {
+            "autoAccept": true,
+            "approvalMode": "auto_edit",
+            "useRipgrep": true,
+            "enableToolOutputTruncation": true,
+            "truncateToolOutputLines": 750,
+            "truncateToolOutputThreshold": 2000000,
+            "enableHooks": true,
+            "disableLLMCorrection": false,
+            "shell": {
+                "enableShellOutputEfficiency": true
+            }
+        },
+        "hooksConfig": {
+            "notifications": false
+        },
+        "experimental": {
+            "plan": true,
+            "skills": true,
+            "enableAgents": true,
+            "toolOutputMasking": {
+                "enabled": true
+            },
+            "introspectionAgentSettings": {
+                "enabled": true
+            }
+        },
+        "model": {
+            "maxSessionTurns": -1,
+            "skipNextSpeakerCheck": true
+        }
     }
-  },
-  "_disabledMcpServers": {},
-  "security": {
-    "auth": {
-      "selectedType": "oauth-personal"
-    },
-    "enablePermanentToolApproval": true,
-    "environmentVariableRedaction": {
-      "enabled": true
-    }
-  },
-  "general": {
-    "previewFeatures": true,
-    "sessionRetention": {
-      "enabled": true
-    },
-    "disableAutoUpdate": true,
-    "enablePromptCompletion": true
-  },
-  "ui": {
-    "hideBanner": true,
-    "hideTips": true,
-    "hideContextSummary": true,
-    "hideFooter": false,
-    "showLineNumbers": false,
-    "accessibility": {
-      "disableLoadingPhrases": true
-    },
-    "footer": {
-      "hideModelInfo": true
-    }
-  },
-  "model": {
-    "maxSessionTurns": -1,
-    "skipNextSpeakerCheck": true
-  },
-  "context": {
-    "discoveryMaxDirs": 120,
-    "loadMemoryFromIncludeDirectories": false
-  },
-  "tools": {
-    "shell": {
-      "showColor": true,
-      "enableShellOutputEfficiency": true
-    },
-    "autoAccept": true,
-    "useRipgrep": true,
-    "enableToolOutputTruncation": true,
-    "truncateToolOutputThreshold": 2000000,
-    "truncateToolOutputLines": 400,
-    "enableHooks": true
-  },
-  "experimental": {
-    "skills": true,
-    "enableAgents": true,
-    "introspectionAgentSettings": {
-      "enabled": true
-    }
-  }
 }
