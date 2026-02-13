@@ -49,5 +49,11 @@
       "args": ["-y", "code-mode-toon"],
       "tools": ["*"]
     }
+    "praetorian-opt": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "claude-praetorian-mcp"],
+      "tools": ["*"]
+    }    
   }
 }
