@@ -47,6 +47,7 @@ import logging
 import os
 import time
 import subprocess
+from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Any, Awaitable, Callable
 from datetime import datetime, timedelta
@@ -199,6 +200,7 @@ class ConfigManager:
         self._config_hash: str | None = None
         self._last_check: float = 0
         self._check_interval = 5
+        self._last_mtime: float = 0
 
     def _find_config(self) -> str | None:
         search_paths = [
@@ -232,6 +234,7 @@ class ConfigManager:
             def _read_and_parse():
                 with open(self.config_path, 'rb') as f:
                     content_bytes = f.read()
+                    stat = os.fstat(f.fileno())
                 content_str = content_bytes.decode(errors='ignore')
                 new_hash = self._compute_hash(content_str)
 
@@ -239,9 +242,10 @@ class ConfigManager:
                     raise RuntimeError("TOML config requires tomli: pip install tomli")
                 # Fixed: tomli.loads expects str, not bytes
                 data = tomli.loads(content_str)
-                return new_hash, data
+                return new_hash, data, stat.st_mtime
 
-            self._config_hash, data = await asyncio.to_thread(_read_and_parse)
+            self._config_hash, data, mtime = await asyncio.to_thread(_read_and_parse)
+            self._last_mtime = mtime
 
             mcp_router_data = data.get("tool", {}).get("mcp-router", {})
             return self._parse_config(mcp_router_data)
@@ -280,12 +284,24 @@ class ConfigManager:
         current_time = time.time()
         if current_time - self._last_check < self._check_interval: return False
         self._last_check = current_time
+
+        try:
+            stat = os.stat(self.config_path)
+            if stat.st_mtime == self._last_mtime:
+                return False
+        except OSError:
+            return False
+
         try:
             def _check():
-                with open(self.config_path, 'rb') as f: content_bytes = f.read()
-                return self._compute_hash(content_bytes.decode(errors='ignore'))
+                with open(self.config_path, 'rb') as f:
+                    content_bytes = f.read()
+                    stat = os.fstat(f.fileno())
+                return self._compute_hash(content_bytes.decode(errors='ignore')), stat.st_mtime
 
-            new_hash = await asyncio.to_thread(_check)
+            new_hash, new_mtime = await asyncio.to_thread(_check)
+            self._last_mtime = new_mtime
+
             if new_hash != self._config_hash:
                 self._config_hash = new_hash
                 return True
