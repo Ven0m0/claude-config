@@ -32,6 +32,12 @@
       "args": ["-y", "@just-every/mcp-read-website-fast"],
       "tools": ["*"]
     },
+    "filesystem": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "filesystem-slim@latest"],
+      "tools": ["*"]
+    },
     "think-tool": {
       "type": "stdio",
       "command": "npx",
