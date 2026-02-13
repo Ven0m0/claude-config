@@ -11,7 +11,7 @@
     "sequential-thinking": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "args": ["-y", "sequential-thinking-slim@latest"],
       "tools": ["*"]
     },
     "context7": {
