@@ -48,7 +48,7 @@
       "command": "npx",
       "args": ["-y", "code-mode-toon"],
       "tools": ["*"]
-    }
+    },
     "praetorian-opt": {
       "type": "stdio",
       "command": "npx",
