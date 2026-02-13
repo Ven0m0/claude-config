@@ -5,25 +5,37 @@
       "url": "https://api.githubcopilot.com/mcp",
       "tools": ["*"],
       "headers": {
-        "X-MCP-Toolsets": "repos,issues,users,pull_requests,code_security,secret_protection,actions,web_search"
+        "X-MCP-Toolsets": "repos,issues,users,pull_requests,actions,web_search"
       }
     },
     "sequential-thinking": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "args": ["-y", "sequential-thinking-slim@latest"],
+      "tools": ["*"]
+    },
+    "serena": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "serena-slim@latest"],
       "tools": ["*"]
     },
     "context7": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": ["-y", "context7-slim@latest"],
       "tools": ["*"]
     },
     "read-website": {
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@just-every/mcp-read-website-fast"],
+      "tools": ["*"]
+    },
+    "filesystem": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "filesystem-slim@latest"],
       "tools": ["*"]
     },
     "think-tool": {
