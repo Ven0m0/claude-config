@@ -14,6 +14,12 @@
       "args": ["-y", "sequential-thinking-slim@latest"],
       "tools": ["*"]
     },
+    "serena": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "serena-slim@latest"],
+      "tools": ["*"]
+    },
     "context7": {
       "type": "stdio",
       "command": "npx",
