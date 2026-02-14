@@ -65,5 +65,26 @@ class TestDetectDuplicates(unittest.TestCase):
         self.assertEqual(dup.locations[0][1], 1) # First occurrence start line
         self.assertEqual(dup.locations[1][1], 6) # Second occurrence start line
 
+    def test_find_duplicates_comment_heavy_blocks_below_threshold(self):
+        # Block of 5 lines, 3 pure comments and 2 code lines.
+        # After normalization, only the code lines remain non-empty:
+        # 2 / 5 = 40% < 60% threshold, so no duplicates should be reported.
+        content = "\n".join(
+            [
+                "# comment 1",
+                "# comment 2",
+                "x = 1  # code with comment",
+                "# comment 3",
+                "print(x)  # another code line",
+            ]
+        ) + "\n"
+        self.file1.write_text(content)
+        self.file2.write_text(content)
+
+        report = find_duplicates([self.test_dir], min_lines=5)
+
+        # Comment-heavy blocks that fall below the 60% non-empty threshold
+        # after normalization should not be counted as duplicates.
+        self.assertEqual(len(report.duplicates), 0)
 if __name__ == '__main__':
     unittest.main()
