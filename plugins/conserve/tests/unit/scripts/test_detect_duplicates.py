@@ -30,7 +30,7 @@ class TestDetectDuplicates(unittest.TestCase):
 
         # Check hash consistency
         hashes = [b[0] for b in blocks]
-        self.assertEqual(len(set(hashes)), 1) # All blocks are identical
+        self.assertEqual(len(set(hashes)), 1)  # All blocks are identical.
 
     def test_find_duplicates_identical_files(self):
         content = "def foo():\n    pass\n" * 5
