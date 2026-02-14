@@ -2,7 +2,7 @@
   "mcpServers": {
     "github-mcp-server": {
       "type": "http",
-      "url": "https://api.githubcopilot.com/mcp",
+      "url": "https://api.githubcopilot.com/mcp/insiders",
       "tools": ["*"],
       "headers": {
         "X-MCP-Toolsets": "repos,issues,users,pull_requests,actions,web_search"
