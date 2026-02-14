@@ -11,31 +11,13 @@
     "sequential-thinking": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "sequential-thinking-slim@latest"],
-      "tools": ["*"]
-    },
-    "serena": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "serena-slim@latest"],
-      "tools": ["*"]
-    },
-    "context7": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "context7-slim@latest"],
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
       "tools": ["*"]
     },
     "read-website": {
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@just-every/mcp-read-website-fast"],
-      "tools": ["*"]
-    },
-    "filesystem": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "filesystem-slim@latest"],
       "tools": ["*"]
     },
     "think-tool": {
@@ -48,6 +30,14 @@
       "type": "http",
       "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa,deep_researcher_start,deep_researcher_check",
       "tools": ["*"]
+    },
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "tools": ["*"],
+      "headers": {
+        "CONTEXT7_API_KEY": "$CONTEXT7_API_KEY"
+      }
     },
     "fast-filesystem-mcp": {
       "type": "stdio",
