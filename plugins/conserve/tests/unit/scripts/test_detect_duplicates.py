@@ -24,7 +24,7 @@ class TestDetectDuplicates(unittest.TestCase):
         self.file1.write_text(content)
         blocks = extract_blocks(self.file1, min_lines=5)
         # 10 lines, min_lines=5.
-        # Windows: 0-5, 1-6, 2-7, 3-8, 4-9, 5-10.
+        # Windows: 1-5, 2-6, 3-7, 4-8, 5-9, 6-10.
         # Total 6 blocks.
         self.assertEqual(len(blocks), 6)
 
