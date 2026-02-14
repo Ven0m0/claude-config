@@ -178,11 +178,11 @@ INTENT_SOLUTIONS_*.md
 *.temp
 .cache
 
-# Documentation (except README.md)
+# Documentation
 *.md
 /docs/
 LICENSE
-!README.md
+
 
 # Hidden files and directories
 .*
@@ -203,3 +203,30 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+**/.classpath
+**/.dockerignore
+**/.env
+**/.git
+**/.gitignore
+**/.project
+**/.settings
+**/.toolstarget
+**/.vs
+**/.vscode
+**/*.*proj.user
+**/*.dbmdl
+**/*.jfm
+**/charts
+**/docker-compose*
+**/compose*
+**/Dockerfile*
+**/node_modules
+!.next/standalone/node_modules
+**/npm-debug.log
+**/obj
+**/secrets.dev.yaml
+**/values.dev.yaml
+README.md
+config/
+k3d/
