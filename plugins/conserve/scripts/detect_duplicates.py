@@ -143,7 +143,7 @@ def extract_blocks(
         ).hexdigest()
 
         block_content = "\n".join(lines[start:end])
-        blocks.append((block_hash, start + 1, end, block_content))  # 1-indexed
+        blocks.append((block_hash, start + 1, end, block_content))  # Line numbers are 1-indexed.
 
     return blocks
 
