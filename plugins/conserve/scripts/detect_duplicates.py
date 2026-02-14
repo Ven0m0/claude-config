@@ -116,7 +116,7 @@ def extract_blocks(
 
     # Pre-calculate normalized lines and emptiness
     normalized_lines = [normalize_line(line, lang) for line in lines]
-    is_non_empty = [bool(line.strip()) for line in lines]
+    is_non_empty = [bool(nl) for nl in normalized_lines]
 
     # Calculate initial window count
     window_non_empty_count = sum(is_non_empty[:min_lines])
