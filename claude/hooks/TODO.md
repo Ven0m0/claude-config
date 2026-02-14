@@ -6,5 +6,10 @@ Future hook ideas for this repo:
 - Post-tool: AST-grep or pattern scan
 - Pre-compact: save context or state if needed
 - Atomic write helper for hook scripts
+- Use
+  ```python
+  #!/usr/bin/env -S uv run --script
+  ```
+  as a shebang for python
 
 Implement in `claude/hooks/` or `claude/hooks/scripts/` as needed.
