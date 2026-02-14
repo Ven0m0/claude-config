@@ -92,46 +92,58 @@ def get_language(filepath: Path) -> str:
     return ext_map.get(filepath.suffix.lower(), "unknown")
 
 
-def hash_block(lines: list[str], lang: str) -> str:
-    """Create a normalized hash for a block of code."""
-    normalized = [normalize_line(line, lang) for line in lines]
-    # Filter empty lines for hashing
-    content = "\n".join(line for line in normalized if line)
-    return hashlib.md5(content.encode(), usedforsecurity=False).hexdigest()
 
 
 def extract_blocks(
-    filepath: Path, min_lines: int = 5
+    filepath: Path, min_lines: int = 5, lines: list[str] | None = None
 ) -> list[tuple[str, int, int, str]]:
     """Extract overlapping blocks from a file.
 
     Returns: list of (hash, start_line, end_line, content)
     """
-    try:
-        content = filepath.read_text(encoding="utf-8", errors="ignore")
-    except (OSError, UnicodeDecodeError):
-        return []
+    if lines is None:
+        try:
+            content = filepath.read_text(encoding="utf-8", errors="ignore")
+            lines = content.splitlines()
+        except (OSError, UnicodeDecodeError):
+            return []
 
-    lines = content.splitlines()
     if len(lines) < min_lines:
         return []
 
     lang = get_language(filepath)
     blocks = []
 
+    # Pre-calculate normalized lines and emptiness
+    normalized_lines = [normalize_line(line, lang) for line in lines]
+    is_non_empty = [bool(nl) for nl in normalized_lines]
+
+    # Calculate initial window count
+    window_non_empty_count = sum(is_non_empty[:min_lines])
+
     # Sliding window of min_lines
     for start in range(len(lines) - min_lines + 1):
         end = start + min_lines
-        block_lines = lines[start:end]
 
-        # Skip blocks that are mostly empty/whitespace
-        non_empty = [line for line in block_lines if line.strip()]
-        if len(non_empty) < min_lines * 0.6:  # At least 60% non-empty
+        # Update rolling count (except for the first iteration)
+        if start > 0:
+            if is_non_empty[start - 1]:
+                window_non_empty_count -= 1
+            if is_non_empty[end - 1]:
+                window_non_empty_count += 1
+
+        if window_non_empty_count < min_lines * 0.6:  # Ensure at least 60% of lines are non-empty.
             continue
 
-        block_hash = hash_block(block_lines, lang)
-        block_content = "\n".join(block_lines)
-        blocks.append((block_hash, start + 1, end, block_content))  # 1-indexed
+        # Use pre-normalized lines for hashing
+        block_normalized = [nl for nl in normalized_lines[start:end] if nl]
+        content_for_hash = "\n".join(block_normalized)
+        block_hash = hashlib.md5(
+            content_for_hash.encode(), usedforsecurity=False
+        ).hexdigest()
+
+        block_content = "\n".join(lines[start:end])
+        blocks.append((block_hash, start + 1, end, block_content))  # Line numbers are 1-indexed.
 
     return blocks
 
@@ -198,18 +210,20 @@ def find_duplicates(
     for filepath in files:
         try:
             content = filepath.read_text(encoding="utf-8", errors="ignore")
-            line_count = len(content.splitlines())
-            total_lines += line_count
+            lines = content.splitlines()
+            total_lines += len(lines)
         except (OSError, UnicodeDecodeError):
             continue
 
-        blocks = extract_blocks(filepath, min_lines)
+        blocks = extract_blocks(filepath, min_lines, lines=lines)
         for block_hash, start, end, content in blocks:
             hash_to_locations[block_hash].append((filepath, start, end, content))
 
     # Find duplicates (blocks appearing in multiple locations)
     duplicates: list[DuplicateBlock] = []
-    seen_ranges: set[tuple[str, int, int]] = set()  # Avoid overlapping reports
+    seen_ranges_by_file: dict[str, list[tuple[int, int]]] = defaultdict(
+        list
+    )  # Avoid overlapping reports
 
     for block_hash, locations in hash_to_locations.items():
         if len(locations) < 2:
@@ -219,17 +233,16 @@ def find_duplicates(
         unique_locations: list[tuple[Path, int, int, str]] = []
         for filepath, start, end, content in locations:
             # Skip if overlaps with already-reported range in same file
-            range_key = (str(filepath), start, end)
             overlaps = False
-            for seen_file, seen_start, seen_end in seen_ranges:
-                if seen_file == str(filepath):
-                    # Check for overlap
-                    if not (end < seen_start or start > seen_end):
-                        overlaps = True
-                        break
+            filepath_str = str(filepath)
+            for seen_start, seen_end in seen_ranges_by_file[filepath_str]:
+                # Check for overlap
+                if not (end < seen_start or start > seen_end):
+                    overlaps = True
+                    break
             if not overlaps:
                 unique_locations.append((filepath, start, end, content))
-                seen_ranges.add(range_key)
+                seen_ranges_by_file[filepath_str].append((start, end))
 
         if len(unique_locations) >= 2:
             dup = DuplicateBlock(
