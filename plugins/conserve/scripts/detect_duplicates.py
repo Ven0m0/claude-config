@@ -132,7 +132,7 @@ def extract_blocks(
             if is_non_empty[end - 1]:
                 window_non_empty_count += 1
 
-        if window_non_empty_count < min_lines * 0.6:  # At least 60% non-empty
+        if window_non_empty_count < min_lines * 0.6:  # Ensure at least 60% of lines are non-empty.
             continue
 
         # Use pre-normalized lines for hashing
