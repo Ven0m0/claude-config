@@ -1,3 +1,8 @@
+---
+paths:
+  - "**/skills/*/SKILL.md"
+---
+
 # Skills Rules
 
 ## Skill Structure
