@@ -1,7 +1,3 @@
 {
-  "servers": {
-    "beads": {
-      "command": "beads-mcp"
-    }
-  }
+	"servers": {}
 }
