@@ -21,6 +21,22 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 
+# Common directories to exclude from scanning
+EXCLUDE_PATTERNS = {
+    "__pycache__",
+    "node_modules",
+    ".git",
+    ".venv",
+    "venv",
+    "dist",
+    "build",
+    ".tox",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".idea",
+    ".vscode",
+}
+
 
 @dataclass
 class DuplicateBlock:
@@ -46,6 +62,7 @@ class DuplicateReport:
     files_scanned: int
     total_lines: int
     duplicate_lines: int
+    similar_functions: list[tuple[str, list[str]]] = field(default_factory=list)
 
     @property
     def duplication_percentage(self) -> float:
@@ -148,18 +165,18 @@ def extract_blocks(
     return blocks
 
 
-def find_duplicates(
+def find_files(
     paths: list[Path],
-    min_lines: int = 5,
     extensions: set[str] | None = None,
-) -> DuplicateReport:
-    """Find duplicate code blocks across files.
+) -> list[Path]:
+    """Find files to scan, respecting exclude patterns.
 
     Args:
-        paths: Files or directories to scan
-        min_lines: Minimum block size to consider
-        extensions: File extensions to include (None = all code files)
+        paths: List of files or directories to scan.
+        extensions: Set of file extensions to include.
 
+    Returns:
+        List of Path objects.
     """
     if extensions is None:
         extensions = {
@@ -178,7 +195,6 @@ def find_duplicates(
             ".php",
         }
 
-    # Collect all files
     files: list[Path] = []
     for path in paths:
         if path.is_file():
@@ -189,19 +205,23 @@ def find_duplicates(
                 files.extend(path.rglob(f"*{ext}"))
 
     # Exclude common non-source directories
-    exclude_patterns = {
-        "__pycache__",
-        "node_modules",
-        ".git",
-        ".venv",
-        "venv",
-        "dist",
-        "build",
-        ".tox",
-        ".pytest_cache",
-        ".mypy_cache",
-    }
-    files = [f for f in files if not any(excl in f.parts for excl in exclude_patterns)]
+    return [f for f in files if not any(excl in f.parts for excl in EXCLUDE_PATTERNS)]
+
+
+def find_duplicates(
+    paths: list[Path],
+    min_lines: int = 5,
+    extensions: set[str] | None = None,
+) -> DuplicateReport:
+    """Find duplicate code blocks across files.
+
+    Args:
+        paths: Files or directories to scan
+        min_lines: Minimum block size to consider
+        extensions: File extensions to include (None = all code files)
+
+    """
+    files = find_files(paths, extensions)
 
     # Hash all blocks
     hash_to_locations: dict[str, list[tuple[Path, int, int, str]]] = defaultdict(list)
@@ -261,16 +281,23 @@ def find_duplicates(
     # Sort by occurrence count (most duplicated first)
     duplicates.sort(key=lambda d: d.occurrence_count, reverse=True)
 
+    # Find similar functions
+    similar_functions = find_similar_functions(files)
+
     return DuplicateReport(
         duplicates=duplicates[:50],  # Limit to top 50
         files_scanned=len(files),
         total_lines=total_lines,
         duplicate_lines=duplicate_lines,
+        similar_functions=similar_functions,
     )
 
 
-def find_similar_functions(path: Path) -> list[tuple[str, list[str]]]:
+def find_similar_functions(files: list[Path]) -> list[tuple[str, list[str]]]:
     """Find functions with similar names (potential abstraction candidates).
+
+    Args:
+        files: List of files to scan.
 
     Returns: list of (base_name, [full_names])
     """
@@ -278,9 +305,14 @@ def find_similar_functions(path: Path) -> list[tuple[str, list[str]]]:
     func_pattern = re.compile(r"^\s*(?:def|function|fn|func)\s+(\w+)", re.MULTILINE)
 
     func_names: list[str] = []
-    for filepath in path.rglob("*.py"):
-        if any(excl in filepath.parts for excl in ("__pycache__", ".venv", "venv")):
+    # Filter for source files that might contain function definitions
+    # Regex handles: def (py/rb), function (js/ts), fn (rs), func (go)
+    relevant_extensions = {".py", ".js", ".ts", ".jsx", ".tsx", ".go", ".rs", ".rb", ".php"}
+
+    for filepath in files:
+        if filepath.suffix not in relevant_extensions:
             continue
+
         try:
             content = filepath.read_text(encoding="utf-8", errors="ignore")
             func_names.extend(func_pattern.findall(content))
@@ -300,7 +332,7 @@ def find_similar_functions(path: Path) -> list[tuple[str, list[str]]]:
     return [(base, names) for base, names in similar_groups.items() if len(names) >= 2]
 
 
-def format_text(report: DuplicateReport, similar_funcs: list) -> str:
+def format_text(report: DuplicateReport) -> str:
     """Format report as human-readable text."""
     lines = [
         "=" * 60,
@@ -335,11 +367,11 @@ def format_text(report: DuplicateReport, similar_funcs: list) -> str:
     else:
         lines.append("No significant duplicates found.")
 
-    if similar_funcs:
+    if report.similar_functions:
         lines.append("")
-        lines.append(f"SIMILAR FUNCTION NAMES: {len(similar_funcs)} groups")
+        lines.append(f"SIMILAR FUNCTION NAMES: {len(report.similar_functions)} groups")
         lines.append("-" * 40)
-        for base, names in similar_funcs[:10]:
+        for base, names in report.similar_functions[:10]:
             lines.append(f"  {base}: {', '.join(names[:5])}")
             if len(names) > 5:
                 lines.append(f"    ... and {len(names) - 5} more")
@@ -362,7 +394,7 @@ def format_text(report: DuplicateReport, similar_funcs: list) -> str:
     return "\n".join(lines)
 
 
-def format_json(report: DuplicateReport, similar_funcs: list) -> str:
+def format_json(report: DuplicateReport) -> str:
     """Format report as JSON."""
     return json.dumps(
         {
@@ -384,7 +416,7 @@ def format_json(report: DuplicateReport, similar_funcs: list) -> str:
                 for dup in report.duplicates
             ],
             "similar_functions": [
-                {"base_name": base, "variants": names} for base, names in similar_funcs
+                {"base_name": base, "variants": names} for base, names in report.similar_functions
             ],
         },
         indent=2,
@@ -441,16 +473,12 @@ Examples:
 
     # Run detection
     report = find_duplicates(paths, args.min_lines, extensions)
-    similar_funcs = []
-    for path in paths:
-        if path.is_dir():
-            similar_funcs.extend(find_similar_functions(path))
 
     # Output
     if args.format == "json":
-        print(format_json(report, similar_funcs))
+        print(format_json(report))
     else:
-        print(format_text(report, similar_funcs))
+        print(format_text(report))
 
     # Exit code based on threshold
     if args.threshold is not None:
