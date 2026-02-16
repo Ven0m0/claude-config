@@ -56,16 +56,6 @@ function formatBytes(bytes, decimals = 2) {
   return `${parseFloat((bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
 }
 
-async function gzipSize(filePath) {
-  const content = await fs.promises.readFile(filePath);
-  return new Promise((resolve, reject) => {
-    zlib.gzip(content, (err, compressed) => {
-      if (err) reject(err);
-      else resolve(compressed.length);
-    });
-  });
-}
-
 // Queue implementation for O(1) operations
 class Node {
   constructor(value) {
@@ -149,14 +139,19 @@ function pLimit(concurrency) {
 
 /**
  * Optimizes directory traversal by combining file discovery,
- * size calculation, and route counting into a single pass.
+ * size calculation, and route counting into a single pipelined pass.
  */
 async function analyzeDirectory(dir) {
   log("Analyzing bundle size and counting routes...", "blue");
 
-  // Phase 1: Fast Scan (collect paths & count routes)
   let routeCount = 0;
-  const filePaths = [];
+  let totalSize = 0;
+  let totalGzippedSize = 0;
+  const files = [];
+  const processingPromises = [];
+
+  // Concurrency limit for processing (stat + gzip)
+  const fileLimit = pLimit(50);
 
   async function scan(currentDir) {
     // Unbounded recursion for maximum speed (replicates original countRoutes behavior)
@@ -165,11 +160,14 @@ async function analyzeDirectory(dir) {
     const promises = dirents.map(async (dirent) => {
       const fullPath = path.join(currentDir, dirent.name);
 
+      // Optimization: Cache stat result if fetched for symlink check
+      let statCache = null;
+
       let isDirectory = dirent.isDirectory();
       if (dirent.isSymbolicLink()) {
         try {
-          const stat = await fs.promises.stat(fullPath);
-          isDirectory = stat.isDirectory();
+          statCache = await fs.promises.stat(fullPath);
+          isDirectory = statCache.isDirectory();
         } catch (e) {
           if (e && (e.code === "ENOENT" || e.code === "ENOTDIR")) {
             isDirectory = false;
@@ -182,41 +180,44 @@ async function analyzeDirectory(dir) {
       if (isDirectory) {
         await scan(fullPath);
       } else {
-        filePaths.push(fullPath);
         if (dirent.name === "index.html") {
           routeCount++;
         }
+
+        // Pipeline: Start processing immediately
+        const p = fileLimit(async () => {
+          // Optimization: Get size from readFile content, avoiding extra stat call
+          const content = await fs.promises.readFile(fullPath);
+          const size = content.length;
+
+          const gzipped = await new Promise((resolve, reject) => {
+            zlib.gzip(content, (err, compressed) => {
+              if (err) reject(err);
+              else resolve(compressed.length);
+            });
+          });
+
+          totalSize += size;
+          totalGzippedSize += gzipped;
+
+          files.push({
+            path: path.relative(dir, fullPath),
+            size: size,
+            gzipped,
+          });
+        });
+        processingPromises.push(p);
       }
     });
 
     await Promise.all(promises);
   }
 
+  // Start scan traversal
   await scan(dir);
 
-  // Phase 2: Process Files
-  let totalSize = 0;
-  let totalGzippedSize = 0;
-  const files = [];
-  const fileLimit = pLimit(50);
-
-  await Promise.all(
-    filePaths.map((filePath) =>
-      fileLimit(async () => {
-        const stat = await fs.promises.stat(filePath);
-        const gzipped = await gzipSize(filePath);
-
-        totalSize += stat.size;
-        totalGzippedSize += gzipped;
-
-        files.push({
-          path: path.relative(dir, filePath),
-          size: stat.size,
-          gzipped,
-        });
-      })
-    )
-  );
+  // Wait for all file processing tasks to complete
+  await Promise.all(processingPromises);
 
   // Sort by gzipped size
   files.sort((a, b) => b.gzipped - a.gzipped);
