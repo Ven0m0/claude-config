@@ -244,7 +244,7 @@ def find_duplicates(
 
         # Extract functions (only for Python files to match original behavior, or we could expand)
         # Original code only scanned .py files for similar functions.
-        if filepath.suffix.lower() == ".py":
+        if get_language(filepath) == "python":
             all_func_names.extend(extract_functions(content))
 
     # Find duplicates (blocks appearing in multiple locations)
