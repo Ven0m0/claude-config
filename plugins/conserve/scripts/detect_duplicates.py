@@ -385,7 +385,11 @@ def format_json(report: DuplicateReport) -> str:
                 for dup in report.duplicates
             ],
             "similar_functions": [
-                {"base_name": base, "variants": names} for base, names in report.similar_functions
+                {
+                    "base_name": base,
+                    "variants": names,
+                }
+                for base, names in report.similar_functions
             ],
         },
         indent=2,
