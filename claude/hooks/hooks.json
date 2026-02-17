@@ -22,6 +22,14 @@
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/load-mcp-skills.sh"
           }
         ]
+      },
+      "matcher": "compact",
+      "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Reminder: use Bun, not npm and uv, not pip.'"
+          }
+        ]
       }
     ],
     "PostToolUse": [
