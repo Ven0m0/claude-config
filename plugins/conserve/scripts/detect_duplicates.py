@@ -46,6 +46,7 @@ class DuplicateReport:
     files_scanned: int
     total_lines: int
     duplicate_lines: int
+    similar_functions: list[tuple[str, list[str]]] = field(default_factory=list)
 
     @property
     def duplication_percentage(self) -> float:
@@ -53,6 +54,10 @@ class DuplicateReport:
         if self.total_lines == 0:
             return 0.0
         return (self.duplicate_lines / self.total_lines) * 100
+
+
+# Pre-compile regex for function extraction
+FUNC_PATTERN = re.compile(r"^\s*(?:def|function|fn|func)\s+(\w+)", re.MULTILINE)
 
 
 def normalize_line(line: str, lang: str = "python") -> str:
@@ -90,8 +95,6 @@ def get_language(filepath: Path) -> str:
         ".php": "php",
     }
     return ext_map.get(filepath.suffix.lower(), "unknown")
-
-
 
 
 def extract_blocks(
@@ -146,6 +149,28 @@ def extract_blocks(
         blocks.append((block_hash, start + 1, end, block_content))  # Line numbers are 1-indexed.
 
     return blocks
+
+
+def extract_functions(content: str) -> list[str]:
+    """Find functions in content."""
+    return FUNC_PATTERN.findall(content)
+
+
+def group_similar_functions(func_names: list[str]) -> list[tuple[str, list[str]]]:
+    """Group functions by common prefixes/suffixes."""
+    similar_groups: dict[str, set[str]] = defaultdict(set)
+
+    for name in func_names:
+        # Strip common suffixes
+        base = re.sub(r"(_\d+|_v\d+|_new|_old|_backup|_copy|_2)$", "", name)
+        similar_groups[base].add(name)
+
+    # Return groups with 2+ distinct similar functions
+    return [
+        (base, sorted(names))
+        for base, names in similar_groups.items()
+        if len(names) >= 2
+    ]
 
 
 def find_duplicates(
@@ -203,9 +228,10 @@ def find_duplicates(
     }
     files = [f for f in files if not any(excl in f.parts for excl in exclude_patterns)]
 
-    # Hash all blocks
+    # Hash all blocks and collect functions
     hash_to_locations: dict[str, list[tuple[Path, int, int, str]]] = defaultdict(list)
     total_lines = 0
+    all_func_names: list[str] = []
 
     for filepath in files:
         try:
@@ -215,9 +241,15 @@ def find_duplicates(
         except (OSError, UnicodeDecodeError):
             continue
 
+        # Extract blocks
         blocks = extract_blocks(filepath, min_lines, lines=lines)
-        for block_hash, start, end, content in blocks:
-            hash_to_locations[block_hash].append((filepath, start, end, content))
+        for block_hash, start, end, block_content in blocks:
+            hash_to_locations[block_hash].append((filepath, start, end, block_content))
+
+        # Extract functions (only for Python files to match original behavior, or we could expand)
+        # Original code only scanned .py files for similar functions.
+        if get_language(filepath) == "python":
+            all_func_names.extend(extract_functions(content))
 
     # Find duplicates (blocks appearing in multiple locations)
     duplicates: list[DuplicateBlock] = []
@@ -261,46 +293,19 @@ def find_duplicates(
     # Sort by occurrence count (most duplicated first)
     duplicates.sort(key=lambda d: d.occurrence_count, reverse=True)
 
+    # Group similar functions
+    similar_functions = group_similar_functions(all_func_names)
+
     return DuplicateReport(
         duplicates=duplicates[:50],  # Limit to top 50
         files_scanned=len(files),
         total_lines=total_lines,
         duplicate_lines=duplicate_lines,
+        similar_functions=similar_functions,
     )
 
 
-def find_similar_functions(path: Path) -> list[tuple[str, list[str]]]:
-    """Find functions with similar names (potential abstraction candidates).
-
-    Returns: list of (base_name, [full_names])
-    """
-    # Extract function definitions
-    func_pattern = re.compile(r"^\s*(?:def|function|fn|func)\s+(\w+)", re.MULTILINE)
-
-    func_names: list[str] = []
-    for filepath in path.rglob("*.py"):
-        if any(excl in filepath.parts for excl in ("__pycache__", ".venv", "venv")):
-            continue
-        try:
-            content = filepath.read_text(encoding="utf-8", errors="ignore")
-            func_names.extend(func_pattern.findall(content))
-        except (OSError, UnicodeDecodeError):
-            continue
-
-    # Group by common prefixes/suffixes
-    # Find functions that differ only by a suffix like _1, _v2, _new, etc.
-    similar_groups: dict[str, list[str]] = defaultdict(list)
-
-    for name in func_names:
-        # Strip common suffixes
-        base = re.sub(r"(_\d+|_v\d+|_new|_old|_backup|_copy|_2)$", "", name)
-        similar_groups[base].append(name)
-
-    # Return groups with 2+ similar functions
-    return [(base, names) for base, names in similar_groups.items() if len(names) >= 2]
-
-
-def format_text(report: DuplicateReport, similar_funcs: list) -> str:
+def format_text(report: DuplicateReport) -> str:
     """Format report as human-readable text."""
     lines = [
         "=" * 60,
@@ -335,11 +340,11 @@ def format_text(report: DuplicateReport, similar_funcs: list) -> str:
     else:
         lines.append("No significant duplicates found.")
 
-    if similar_funcs:
+    if report.similar_functions:
         lines.append("")
-        lines.append(f"SIMILAR FUNCTION NAMES: {len(similar_funcs)} groups")
+        lines.append(f"SIMILAR FUNCTION NAMES: {len(report.similar_functions)} groups")
         lines.append("-" * 40)
-        for base, names in similar_funcs[:10]:
+        for base, names in report.similar_functions[:10]:
             lines.append(f"  {base}: {', '.join(names[:5])}")
             if len(names) > 5:
                 lines.append(f"    ... and {len(names) - 5} more")
@@ -362,7 +367,7 @@ def format_text(report: DuplicateReport, similar_funcs: list) -> str:
     return "\n".join(lines)
 
 
-def format_json(report: DuplicateReport, similar_funcs: list) -> str:
+def format_json(report: DuplicateReport) -> str:
     """Format report as JSON."""
     return json.dumps(
         {
@@ -384,7 +389,11 @@ def format_json(report: DuplicateReport, similar_funcs: list) -> str:
                 for dup in report.duplicates
             ],
             "similar_functions": [
-                {"base_name": base, "variants": names} for base, names in similar_funcs
+                {
+                    "base_name": base,
+                    "variants": names,
+                }
+                for base, names in report.similar_functions
             ],
         },
         indent=2,
@@ -441,16 +450,12 @@ Examples:
 
     # Run detection
     report = find_duplicates(paths, args.min_lines, extensions)
-    similar_funcs = []
-    for path in paths:
-        if path.is_dir():
-            similar_funcs.extend(find_similar_functions(path))
 
     # Output
     if args.format == "json":
-        print(format_json(report, similar_funcs))
+        print(format_json(report))
     else:
-        print(format_text(report, similar_funcs))
+        print(format_text(report))
 
     # Exit code based on threshold
     if args.threshold is not None:
