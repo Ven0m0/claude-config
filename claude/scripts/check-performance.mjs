@@ -56,12 +56,15 @@ function formatBytes(bytes, decimals = 2) {
   return `${parseFloat((bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
 }
 
-async function gzipSize(filePath) {
+async function getFileStats(filePath) {
   const content = await fs.promises.readFile(filePath);
   return new Promise((resolve, reject) => {
     zlib.gzip(content, (err, compressed) => {
       if (err) reject(err);
-      else resolve(compressed.length);
+      else resolve({
+        size: content.length,
+        gzipped: compressed.length,
+      });
     });
   });
 }
@@ -203,15 +206,14 @@ async function analyzeDirectory(dir) {
   await Promise.all(
     filePaths.map((filePath) =>
       fileLimit(async () => {
-        const stat = await fs.promises.stat(filePath);
-        const gzipped = await gzipSize(filePath);
+        const { size, gzipped } = await getFileStats(filePath);
 
-        totalSize += stat.size;
+        totalSize += size;
         totalGzippedSize += gzipped;
 
         files.push({
           path: path.relative(dir, filePath),
-          size: stat.size,
+          size,
           gzipped,
         });
       })
