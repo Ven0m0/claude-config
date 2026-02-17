@@ -297,9 +297,9 @@ def find_similar_functions(files: list[Path]) -> list[tuple[str, list[str]]]:
     """Find functions with similar names (potential abstraction candidates).
 
     Args:
-        files: List of files to scan.
-
-    Returns: list of (base_name, [full_names])
+        files (list[Path]): List of files to scan.
+    Returns:
+        list[tuple[str, list[str]]]: A list of (base_name, [full_names]) tuples.
     """
     # Extract function definitions
     func_pattern = re.compile(r"^\s*(?:def|function|fn|func)\s+(\w+)", re.MULTILINE)
