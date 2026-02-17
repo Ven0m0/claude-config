@@ -72,6 +72,10 @@ class DuplicateReport:
         return (self.duplicate_lines / self.total_lines) * 100
 
 
+# Pre-compile regex for function extraction
+FUNC_PATTERN = re.compile(r"^\s*(?:def|function|fn|func)\s+(\w+)", re.MULTILINE)
+
+
 def normalize_line(line: str, lang: str = "python") -> str:
     """Normalize a line for comparison (remove comments, normalize whitespace)."""
     # Remove inline comments
@@ -107,8 +111,6 @@ def get_language(filepath: Path) -> str:
         ".php": "php",
     }
     return ext_map.get(filepath.suffix.lower(), "unknown")
-
-
 
 
 def extract_blocks(
@@ -223,9 +225,10 @@ def find_duplicates(
     """
     files = find_files(paths, extensions)
 
-    # Hash all blocks
+    # Hash all blocks and collect functions
     hash_to_locations: dict[str, list[tuple[Path, int, int, str]]] = defaultdict(list)
     total_lines = 0
+    all_func_names: list[str] = []
 
     for filepath in files:
         try:
@@ -235,9 +238,15 @@ def find_duplicates(
         except (OSError, UnicodeDecodeError):
             continue
 
+        # Extract blocks
         blocks = extract_blocks(filepath, min_lines, lines=lines)
-        for block_hash, start, end, content in blocks:
-            hash_to_locations[block_hash].append((filepath, start, end, content))
+        for block_hash, start, end, block_content in blocks:
+            hash_to_locations[block_hash].append((filepath, start, end, block_content))
+
+        # Extract functions (only for Python files to match original behavior, or we could expand)
+        # Original code only scanned .py files for similar functions.
+        if get_language(filepath) == "python":
+            all_func_names.extend(extract_functions(content))
 
     # Find duplicates (blocks appearing in multiple locations)
     duplicates: list[DuplicateBlock] = []

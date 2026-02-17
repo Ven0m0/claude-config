@@ -1,0 +1,16 @@
+{
+  "name": "rust-analyzer",
+  "version": "0.1.0",
+  "description": "Rust language server",
+  "author": {
+    "name": "Piebald LLC",
+    "email": "support@piebald.ai"
+  },
+  "repository": "https://github.com/rust-lang/rust-analyzer",
+  "license": "Apache-2.0 and MIT",
+  "keywords": [
+    "rust",
+    "lsp",
+    "language-server"
+  ]
+}
