@@ -162,7 +162,7 @@ def group_similar_functions(func_names: list[str]) -> list[tuple[str, list[str]]
 
     for name in func_names:
         # Strip common suffixes
-        base = re.sub(r"(_\d+|_v\d+|_new|_old|_backup|_copy|_2)$", "", name)
+        base = SIMILAR_FUNC_SUFFIX_PATTERN.sub("", name)
         similar_groups[base].append(name)
 
     # Return groups with 2+ similar functions
