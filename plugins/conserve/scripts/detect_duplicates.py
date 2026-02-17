@@ -158,15 +158,19 @@ def extract_functions(content: str) -> list[str]:
 
 def group_similar_functions(func_names: list[str]) -> list[tuple[str, list[str]]]:
     """Group functions by common prefixes/suffixes."""
-    similar_groups: dict[str, list[str]] = defaultdict(list)
+    similar_groups: dict[str, set[str]] = defaultdict(set)
 
     for name in func_names:
         # Strip common suffixes
-        base = SIMILAR_FUNC_SUFFIX_PATTERN.sub("", name)
-        similar_groups[base].append(name)
+        base = re.sub(r"(_\d+|_v\d+|_new|_old|_backup|_copy|_2)$", "", name)
+        similar_groups[base].add(name)
 
-    # Return groups with 2+ similar functions
-    return [(base, names) for base, names in similar_groups.items() if len(names) >= 2]
+    # Return groups with 2+ distinct similar functions
+    return [
+        (base, sorted(names))
+        for base, names in similar_groups.items()
+        if len(names) >= 2
+    ]
 
 
 def find_duplicates(
