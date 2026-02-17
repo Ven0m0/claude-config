@@ -53,3 +53,4 @@ jobs:
             - Run tests before opening PR
             - If no clear win exists, don't create a PR
           jules_api_key: ${{ secrets.JULES_API_KEY }}
+          include_commit_log: true
