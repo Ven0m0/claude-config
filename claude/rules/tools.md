@@ -9,14 +9,12 @@ category: tool-usage
 - **File Search**: Use `fd` over `find`
 - **Text Search**: Use `rg` over `grep`
 - **LSP**: Use language server protocols for symbol navigation
-- **Interactive Selection**: Use `fzf` for fuzzy finding
 
 **Development Tools**
 - **Package Managers**: 
-  - JavaScript/TypeScript: `bun`, `npm`, `pnpm`, `yarn`
-  - Python: `uv`, `pip`, `poetry`
+  - JavaScript/TypeScript: `bun`
+  - Python: `uv`
   - Rust: `cargo`, `rustup`
-  - Go: `go`
 
 **File Operations**
 - **Reading**: `cat`, `bat`, `head`, `tail`
