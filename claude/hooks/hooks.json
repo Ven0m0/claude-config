@@ -34,6 +34,10 @@
           },
           {
             "type": "command",
+            "command": "jq -r '.tool_input.file_path' | xargs bunx biome format --write"
+          },
+          {
+            "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/format_python_docstrings.py"
           },
           {
