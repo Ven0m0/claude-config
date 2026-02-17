@@ -56,6 +56,19 @@ function formatBytes(bytes, decimals = 2) {
   return `${parseFloat((bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
 }
 
+async function getFileStats(filePath) {
+  const content = await fs.promises.readFile(filePath);
+  return new Promise((resolve, reject) => {
+    zlib.gzip(content, (err, compressed) => {
+      if (err) reject(err);
+      else resolve({
+        size: content.length,
+        gzipped: compressed.length,
+      });
+    });
+  });
+}
+
 // Queue implementation for O(1) operations
 class Node {
   constructor(value) {
@@ -216,8 +229,28 @@ async function analyzeDirectory(dir) {
   // Start scan traversal
   await scan(dir);
 
-  // Wait for all file processing tasks to complete
-  await Promise.all(processingPromises);
+  // Phase 2: Process Files
+  let totalSize = 0;
+  let totalGzippedSize = 0;
+  const files = [];
+  const fileLimit = pLimit(50);
+
+  await Promise.all(
+    filePaths.map((filePath) =>
+      fileLimit(async () => {
+        const { size, gzipped } = await getFileStats(filePath);
+
+        totalSize += size;
+        totalGzippedSize += gzipped;
+
+        files.push({
+          path: path.relative(dir, filePath),
+          size,
+          gzipped,
+        });
+      })
+    )
+  );
 
   // Sort by gzipped size
   files.sort((a, b) => b.gzipped - a.gzipped);
