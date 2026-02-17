@@ -78,3 +78,6 @@ export GIT_DEFAULT_BRANCH="${GIT_DEFAULT_BRANCH:-main}"
 # Add custom paths (uncomment and modify as needed)
 # export PATH="$HOME/.local/bin:$PATH"
 # export PATH="./node_modules/.bin:$PATH"
+
+export DISABLE_AUTOUPDATER=true
+export FORCE_AUTOUPDATE_PLUGINS=true
