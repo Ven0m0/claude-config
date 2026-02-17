@@ -4,6 +4,7 @@
 import argparse
 import json
 import re
+import sys
 from pathlib import Path
 
 
@@ -211,20 +212,22 @@ def main() -> None:
     manager = DependencyManager(Path(args.root))
 
     if args.report:
-        pass
+        print(manager.generate_report())
     elif args.scan:
         issues = manager.detect_issues()
         if issues:
-            for _issue in issues:
-                pass
+            print(f"Found {len(issues)} issues:")
+            for issue in issues:
+                print(f"- {issue}")
+            sys.exit(1)
         else:
-            pass
+            print("No dependency issues found.")
     elif args.fix:
         fixes = manager.fix_dependencies(dry_run=args.dry_run)
-        for _fix in fixes:
-            pass
+        for fix in fixes:
+            print(fix)
     else:
-        pass
+        parser.print_help()
 
 
 if __name__ == "__main__":

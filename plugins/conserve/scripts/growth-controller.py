@@ -386,24 +386,50 @@ def main() -> None:
     )
 
     if args.output_json:
-        pass
+        print(json.dumps(strategies, indent=2))
     else:
-        strategies["metadata"]
+        print(f"Growth Control Strategy: {strategies['metadata']['strategy_type'].upper()}")
+        print("=" * 60)
+        print(f"Analysis Severity: {strategies['metadata']['analysis_severity']}")
+        print(f"Target Growth Rate: {strategies['metadata']['target_growth_rate']:.1%}")
+        print()
 
-        for _control in strategies["automated_controls"]:
-            pass
+        print("Automated Controls:")
+        print("-" * 20)
+        for control in strategies["automated_controls"]:
+            print(f"- {control['name']} ({control['priority']})")
+            print(f"  {control['description']}")
 
-        for _control in strategies["manual_controls"]:
-            pass
+        print("\nManual Controls:")
+        print("-" * 20)
+        for control in strategies["manual_controls"]:
+            print(f"- {control['name']} ({control['priority']})")
+            print(f"  {control['description']}")
 
-        for _strategy in strategies["preventive_strategies"]:
-            pass
+        print("\nPreventive Strategies:")
+        print("-" * 20)
+        for strategy in strategies["preventive_strategies"]:
+            print(f"- {strategy['name']} ({strategy['priority']})")
+            print(f"  {strategy['description']}")
 
         if args.verbose:
-            for _details in strategies["implementation_plan"].values():
-                pass
+            print("\nImplementation Plan:")
+            print("-" * 20)
+            for phase, details in strategies["implementation_plan"].items():
+                if isinstance(details, dict):
+                    print(f"\n{phase.replace('_', ' ').title()} ({details.get('duration', 'Unknown duration')}):")
+                    actions = details.get('actions', [])
+                    if isinstance(actions, list):
+                        for action in actions:
+                            print(f"  - {action}")
 
-            strategies["monitoring_requirements"]
+            print("\nMonitoring Requirements:")
+            print("-" * 20)
+            reqs = strategies["monitoring_requirements"]
+            if isinstance(reqs, dict):
+                print(f"Frequency: {reqs.get('frequency', 'Unknown')}")
+                print(f"Metrics: {', '.join(reqs.get('metrics', []))}")
+                print(f"Alerts: {', '.join(reqs.get('alerts', []))}")
 
 
 if __name__ == "__main__":
