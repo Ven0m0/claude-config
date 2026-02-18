@@ -7,6 +7,8 @@ description: |
   skills for token efficiency, applying 500-line rule, implementing progressive disclosure,
   designing XML tag structures for prompts, auditing CLAUDE.md files, tuning LLM temperature
   and token settings, or compressing markdown for context efficiency.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # LLM Boost Skill
