@@ -2,6 +2,7 @@
 name: optimizing-images
 description: Optimizes images for web using compression, modern formats (WebP, AVIF), and responsive techniques. Use when reducing page weight, improving load times, or implementing responsive images. Triggers include "image optimization", "compress images", "WebP", or "srcset".
 allowed-tools: Bash, Read, Glob
+user-invocable: false
 ---
 
 # Image Optimization
