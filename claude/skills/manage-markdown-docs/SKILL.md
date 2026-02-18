@@ -25,6 +25,7 @@ Ensure all markdown documents have consistent structure with proper header metad
 - README.md files (these have their own conventions)
 - CLAUDE.md files
 - CHANGELOG.md files
+
 </does_not_apply_to>
 </scope>
 
