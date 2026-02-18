@@ -5,20 +5,19 @@
     "@franlol/opencode-md-table-formatter@latest",
     "@zenobius/opencode-skillful@latest",
     "@spoons-and-mirrors/subtask2@latest",
-    "@ramarivera/opencode-model-announcer",
-    "opencode-pty",
-    "opencode-antigravity-auth",
-    "opencode-optimal-model-temps",
-    "opencode-gemini-auth",
-    "opencode-anthropic-auth",
-    "opencode-copilot-auth",
-    "opencode-cursor-auth",
-    "opencode-ignore",
-    "opencode-beads",
-    "opencode-agent-skills",
-    "opencode-agent-memory",
-    "@zenobius/opencode-background",
-    "oh-my-opencode-slim"
+    "@ramarivera/opencode-model-announcer@latest",
+    "opencode-pty@latest",
+    "opencode-antigravity-auth@latest",
+    "opencode-optimal-model-temps@latest",
+    "opencode-gemini-auth@latest",
+    "opencode-anthropic-auth@latest",
+    "opencode-copilot-auth@latest",
+    "opencode-cursor-auth@latest",
+    "opencode-ignore@latest",
+    "opencode-agent-skills@latest",
+    "opencode-agent-memory@latest",
+    "@zenobius/opencode-background@latest",
+    "oh-my-opencode-slim@latest"
   ],
   "agent": {
     "explore": {
@@ -153,7 +152,7 @@
   "provider": {
     "zai-coding-plan": {
       "options": {
-        "apiKey": "020288db3e534c428e5d3b11b9302fcf.Fd49ls8nfFNoxc4F"
+        "apiKey": "$Z_AI_API_KEY"
       }
     },
     "cursor": {
