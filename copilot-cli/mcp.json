@@ -56,6 +56,12 @@
       "command": "npx",
       "args": ["-y", "claude-praetorian-mcp"],
       "tools": ["*"]
-    }    
+    },
+    "ast-grep": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@notprolands/ast-grep-mcp"],
+      "tools": ["*"]
+    }
   }
 }
