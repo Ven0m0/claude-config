@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "description": "Code formatting and quality hooks for Ultralytics development",
+  "description": "Code formatting and quality hooks for development",
   "hooks": {
     "PreToolUse": [
       {
@@ -22,14 +22,6 @@
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/load-mcp-skills.sh"
           }
         ]
-      },
-      "matcher": "compact",
-      "hooks": [
-          {
-            "type": "command",
-            "command": "echo 'Reminder: use Bun, not npm and uv, not pip.'"
-          }
-        ]
       }
     ],
     "PostToolUse": [
@@ -42,27 +34,7 @@
           },
           {
             "type": "command",
-            "command": "jq -r '.tool_input.file_path' | xargs bunx biome format --write"
-          },
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/format_python_docstrings.py"
-          },
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/python_code_quality.py"
-          },
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/prettier_formatting.py"
-          },
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/markdown_formatting.py"
-          },
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/bash_formatting.py"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/post-edit-format.py"
           }
         ]
       }
