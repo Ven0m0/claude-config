@@ -4,49 +4,57 @@
 
 - **PreToolUse**: Before tool execution (validation, parameter modification)
 - **PostToolUse**: After tool execution (auto-format, checks)
-- **Stop**: When session ends (final verification)
+- **PreCompact**: Before context compaction (state preservation)
+- **SessionStart**: When session begins (initialization)
 
-## Current Hooks (in ~/.claude/settings.json)
+## Current Hooks
 
 ### PreToolUse
 
-- **tmux reminder**: Suggests tmux for long-running commands (npm, pnpm, yarn, cargo, etc.)
-- **git push review**: Opens Zed for review before push
-- **doc blocker**: Blocks creation of unnecessary .md/.txt files
+- **enforce_rg_over_grep**: Blocks usage of `grep`, suggests `rg` (ripgrep)
+- **quality_gate**: Runs lint and type checks before git commits
+- **context_protector**: Blocks large file reads to protect context window
 
 ### PostToolUse
 
-- **PR creation**: Logs PR URL and GitHub Actions status
-- **Prettier**: Auto-formats JS/TS files after edit
-- **TypeScript check**: Runs tsc after editing .ts/.tsx files
-- **console.log warning**: Warns about console.log in edited files
+- **post-edit-format**: Auto-formats edited files (Python, JS/TS, Rust, Go)
+- **markdown_formatting**: Formats code blocks in markdown files
+- **python_docstrings**: Formats Python docstrings to Google style
 
-### Stop
+### PreCompact
 
-- **console.log audit**: Checks all modified files for console.log before session ends
+- **precompact_context**: Preserves git state and todos before context compaction
 
-## Auto-Accept Permissions
+### SessionStart
 
-Use with caution:
+- **load-mcp-skills**: Loads MCP skills registry into context
 
-- Enable for trusted, well-defined plans
-- Disable for exploratory work
-- Never use dangerously-skip-permissions flag
-- Configure `allowedTools` in `~/.claude.json` instead
+## Configuration
 
-## TodoWrite Best Practices
+Hooks are configured in `~/.claude/settings.json` or project `.claude/hooks/hooks.json`.
 
-Use TodoWrite tool to:
+Example:
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/post-edit-format.py"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
 
-- Track progress on multi-step tasks
-- Verify understanding of instructions
-- Enable real-time steering
-- Show granular implementation steps
+## Best Practices
 
-Todo list reveals:
-
-- Out of order steps
-- Missing items
-- Extra unnecessary items
-- Wrong granularity
-- Misinterpreted requirements
+- PreToolUse hooks should exit with code 2 to block operations
+- PostToolUse hooks should use `systemMessage` for non-blocking notifications
+- Always handle errors gracefully - hooks should not crash Claude
+- Use environment variables like `CLAUDE_PLUGIN_ROOT` for paths

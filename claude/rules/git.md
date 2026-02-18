@@ -1,4 +1,4 @@
-# Git Rules
+# Git
 
 ## Read-Only by Default
 

@@ -1,5 +1,5 @@
 ---
-description: Core development principles and best practices for secure, robust development including constitutional principles, security best practices, verification protocols, debugging approaches, tool usage, workflow management, coding standards, and authoring patterns.
+description: Core development principles and best practices for secure, robust development.
 category: core-principles
 ---
 
@@ -47,7 +47,6 @@ const apiKey = process.env.OPENAI_API_KEY
 ```
 
 ### Input Validation
-
 ```javascript
 // SQL parameterized queries
 const query = 'SELECT * FROM users WHERE id = ?'
@@ -55,24 +54,22 @@ const result = await db.query(query, [userId])
 ```
 
 ### XSS Prevention
-
 ```html
 <!-- Always sanitize user input -->
 <div>{{ userInput }}</div>
 ```
 
 ### Security Headers
-
 ```javascript
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["none'"],
-      styleSrc: ["unsafe-inline'"]
+      scriptSrc: ["'none'"],
+      styleSrc: ["'unsafe-inline'"]
     }
   }
-})
+}))
 ```
 
 ## Testing Requirements
@@ -83,92 +80,18 @@ app.use(helmet({
 - **Integration testing** between components
 - **Error boundary testing** with invalid inputs
 
-### Code Quality Standards
-
-| Principle | Requirement | Example |
-|-----------|-------------|
-| **Error Handling** | Try/catch patterns | `try { riskyOp() } catch (error) { handle(error) { handle(error) }` |
-| **Type Safety** | TypeScript strict mode | `noImplicitAny: true` |
-| **Documentation** | JSDoc for all public APIs | `/** @param {string} */` |
-| **Consistent Style** | Use linter/formatter | `prettier --write` |
-| **Consistent** | Prefer clarity over brevity
-
-## Development Workflow
-
-### Pre-Commit Checklist
-
-- [ ] Code compiles without errors
-- [ ] All tests pass
-- [ ] Security scan passes
-- [ ] Documentation updated
-- [ ] Performance meets requirements
-
-### Git Standards
-
-| Practice | When to Use | Example |
-|-----------|-------------|---------|
-| **Atomic Commits** | One logical change per commit | `git add src/utils.js && git commit -m "Add utility function"` |
-| **Clear Messages** | Descriptive commit messages | `feat: Add user authentication` |
-| **Feature Branches** | Isolated work in branches | `git checkout -b feature/auth` |
-| **Code Review** | All changes require security review before merge |
-
-## Debugging Guidelines
-
-### Systematic Approach
-1. **Reproduce issues** - Minimal test case with specific inputs
-2. **Isolate variables** - Test with only the variables needed for the test
-3. **Check logs** - Review error messages and stack traces
-4. **Use debuggers** - Appropriate debugger for the language
-
-### Error Analysis
-
-| Priority Matrix
-| Priority | Icon | Time Range | Complexity | Example |
-|-----------|-------------|---------|
-| | **Critical** | 🚀 Emergency | System-wide outage, data loss risk | <5 min | Start within 15 min |
-| | **High** | 🟠 Early Response | Wide | < 1 hour | System-wide impact | <30 min | Start within 1 hour |
-| | **Medium** | 🟡 Planned Response | Wide | <2 hours | Major feature outage | Many users affected |
-| | **Low** | 🟢 Monitor | Medium | <1 day | Minor UX impact | <30 min | Next maintenance cycle |
-
-## Code Examples
-
-### Error Types by Priority
-
-| Type | Icon | Time Range | Common Causes | Solutions |
-|-----------|-------------|---------|
-| Syntax Error | 🚨 | <5 min | Missing semicolon | Fix syntax immediately |
-| Logic Error | 🟠 | <10 min | Type mismatch | Check imports and types |
-| Import Error | 🟡 | <10 min | Module not found | `npm install <module>` | Install missing dependency |
-| Reference Error | 🟡 | Wrong file/module path | `import './utils/helper'` | Fix import path or use relative imports |
-| Type Error | 🟢 | <10 min | Invalid type assignment | Fix with explicit typing |
-
-## Performance Guidelines
-
-| Algorithm Complexity
-- **O(n²) vs O(n log n)**: Avoid quadratic algorithms in hot paths
-- Use appropriate data structures (maps, sets for lookups)
-- **Memory Leaks**: Proper cleanup of resources, no circular references
-- **Database Operations**: Use connection pooling, query caching, batch operations
-
-### Testing Standards
-
-- **100% Test Coverage** for critical paths
-- **Security Testing** for all endpoints
-- **Performance Testing** with load testing
-- **Integration Testing** between components
-- **Error Boundary Testing** with invalid inputs
-
 ## Code Quality Standards
 
 | Principle | Requirement | Example |
 |-----------|-------------|---------|
+| **Error Handling** | Try/catch patterns | `try { riskyOp() } catch (error) { handle(error) }` |
 | **Type Safety** | TypeScript strict mode | `noImplicitAny: true` |
 | **Documentation** | JSDoc for all public APIs | `/** @param {string} */` |
 | **Consistent Style** | Use linter/formatter | `prettier --write` |
-| **Consistent** | Prefer clarity over brevity |
-| **Testing** | Comprehensive edge case coverage for security-critical paths |
+| **Clarity** | Prefer clarity over brevity | Use descriptive names |
+| **Testing** | Edge case coverage | Test boundary conditions |
 
-### Development Workflow
+## Development Workflow
 
 ### Pre-Commit Checklist
 - [ ] Code compiles without errors
@@ -180,6 +103,38 @@ app.use(helmet({
 - [ ] Error messages sanitized
 - [ ] No hardcoded secrets
 
+### Git Standards
+| Practice | When to Use | Example |
+|-----------|-------------|---------|
+| **Atomic Commits** | One logical change per commit | `git add src/utils.js && git commit -m "Add utility function"` |
+| **Clear Messages** | Descriptive commit messages | `feat: Add user authentication` |
+| **Feature Branches** | Isolated work in branches | `git checkout -b feature/auth` |
+| **Code Review** | All changes require review before merge | Required for main branch |
+
+## Debugging Guidelines
+
+### Systematic Approach
+1. **Reproduce issues** - Minimal test case with specific inputs
+2. **Isolate variables** - Test with only the variables needed
+3. **Check logs** - Review error messages and stack traces
+4. **Use debuggers** - Appropriate debugger for the language
+5. **Document findings** - Record solutions for future reference
+
+### Error Analysis Priority
+| Priority | Time Range | Example |
+|----------|------------|---------|
+| **Critical** | <5 min | System-wide outage, data loss risk |
+| **High** | <1 hour | Major feature outage, many users affected |
+| **Medium** | <2 hours | Significant UX impact |
+| **Low** | <1 day | Minor UX impact, next maintenance cycle |
+
+## Performance Guidelines
+
+- **Algorithm Complexity**: Avoid O(n²) algorithms in hot paths, prefer O(n log n)
+- **Data Structures**: Use appropriate structures (maps, sets for lookups)
+- **Memory Leaks**: Proper cleanup of resources, no circular references
+- **Database Operations**: Use connection pooling, query caching, batch operations
+
 ## Incident Response
 
 1. **STOP** - Immediately halt deployment if critical issue found
@@ -189,28 +144,11 @@ app.use(helmet({
 5. **Document** - Document findings and prevention measures
 
 ### Code Review Checklist
-
 - [ ] Security implications considered
 - [ ] Performance impact assessed
 - [ ] Documentation requirements met
 - [ ] Tests passing
 - [ ] Code quality improved
-- [ ] Performance optimized
-
-## Debugging Guidelines
-
-### Systematic Approach
-1. Reproduce issues consistently
-2. Isolate variables and changes
-3. Check logs and traces
-4. Use debuggers effectively
-5. Document findings and solutions
-
-### Learning Organization
-
-### Post-Development
-- Share security lessons with team
-- Update coding standards based on findings
 
 ## Tools and Resources
 
@@ -227,12 +165,6 @@ app.use(helmet({
 
 ## Documentation Standards
 
-### API Documentation Format
 - OpenAPI/Swagger with comprehensive examples
 - JSDoc for all public APIs
 - Markdown with clear examples and edge cases
-
-## Development Standards
-
-- ### Core Principles
-- Security is everyone's responsibility.*
