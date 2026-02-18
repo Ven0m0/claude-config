@@ -123,7 +123,7 @@ docker images app-name:latest
 # Optimized for production: ~150MB final image
 
 # Stage 1: Build environment
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
@@ -140,7 +140,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Production environment
-FROM node:20-alpine AS production
+FROM node:24-alpine AS production
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
@@ -206,7 +206,7 @@ coverage
 # Optimized Dockerfile for Python Flask API
 # Production-ready: ~120MB final image
 
-FROM python:3.11-slim AS production
+FROM python:3.14-slim AS production
 
 # Prevent Python from buffering stdout/stderr
 ENV PYTHONUNBUFFERED=1 \
@@ -283,7 +283,7 @@ htmlcov
 # Produces tiny static binary: ~10-15MB
 
 # Stage 1: Build environment
-FROM golang:1.21-alpine AS builder
+FROM golang:1.26-alpine AS builder
 
 WORKDIR /app
 
