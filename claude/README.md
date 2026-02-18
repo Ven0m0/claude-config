@@ -58,14 +58,14 @@ The `env-setup.sh` script is sourced before each Bash command, making environmen
 | Doc | Purpose |
 |-----|---------|
 | [docs/progressive-disclosure.md](docs/progressive-disclosure.md) | Content architecture (quick ref, implementation, advanced) |
-| [docs/prompt-caching.md](docs/prompt-caching.md) | Prompt caching behavior and usage |
 | [docs/prompt-best-practices.md](docs/prompt-best-practices.md) | Prompt design best practices |
-| [docs/skills-ref.md](docs/skills-ref.md) | Skills reference and index |
+| [docs/skills-index.md](docs/skills-index.md) | Concise skills reference (33 skills) |
 | [docs/toon.md](docs/toon.md) | TOON format and token-efficient data |
 | [docs/claude-md-guide.md](docs/claude-md-guide.md) | CLAUDE.md authoring best practices and scoring rubric |
-| [docs/claude-code-settings.md](docs/claude-code-settings.md) | Settings, permissions, and plugin reference |
 
 Start with `CLAUDE.md` (points to `AGENTS.md`) for project-wide rules and agent orchestration.
+
+> **Note:** Removed copies of official Anthropic docs. See [code.claude.com/docs](https://code.claude.com/docs) for official documentation on settings, subagents, MCP, and prompt caching.
 
 ### Agent and skill optimization
 
@@ -77,7 +77,6 @@ Start with `CLAUDE.md` (points to `AGENTS.md`) for project-wide rules and agent 
 | Skill definitions and validation | **skill-auditor** |
 | Optimize skills for token efficiency | **skill-optimizer** skill |
 | Doc token analysis and restructuring | **llm-docs-optimizer** skill |
-| Standardize markdown creation/updates | **manage-markdown-docs** skill |
 | Tool substitution (fd, rg, bun, uv) | **modern-tool-substitution** skill |
 | Hook config and lifecycle | **hooks-configuration** skill |
 
@@ -89,9 +88,8 @@ See [AGENTS.md](AGENTS.md) for the full agent table and when to delegate.
 |----------|----------|
 | Choose ZON/TOON/PLOON for data dirs | **toon-formatter** skill |
 | Encode/validate TOON | **toon-formatter** skill; [scripts/validate-toon.py](scripts/validate-toon.py) |
-| TOON spec and agent handoffs | **ref-toon-format**, **use-toon** skills |
-| Context/token budget | **context-manager** agent; **strategic-compact**, **moai-foundation-context** skills |
-| Model params by task type | [docs/llm-tuning.md](docs/llm-tuning.md), **llm-tuning-patterns** skill |
+| Context/token budget | **strategic-compact** skill, **moai** skill |
+| Model params by task type | [docs/llm-tuning.md](docs/llm-tuning.md) |
 
 See [docs/toon.md](docs/toon.md) and [AGENTS.md](AGENTS.md) (Workflow and doc optimization).
 
@@ -106,9 +104,9 @@ claude/
 ├── commands/             # Command macros
 ├── hooks/                # Auto-format, lint, MCP load hooks
 ├── agents/               # Specialized agents (see AGENTS.md)
-├── skills/               # Skill extensions (see docs/skills-ref.md)
+├── skills/               # 33 consolidated skill extensions
 ├── rules/                # Rules and workflow
-├── docs/                 # Reference docs (above)
+├── docs/                 # Reference docs (14 files)
 ├── workflows/            # CLAUDE.md workflows (audit, create, optimize)
 └── scripts/              # Utilities (analyze-claude-md, validate-toon, etc.)
 ```
@@ -166,8 +164,23 @@ Modern tools enforced:
 | Hooks       | 8 files            | 4 files           | **50%**   |
 | Settings    | 137 lines, invalid | ~100 lines, valid | **27%**   |
 | Permissions | 45 entries         | 20 entries        | **56%**   |
+| Skills      | 60 directories     | 33 directories    | **45%**   |
+| Docs        | 20 files (~320KB)  | 14 files (~120KB) | **63%**   |
 
-**Total config size reduction: ~50%**
+**Total config size reduction: ~55%**
+
+### Recent Consolidation (2026-02-18)
+
+**Skills (60 → 33):**
+- Merged TOON skills: `use-toon`, `toon-formatter`, `ref-toon-format` → `toon-formatter`
+- Merged MoAI skills: `moai`, `moai-foundation-claude`, `moai-foundation-context` → `moai`
+- Merged MCP skills: `mcp-builder`, `mcp-tools-as-code`, `mcp-to-skill-converter` → `mcp-builder`
+- Removed minimal/redundant skills: 26 directories
+
+**Docs (20 → 14):**
+- Removed official doc copies: `claude-code-settings.md` (105KB), `prompt-caching.md` (78KB), `skills-ref.md` (33KB), `subagents.md` (34KB), `mcp.md` (43KB), `best-practices-claude.md` (36KB)
+- Merged: `best-practices-skills.md` → `claude-md-guide.md`
+- Created: `skills-index.md` (concise skill reference)
 
 ## Maintenance
 

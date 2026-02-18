@@ -130,3 +130,36 @@ npm run test:e2e      # E2E tests with Playwright
 - [ ] Uses progressive disclosure
 - [ ] References actual files
 - [ ] No invented features
+
+---
+
+## Skill Best Practices
+
+### For Users
+
+**Activation:**
+- Use clear trigger phrases matching skill descriptions
+- Provide sufficient context (file paths, scope, constraints)
+- Check allowed-tools in frontmatter
+
+**Workflow:**
+- Start simple, build up to complex
+- Verify each step before proceeding
+
+### For Developers
+
+**Development Guidelines:**
+- Include explicit trigger phrases in descriptions
+- Use minimal necessary tools
+- Document security implications
+- Provide usage examples
+
+**Performance:**
+- Scope skills to specific domains
+- Keep descriptions under 1024 chars
+- Avoid overlapping trigger phrases
+
+**Security:**
+- Never include secrets in skill files
+- Validate all inputs
+- Use read-only tools when possible
