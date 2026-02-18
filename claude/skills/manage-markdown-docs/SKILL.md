@@ -1,6 +1,7 @@
 ---
 name: manage-markdown-docs
 description: Standardize markdown document creation and updates with proper headers and footers. Use when creating OR updating any markdown file that is NOT a subagent, command, or skill definition. Ensures consistent metadata, classification, and change tracking.
+user-invocable: true
 ---
 
 <objective>
