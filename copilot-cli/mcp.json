@@ -14,6 +14,12 @@
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
       "tools": ["*"]
     },
+    "coding-thinker": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "mcp-coding-thinker"],
+      "tools": ["*"]
+    },
     "read-website": {
       "type": "stdio",
       "command": "npx",
