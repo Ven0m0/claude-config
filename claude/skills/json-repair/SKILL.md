@@ -8,6 +8,7 @@ description: >
   JSON. Also use when the user mentions "json repair", "fix json", "malformed json",
   "invalid json from LLM", or needs to robustly parse JSON that may have missing
   quotes, trailing commas, unescaped characters, or other common LLM output defects.
+user-invocable: false
 disable-model-invocation: false
 ---
 
