@@ -2,6 +2,7 @@
 name: agent-orchestration-rules
 description: Rules for background agent execution - no polling, no TaskOutput, trust system reminders
 user-invocable: false
+disable-model-invocation: false
 ---
 
 # Agent Orchestration Rules
