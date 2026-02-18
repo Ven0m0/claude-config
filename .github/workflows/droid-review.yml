@@ -50,7 +50,7 @@ jobs:
           tracking_comment_id: ${{ needs.prepare.outputs.comment_id }}
           output_file: ${{ runner.temp }}/code-review-results.json
       - name: Upload Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: code-review-results
           path: ${{ runner.temp }}/code-review-results.json
@@ -78,7 +78,7 @@ jobs:
           security_severity_threshold: medium
           output_file: ${{ runner.temp }}/security-results.json
       - name: Upload Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: security-results
           path: ${{ runner.temp }}/security-results.json
@@ -103,13 +103,13 @@ jobs:
         with:
           fetch-depth: 1
       - name: Download Code Review Results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: code-review-results
           path: ${{ runner.temp }}
         continue-on-error: true
       - name: Download Security Results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: security-results
           path: ${{ runner.temp }}
