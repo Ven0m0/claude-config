@@ -2,6 +2,9 @@ name: Droid Auto Review
 on:
   pull_request:
     types: [opened, ready_for_review, reopened]
+concurrency:
+  group: droid-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 jobs:
   prepare:
     if: github.event.pull_request.draft == false
