@@ -20,15 +20,9 @@
       "args": ["-y", "@just-every/mcp-read-website-fast"],
       "tools": ["*"]
     },
-    "think-tool": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "think-tool-mcp"],
-      "tools": ["*"]
-    },
     "exa": {
       "type": "http",
-      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa,deep_researcher_start,deep_researcher_check",
+      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
       "tools": ["*"]
     },
     "context7": {
