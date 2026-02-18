@@ -3,7 +3,6 @@
     "github-mcp-server": {
       "type": "http",
       "url": "https://api.githubcopilot.com/mcp/insiders",
-      "tools": ["*"],
       "headers": {
         "X-MCP-Toolsets": "repos,issues,users,pull_requests,actions,web_search"
       }
@@ -11,14 +10,12 @@
     "sequential-thinking": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
-      "tools": ["*"]
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     },
     "coding-thinker": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "mcp-coding-thinker"],
-      "tools": ["*"]
+      "args": ["-y", "mcp-coding-thinker"]
     },
     "read-website": {
       "type": "stdio",
