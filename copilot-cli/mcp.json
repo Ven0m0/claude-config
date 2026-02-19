@@ -36,18 +36,6 @@
         "CONTEXT7_API_KEY": "$CONTEXT7_API_KEY"
       }
     },
-    "code-mode-toon": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "code-mode-toon"],
-      "tools": ["*"]
-    },
-    "praetorian-opt": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "claude-praetorian-mcp"],
-      "tools": ["*"]
-    },
     "grepika": {
       "type": "stdio",
       "command": "npx",
