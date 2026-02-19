@@ -14,8 +14,8 @@ def check_prettier_version() -> bool:
                                 capture_output=True, text=True, check=False, timeout=5)
         if result.returncode == 0:
             version = result.stdout.strip()
-            if "3.6.2" not in version:
-                print(f"⚠️  Prettier version mismatch: expected 3.6.2, found {version}")
+            if EXPECTED_PRETTIER_VERSION not in version:
+                print(f"⚠️  Prettier version mismatch: expected {EXPECTED_PRETTIER_VERSION}, found {version}")
             return True
     except Exception:
         pass
