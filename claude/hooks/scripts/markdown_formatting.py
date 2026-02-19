@@ -3,23 +3,8 @@
 
 import hashlib
 import json
-import re
-import subprocess
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
-
-# Import shared utilities and bash formatting logic
-try:
-    from utils import check_prettier_version
-    from bash_formatting import format_bash_with_prettier
-except ImportError:
-    # Fallback for package execution or different cwd
-    from .utils import check_prettier_version
-    from .bash_formatting import format_bash_with_prettier
-
-PYTHON_BLOCK_PATTERN = r"(?P<indentation>[ ]*)```python\n(?P<code>.*?)```"
-BASH_BLOCK_PATTERN = r"(?P<indentation>[ ]*)```bash\n(?P<code>.*?)```"
+PYTHON_BLOCK_PATTERN = r"^(?P<indentation> *)```(?:python|py|\{[ ]*\.py[ ]*\.annotate[ ]*\})\n(?P<code>.*?)\n(?P=indentation)```"
+BASH_BLOCK_PATTERN = r"^(?P<indentation> *)```(?:bash|sh|shell)\n(?P<code>.*?)\n(?P=indentation)```"
 
 LANGUAGE_TAGS = {
     "python": ["python", "py", "{ .py .annotate }"],
