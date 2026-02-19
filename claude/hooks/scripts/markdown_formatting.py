@@ -22,8 +22,8 @@ PYTHON_BLOCK_PATTERN = r"(?P<indentation>[ ]*)```python\n(?P<code>.*?)```"
 BASH_BLOCK_PATTERN = r"(?P<indentation>[ ]*)```bash\n(?P<code>.*?)```"
 
 LANGUAGE_TAGS = {
-    "python": ["python", "py"],
-    "bash": ["bash", "sh"],
+    "python": ["python", "py", "{ .py .annotate }"],
+    "bash": ["bash", "sh", "shell"],
 }
 
 
