@@ -3,6 +3,7 @@
     "github-mcp-server": {
       "type": "http",
       "url": "https://api.githubcopilot.com/mcp/insiders",
+      "tools": ["*"],
       "headers": {
         "X-MCP-Toolsets": "repos,issues,users,pull_requests,actions,web_search"
       }
@@ -10,16 +11,19 @@
     "sequential-thinking": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "tools": ["*"]
     },
     "coding-thinker": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "mcp-coding-thinker"]
+      "args": ["-y", "mcp-coding-thinker"],
+      "tools": ["*"]
     },
     "exa": {
       "type": "http",
       "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
+      "tools": ["*"],
       "headers": {
         "EXA_API_KEY": "$EXA_API_KEY"
       }
@@ -27,6 +31,7 @@
     "context7": {
       "type": "http",
       "url": "https://mcp.context7.com/mcp",
+      "tools": ["*"],
       "headers": {
         "CONTEXT7_API_KEY": "$CONTEXT7_API_KEY"
       }
@@ -35,33 +40,49 @@
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "code-mode-toon"],
+      "tools": ["*"]
     },
     "praetorian-opt": {
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "claude-praetorian-mcp"],
+      "tools": ["*"]
     },
     "grepika": {
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@agentika/grepika", "--mcp"],
+      "tools": ["*"]
     },
     "ast-grep": {
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@notprolands/ast-grep-mcp"],
+      "tools": ["*"]
     },
     "pare-python": {
+      "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@paretools/python"]
+      "args": ["-y", "@paretools/python"],
+      "tools": ["*"]
     },
     "pare-lint": {
+      "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@paretools/lint"]
+      "args": ["-y", "@paretools/lint"],
+      "tools": ["*"]
     },
     "pare-search": {
+      "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@paretools/search"]
+      "args": ["-y", "@paretools/search"],
+      "tools": ["*"]
+    },
+    "pare-cargo": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@paretools/cargo"],
+      "tools": ["*"]
     }
   }
 }
