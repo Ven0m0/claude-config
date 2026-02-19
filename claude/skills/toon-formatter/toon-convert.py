@@ -172,14 +172,22 @@ def main():
     )
     a = p.parse_args()
     delim = {"comma": ",", "tab": "\t", "pipe": "|"}[a.delimiter]
-    data = json.load(open(a.input) if a.input else sys.stdin)
+    if a.input:
+        with open(a.input) as inp:
+            data = json.load(inp)
+    else:
+        data = json.load(sys.stdin)
     result = enc(data, a.indent, delim)
-    out = open(a.output, "w") if a.output else sys.stdout
-    out.write(result)
-    if result and not result.endswith("\n"):
-        out.write("\n")
     if a.output:
-        out.close()
+        with open(a.output, "w") as out:
+            out.write(result)
+            if result and not result.endswith("\n"):
+                out.write("\n")
+    else:
+        out = sys.stdout
+        out.write(result)
+        if result and not result.endswith("\n"):
+            out.write("\n")
 
 
 if __name__ == "__main__":
