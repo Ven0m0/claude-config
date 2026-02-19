@@ -1,40 +1,30 @@
 #!/usr/bin/env python3
-"""
-PostToolUse hook: Format Markdown files and embedded code blocks.
-Inspired by https://github.com/ultralytics/actions/blob/main/actions/update_markdown_code_blocks.py
-"""
-
-from __future__ import annotations
+"""Format embedded Python/Bash blocks in markdown files and run Prettier."""
 
 import hashlib
 import json
 import re
-import shutil
 import subprocess
 import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-PYTHON_BLOCK_PATTERN = r"^( *)```(?:python|py|\{[ ]*\.py[ ]*\.annotate[ ]*\})\n(.*?)\n\1```"
-BASH_BLOCK_PATTERN = r"^( *)```(?:bash|sh|shell)\n(.*?)\n\1```"
-LANGUAGE_TAGS = {"python": ["python", "py", "{ .py .annotate }"], "bash": ["bash", "sh", "shell"]}
+# Import shared utilities and bash formatting logic
+try:
+    from utils import check_prettier_version
+    from bash_formatting import format_bash_with_prettier
+except ImportError:
+    # Fallback for package execution or different cwd
+    from .utils import check_prettier_version
+    from .bash_formatting import format_bash_with_prettier
 
+PYTHON_BLOCK_PATTERN = r"(?P<indentation>[ ]*)```python\n(?P<code>.*?)```"
+BASH_BLOCK_PATTERN = r"(?P<indentation>[ ]*)```bash\n(?P<code>.*?)```"
 
-def check_prettier_version() -> bool:
-    """Check if prettier is installed and warn if version differs from 3.6.2."""
-    if not shutil.which("npx"):
-        return False
-    try:
-        result = subprocess.run(["npx", "prettier", "--version"],
-                                capture_output=True, text=True, check=False, timeout=5)
-        if result.returncode == 0:
-            version = result.stdout.strip()
-            if "3.6.2" not in version:
-                print(f"⚠️  Prettier version mismatch: expected 3.6.2, found {version}")
-            return True
-    except Exception:
-        pass
-    return False
+LANGUAGE_TAGS = {
+    "python": ["python", "py"],
+    "bash": ["bash", "sh"],
+}
 
 
 def extract_code_blocks(markdown_content: str) -> dict[str, list[tuple[str, str]]]:
@@ -109,28 +99,6 @@ def format_code_with_ruff(temp_dir: Path) -> None:
         print("Completed ruff check ✅")
     except Exception as exc:
         print(f"ERROR running ruff check ❌ {exc}")
-
-
-def format_bash_with_prettier(temp_dir: Path) -> None:
-    """Format Bash files in a temporary directory with prettier-plugin-sh.
-
-    Args:
-        temp_dir (Path): Directory containing extracted Bash blocks.
-    """
-    try:
-        result = subprocess.run(
-            "npx prettier --write --print-width 120 --plugin=$(npm root -g)/prettier-plugin-sh/lib/index.cjs ./**/*.sh",
-            shell=True,
-            capture_output=True,
-            text=True,
-            cwd=temp_dir,
-        )
-        if result.returncode != 0:
-            print(f"ERROR running prettier-plugin-sh ❌ {result.stderr}")
-        else:
-            print("Completed bash formatting ✅")
-    except Exception as exc:
-        print(f"ERROR running prettier-plugin-sh ❌ {exc}")
 
 
 def generate_temp_filename(file_path: Path, index: int, code_type: str) -> str:
