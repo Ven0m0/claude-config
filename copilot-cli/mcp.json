@@ -17,48 +17,51 @@
       "command": "npx",
       "args": ["-y", "mcp-coding-thinker"]
     },
-    "read-website": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@just-every/mcp-read-website-fast"],
-      "tools": ["*"]
-    },
     "exa": {
       "type": "http",
       "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
-      "tools": ["*"]
+      "headers": {
+        "EXA_API_KEY": "$EXA_API_KEY"
+      }
     },
     "context7": {
       "type": "http",
       "url": "https://mcp.context7.com/mcp",
-      "tools": ["*"],
       "headers": {
         "CONTEXT7_API_KEY": "$CONTEXT7_API_KEY"
       }
-    },
-    "fast-filesystem-mcp": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "fast-filesystem-mcp"],
-      "tools": ["*"]
     },
     "code-mode-toon": {
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "code-mode-toon"],
-      "tools": ["*"]
     },
     "praetorian-opt": {
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "claude-praetorian-mcp"],
-      "tools": ["*"]
+    },
+    "grepika": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@agentika/grepika", "--mcp"],
     },
     "ast-grep": {
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@notprolands/ast-grep-mcp"],
-      "tools": ["*"]
+    },
+    "pare-python": {
+      "command": "npx",
+      "args": ["-y", "@paretools/python"]
+    },
+    "pare-lint": {
+      "command": "npx",
+      "args": ["-y", "@paretools/lint"]
+    },
+    "pare-search": {
+      "command": "npx",
+      "args": ["-y", "@paretools/search"]
     }
   }
 }
