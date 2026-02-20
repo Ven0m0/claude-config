@@ -40,6 +40,6 @@ jobs:
           prompt: |
             /review-pr-ci ${{ steps.pr-number.outputs.number }}
           claude_args: |
-            --allowedTools "SlashCommand,Task,Bash(gh:*),Bash(git:*),Read,Glob,Grep"
+            --allowedTools "SlashCommand,Task,Bash(gh:*),Bash(git:*),Read,Glob,Grep,WebFetch"
         env:
           PR_NUMBER: ${{ steps.pr-number.outputs.number }}
