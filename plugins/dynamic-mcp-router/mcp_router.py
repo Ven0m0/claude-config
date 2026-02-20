@@ -288,23 +288,21 @@ class ConfigManager:
         self._last_check = current_time
 
         try:
-            def _check_config_file() -> tuple[str | None, float]:
-                try:
-                    stat = os.stat(self.config_path)
-                    if stat.st_mtime == self._last_mtime:
-                        return None, stat.st_mtime
-
-                    with open(self.config_path, 'rb') as f:
-                        content_bytes = f.read()
-                        stat = os.fstat(f.fileno())
-                    return self._compute_hash(content_bytes.decode(errors='ignore')), stat.st_mtime
-                except OSError:
-                    return None, 0
-
-            new_hash, new_mtime = await asyncio.to_thread(_check_config_file)
-
-            if new_hash is None:
+            try:
+                stat = os.stat(self.config_path)
+            except OSError:
                 return False
+
+            if stat.st_mtime == self._last_mtime:
+                return False
+
+            def _read_and_hash() -> tuple[str, float]:
+                with open(self.config_path, "rb") as f:
+                    content_bytes = f.read()
+                    new_stat = os.fstat(f.fileno())
+                return self._compute_hash(content_bytes.decode(errors="ignore")), new_stat.st_mtime
+
+            new_hash, new_mtime = await asyncio.to_thread(_read_and_hash)
 
             self._last_mtime = new_mtime
             if new_hash != self._config_hash:
