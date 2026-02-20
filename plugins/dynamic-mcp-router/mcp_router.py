@@ -280,7 +280,7 @@ class ConfigManager:
         return config
 
     async def has_changed(self) -> bool:
-        if not self.config_path or not Path(self.config_path).exists():
+        if not self.config_path:
             return False
         current_time = time.time()
         if current_time - self._last_check < self._check_interval:
