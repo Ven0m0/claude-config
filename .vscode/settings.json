@@ -1,4 +1,12 @@
 {
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit",
+    "source.fixAll.oxc": "explicit"
+  }
   "[javascript]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
@@ -11,27 +19,8 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
-  "[json]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "[css]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "[graphql]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
   "typescript.tsdk": "node_modules/typescript/lib",
-  "editor.formatOnSave": true,
-  "editor.formatOnPaste": true,
   "emmet.showExpandedAbbreviation": "never",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.biome": "explicit",
-    "source.organizeImports.biome": "explicit",
-    "source.fixAll.oxc": "explicit"
-  },
   "[yaml]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
@@ -55,5 +44,28 @@
   },
   "[markdown]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
-  }
+  },
+    "chat.agent.codeBlockProgress": false,
+    "chat.agent.thinkingStyle": "collapsedPreview",
+    "chat.allowAnonymousAccess": true,
+    "chat.alternativeToolAction.enabled": true,
+    "chat.customAgentInSubagent.enabled": true,
+    "chat.disableAIFeatures": false,
+    "chat.editor.fontFamily": "JetBrains Mono",
+    "chat.editor.fontSize": 13,
+    "chat.experimental.useSkillAdherencePrompt": true,
+    "chat.fontFamily": "JetBrains Mono",
+    "chat.includeReferencedInstructions": true,
+    "chat.mcp.assisted.nuget.enabled": true,
+    "chat.mcp.discovery.enabled": {
+        "cursor-global": true,
+        "cursor-workspace": true,
+        "claude-desktop": true
+    },
+    "chat.mcp.gallery.enabled": true,
+    "chat.tools.terminal.autoReplyToPrompts": true,
+    "chat.unifiedAgentsBar.enabled": true,
+    "chat.useClaudeHooks": true,
+    "inlineChat.enableV2": true,
+    "inlineChat.notebookAgent": true,
 }
