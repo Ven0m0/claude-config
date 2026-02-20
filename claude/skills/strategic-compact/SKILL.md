@@ -1,39 +1,38 @@
 ---
 name: compacting-context-strategically
-description: Suggests manual /compact at strategic workflow points to preserve context through task phases. Use when approaching context limits, completing major milestones, or before context shifts. Triggers include high tool call counts, after planning phases, or before major implementation work.
+description: |
+  Suggests manual /compact at strategic workflow points to preserve context through
+  task phases. Use when approaching context limits, completing major milestones,
+  or before context shifts. Triggers include high tool call counts, after planning
+  phases, or before major implementation work.
 allowed-tools: Read
 user-invocable: true
 ---
 
 # Strategic Compact Skill
 
-Suggests manual `/compact` at strategic points in your workflow rather than relying on arbitrary auto-compaction.
+Suggests manual `/compact` at strategic workflow points rather than relying on arbitrary auto-compaction.
 
 ## Why Strategic Compaction?
 
-Auto-compaction triggers at arbitrary points:
+Auto-compaction triggers at arbitrary points, often mid-task, losing important context. Strategic compaction at logical boundaries preserves what matters:
 
-- Often mid-task, losing important context
-- No awareness of logical task boundaries
-- Can interrupt complex multi-step operations
-
-Strategic compaction at logical boundaries:
-
-- **After exploration, before execution** - Compact research context, keep implementation plan
-- **After completing a milestone** - Fresh start for next phase
-- **Before major context shifts** - Clear exploration context before different task
+| Timing | Benefit |
+|--------|---------|
+| After exploration, before execution | Compact research context, keep implementation plan |
+| After completing a milestone | Fresh start for next phase |
+| Before major context shifts | Clear exploration context before different task |
 
 ## How It Works
 
 The `suggest-compact.sh` script runs on PreToolUse (Edit/Write) and:
-
-1. **Tracks tool calls** - Counts tool invocations in session
-1. **Threshold detection** - Suggests at configurable threshold (default: 50 calls)
-1. **Periodic reminders** - Reminds every 25 calls after threshold
+1. Tracks tool call invocations in session
+2. Suggests at configurable threshold (default: 50 calls)
+3. Reminds every 25 calls after threshold
 
 ## Hook Setup
 
-Add to your `~/.claude/settings.json`:
+Add to `~/.claude/settings.json`:
 
 ```json
 {
@@ -52,17 +51,13 @@ Add to your `~/.claude/settings.json`:
 ## Configuration
 
 Environment variables:
-
 - `COMPACT_THRESHOLD` - Tool calls before first suggestion (default: 50)
 
 ## Best Practices
 
-1. **Compact after planning** - Once plan is finalized, compact to start fresh
-1. **Compact after debugging** - Clear error-resolution context before continuing
-1. **Don't compact mid-implementation** - Preserve context for related changes
-1. **Read the suggestion** - The hook tells you *when*, you decide *if*
-
-## Related
-
-- [The Longform Guide](https://x.com/affaanmustafa/status/2014040193557471352) - Token optimization section
-- Memory persistence hooks - For state that survives compaction
+<guidelines>
+- Compact after planning: once plan is finalized, compact to start fresh
+- Compact after debugging: clear error-resolution context before continuing
+- Do not compact mid-implementation: preserve context for related changes
+- Read the suggestion: the hook tells you when, you decide if
+</guidelines>
