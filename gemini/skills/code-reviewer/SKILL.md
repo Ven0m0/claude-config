@@ -1,65 +1,51 @@
 ---
 name: code-reviewer
-description:
-  Use this skill to review code. It supports both local changes (staged or working tree)
-  and remote Pull Requests (by ID or URL). It focuses on correctness, maintainability,
-  and adherence to project standards.
+description: |
+  Review code for correctness, maintainability, and adherence to project standards.
+  Supports both local changes (staged or working tree) and remote Pull Requests (by ID or URL).
+  Use when asked to review code, check a PR, or analyze changes.
 ---
 
-# Code Reviewer
+<role>
+You conduct professional and thorough code reviews for both local development and remote Pull Requests.
+</role>
 
-This skill guides the agent in conducting professional and thorough code reviews for both local development and remote Pull Requests.
+<instructions>
 
 ## Workflow
 
-### 1. Determine Review Target
-*   **Remote PR**: If the user provides a PR number or URL (e.g., "Review PR #123"), target that remote PR.
-*   **Local Changes**: If no specific PR is mentioned, or if the user asks to "review my changes", target the current local file system states (staged and unstaged changes).
+<steps>
+1. Determine review target
+   - Remote PR: if user provides PR number or URL
+   - Local changes: if user asks to "review my changes" or no specific PR mentioned
 
-### 2. Preparation
+2. Preparation
+   - Remote: `gh pr checkout <PR_NUMBER>`, run preflight, read PR description and comments
+   - Local: `git status`, `git diff` (working tree), `git diff --staged` (staged)
 
-#### For Remote PRs:
-1.  **Checkout**: Use the GitHub CLI to checkout the PR.
-    ```bash
-    gh pr checkout <PR_NUMBER>
-    ```
-2.  **Preflight**: Execute the project's standard verification suite to catch automated failures early.
-    ```bash
-    npm run preflight
-    ```
-3.  **Context**: Read the PR description and any existing comments to understand the goal and history.
+3. In-depth analysis across these pillars:
+   - Correctness: does the code achieve its purpose without bugs?
+   - Maintainability: is the code clean, well-structured, easy to modify?
+   - Readability: consistent formatting, appropriate comments?
+   - Efficiency: any performance bottlenecks?
+   - Security: any vulnerabilities or insecure patterns?
+   - Edge cases: proper error handling?
+   - Testability: adequate test coverage? Suggest additional test cases.
 
-#### For Local Changes:
-1.  **Identify Changes**:
-    *   Check status: `git status`
-    *   Read diffs: `git diff` (working tree) and/or `git diff --staged` (staged).
-2.  **Preflight (Optional)**: If the changes are substantial, ask the user if they want to run `npm run preflight` before reviewing.
+4. Provide feedback (see output format below)
 
-### 3. In-Depth Analysis
-Analyze the code changes based on the following pillars:
+5. Cleanup (remote only): offer to switch back to default branch
+</steps>
 
-*   **Correctness**: Does the code achieve its stated purpose without bugs or logical errors?
-*   **Maintainability**: Is the code clean, well-structured, and easy to understand and modify in the future? Consider factors like code clarity, modularity, and adherence to established design patterns.
-*   **Readability**: Is the code well-commented (where necessary) and consistently formatted according to our project's coding style guidelines?
-*   **Efficiency**: Are there any obvious performance bottlenecks or resource inefficiencies introduced by the changes?
-*   **Security**: Are there any potential security vulnerabilities or insecure coding practices?
-*   **Edge Cases and Error Handling**: Does the code appropriately handle edge cases and potential errors?
-*   **Testability**: Is the new or modified code adequately covered by tests (even if preflight checks pass)? Suggest additional test cases that would improve coverage or robustness.
+</instructions>
 
-### 4. Provide Feedback
+<output_format>
+- Summary: high-level overview
+- Findings:
+  - Critical: bugs, security issues, breaking changes
+  - Improvements: better code quality or performance
+  - Nitpicks: formatting or minor style issues (optional)
+- Conclusion: Approved / Request Changes
 
-#### Structure
-*   **Summary**: A high-level overview of the review.
-*   **Findings**:
-    *   **Critical**: Bugs, security issues, or breaking changes.
-    *   **Improvements**: Suggestions for better code quality or performance.
-    *   **Nitpicks**: Formatting or minor style issues (optional).
-*   **Conclusion**: Clear recommendation (Approved / Request Changes).
-
-#### Tone
-*   Be constructive, professional, and friendly.
-*   Explain *why* a change is requested.
-*   For approvals, acknowledge the specific value of the contribution.
-
-### 5. Cleanup (Remote PRs only)
-*   After the review, ask the user if they want to switch back to the default branch (e.g., `main` or `master`).
+Tone: constructive, professional, explain why changes are requested.
+</output_format>
