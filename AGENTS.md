@@ -250,33 +250,19 @@ yamllint .github/workflows/*.yml
 
 ### Tool Preferences
 
-**CRITICAL - Always use these tools in order of preference:**
+Use these tools in order of preference:
 
-**File Search:**
-1. `fd` (fast find alternative)
-2. `find` (fallback)
+| Category | Preferred | Fallback |
+|----------|-----------|----------|
+| File Search | `fd` | `find` |
+| Text Search | `rg` (ripgrep) | (grep blocked by hook) |
+| Code Structure | `ast-grep`, LSP tools | - |
+| File Listing | `eza` | `ls` |
+| Data Processing | `jq` (JSON), `yq` (YAML) | - |
 
-**Text Search:**
-1. `rg` (ripgrep - MANDATORY for code search)
-2. Never use `grep` - enforced by hook
-
-**Code Structure:**
-1. `ast-grep` - Pattern-based AST search
-2. LSP tools - For symbol navigation (MANDATORY)
-
-**File Listing:**
-1. `eza` - Modern ls alternative
-2. `ls` (fallback)
-
-**Data Manipulation:**
-1. `jq` - JSON processing
-2. `yq` - YAML processing
-
-**LSP Enforcement (CRITICAL):**
-- MUST use LSP for code navigation before edits
-- NEVER use text search for finding symbols
-- Use `go-to-definition`, `find-references`, `find-implementations`
-- Validate with LSP before making changes
+<lsp_enforcement>
+Use LSP for code navigation before edits: go-to-definition, find-references, find-implementations. Validate with LSP before making changes. Use text search (rg) only for literal strings, TODOs, and config values.
+</lsp_enforcement>
 
 ### Git Conventions
 
@@ -693,28 +679,23 @@ git commit -m "docs: update agent configuration"
 
 This configuration ecosystem is production-ready and actively maintained with emphasis on token efficiency, code quality, security, and automation.
 
-## Landing the Plane (Session Completion)
+## Session Completion
 
-**When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.
+<session_completion>
+When ending a work session, complete all steps below. Work is not complete until `git push` succeeds.
 
-**MANDATORY WORKFLOW:**
-
-1. **File issues for remaining work** - Create issues for anything that needs follow-up
-2. **Run quality gates** (if code changed) - Tests, linters, builds
-3. **Update issue status** - Close finished work, update in-progress items
-4. **PUSH TO REMOTE** - This is MANDATORY:
+1. File issues for remaining work
+2. Run quality gates (if code changed): tests, linters, builds
+3. Update issue status
+4. Push to remote:
    ```bash
    git pull --rebase
-   bd sync
    git push
-   git status  # MUST show "up to date with origin"
+   git status
    ```
-5. **Clean up** - Clear stashes, prune remote branches
-6. **Verify** - All changes committed AND pushed
-7. **Hand off** - Provide context for next session
+5. Clean up: clear stashes, prune remote branches
+6. Verify all changes committed and pushed
+7. Hand off: provide context for next session
 
-**CRITICAL RULES:**
-- Work is NOT complete until `git push` succeeds
-- NEVER stop before pushing - that leaves work stranded locally
-- NEVER say "ready to push when you are" - YOU must push
-- If push fails, resolve and retry until it succeeds
+If push fails, resolve and retry until it succeeds. Do not stop before pushing - that leaves work stranded locally.
+</session_completion>
