@@ -2,6 +2,8 @@
 
 ## Mandatory Tool Preferences
 
+<tool_rules>
+
 ### File Operations
 
 | Operation | Use | Avoid |
@@ -12,178 +14,75 @@
 | Edit file | `Edit`, `MultiEdit` | `sed`, `awk`, heredocs |
 | Create file | `Write` | `echo >`, `cat >` |
 
-### Shell Commands
+Shell commands are for actual system commands only: git, npm, cargo, uv, etc.
 
-NEVER use shell commands for tasks with dedicated tools:
+### Read Before Edit
 
-```bash
-# WRONG
-cat file.txt              # Use Read
-grep "pattern" .          # Use Grep
-find . -name "*.py"       # Use Glob
-sed -i 's/old/new/' file  # Use Edit
-```
+Always read a file before editing. Never edit blindly based on assumptions.
 
-```bash
-# CORRECT - Shell for actual commands
-git status
-npm run build
-uv pip install package
-cargo build
-```
+1. `Read(path)` - understand current state
+2. Plan changes - identify what to modify
+3. `Edit(path, old, new)` - make precise changes
 
-## Read Before Edit (MANDATORY)
-
-ALWAYS read a file before editing:
-
-```markdown
-1. Read(path)           # Understand current state
-2. Plan changes         # Identify what to modify
-3. Edit(path, old, new) # Make precise changes
-```
-
-**Never edit blindly based on assumptions.**
+</tool_rules>
 
 ## Edit Precision Rules
 
+<edit_guidelines>
+
 ### Include Enough Context
 
-```python
-# WRONG: Ambiguous match
-old_string = "return result"
-
-# CORRECT: Unique context
-old_string = """def process_data(input):
-    result = transform(input)
-    return result"""
-```
+Match strings must be unique in the file. Include surrounding lines if needed.
 
 ### Preserve Exact Formatting
 
-```python
-# Match EXACT whitespace (tabs vs spaces matter)
-old_string = "    if condition:"  # 4 spaces
-new_string = "    if new_condition:"
-```
+Match exact whitespace - tabs vs spaces matter.
 
 ### Use MultiEdit for Multiple Changes
 
-```python
-# WRONG: Multiple Edit calls
-Edit(path, old1, new1)
-Edit(path, old2, new2)
+Batch related edits into a single MultiEdit call rather than sequential Edit calls.
 
-# CORRECT: Single MultiEdit
-MultiEdit(path, [
-    {"old": old1, "new": new1},
-    {"old": old2, "new": new2}
-])
-```
+</edit_guidelines>
 
 ## Bash Command Rules
 
-### Always Quote Paths
-
-```bash
-# WRONG
-cd /path/with spaces/
-
-# CORRECT
-cd "/path/with spaces/"
-```
-
-### Avoid Long-Running Processes
-
-```bash
-# WRONG: Blocks forever
-npm run dev
-python -m http.server
-
-# CORRECT: Use tmux for long processes
-tmux new-session -d -s dev 'npm run dev'
-```
-
-### Check Before Destructive Operations
-
-```bash
-# WRONG: Immediate delete
-rm -rf directory/
-
-# CORRECT: Verify first
-ls directory/  # Check contents
-rm -rf directory/
-```
+<bash_rules>
+- Always quote paths containing spaces: `cd "/path/with spaces/"`
+- Avoid long-running processes (npm run dev, http servers); use tmux for those
+- Check before destructive operations: `ls directory/` before `rm -rf directory/`
+</bash_rules>
 
 ## Parallel Tool Usage
 
-### Independent Operations in Parallel
+<parallel_rules>
+Independent operations should run in parallel:
+- Multiple file reads
+- Multiple search queries
+- Independent analysis tasks
 
-```markdown
-# GOOD: Parallel reads
-Read(file1.py)  |  Read(file2.py)  |  Read(file3.py)
+Sequential when dependencies exist:
+1. Read file (need content first)
+2. Edit file (then modify)
+3. Verify (then check)
+</parallel_rules>
 
-# GOOD: Parallel searches
-Grep("pattern1")  |  Grep("pattern2")
+## Subagent Usage
 
-# BAD: Sequential when parallel possible
-Read(file1.py)
-Read(file2.py)
-Read(file3.py)
-```
-
-### Sequential When Dependencies Exist
-
-```markdown
-# CORRECT: Sequential for dependencies
-1. Read(file.py)         # Need content first
-2. Edit(file.py, old, new)  # Then edit
-3. Bash(python -m py_compile file.py)  # Then verify
-```
-
-## Subagent (Task) Usage
-
-### When to Use Subagents
-
+Use subagents for:
 - Independent research tasks
 - Code analysis that reads many files
 - Keeping main context clean
 - Parallel work streams
 
-### Subagent Best Practices
-
-```markdown
-# GOOD: Scoped task
-Task("Analyze auth module for security issues", tools=["Read", "Grep"])
-
-# BAD: Vague task
-Task("Look around the codebase")
-```
-
-## Tool Output Handling
-
-### Process Results Before Continuing
-
-```markdown
-1. Execute tool
-2. Read and understand output
-3. Handle errors if present
-4. Proceed based on results
-```
-
-### Don't Ignore Errors
-
-```bash
-# Check exit codes
-npm run build
-# If fails: Analyze error, fix issue, retry
-```
+Subagent tasks should be specific and scoped:
+- Good: "Analyze auth module for security issues"
+- Bad: "Look around the codebase"
 
 ## Verification Requirements
 
 After code changes:
-
-1. **Lint check**: `ruff check` / `biome lint`
-2. **Type check**: `tsc` / `pyright`
-3. **Test run**: `npm test` / `pytest`
+1. Lint check: `ruff check` / `biome lint`
+2. Type check: `tsc` / `pyright`
+3. Test run: `npm test` / `pytest`
 
 Never skip verification for "small" changes.
