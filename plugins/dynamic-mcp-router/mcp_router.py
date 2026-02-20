@@ -280,32 +280,36 @@ class ConfigManager:
         return config
 
     async def has_changed(self) -> bool:
-        if not self.config_path or not Path(self.config_path).exists(): return False
+        if not self.config_path:
+            return False
         current_time = time.time()
-        if current_time - self._last_check < self._check_interval: return False
+        if current_time - self._last_check < self._check_interval:
+            return False
         self._last_check = current_time
 
         try:
-            stat = os.stat(self.config_path)
+            try:
+                stat = os.stat(self.config_path)
+            except OSError:
+                return False
+
             if stat.st_mtime == self._last_mtime:
                 return False
-        except OSError:
-            return False
 
-        try:
-            def _check():
-                with open(self.config_path, 'rb') as f:
+            def _read_and_hash() -> tuple[str, float]:
+                with open(self.config_path, "rb") as f:
                     content_bytes = f.read()
-                    stat = os.fstat(f.fileno())
-                return self._compute_hash(content_bytes.decode(errors='ignore')), stat.st_mtime
+                    new_stat = os.fstat(f.fileno())
+                return self._compute_hash(content_bytes.decode(errors="ignore")), new_stat.st_mtime
 
-            new_hash, new_mtime = await asyncio.to_thread(_check)
+            new_hash, new_mtime = await asyncio.to_thread(_read_and_hash)
+
             self._last_mtime = new_mtime
-
             if new_hash != self._config_hash:
                 self._config_hash = new_hash
                 return True
-        except Exception as e: logger.error(f"Error checking config changes: {e}")
+        except Exception as e:
+            logger.error(f"Error checking config changes: {e}")
         return False
 
 
