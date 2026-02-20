@@ -9,9 +9,11 @@ paths:
 
 Version: Python 3.12+
 
-## Package Management - UV ONLY
+## Package Management
 
-**MANDATORY: Use `uv` for ALL Python package operations. NEVER use `pip` directly.**
+<package_rule>
+Use `uv` for all Python package operations instead of `pip` directly.
+</package_rule>
 
 ```bash
 uv pip install package-name
@@ -19,8 +21,6 @@ uv pip install -r requirements.txt
 uv run python script.py
 uv run pytest
 ```
-
-**If you type `pip`:** STOP. Use `uv pip` instead.
 
 ## Tooling
 
@@ -43,9 +43,9 @@ select = ["E", "F", "I", "B", "ANN", "S"]  # errors, pyflakes, isort, bugbear, a
 "tests/*" = ["S101"]  # allow assert in tests
 ```
 
-## Testing - Minimal Output
+## Testing
 
-**Always use minimal output flags to avoid context bloat.**
+Use minimal output flags to avoid context bloat.
 
 ```bash
 uv run pytest -q                                    # Quiet mode (preferred)

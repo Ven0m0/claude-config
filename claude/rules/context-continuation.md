@@ -1,19 +1,16 @@
 # Context Continuation - Endless Mode for All Sessions
 
-**Rule:** When context reaches critical levels, save state and continue seamlessly in a new session.
+When context reaches critical levels, save state and continue seamlessly in a new session.
 
-## Quality Over Speed - CRITICAL
+## Quality Over Speed
 
-**NEVER rush or compromise quality due to context pressure.**
+<principle>
+Do not rush or compromise quality due to context pressure. Context warnings are informational, not emergencies. You can always continue in the next session - work is never lost. A well-done task split across 2 sessions is better than a rushed task in 1 session.
 
-- Context warnings are **informational**, not emergencies
-- You can ALWAYS continue in the next session - work is never lost
-- A well-done task split across 2 sessions is better than a rushed task in 1 session
-- **Quality is the #1 metric** - clean code, proper tests, thorough implementation
-- If context is high, finish the CURRENT task properly, then hand off cleanly
-- Do NOT skip tests, compress explanations, or cut corners to "beat" context limits
+Quality is the primary metric - clean code, proper tests, thorough implementation. If context is high, finish the current task properly, then hand off cleanly. Do not skip tests, compress explanations, or cut corners to "beat" context limits.
 
-**The context limit is not your enemy.** It's just a checkpoint. The plan file, Claude Mem, and continuation files ensure seamless handoff. Trust the system.
+The context limit is just a checkpoint. The plan file, Claude Mem, and continuation files ensure seamless handoff.
+</principle>
 
 ## How It Works
 
@@ -37,9 +34,9 @@ When you see the context warning (80% or 90%), take action:
 
 ### At 90% - Mandatory Continuation Protocol
 
-**Step 1: VERIFY Before Writing (CRITICAL)**
+**Step 1: Verify Before Writing**
 
-Before writing the continuation file, you MUST run verification commands:
+Before writing the continuation file, run verification commands:
 
 ```bash
 # Run tests
@@ -48,11 +45,11 @@ uv run pytest tests/ -q
 uv run basedpyright installer/
 ```
 
-**DO NOT claim work is complete without showing verification output in the continuation file.**
+Do not claim work is complete without showing verification output in the continuation file.
 
-**Step 2: Check for Active Plan (MANDATORY)**
+**Step 2: Check for Active Plan**
 
-**⚠️ CRITICAL: You MUST check for an active plan before deciding which handoff command to use.**
+Check for an active plan before deciding which handoff command to use.
 
 ```bash
 # Check for non-VERIFIED plans (most recent first by filename)
@@ -68,7 +65,7 @@ Then check the Status field in the most recent plan file(s). An **active plan** 
 | Active plan exists (PENDING/COMPLETE)       | `$PWD/.claude/bin/ccp send-clear docs/plans/YYYY-MM-DD-name.md` |
 | No active plan (all VERIFIED or none exist) | `$PWD/.claude/bin/ccp send-clear --general`                     |
 
-**NEVER use `--general` when there's an active plan file. This loses the plan context!**
+Do not use `--general` when there's an active plan file, as this loses the plan context.
 
 **Step 3: Write Session Summary to File (GUARANTEED BACKUP)**
 
@@ -102,7 +99,7 @@ Write the summary to `/tmp/claude-continuation.md` using the Write tool. Include
 - `path/to/file.py` - [what was changed]
 ```
 
-**CRITICAL: If you were in the middle of fixing something, say EXACTLY what and where. The next agent cannot read your mind.**
+If you were in the middle of fixing something, describe exactly what and where. The next agent cannot infer your state.
 
 **Step 4: Output Session End Summary (For User Visibility)**
 
@@ -110,7 +107,7 @@ After writing the file, output the summary to the user:
 
 ```
 ---
-## 🔄 SESSION END - Continuation Summary
+## SESSION END - Continuation Summary
 
 [Same content as above]
 
@@ -211,7 +208,7 @@ $PWD/.claude/bin/ccp send-clear docs/plans/YYYY-MM-DD-name.md
 $PWD/.claude/bin/ccp send-clear --general
 ```
 
-**⚠️ ALWAYS check for active plans before using `--general`. See Step 2 above.**
+Always check for active plans before using `--general`. See Step 2 above.
 
 ## Important Notes
 

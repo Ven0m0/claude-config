@@ -1,38 +1,30 @@
-# Git
+# Git Rules
 
 ## Read-Only by Default
 
-**Rule:** You may READ git state freely, but NEVER execute git WRITE COMMANDS without EXPLICIT user permission.
+<permissions>
+You may read git state freely but never execute git write commands without explicit user permission. This rule is about git commands, not file operations - creating, editing, deleting files in the working tree is always allowed.
+</permissions>
 
-**This rule is about git commands, NOT file operations.** Creating, editing, deleting files in the working tree is always allowed.
-
-### Allowed (always)
+### Always Allowed
 
 ```bash
-git status              # Check working tree
-git diff                # Unstaged changes
-git diff --staged       # Staged changes
-git log --oneline -10   # Recent commits
-git show <commit>       # Commit details
-git branch -a           # All branches
+git status / git diff / git diff --staged
+git log --oneline / git show / git branch -a
 ```
 
 ### Requires Explicit Permission
 
-These need the user to explicitly say "commit", "push", etc.:
+These need the user to say "commit", "push", etc:
 
 ```bash
-git add / git commit / git commit --amend
-git push / git push --force
-git pull / git fetch / git merge / git rebase
-git reset / git revert / git stash
-git checkout / git switch / git restore
-git cherry-pick / git tag
+git add / commit / push / pull / fetch / merge / rebase
+git reset / revert / stash / cherry-pick / tag
 ```
 
-**"Fix this bug" does NOT mean "commit it". Wait for explicit git instructions.**
+"Fix this bug" does not mean "commit it". Wait for explicit git instructions.
 
-**Exception:** `git checkout <branch>` / `git switch <branch>` allowed when user explicitly requests branch switching.
+Exception: `git switch <branch>` is allowed when user explicitly requests branch switching.
 
 ## Commit Message Format
 
@@ -46,24 +38,19 @@ Types: feat, fix, refactor, docs, test, chore, perf, ci
 
 ## Pull Request Workflow
 
+<steps>
 1. Analyze full commit history (not just latest commit)
 2. Use `git diff [base-branch]...HEAD` to see all changes
 3. Draft comprehensive PR summary
-4. Include test plan with TODOs
+4. Include test plan
 5. Push with `-u` flag if new branch
-
-## Feature Implementation Workflow
-
-1. **Plan** - Use planner agent, identify dependencies and risks
-2. **TDD** - Write tests first (RED), implement (GREEN), refactor (IMPROVE), verify 80%+ coverage
-3. **Review** - Use code-reviewer agent, address CRITICAL and HIGH issues
-4. **Commit** - Follow conventional commits format
+</steps>
 
 ## Checking Work
 
 Always verify before marking work complete:
 
 ```bash
-git status              # Verify expected files changed
-git diff                # Review actual changes
+git status    # Verify expected files changed
+git diff      # Review actual changes
 ```
