@@ -220,3 +220,23 @@ Between each step, you **MUST** explicitly state what you are doing (e.g., "Movi
 - **Stop Hook**: A hook is active. If you try to exit before completion, you will be forced to continue.
 
 """
+with:
+  settings: |-
+    {
+      "mcpServers": {
+        "github": {
+          "command": "docker",
+          "args": [
+            "run",
+            "-i",
+            "--rm",
+            "-e",
+            "GITHUB_PERSONAL_ACCESS_TOKEN",
+            "ghcr.io/github/github-mcp-server"
+          ],
+          "env": {
+            "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+          }
+        }
+      }
+    }
