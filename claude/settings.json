@@ -119,7 +119,17 @@
           }
         ]
       }
-    ]
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jaq -r '.tool_input.file_path' | xargs bunx --bun --silent prettier -w --bracket-same-line --print-width 120 --tab-width 2 --log-level silent"
+          }
+        ]
+      }
   },
   "statusLine": {
     "type": "command",
