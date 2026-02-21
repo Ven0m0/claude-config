@@ -76,3 +76,23 @@ When the user asks about the status of an existing task, follow these steps:
             10.  Delete the `.jules` directory: `rm -rf .jules`
 
 """
+with:
+  settings: |-
+    {
+      "mcpServers": {
+        "github": {
+          "command": "docker",
+          "args": [
+            "run",
+            "-i",
+            "--rm",
+            "-e",
+            "GITHUB_PERSONAL_ACCESS_TOKEN",
+            "ghcr.io/github/github-mcp-server"
+          ],
+          "env": {
+            "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+          }
+        }
+      }
+    }
