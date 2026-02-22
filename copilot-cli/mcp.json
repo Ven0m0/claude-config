@@ -26,7 +26,7 @@
       "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
       "tools": ["*"],
       "headers": {
-        "EXA_API_KEY": "$EXA_API_KEY"
+        "EXA_API_KEY": "${EXA_API_KEY}"
       }
     },
     "context7": {
@@ -34,7 +34,7 @@
       "url": "https://mcp.context7.com/mcp",
       "tools": ["*"],
       "headers": {
-        "CONTEXT7_API_KEY": "$CONTEXT7_API_KEY"
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
       }
     },
     "grepika": {
@@ -54,6 +54,13 @@
       "command": "npx",
       "args": ["-y", "octocode-mcp@latest"],
       "tools": ["*"]
+    },
+    "octocode": {
+      "command": "npx",
+      "args": ["-y", "octocode-mcp@latest"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
     }
   }
 }
