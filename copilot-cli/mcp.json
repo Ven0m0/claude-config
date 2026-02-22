@@ -54,4 +54,5 @@
       "args": ["-y", "octocode-mcp@latest"],
       "tools": ["*"]
     }
+  }
 }
