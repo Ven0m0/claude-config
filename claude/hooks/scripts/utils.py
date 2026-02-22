@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
 """Shared utility functions for hooks scripts."""
 
 import shutil
