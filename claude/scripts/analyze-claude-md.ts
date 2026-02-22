@@ -1,4 +1,4 @@
-#!/usr/bin/env npx ts-node
+#!/usr/bin/env bunx ts-node
 
 /**
  * CLAUDE.md Analyzer
