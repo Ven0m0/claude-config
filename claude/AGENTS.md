@@ -6,13 +6,10 @@
 - **Text Search**: Use `rg` over `grep` - faster, respects .gitignore, better output formatting
 - **Code Structure Search**: Use `ast-grep` for finding specific code patterns (classes, functions, interfaces)
 - **Semantic Code Navigation**: Use LSP operations (goToDefinition, findReferences) for symbol navigation and refactoring - see LSP Enforcement below
-- **Interactive Selection**: Use `fzf` for fuzzy finding and selecting from lists/results
-- **Data Processing**: Use `jq` for JSON parsing/manipulation, `yq` for YAML/XML
+- **Data Processing**: Use `jq -c` for JSON parsing/manipulation, `yq` for YAML/XML
 - **File Listing**: Use `eza` over `ls` - better formatting, git integration, tree views
 - **File Viewing**: Use `bat` over `cat` - syntax highlighting, line numbers, git integration
 - **Text Processing**: Use `sed` for stream editing, `awk` for pattern scanning and processing
-- **Cloud Platforms**: Use `aws` CLI for AWS, `az` CLI for Azure
-- **Infrastructure**: Use `terraform` for IaC provisioning, `terraform-docs` for generating documentation
 
 ## LSP Enforcement
 
