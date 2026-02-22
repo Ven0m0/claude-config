@@ -1,326 +1,61 @@
 ---
 name: python-project-development
-description: Creates production-ready Python projects including CLI tools, packages, and distributable libraries. Use when building CLI tools with argparse/click, packaging for PyPI, setting up pyproject.toml, or creating entry points. Triggers include "CLI tool", "Python package", "pyproject.toml", "publish to PyPI", "entry points", or "build wheel".
+description: Builds and refactors production-ready Python CLI tools and packages with modern pyproject layouts, uv workflows, and robust testing.
 compatibility: Designed for Claude Code
-allowed-tools: Read Grep Glob Bash mcp__context7__resolve-library-id mcp__context7__get-library-docs
+allowed-tools: Read, Grep, Glob, Bash
 user-invocable: false
 ---
 
-# Python Project Development
+# Python Project Development (Lean)
 
-Comprehensive guide for building production-ready Python CLI tools and distributable packages.
+## Use this skill when
 
-## When to Use This Skill
+- creating Python CLIs or packages
+- setting up `pyproject.toml`
+- preparing build/publish workflows
+- tightening packaging, linting, and test gates
 
-- Building command-line tools with argparse or click
-- Creating Python libraries for distribution
-- Publishing packages to PyPI
-- Setting up modern pyproject.toml configuration
-- Creating installable packages with dependencies
-- Building wheels and source distributions
+## Defaults
 
-## Quick Start: CLI Tool
+- Prefer `uv` for dependency and run workflows.
+- Keep package layout `src/<package_name>/`.
+- Use typed function signatures and explicit exit codes.
+- Treat `ruff` + tests as baseline quality gates.
 
-```python
-#!/usr/bin/env python3
-"""Brief description of what this script does."""
-import sys
-from pathlib import Path
-from dataclasses import dataclass
-from typing import Final
+## Core workflow
 
-@dataclass(frozen=True, slots=True)
-class Config:
-  """Immutable configuration."""
-  input_dir: Path
-  max_size: int = 1000
-  verbose: bool = False
+1. Choose project type: CLI, library, or hybrid.
+2. Scaffold minimal `pyproject.toml` and package layout.
+3. Implement entry point and core module.
+4. Add tests and lint config.
+5. Validate build/install locally.
 
-def main() -> int:
-  """Entry point. Returns exit code."""
-  try:
-    # Parse args, validate input, process
-    return 0
-  except ValueError as e:
-    print(f"Error: {e}", file=sys.stderr)
-    return 1
-
-if __name__ == "__main__":
-  sys.exit(main())
-```
-
-## Quick Start: Package Structure
-
-```
-my-package/
-├── pyproject.toml
-├── README.md
-├── LICENSE
-├── src/
-│   └── my_package/
-│       ├── __init__.py
-│       ├── cli.py
-│       └── core.py
-└── tests/
-    └── test_core.py
-```
-
-## Minimal pyproject.toml
-
-```toml
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "my-package"
-version = "0.1.0"
-description = "A short description"
-authors = [{name = "Your Name", email = "you@example.com"}]
-readme = "README.md"
-requires-python = ">=3.8"
-dependencies = ["click>=8.0"]
-
-[project.optional-dependencies]
-dev = ["pytest>=7.0", "ruff>=0.1"]
-
-[project.scripts]
-my-cli = "my_package.cli:main"
-
-[tool.setuptools.packages.find]
-where = ["src"]
-```
-
-## CLI Standards
-
-- **Types**: All functions typed (`-> ReturnType`), `dataclass(slots=True)` for data
-- **Performance**: O(n) algorithms, frozenset for lookups, generators for large data
-- **Stdlib-first**: Zero external deps unless justified
-- **Exit codes**: 0=success, 1=error, 2+=specific failures
-- **Error handling**: Catch specific exceptions, fail fast, clear messages
-
-## CLI with Click
-
-```python
-# src/my_package/cli.py
-import click
-
-@click.group()
-@click.version_option()
-def cli():
-    """My awesome CLI tool."""
-    pass
-
-@cli.command()
-@click.argument("name")
-@click.option("--greeting", default="Hello", help="Greeting to use")
-def greet(name: str, greeting: str):
-    """Greet someone."""
-    click.echo(f"{greeting}, {name}!")
-
-def main():
-    cli()
-
-if __name__ == "__main__":
-    main()
-```
-
-## CLI with argparse
-
-```python
-import argparse
-import sys
-
-def main():
-    parser = argparse.ArgumentParser(description="My tool", prog="my-tool")
-    parser.add_argument("--version", action="version", version="%(prog)s 1.0.0")
-
-    subparsers = parser.add_subparsers(dest="command", help="Commands")
-
-    process_parser = subparsers.add_parser("process", help="Process data")
-    process_parser.add_argument("input_file", help="Input file")
-    process_parser.add_argument("-o", "--output", default="output.txt")
-
-    args = parser.parse_args()
-
-    if args.command == "process":
-        return process_data(args.input_file, args.output)
-
-    parser.print_help()
-    return 1
-
-if __name__ == "__main__":
-    sys.exit(main())
-```
-
-## Full pyproject.toml Template
-
-```toml
-[build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "my-package"
-version = "1.0.0"
-description = "Package description"
-readme = "README.md"
-requires-python = ">=3.8"
-license = {text = "MIT"}
-authors = [{name = "Name", email = "email@example.com"}]
-keywords = ["example", "package"]
-classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-]
-dependencies = [
-    "click>=8.0.0",
-    "pydantic>=2.0.0",
-]
-
-[project.optional-dependencies]
-dev = ["pytest>=7.0", "ruff>=0.1", "mypy>=1.0"]
-
-[project.urls]
-Homepage = "https://github.com/user/my-package"
-Documentation = "https://my-package.readthedocs.io"
-Repository = "https://github.com/user/my-package"
-
-[project.scripts]
-my-cli = "my_package.cli:main"
-
-[tool.setuptools]
-package-dir = {"" = "src"}
-
-[tool.setuptools.packages.find]
-where = ["src"]
-
-[tool.setuptools.package-data]
-my_package = ["py.typed", "data/*.json"]
-
-[tool.ruff]
-line-length = 100
-target-version = "py38"
-
-[tool.ruff.lint]
-select = ["E", "F", "I", "N", "W", "UP"]
-
-[tool.mypy]
-python_version = "3.8"
-warn_return_any = true
-disallow_untyped_defs = true
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "-v --cov=my_package"
-```
-
-## Building and Publishing
+## Minimal commands
 
 ```bash
-# Install build tools
-uv pip install build twine
+# Install project deps
+uv sync
 
-# Build distribution
-python -m build
+# Lint and format
+uv run ruff check .
+uv run ruff format .
 
-# Check distribution
-twine check dist/*
+# Test
+uv run pytest
 
-# Test on TestPyPI first
-twine upload --repository testpypi dist/*
-
-# Publish to PyPI
-twine upload dist/*
+# Build artifacts
+uv run python -m build
 ```
 
-## Editable Install for Development
+## Constraints
 
-```bash
-# Install in development mode
-uv pip install -e .
+- No hardcoded secrets/paths.
+- Avoid heavy dependencies without clear payoff.
+- Keep packaging metadata accurate and minimal.
 
-# With optional dependencies
-uv pip install -e ".[dev]"
-```
+## References
 
-## Dynamic Versioning
-
-```toml
-[build-system]
-requires = ["setuptools>=61.0", "setuptools-scm>=8.0"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "my-package"
-dynamic = ["version"]
-
-[tool.setuptools_scm]
-write_to = "src/my_package/_version.py"
-```
-
-## Including Data Files
-
-```toml
-[tool.setuptools.package-data]
-my_package = ["data/*.json", "templates/*.html", "py.typed"]
-```
-
-```python
-# Accessing data files
-from importlib.resources import files
-
-data = files("my_package").joinpath("data/config.json").read_text()
-```
-
-## Security Checklist
-
-- [ ] No hardcoded secrets/paths
-- [ ] Validate all user input (paths, patterns)
-- [ ] Use `Path.resolve()` to prevent traversal
-- [ ] Catch `PermissionError`, `FileNotFoundError`
-- [ ] Timeout on subprocess calls
-- [ ] No `eval()`, `exec()`, `__import__()`
-
-## Publishing Checklist
-
-- [ ] Code is tested (pytest passing)
-- [ ] Documentation complete (README, docstrings)
-- [ ] Version number updated
-- [ ] CHANGELOG.md updated
-- [ ] License file included
-- [ ] pyproject.toml complete
-- [ ] Package builds without errors
-- [ ] Installation tested in clean environment
-- [ ] Tested on TestPyPI first
-- [ ] Git tag created for release
-
-## Reusable Components
-
-Use battle-tested components from `scripts/`:
-
-- `cli_template.py` - Production CLI scaffold with argparse
-- `log_component.py` - ANSI colored logging
-- `subprocess_helpers.py` - Safe subprocess wrappers with retry/timeout
-- `common_utils.py` - has(), find_files(), safe file ops
-
-## Reference Materials
-
-- [CLI Patterns](references/patterns.md) - Common CLI patterns and best practices
-- [stdlib Performance](references/stdlib_perf.md) - Performance tips for standard library usage
-- [Examples](references/examples.md) - Complete example implementations
-- [Full Reference](references/reference.md) - Comprehensive API and configuration reference
-
-## Resources
-
-- **Python Packaging Guide**: https://packaging.python.org/
-- **PyPI**: https://pypi.org/
-- **setuptools**: https://setuptools.pypa.io/
-- **Click**: https://click.palletsprojects.com/
+- `references/reference.md`
+- `references/examples.md`
+- `references/patterns.md`
+- `references/stdlib_perf.md`
