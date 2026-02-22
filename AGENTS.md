@@ -1,113 +1,180 @@
 # AI Agent Configuration and Repository Guide
 
+> **Symlinked as:** `CLAUDE.md` (Claude Code) | `GEMINI.md` (Gemini CLI)
+> **Applies to:** All AI assistants working in this repository.
+
 This repository is the **Claude Code Plugin Marketplace and Configuration Repository** - a comprehensive ecosystem of plugins, agents, skills, hooks, and configurations for Claude Code, GitHub Copilot CLI, Cursor, Gemini, and Qwen.
+
+---
 
 ## Project Overview
 
-**Type:** Configuration ecosystem and plugin marketplace
-**Primary Framework:** Claude Code (CLI for Claude AI assistant)
-**Version:** v1.1.0
-**License:** MIT
-**Size:** ~5.3MB (433 markdown files, 110+ code files)
+| Field | Value |
+|---|---|
+| Type | Configuration ecosystem and plugin marketplace |
+| Primary Framework | Claude Code (CLI for Claude AI assistant) |
+| Version | v1.1.0 |
+| License | MIT |
+| Python | 3.13+ |
+| Node Runtime | Bun |
 
 ### Technology Stack
 
 **Languages:**
-- TypeScript/JavaScript (110 code files)
-- Python 3.13+ (scripting, hooks, automation)
-- Shell/Bash (CLI tooling, automation)
-- YAML (configuration, CI/CD)
-- JSON (configuration, metadata)
-- Markdown (433 documentation files)
+- TypeScript/JavaScript - Skills, MCP servers, hooks
+- Python 3.13+ - Scripting, hooks, automation
+- Shell/Bash - CLI tooling, automation
+- YAML - Configuration, CI/CD
+- JSON - Configuration, metadata
+- Markdown - Documentation (400+ files)
 
 **Frameworks & Tools:**
 - Claude Code - Main framework
 - MCP (Model Context Protocol) - Extensible tool integration
-- Biome, Ruff, Prettier - Code formatters
+- Biome - JS/TS formatter and linter
+- Ruff - Python formatter and linter
 - Git/GitHub - Version control, CI/CD
-- Bun/uv - Package managers
+- Bun - JavaScript runtime and package manager
+- uv - Python package manager
+
+---
 
 ## Repository Structure
 
 ```
 claude-config/
-├── claude/                     # Main config pack (3.3MB)
-│   ├── agents/                # 18 specialized agents
-│   │   ├── bash-pro.md        # Advanced bash scripting agent
-│   │   ├── python-pro.md      # Python development expert
-│   │   ├── rust-pro.md        # Rust development specialist
-│   │   ├── code-simplifier.md # Code refactoring agent
-│   │   └── context-manager.md # Context optimization agent
-│   ├── skills/                # 59 reusable skills
-│   │   ├── linter-autofix/    # Auto-fix linting errors
-│   │   ├── code-search/       # Advanced code search
-│   │   ├── json-repair/       # JSON validation and repair
-│   │   └── ast-grep-search/   # AST-based code search
-│   ├── hooks/                 # Auto-running hooks
-│   │   ├── post-edit-format.py         # Auto-format on edits
-│   │   ├── enforce_rg_over_grep.py     # Policy enforcement
-│   │   ├── context_protector.py        # Context management
-│   │   └── load-mcp-skills.sh          # MCP initialization
-│   ├── rules/                 # Development standards
-│   │   ├── security-rules.md  # Security best practices
-│   │   ├── git-rules.md       # Git workflow standards
-│   │   └── testing-rules.md   # Testing guidelines
-│   ├── docs/                  # 20+ reference docs
-│   │   ├── AGENTS.md          # Agent orchestration
-│   │   ├── toon.md            # Token-optimized format
-│   │   ├── lsp-tools-integration.md # LSP integration
-│   │   └── prompt-caching.md  # Caching strategies
-│   ├── commands/              # Command macros
-│   ├── mcp/                   # MCP server configs
-│   ├── scripts/               # Utility scripts
-│   └── settings.json          # Permissions, env config
+├── AGENTS.md                   # @primary - This file (symlinked as CLAUDE.md, GEMINI.md)
+├── README.md                   # @marketplace - Plugin marketplace guide
+├── SETUP.md                    # @setup - Installation instructions
+├── CHANGELOG.md                # @history - Version history
+├── pyproject.toml              # @python-deps - Python dependencies
+├── tsconfig.json               # @ts-config - TypeScript configuration
+├── .editorconfig               # @style - Code style rules
 │
-├── plugins/                    # Plugin marketplace (1.9MB)
+├── claude/                     # @core - Main Claude Code config pack
+│   ├── agents/                # @agents - 12 specialized sub-agents
+│   │   ├── ci-cd-expert.md        # CI/CD pipeline specialist
+│   │   ├── code-explorer.md       # Codebase analysis and navigation
+│   │   ├── code-simplifier.md     # Refactoring and simplification
+│   │   ├── docker-specialist.md   # Docker and containerization
+│   │   ├── general-purpose.md     # Default multi-step agent
+│   │   ├── language-expert.md     # Multi-language development
+│   │   ├── maintenance.md         # Cleanup and tech debt
+│   │   ├── merge-supervisor.md    # Merge conflict resolution
+│   │   ├── optimizer.md           # Context and LLM optimization
+│   │   ├── prd.md                 # Product requirements docs
+│   │   ├── reverse-engineer.md    # Binary analysis (authorized use)
+│   │   └── skill-auditor.md       # SKILL.md compliance audits
+│   │
+│   ├── skills/                # @skills - 32 reusable skills
+│   │   ├── ast-grep-search/       # AST-based structural code search
+│   │   ├── bash-optimizer/        # Optimize bash scripts
+│   │   ├── code-antipatterns-analysis/ # Detect code antipatterns
+│   │   ├── code-execution/        # Safe code execution patterns
+│   │   ├── data-formats/          # Format conversion (JSON, TOON, etc.)
+│   │   ├── git-cli-agentic/       # Advanced git operations
+│   │   ├── github/                # GitHub CLI operations
+│   │   ├── hooks-configuration/   # Configure Claude Code hooks
+│   │   ├── javascript/            # JavaScript best practices
+│   │   ├── json-repair/           # JSON validation and repair
+│   │   ├── linter-autofix/        # Auto-fix linting errors
+│   │   ├── llm-boost/             # LLM performance tuning
+│   │   ├── lsp-enable/            # LSP-first code intelligence
+│   │   ├── mcp-builder/           # Build MCP servers
+│   │   ├── moai/                  # Claude Code authoring kit
+│   │   ├── modern-tool-substitution/ # Substitute legacy tools
+│   │   ├── prd/                   # PRD generation
+│   │   ├── python-project-development/ # Python dev patterns
+│   │   ├── ralph-planner/         # Structured planning
+│   │   ├── render-output/         # Output formatting
+│   │   ├── repomix/               # Repository mixing/bundling
+│   │   ├── ruff/                  # Python linting with ruff
+│   │   ├── rust/                  # Rust development
+│   │   ├── self-reflection/       # Agent self-evaluation
+│   │   ├── sequential-thinking/   # Step-by-step reasoning
+│   │   ├── strategic-compact/     # Context compaction
+│   │   ├── svg/                   # SVG creation and optimization
+│   │   ├── toon-formatter/        # TOON format conversion
+│   │   ├── typescript/            # TypeScript best practices
+│   │   ├── using-tmux-for-interactive-commands/ # Tmux workflows
+│   │   ├── uv/                    # Python uv package manager
+│   │   └── vulture-dead-code/     # Dead code detection
+│   │
+│   ├── hooks/                 # @hooks - Auto-running hooks
+│   │   ├── post-edit-format.py         # Auto-format on file edits
+│   │   ├── enforce_rg_over_grep.py     # Policy: block grep, use rg
+│   │   ├── context_protector.py        # Context management
+│   │   ├── precompact_context.py       # Pre-compaction processing
+│   │   ├── load-mcp-skills.sh          # MCP initialization (SessionStart)
+│   │   ├── json-to-toon.mjs            # JSON to TOON conversion
+│   │   ├── hooks.json                  # Hook configuration
+│   │   └── auto-git-add.json           # Auto git staging config
+│   │
+│   ├── docs/                  # @docs - Reference documentation
+│   │   ├── claude-md-guide.md         # CLAUDE.md authoring guide
+│   │   ├── hooks.md                   # Hooks reference
+│   │   ├── llm-tuning.md              # LLM parameter tuning
+│   │   ├── lsp-tools-integration.md   # LSP integration
+│   │   ├── memory-architecture.md     # Memory system design
+│   │   ├── optimization-patterns.md   # Performance patterns
+│   │   ├── output-styles.md           # Output formatting guide
+│   │   ├── progressive-disclosure.md  # Content architecture
+│   │   ├── prompt-best-practices.md   # Prompt patterns
+│   │   ├── python-non-obvious-patterns.md # Python tips
+│   │   ├── skills-index.md            # All skills index
+│   │   ├── toon.md                    # TOON format spec
+│   │   └── use-xml-tags.md            # XML tag structuring
+│   │
+│   └── settings.json          # @settings - Permissions, env config
+│
+├── plugins/                    # @plugins - Plugin marketplace (13 plugins)
 │   ├── coding-assistant/      # Code review, debug, refactor
 │   ├── conserve/              # Context/token optimization
 │   ├── prompt-improver/       # Prompt clarity enhancement
 │   ├── config-wizard/         # Plugin creation wizard
 │   ├── dependency-blocker/    # Block dependency directories
-│   ├── block-dotfiles/        # Security: block dotfiles
-│   ├── gemini-delegation/     # Delegate to Gemini
-│   └── skill-authoring/       # Skill creation framework
+│   ├── dynamic-mcp-router/    # Dynamic MCP routing
+│   ├── moderntools/           # Modern tool substitutions
+│   ├── plugin-validator/      # Plugin validation
+│   ├── skill-authoring/       # Skill creation framework
+│   ├── skills-eval/           # Skill evaluation framework
+│   ├── skills_performance-optimization/ # Skill perf tuning
+│   ├── claude-code-lsps/      # LSP integrations for Claude Code
+│   └── claude-praetorian/     # Security guardrails
 │
-├── gemini/                     # Gemini AI config (59KB)
+├── gemini/                     # Gemini AI config
 │   ├── skills/                # Code reviewer, PR creator
 │   └── settings.json          # Gemini-specific settings
 │
-├── cursor/                     # Cursor editor config (31KB)
+├── cursor/                     # Cursor editor config
 │   ├── rules/base.md          # Cursor rules
 │   └── mcp.json               # MCP settings
 │
 ├── copilot-cli/               # GitHub Copilot CLI config
-├── qwen/                      # Qwen prompt templates
 ├── opencode/                  # OpenCode references
-├── examples/                  # Usage examples
 ├── prompts/                   # Reusable prompts
 │
-├── .claude-plugin/            # Marketplace definition
+├── .claude-plugin/            # @marketplace - Marketplace definition
 │   └── marketplace.json       # Plugin registry
 │
-├── .github/workflows/         # CI/CD automation
-│   ├── claudelint.yml         # CLAUDE.md validation
-│   ├── ruff.yml               # Python linting
-│   ├── claude-code-review.yml # Automated reviews
-│   └── jules-*.yml            # Automated improvements
-│
-├── README.md                  # Marketplace guide
-├── SETUP.md                   # Installation instructions
-├── CHANGELOG.md               # Version history
-├── pyproject.toml             # Python dependencies
-├── tsconfig.json              # TypeScript config
-└── .editorconfig              # Code style rules
+└── .github/
+    ├── copilot-instructions.md # @copilot - Copilot guardrails
+    └── workflows/             # @ci - CI/CD automation
+        ├── claudelint.yml         # CLAUDE.md validation
+        ├── ruff.yml               # Python linting
+        ├── claude.yml             # Claude Code analysis
+        ├── claude-code-review.yml # Automated code reviews
+        ├── claude-pr-review.yml   # PR review automation
+        ├── droid.yml              # Droid automation
+        └── jules-*.yml            # Jules automated improvements
 ```
+
+---
 
 ## Development Workflows
 
 ### Setup and Installation
 
-**Initial Setup:**
 ```bash
 # Clone repository
 git clone https://github.com/Ven0m0/claude-config.git
@@ -115,14 +182,12 @@ git clone https://github.com/Ven0m0/claude-config.git
 # Install as marketplace
 /plugin marketplace add Ven0m0/claude-config
 
-# Or install specific plugins
+# Install specific plugins
 /plugin install coding-assistant@claude-config-marketplace
-```
 
-**Configuration:**
-- Copy/symlink `claude/` to `~/.claude/` or project `.claude/`
-- Set environment variables in CLAUDE_ENV_FILE
-- Configure settings.json for permissions and model preferences
+# Copy claude/ config pack to ~/.claude/
+cp -r claude/ ~/.claude/
+```
 
 ### Build and Test
 
@@ -134,8 +199,11 @@ ruff check .
 # Format with ruff
 ruff format .
 
-# Run tests (in plugin directories)
-make test
+# Run plugin tests
+cd plugins/conserve && make test
+
+# Run with uv
+uv run pytest tests/
 ```
 
 **JavaScript/TypeScript:**
@@ -145,42 +213,21 @@ biome format --write .
 
 # Check with Biome
 biome check .
+
+# Type-check
+bun run tsc --noEmit
 ```
 
 **Validation:**
 ```bash
-# Validate CLAUDE.md files
-claudelint --check CLAUDE.md
+# Validate AGENTS.md
+claudelint --check AGENTS.md
 
 # Validate shell scripts
-shellcheck scripts/*.sh
+shellcheck claude/hooks/*.sh
 
 # Validate YAML
 yamllint .github/workflows/*.yml
-```
-
-### Deployment and CI/CD
-
-**GitHub Workflows (Automated):**
-- `claudelint.yml` - Validates CLAUDE.md files
-- `ruff.yml` - Python linting
-- `claude.yml` - Claude Code analysis
-- `claude-code-review.yml` - Automated code reviews
-- `jules-weekly-cleanup.yml` - Automated cleanup
-- `jules-bug-fixer.yml` - Auto-fix bugs
-- `jules-ci-failure-fix.yml` - Fix CI failures
-- `jules-performance-improver.yml` - Performance optimization
-
-**Manual Deployment:**
-```bash
-# Run setup script
-./setup.sh
-
-# Run cleanup
-./cleanup.sh
-
-# Test parsing
-./test_parsing.sh
 ```
 
 ### Common Development Tasks
@@ -190,56 +237,63 @@ yamllint .github/workflows/*.yml
 # Use config wizard
 /skill config-wizard
 
-# Or use skill authoring plugin
-/plugin install skill-authoring@claude-config-marketplace
-/skill create-skill
+# Manual: create SKILL.md in claude/skills/skill-name/
+mkdir claude/skills/my-skill
+# Add SKILL.md following existing skill template format
 ```
 
 **Add a New Agent:**
 1. Create `claude/agents/agent-name.md`
-2. Follow agent template format
-3. Add to AGENTS.md orchestration
+2. Add YAML frontmatter: `name`, `description`, `allowed-tools`, `model`
+3. Document usage and examples in the body
 4. Test with `/agent agent-name`
 
 **Add a New Hook:**
 1. Create hook script in `claude/hooks/`
-2. Add hook configuration to `settings.json`
-3. Test hook behavior
+2. Register in `claude/hooks/hooks.json`
+3. Test hook behavior in a session
 4. Document in `claude/docs/hooks.md`
 
-**Update Documentation:**
-1. Edit relevant `.md` file
-2. Follow progressive disclosure pattern
-3. Validate with markdownlint
-4. Check CLAUDE.md with claudelint
+**Fix Linting Issues:**
+```bash
+# Python
+ruff check --fix .
+
+# JS/TS
+biome check --apply .
+
+# Or use skill
+/skill linter-autofix
+```
+
+---
 
 ## Conventions
 
 ### Naming Conventions
 
-**Files and Directories:**
-- Skills: `hyphenated-names` (e.g., `code-review`, `linter-autofix`)
-- Agents: `hyphenated-names` (e.g., `bash-pro`, `context-manager`)
-- Plugins: `hyphenated-names` (e.g., `coding-assistant`)
-- Python: `snake_case.py`
-- Config/Docs: `kebab-case.md`
-
-**Code:**
-- JavaScript/TypeScript functions: `camelCase`
-- Python functions: `snake_case`
-- Constants: `UPPER_SNAKE_CASE`
-- Classes: `PascalCase`
+| Category | Convention | Example |
+|---|---|---|
+| Skills | `hyphenated-names/` | `linter-autofix/` |
+| Agents | `hyphenated-names.md` | `code-explorer.md` |
+| Plugins | `hyphenated-names/` | `coding-assistant/` |
+| Python files | `snake_case.py` | `post_edit_format.py` |
+| Config/Docs | `kebab-case.md` | `claude-md-guide.md` |
+| JS/TS functions | `camelCase` | `formatOutput()` |
+| Python functions | `snake_case` | `format_output()` |
+| Constants | `UPPER_SNAKE_CASE` | `MAX_TOKENS` |
+| Classes | `PascalCase` | `ContextManager` |
 
 ### Code Style
 
-**From .editorconfig:**
-- Indentation: 2 spaces (JS/TS/YAML), 4 spaces (Python)
+From `.editorconfig`:
+- Indentation: 2 spaces (JS/TS/YAML/JSON), 4 spaces (Python)
 - Line length: 120 characters max
 - Encoding: UTF-8
 - Line endings: LF (Unix)
 - Trailing whitespace: Remove
 
-**Code Standards (claude/docs/AGENTS.md):**
+**Engineering Principles:**
 - **KISS** - Keep It Simple, Stupid
 - **YAGNI** - You Ain't Gonna Need It
 - **DRY** - Don't Repeat Yourself
@@ -250,15 +304,18 @@ yamllint .github/workflows/*.yml
 
 ### Tool Preferences
 
-Use these tools in order of preference:
-
 | Category | Preferred | Fallback |
-|----------|-----------|----------|
+|---|---|---|
 | File Search | `fd` | `find` |
-| Text Search | `rg` (ripgrep) | (grep blocked by hook) |
+| Text Search | `rg` (ripgrep) | *(grep blocked by hook)* |
 | Code Structure | `ast-grep`, LSP tools | - |
 | File Listing | `eza` | `ls` |
-| Data Processing | `jq` (JSON), `yq` (YAML) | - |
+| JSON Processing | `jq` | - |
+| YAML Processing | `yq` | - |
+| HTTP | `aria2` | `curl` |
+| Sed replacement | `sd` | `sed` |
+
+> **Policy:** `grep` is blocked by the `enforce_rg_over_grep.py` hook. Always use `rg`.
 
 <lsp_enforcement>
 Use LSP for code navigation before edits: go-to-definition, find-references, find-implementations. Validate with LSP before making changes. Use text search (rg) only for literal strings, TODOs, and config values.
@@ -269,8 +326,9 @@ Use LSP for code navigation before edits: go-to-definition, find-references, fin
 **Commit Messages:**
 - Format: `type(scope): description`
 - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
-- Max length: 72 characters for subject
+- Max subject length: 72 characters
 - Body: Explain WHY, not WHAT
+- No emojis
 
 **Branch Names:**
 - Feature: `feature/description`
@@ -282,159 +340,174 @@ Use LSP for code navigation before edits: go-to-definition, find-references, fin
 - Use descriptive titles
 - Include test plan
 - Link related issues
-- Use `gh pr create` for automation
+
+---
+
+## Agents Reference (12 Total)
+
+All agents live in `claude/agents/`. Invoke with `/agent <name>`.
+
+| Agent | Model | Description |
+|---|---|---|
+| `ci-cd-expert` | sonnet | CI/CD pipeline design, GitHub Actions, GitLab CI, troubleshooting |
+| `code-explorer` | haiku | Codebase analysis: execution paths, architecture mapping, patterns |
+| `code-simplifier` | opus | Refactoring for clarity and maintainability |
+| `docker-specialist` | sonnet | Dockerfile optimization, multi-stage builds, security hardening |
+| `general-purpose` | sonnet | Default agent for complex multi-step tasks |
+| `language-expert` | sonnet | Multi-language: Bash, Python, JS, TS, Rust |
+| `maintenance` | sonnet | Cleanup, tech debt, DX improvements |
+| `merge-supervisor` | opus | Git merge conflict resolution |
+| `optimizer` | opus | Context engineering, token optimization, multi-agent workflows |
+| `prd` | opus | Product Requirements Documents with GitHub issue creation |
+| `reverse-engineer` | opus | Binary analysis (authorized use, CTF, malware defense only) |
+| `skill-auditor` | sonnet | SKILL.md compliance audits and fixes |
+
+---
+
+## Skills Reference (32 Total)
+
+All skills live in `claude/skills/`. Invoke with `/skill <name>`.
+
+| Skill | Purpose |
+|---|---|
+| `ast-grep-search` | AST-based structural code search and refactoring |
+| `bash-optimizer` | Optimize bash scripts for performance and correctness |
+| `code-antipatterns-analysis` | Detect and report code antipatterns |
+| `code-execution` | Safe code execution patterns |
+| `data-formats` | Format conversion: JSON, TOON, YAML, CSV |
+| `git-cli-agentic` | Advanced git operations and workflows |
+| `github` | GitHub CLI operations (issues, PRs, releases) |
+| `hooks-configuration` | Configure and manage Claude Code hooks |
+| `javascript` | JavaScript idiomatic patterns and best practices |
+| `json-repair` | JSON validation, repair, and normalization |
+| `linter-autofix` | Auto-fix linting errors across languages |
+| `llm-boost` | LLM performance tuning and prompt optimization |
+| `lsp-enable` | LSP-first code intelligence setup |
+| `mcp-builder` | Build Model Context Protocol servers |
+| `moai` | Claude Code authoring kit for SKILL.md files |
+| `modern-tool-substitution` | Replace legacy tools with modern equivalents |
+| `prd` | Product Requirements Document generation |
+| `python-project-development` | Python project patterns and structure |
+| `ralph-planner` | Structured planning and task breakdown |
+| `render-output` | Output formatting and rendering |
+| `repomix` | Repository bundling for LLM context |
+| `ruff` | Python linting and formatting with ruff |
+| `rust` | Rust development patterns |
+| `self-reflection` | Agent self-evaluation and improvement |
+| `sequential-thinking` | Step-by-step structured reasoning |
+| `strategic-compact` | Context compaction strategies |
+| `svg` | SVG creation and optimization |
+| `toon-formatter` | TOON v2 format conversion (31% token savings vs JSON) |
+| `typescript` | TypeScript best practices and patterns |
+| `using-tmux-for-interactive-commands` | Tmux for interactive CLI workflows |
+| `uv` | Python uv package manager workflows |
+| `vulture-dead-code` | Dead code detection with vulture |
+
+---
+
+## Plugins Reference (13 Total)
+
+All plugins live in `plugins/`. Install via `/plugin install <name>@claude-config-marketplace`.
+
+| Plugin | Purpose |
+|---|---|
+| `coding-assistant` | Code review, debugging, refactoring with auto-format hooks |
+| `conserve` | Context/token optimization, bloat scanning |
+| `config-wizard` | Plugin creation wizard |
+| `dependency-blocker` | Block `node_modules`, `dist`, `build`, `.venv` from context |
+| `dynamic-mcp-router` | Dynamic MCP server routing |
+| `moderntools` | Modern tool substitution enforcement |
+| `plugin-validator` | Plugin structure and compliance validation |
+| `prompt-improver` | Prompt clarity and effectiveness enhancement |
+| `skill-authoring` | Skill creation framework and templates |
+| `skills-eval` | Skill evaluation and benchmarking |
+| `skills_performance-optimization` | Skill performance tuning |
+| `claude-code-lsps` | LSP integrations for Claude Code |
+| `claude-praetorian` | Security guardrails and policy enforcement |
+
+---
+
+## Hooks System
+
+Hooks auto-run at key events. Configuration in `claude/hooks/hooks.json`.
+
+| Event | Hook | Behavior |
+|---|---|---|
+| `SessionStart` | `load-mcp-skills.sh` | Load MCP skills at session start |
+| `PreToolUse[Bash]` | `quality_gate.py` | Validate bash commands before execution |
+| `PostToolUse[Edit/Write]` | `post-edit-format.py` | Auto-format edited files |
+| `PostToolUse[Edit/Write]` | *(inline)* | Strip trailing whitespace |
+
+**Hook Scripts:**
+- `context_protector.py` - Guard sensitive context from leaking
+- `enforce_rg_over_grep.py` - Block `grep`, enforce `rg`
+- `precompact_context.py` - Pre-process before context compaction
+- `json-to-toon.mjs` - Convert JSON to TOON format
+
+---
 
 ## Dependencies
 
-### Python (pyproject.toml)
+### Python (`pyproject.toml`)
 
-**Core:**
-- Python 3.13+
-- claudelint - CLAUDE.md validation
-- ruff - Fast linting and formatting
-- uv - Fast package manager
+```toml
+requires-python = ">=3.13"
+dependencies = ["claudelint"]
 
-**Development:**
-- pytest - Testing framework
-- pytest-cov - Coverage reporting
+[dependency-groups]
+dev = ["ruff"]
+```
 
-### JavaScript/TypeScript
+### System Tools Required
 
-**Core:**
-- TypeScript 5.0+ - Type checking
-- Biome - Fast formatter and linter
-- Bun - JavaScript runtime
-
-**Configuration:**
-- tsconfig.json - Strict mode, React JSX, ES2020+
-
-### System Tools
-
-**Required:**
-- git - Version control
-- gh - GitHub CLI
-- rg (ripgrep) - Text search
-- fd - File search
-- jq - JSON processing
+| Tool | Purpose |
+|---|---|
+| `git` | Version control |
+| `gh` | GitHub CLI |
+| `rg` (ripgrep) | Text search (mandatory) |
+| `fd` | File search |
+| `jq` | JSON processing |
+| `bun` | JavaScript runtime |
+| `uv` | Python package manager |
 
 **Optional:**
-- eza - Better ls
-- ast-grep - AST-based search
-- shellcheck - Bash linting
-- yamllint - YAML validation
+- `eza` - Better ls
+- `ast-grep` - AST-based search
+- `shellcheck` - Bash linting
+- `yamllint` - YAML validation
+- `sd` - Fast sed replacement
+- `aria2` - Fast downloads
 
-## Key Features
+---
 
-### Plugin System
+## Security
 
-**Architecture:**
-- Installable plugins with skills and hooks
-- Skill-based architecture for reusability
-- MCP integration for extensible tools
-- Automated code formatting
-- Version management and dependency tracking
+**Policy Enforcement:**
+- `grep` blocked; must use `rg` (enforced by PreToolUse hook)
+- No emojis in code, comments, commits, or docs
+- Dotfiles (`.ssh`, `.aws`, `.env`) protected by `claude-praetorian` plugin
+- Dependency directories (`node_modules`, `dist`, etc.) blocked from context by `dependency-blocker`
 
-**Installation Methods:**
-1. Marketplace: `/plugin marketplace add Ven0m0/claude-config`
-2. Individual: `/plugin install plugin-name@marketplace-name`
-3. Local: Clone and configure as local marketplace
+**Bash Standards:**
+- `set -euo pipefail` in all shell scripts
+- Quote all variables: `"${var}"`
+- Use `[[ ]]` not `[ ]`
+- No `eval`, no backticks
 
-### Specialized Agents (18 Total)
-
-**Code Experts:**
-- `bash-pro` - Advanced bash scripting
-- `python-pro` - Python development
-- `typescript-pro` - TypeScript development
-- `rust-pro` - Rust development
-- `javascript-pro` - JavaScript development
-
-**Task Automation:**
-- `code-simplifier` - Refactoring and simplification
-- `janitor` - Cleanup and maintenance
-- `merge-supervisor` - Merge conflict resolution
-
-**Optimization:**
-- `llm-boost` - LLM performance optimization
-- `dx-optimizer` - Developer experience improvement
-- `turbo` - Maximum speed execution
-
-**Analysis:**
-- `reverse-engineer` - Code analysis and understanding
-- `code-explorer` - Codebase navigation
-
-**Management:**
-- `context-manager` - Context optimization
-- `mcp-expert` - MCP integration specialist
-
-**Documentation:**
-- `prd` - Product requirements documentation
-
-### Specialized Skills (59 Total)
-
-**Code Quality:**
-- `linter-autofix` - Auto-fix linting errors
-- `json-repair` - JSON validation and repair
-- `code-antipatterns-analysis` - Detect antipatterns
-
-**Search:**
-- `ast-grep-search` - AST-based code search
-- `git-cli-agentic` - Advanced git operations
-- `mgrep-code-search` - Multi-pattern search
-
-**Optimization:**
-- `bash-optimizer` - Optimize bash scripts
-- `llm-boost` - LLM performance tuning
-- `token-conservation` - Reduce token usage
-
-**Data:**
-- `data-formats` - Format conversion
-- `image-optimization` - Image compression
-- `toon-formatter` - TOON format conversion
-
-**Tools:**
-- `mcp-builder` - Build MCP servers
-- `mcp-to-skill-converter` - Convert MCP to skills
-- `mcp-tools-as-code` - MCP as code
-
-**Workflows:**
-- Git operations, markdown management, test execution
-
-### Security Features
-
-**Block Dotfiles Plugin:**
-- Prevents access to `.ssh`, `.aws`, `.env`, credentials
-- Protects sensitive configuration files
-
-**Dependency Blocker:**
-- Blocks `node_modules`, `dist`, `build`, `vendor`, `.venv`
-- Reduces context pollution
-- Speeds up operations
-
-**Context Protection:**
-- Safeguards sensitive information
-- Prevents accidental exposure
-- Enforces security policies
-
-**LSP Enforcement:**
-- Mandatory code inspection before edits
-- Prevents blind text-based modifications
-- Ensures type safety
+---
 
 ## Token Optimization
 
-### TOON Format
+### TOON Format (Token-Optimized Object Notation)
 
-**Token-Optimized Object Notation:**
-- 31% token reduction vs JSON
-- Compact representation for data
-- Supported by `toon-formatter` skill
-- Used for large datasets in prompts
+31% token reduction vs JSON for tabular data:
 
-**Example:**
 ```toon
 user:1|John Doe|john@example.com|active
 user:2|Jane Smith|jane@example.com|active
 ```
+
+Use `/skill toon-formatter` to convert data.
 
 ### Maximum Effective Context Window (MECW)
 
@@ -444,240 +517,72 @@ user:2|Jane Smith|jane@example.com|active
 - Context protection - Guard against bloat
 - Strategic caching - Reuse expensive computations
 
-**Configuration:**
-- Main Model: `opusplan` (Claude Opus for extended thinking)
+**Model Configuration:**
+- Main Model: `opusplan` (Claude Opus with extended thinking)
 - Thinking Tokens: 16,000 max
 - Output Tokens: 63,999 max
+- Subagent Model: `haiku`
 - MCP Output: 25,000 tokens max
-
-## Testing and Quality Assurance
-
-### Test Framework
-
-**Python Tests:**
-- pytest framework
-- 10+ test files in `plugins/conserve/tests/`
-- Unit tests: `test_safe_replacer.py`, `test_context_optimizer.py`
-
-**Test Execution:**
-```bash
-# Run all tests
-make test
-
-# Run specific test
-pytest tests/test_file.py
-
-# Run with coverage
-pytest --cov=. tests/
-```
-
-### Code Quality Tools
-
-**Linting:**
-- `claudelint` - CLAUDE.md validation
-- `ruff` - Python linting (fast)
-- `biome` - JS/TS linting
-- `shellcheck` - Bash validation
-- `yamllint` - YAML validation
-- `markdownlint` - Markdown style
-
-**Formatting:**
-- `ruff format` - Python auto-formatting
-- `biome format` - JS/TS auto-formatting
-- `prettier` - Fallback formatter
-- Auto-format hooks on file edits
-
-### CI/CD Integration
-
-**Automated Checks:**
-- Lint all CLAUDE.md files
-- Python code quality (ruff)
-- Code review automation
-- Bug detection and fixing
-- Performance analysis
-- Dependency updates (Dependabot)
-
-**Quality Gates:**
-- All tests must pass
-- Linting must succeed
-- No security vulnerabilities
-- Documentation must be current
-
-## Common Tasks Reference
-
-### Daily Development
-
-**Start a Session:**
-```bash
-# Load MCP skills automatically (via session-start hook)
-# Context protection enabled
-# Auto-format on file edits enabled
-```
-
-**Search Code:**
-```bash
-# Use rg, not grep (enforced by hook)
-rg "pattern" --type python
-
-# Use ast-grep for structural search
-ast-grep --pattern 'function $NAME() { $$$ }'
-
-# Use LSP for symbol navigation
-# (via editor integration)
-```
-
-**Fix Linting Issues:**
-```bash
-# Python - auto-fix with ruff
-ruff check --fix .
-
-# JS/TS - auto-fix with biome
-biome check --apply .
-
-# Or use linter-autofix skill
-/skill linter-autofix
-```
-
-### Plugin Development
-
-**Create Plugin:**
-```bash
-# Use config wizard
-/skill config-wizard
-
-# Follow prompts to create:
-# - plugin.json (metadata)
-# - README.md (documentation)
-# - SKILL.md (skill docs)
-# - Hook scripts (if needed)
-```
-
-**Test Plugin:**
-```bash
-# Install locally
-/plugin install /path/to/plugin
-
-# Test skill execution
-/skill your-skill-name
-
-# Uninstall
-/plugin uninstall plugin-name
-```
-
-**Publish Plugin:**
-1. Add to `.claude-plugin/marketplace.json`
-2. Create PR to marketplace repository
-3. Update version in `plugin.json`
-4. Document in CHANGELOG.md
-
-### Documentation Maintenance
-
-**Update CLAUDE.md:**
-```bash
-# Edit file
-vim CLAUDE.md
-
-# Validate
-claudelint --check CLAUDE.md
-
-# Commit
-git add CLAUDE.md
-git commit -m "docs: update CLAUDE.md"
-```
-
-**Update AGENTS.md:**
-```bash
-# Edit this file
-vim AGENTS.md
-
-# Check markdown style
-markdownlint AGENTS.md
-
-# Commit
-git add AGENTS.md
-git commit -m "docs: update agent configuration"
-```
-
-**Progressive Disclosure Pattern:**
-1. Quick reference (1 page)
-2. Implementation guide (2-5 pages)
-3. Advanced topics (detailed)
-4. Reference documentation (comprehensive)
-
-## Environment Configuration
-
-### Environment Variables
-
-**Core:**
-- `CLAUDE_ENV_FILE` - Persistent environment variables
-- `CLAUDE_PLUGIN_ROOT` - Hook script resolution
-- `CONSERVATION_MODE` - Resource optimization (normal/quick/deep)
-
-**Development:**
-- `CLAUDE_DEBUG` - Enable debug logging
-- `CLAUDE_LOG_LEVEL` - Logging verbosity
-
-### Model Configuration (settings.json)
-
-**Main Model:**
-```json
-{
-  "model": "opusplan",
-  "maxThinkingTokens": 16000,
-  "maxOutputTokens": 63999
-}
-```
-
-**Subagent Model:**
-```json
-{
-  "subagentModel": "haiku",
-  "mcpMaxOutputTokens": 25000
-}
-```
-
-**Permissions (20 allow rules):**
-- Git operations
-- File system access
-- Network requests (specific domains)
-- MCP server spawning
-- Hook execution
-
-## Additional Resources
-
-### Documentation
-
-**Core Guides:**
-- `claude/docs/AGENTS.md` - Agent orchestration
-- `claude/docs/prompt-best-practices.md` - Prompt patterns
-- `claude/docs/lsp-tools-integration.md` - LSP integration
-- `claude/docs/claude-md-guide.md` - CLAUDE.md authoring
-
-**References:**
-- `claude/docs/skills-ref.md` - All skills index
-- `claude/docs/toon.md` - TOON format spec
-- `claude/docs/prompt-caching.md` - Caching strategies
-- `claude/docs/progressive-disclosure.md` - Content architecture
-
-### Community
-
-**Repository:** https://github.com/Ven0m0/claude-config
-**Issues:** https://github.com/Ven0m0/claude-config/issues
-**Discussions:** https://github.com/Ven0m0/claude-config/discussions
-
-### Version History
-
-**Current:** v1.1.0
-**See:** CHANGELOG.md for full history
 
 ---
 
-**Last Updated:** 2026-02-13
-**Repository Size:** ~5.3MB
-**Total Commits:** 82+
-**Active Development:** Yes
+## Testing and Quality Assurance
 
-This configuration ecosystem is production-ready and actively maintained with emphasis on token efficiency, code quality, security, and automation.
+```bash
+# Python tests
+uv run pytest plugins/conserve/tests/ --cov=.
+
+# All-in-one quality check
+ruff check . && biome check . && claudelint --check AGENTS.md
+
+# Shell scripts
+shellcheck claude/hooks/*.sh
+
+# YAML
+yamllint .github/workflows/*.yml
+```
+
+### CI/CD Workflows
+
+| Workflow | Trigger | Purpose |
+|---|---|---|
+| `claudelint.yml` | push/PR | Validate AGENTS.md |
+| `ruff.yml` | push/PR | Python code quality |
+| `claude.yml` | push/PR | Claude Code analysis |
+| `claude-code-review.yml` | PR | Automated code review |
+| `claude-pr-review.yml` | PR | PR review automation |
+| `droid.yml` | schedule | Automated improvements |
+| `jules-*.yml` | schedule | Cleanup, performance, bug fixes |
+
+---
+
+## Environment Variables
+
+| Variable | Purpose |
+|---|---|
+| `CLAUDE_ENV_FILE` | Persistent environment variables |
+| `CLAUDE_PLUGIN_ROOT` | Hook script resolution path |
+| `CONSERVATION_MODE` | Resource optimization (`normal`/`quick`/`deep`) |
+| `CLAUDE_DEBUG` | Enable debug logging |
+| `CLAUDE_LOG_LEVEL` | Logging verbosity |
+
+---
+
+## Additional Resources
+
+| Resource | Path |
+|---|---|
+| Prompt best practices | `claude/docs/prompt-best-practices.md` |
+| LSP integration | `claude/docs/lsp-tools-integration.md` |
+| CLAUDE.md authoring | `claude/docs/claude-md-guide.md` |
+| Skills index | `claude/docs/skills-index.md` |
+| TOON format spec | `claude/docs/toon.md` |
+| Hooks reference | `claude/docs/hooks.md` |
+| Progressive disclosure | `claude/docs/progressive-disclosure.md` |
+| Repository | https://github.com/Ven0m0/claude-config |
+| Issues | https://github.com/Ven0m0/claude-config/issues |
+
+---
 
 ## Session Completion
 
@@ -699,3 +604,9 @@ When ending a work session, complete all steps below. Work is not complete until
 
 If push fails, resolve and retry until it succeeds. Do not stop before pushing - that leaves work stranded locally.
 </session_completion>
+
+---
+
+**Last Updated:** 2026-02-22
+**Repository:** https://github.com/Ven0m0/claude-config
+**Active Development:** Yes

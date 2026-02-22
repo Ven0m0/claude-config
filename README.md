@@ -1,310 +1,226 @@
 # Claude Code Plugin Marketplace
 
-A curated collection of Claude Code plugins, skills, and tools for enhanced productivity. This marketplace provides professional-grade plugins for coding, documentation, and data analysis workflows.
+A curated collection of Claude Code plugins, agents, skills, and tools for enhanced productivity.
+This marketplace provides professional-grade components for coding, documentation, and data analysis workflows.
 
-## 🚀 Quick Start
+## Quick Start
 
-### Installing the Marketplace
-
-Add this marketplace to your Claude Code installation:
+### Install the Marketplace
 
 ```bash
 /plugin marketplace add Ven0m0/claude-config
 ```
 
-### Installing Plugins
-
-Install individual plugins from the marketplace:
+### Install Individual Plugins
 
 ```bash
-# Install coding assistant
+# Core plugins
 /plugin install coding-assistant@claude-config-marketplace
-
-# Install prompt improver
-/plugin install prompt-improver@claude-config-marketplace
-
-# Install conserve
 /plugin install conserve@claude-config-marketplace
-
-# Install config wizard
+/plugin install prompt-improver@claude-config-marketplace
 /plugin install config-wizard@claude-config-marketplace
-
-# Install dependency blocker
 /plugin install dependency-blocker@claude-config-marketplace
+/plugin install skill-authoring@claude-config-marketplace
 
-# Install block dotfiles
-/plugin install block-dotfiles@claude-config-marketplace
-
-# Install gemini delegation
-/plugin install gemini-delegation@claude-config-marketplace
+# Security and tooling
+/plugin install claude-praetorian@claude-config-marketplace
+/plugin install moderntools@claude-config-marketplace
+/plugin install dynamic-mcp-router@claude-config-marketplace
 ```
 
-Or install all plugins at once:
+### Use the Claude Config Pack Directly
+
+Copy the `claude/` directory to your Claude Code configuration:
 
 ```bash
-/plugin install coding-assistant prompt-improver conserve config-wizard dependency-blocker block-dotfiles gemini-delegation @claude-config-marketplace
+cp -r claude/ ~/.claude/
 ```
 
-## 📦 Available Plugins
+This gives you 12 agents and 32 skills immediately.
 
-### 🔧 Coding Assistant
+---
+
+## Available Plugins (13 Total)
+
+### coding-assistant
 
 Advanced coding assistant with code review, debugging, and refactoring capabilities.
-
-**Skills:**
 
 - `/code-review` - Comprehensive code reviews with security and performance checks
 - `/debug` - Systematic debugging and root cause analysis
 - `/refactor` - Code refactoring for better structure and maintainability
-
-**Features:**
-
 - Automatic code formatting after edits (Biome, ruff, gofmt, rustfmt)
-- Security vulnerability detection
-- Performance optimization suggestions
-- Best practices guidance
 
-[View Plugin Documentation](./plugins/coding-assistant/README.md)
+[View Documentation](./plugins/coding-assistant/README.md)
 
-### ⚡ Conserve
+### conserve
 
 Resource optimization and performance monitoring toolkit for efficient Claude Code workflows.
-
-**Commands:**
 
 - `/bloat-scan` - Identify dead code, duplication, and documentation bloat
 - `/optimize-context` - Optimize context usage and token efficiency
 - `/analyze-growth` - Analyze codebase growth patterns
 - `/ai-hygiene-audit` - Audit AI-generated code quality
 - `/unbloat` - Remove unnecessary code and improve efficiency
-
-**Features:**
-
 - Maximum Effective Context Window (MECW) principle
-- MCP patterns for efficient data processing
-- Progressive loading for reduced session footprint
-- Token usage optimization
-- Dead code detection and remediation
 
-**Author:** Alex Thola ([athola](https://github.com/athola))
+[View Documentation](./plugins/conserve/README.md)
 
-[View Plugin Documentation](./plugins/conserve/README.md)
+### prompt-improver
 
-### 💡 Prompt Improver
-
-Intelligent prompt optimization using skill-based architecture. Enriches vague prompts with research-based clarifying questions before Claude Code executes them.
-
-**Features:**
+Intelligent prompt optimization. Enriches vague prompts with research-based clarifying questions.
 
 - Automatic prompt clarity evaluation
 - Research-based clarifying questions (1-6 questions)
 - Zero overhead for clear prompts
 - 31% token reduction through skill-based architecture
-- Uses AskUserQuestion tool for targeted clarification
 
-**Author:** [severity1](https://github.com/severity1)
+[View Documentation](./plugins/prompt-improver/README.md)
 
-[View Plugin Documentation](./plugins/prompt-improver/README.md)
+### config-wizard
 
-### 🔒 Block Dotfiles
-
-Security plugin that blocks access to sensitive dotfiles and configuration files containing credentials.
-
-**Features:**
-
-- Blocks access to shell configuration files (.bashrc, .zshrc, etc.)
-- Blocks access to environment variable files (.env, .env.local, etc.)
-- Blocks access to credential directories (.ssh, .aws, .docker, .kube, etc.)
-- Blocks access to credential files (.npmrc, .pypirc, .gitconfig, .netrc)
-- Comprehensive test suite with 104 tests
-
-**Author:** wombat9000
-
-[View Plugin Documentation](./plugins/block-dotfiles/README.md)
-
-### 🧙 Config Wizard
-
-Interactive wizard to help create new Claude Code plugins.
-
-**Commands:**
+Interactive wizard to create new Claude Code plugins and skills.
 
 - `/config-wizard:cmd-init` - Initialize a new slash command
 - `/config-wizard:cmd-review` - Review an existing slash command
 
-**Skills:**
+[View Documentation](./plugins/config-wizard/README.md)
 
-- `designing-claude-skills` - Guide for creating, reviewing, and improving skills
-- `managing-permissions` - Guide for configuring Claude Code permissions
+### dependency-blocker
 
-**Author:** wombat9000
+Blocks Claude from accessing dependency directories to reduce token usage.
 
-[View Plugin Documentation](./plugins/config-wizard/README.md)
+- Blocks `node_modules`, `.git`, `dist`, `build`, `vendor`, `target`, `.venv`, `venv`
+- Blocks Bash, Read, Glob, and Grep operations targeting excluded directories
 
-### 🚫 Dependency Blocker
+[View Documentation](./plugins/dependency-blocker/README.md)
 
-Performance plugin that prevents Claude from accessing dependency directories to save tokens.
+### skill-authoring
 
-**Features:**
+Framework and templates for creating new Claude Code skills.
 
-- Blocks access to `node_modules`, `.git`, `dist`, `build`, `vendor`, `target`, `.venv`, and `venv`
-- Blocks Bash commands targeting excluded directories
-- Blocks Read operations from excluded directories
-- Blocks Glob patterns targeting excluded directories
-- Blocks Grep searches in excluded directories
+[View Documentation](./plugins/skill-authoring/README.md)
 
-**Author:** wombat9000
+### claude-praetorian
 
-[View Plugin Documentation](./plugins/dependency-blocker/README.md)
+Security guardrails and policy enforcement for Claude Code sessions.
 
-### 🤖 Gemini Delegation
+### moderntools
 
-Delegate research and web search tasks to Gemini AI via CLI.
+Enforces modern tool substitutions: `fd` over `find`, `rg` over `grep`, `bun` over `npm`, etc.
 
-**Features:**
+### dynamic-mcp-router
 
-- Delegate web research to Gemini AI
-- Session context integration
-- CLI-based task delegation
+Dynamic MCP server routing for flexible tool integration.
 
-**Author:** wombat9000
+### plugin-validator
 
-[View Plugin Documentation](./plugins/gemini-delegation/README.md)
+Validates plugin structure and compliance against marketplace standards.
 
-## 📁 Repository Structure
+### skills-eval
+
+Skill evaluation and benchmarking framework.
+
+### skills_performance-optimization
+
+Performance tuning for Claude Code skills.
+
+### claude-code-lsps
+
+LSP integrations for Claude Code (go-to-definition, find-references, etc.).
+
+---
+
+## Claude Config Pack
+
+The `claude/` directory is a standalone config pack with:
+
+**12 Sub-Agents** (`claude/agents/`):
+
+| Agent | Purpose |
+|---|---|
+| `ci-cd-expert` | CI/CD pipeline design and troubleshooting |
+| `code-explorer` | Codebase analysis and architecture mapping |
+| `code-simplifier` | Refactoring for clarity and maintainability |
+| `docker-specialist` | Dockerfile optimization and security hardening |
+| `general-purpose` | Default multi-step task agent |
+| `language-expert` | Multi-language: Bash, Python, JS, TS, Rust |
+| `maintenance` | Cleanup, tech debt, DX improvements |
+| `merge-supervisor` | Git merge conflict resolution |
+| `optimizer` | Context and LLM optimization |
+| `prd` | Product Requirements Documents |
+| `reverse-engineer` | Binary analysis (authorized use only) |
+| `skill-auditor` | SKILL.md compliance audits |
+
+**32 Skills** (`claude/skills/`):
+
+`ast-grep-search`, `bash-optimizer`, `code-antipatterns-analysis`, `code-execution`,
+`data-formats`, `git-cli-agentic`, `github`, `hooks-configuration`, `javascript`,
+`json-repair`, `linter-autofix`, `llm-boost`, `lsp-enable`, `mcp-builder`, `moai`,
+`modern-tool-substitution`, `prd`, `python-project-development`, `ralph-planner`,
+`render-output`, `repomix`, `ruff`, `rust`, `self-reflection`, `sequential-thinking`,
+`strategic-compact`, `svg`, `toon-formatter`, `typescript`, `using-tmux-for-interactive-commands`,
+`uv`, `vulture-dead-code`
+
+---
+
+## Repository Structure
 
 ```
-.
-├── .claude-plugin/
-│   └── marketplace.json        # Marketplace catalog
-├── .gemini/                    # Gemini Code Assist config
-├── claude/                     # Claude Code config and tools
-├── gemini/                     # Gemini CLI config
-├── copilot-cli/                # Copilot CLI templates
-├── cursor/                     # Cursor rules and templates
-├── opencode/                   # OpenCode references
-├── qwen/                       # Qwen prompt templates
-├── plugins/
-│   ├── block-dotfiles/         # Block dotfile access
-│   ├── coding-assistant/       # Code review, debug, refactor
-│   ├── config-wizard/          # Plugin configuration wizard
-│   ├── conserve/               # Context and token optimization
-│   ├── dependency-blocker/     # Block dependency directories
-│   ├── gemini-delegation/      # Gemini CLI delegation
-│   └── prompt-improver/        # Prompt clarity improvements
-├── examples/                   # Usage examples
-├── LLM_CONFIG_STANDARDS.md     # Shared config defaults
-├── README.md                   # This file
-├── SETUP.md                    # Setup guide
-├── CHANGELOG.md                # Version history
-└── LICENSE
+claude-config/
+├── AGENTS.md           # Primary AI config (symlinked as CLAUDE.md, GEMINI.md)
+├── README.md           # This file
+├── SETUP.md            # Installation guide
+├── CHANGELOG.md        # Version history
+│
+├── claude/             # Claude Code config pack
+│   ├── agents/         # 12 sub-agent definitions
+│   ├── skills/         # 32 reusable skills
+│   ├── hooks/          # Auto-running hooks (format, lint, MCP)
+│   ├── docs/           # Reference documentation
+│   └── settings.json   # Permissions and model config
+│
+├── plugins/            # 13 installable plugins
+├── gemini/             # Gemini CLI config
+├── cursor/             # Cursor editor rules
+├── copilot-cli/        # GitHub Copilot CLI config
+├── opencode/           # OpenCode references
+└── .github/
+    ├── copilot-instructions.md  # Copilot guardrails
+    └── workflows/               # CI/CD automation
 ```
 
-## 🎯 Usage Examples
+---
 
-### Code Review Workflow
-
-```bash
-# Review a file or directory
-/code-review src/components/UserProfile.tsx
-
-# Review with specific focus
-/code-review --focus security src/api/
-```
-
-### Context Optimization
-
-```bash
-# Scan for bloat signals
-/bloat-scan
-
-# Reduce context usage
-/optimize-context
-```
-
-## 🔧 Requirements
-
-### Global Requirements
+## Requirements
 
 - Claude Code CLI (latest version)
 - Git
+- `rg` (ripgrep) - required by hooks
+- `gh` - GitHub CLI (for PR/issue workflows)
+- Optional: `fd`, `eza`, `ast-grep`, `jq`, `bun`, `uv`
 
-### Plugin-Specific Requirements
+---
 
-**Coding Assistant:**
+## Documentation
 
-- Optional formatters: Biome, ruff, gofmt, rustfmt
+- [AGENTS.md](./AGENTS.md) - Complete agent, skill, and configuration reference
+- [SETUP.md](./SETUP.md) - Detailed installation and configuration
+- [CHANGELOG.md](./CHANGELOG.md) - Version history
+- [claude/docs/](./claude/docs/) - Prompt patterns, hooks, LSP integration, TOON format
 
-**Prompt Improver:**
+---
 
-- Claude Code 2.0.22+ (AskUserQuestion tool)
+## Contributing
 
-## 🎨 Features
+Contributions welcome:
 
-### Plugin System
+- Add new plugins or skills
+- Improve existing agents
+- Report issues or suggest features: [GitHub Issues](https://github.com/Ven0m0/claude-config/issues)
 
-- Modular plugin architecture
-- Easy installation and updates
-- Version management
+---
 
-### Skills
+## License
 
-- User-invocable commands via `/skill-name`
-- Context-aware assistance
-- Specialized tools for each domain
-
-### Hooks
-
-- Automatic code formatting
-- Post-edit validations
-- Custom workflows
-
-### MCP Servers
-
-- SQLite database integration
-- Extensible server architecture
-
-## 📚 Documentation
-
-- [Setup Guide](./SETUP.md) - Detailed installation and configuration
-- [Plugin Documentation](./plugins/) - Individual plugin documentation
-- [Examples](./examples/) - Usage examples and tutorials
-- [Changelog](./CHANGELOG.md) - Version history and updates
-
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to:
-
-- Add new plugins
-- Improve existing skills
-- Create additional templates
-- Report issues or suggest features
-
-## 🔒 Security
-
-- Never commit API keys or sensitive data
-- Use environment variables for credentials
-- Review the code before installing plugins
-- Report security issues privately
-
-## 📄 License
-
-This project is licensed under the MIT License. See [LICENSE](./LICENSE) for details.
-
-## 🔗 Links
-
-- [Claude Code Documentation](https://code.claude.com/docs)
-- [Plugin Development Guide](https://code.claude.com/docs/en/plugins.md)
-- [MCP Documentation](https://code.claude.com/docs/en/mcp.md)
-- [Skills Guide](https://code.claude.com/docs/en/skills.md)
-
-## 🙋 Support
-
-For issues or questions:
-
-- Open an issue on GitHub
-- Check the [Setup Guide](./SETUP.md)
-- Review individual plugin documentation
-
-______________________________________________________________________
-
-**Happy coding with Claude! 🚀**
+MIT - see [LICENSE](./LICENSE)
