@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
 """Format embedded Python/Bash blocks in markdown files and run Prettier."""
 
 import hashlib
