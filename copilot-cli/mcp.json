@@ -6,6 +6,7 @@
       "tools": ["*"],
       "headers": {
         "X-MCP-Toolsets": "repos,issues,users,pull_requests,actions,web_search"
+        "Authorization": "Bearer ${GITHUB_TOKEN}"
       }
     },
     "sequential-thinking": {
