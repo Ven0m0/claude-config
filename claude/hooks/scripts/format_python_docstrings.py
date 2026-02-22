@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
 """Format Python docstrings in Google style without external dependencies."""
 
 from __future__ import annotations
