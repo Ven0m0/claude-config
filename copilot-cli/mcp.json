@@ -48,29 +48,10 @@
       "args": ["-y", "@notprolands/ast-grep-mcp"],
       "tools": ["*"]
     },
-    "pare-python": {
+    "octocode": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@paretools/python"],
-      "tools": ["*"]
-    },
-    "pare-lint": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@paretools/lint"],
-      "tools": ["*"]
-    },
-    "pare-search": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@paretools/search"],
-      "tools": ["*"]
-    },
-    "pare-cargo": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@paretools/cargo"],
+      "args": ["-y", "octocode-mcp@latest"],
       "tools": ["*"]
     }
-  }
 }
