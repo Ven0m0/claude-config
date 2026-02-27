@@ -54,10 +54,6 @@
       "command": "npx",
       "args": ["-y", "octocode-mcp@latest"],
       "tools": ["*"]
-    },
-    "octocode": {
-      "command": "npx",
-      "args": ["-y", "octocode-mcp@latest"],
       "env": {
         "GITHUB_TOKEN": "${GITHUB_TOKEN}"
       }
