@@ -122,3 +122,6 @@ uv pip install -U --compile-bytecode zon-format superclaude mdminify mcp gemini-
 uv tool install basedpyright
 # Pacman & Paru
 paru -S docker-language-server vtsls basedpyright
+
+# Copilot
+copilot plugin install context-engineering@awesome-copilot
