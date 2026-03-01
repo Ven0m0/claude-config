@@ -443,7 +443,7 @@ else
 
   # No arguments, read JSON from stdin (Claude Code hook mode)
   INPUT=$(cat)
-CMD=$(echo "$INPUT" | jq -r ".tool_input.command // empty" | tr '\t\r' ' ')
+CMD=$(echo "$INPUT" | jq -r ".. | objects | select(has(\"command\")) | .command" | head -n 1 | tr '\t\r' ' ')
 fi
 
 # Skip check if no command was extracted

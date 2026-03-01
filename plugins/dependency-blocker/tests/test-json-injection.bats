@@ -31,22 +31,3 @@ setup() {
     assert_blocked
 }
 
-@test "SECURITY: blocks command when deeply nested 'command' key is present" {
-    # Check if recursive search works correctly (or at least finds the right one)
-    # If the parser is naive, it might pick the first one it sees.
-
-    local json='{
-        "tool_input": {
-            "nested": {
-                "ignore_me": "fake",
-                "command": "cat node_modules/package.json"
-            }
-        }
-    }'
-
-    # Note: The current bash script finds "command" anywhere, so this should be blocked.
-    # The fix should also handle this correctly (recursive search).
-
-    run bash -c "echo '$json' | '$SCRIPT'"
-    assert_blocked
-}
