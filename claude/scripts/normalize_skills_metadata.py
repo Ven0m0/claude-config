@@ -107,8 +107,22 @@ def normalize_skill_metadata(skill_path: Path) -> bool:
     if description:
         if len(description) < 100:
             # Try to expand from body if available
-            pass  # Will be handled by developer
-        elif len(description) > 200:
+            paragraphs = [p.strip() for p in body.split("\n\n") if p.strip()]
+            for p in paragraphs:
+                if not p.startswith(("#", "```", "<", "|", ">", "-", "*")):
+                    clean_p = " ".join(p.split())
+                    if len(clean_p) > 20 and clean_p.lower() not in description.lower():
+                        desc_stripped = description.strip()
+                        if desc_stripped and not desc_stripped.endswith(
+                            (".", "!", "?")
+                        ):
+                            desc_stripped += "."
+                        description = f"{desc_stripped} {clean_p}".strip()
+                        metadata["description"] = description
+                        modified = True
+                        break
+
+        if len(description) > 200:
             # Truncate gracefully
             if len(description) > 300:
                 metadata["description"] = description[:200].rsplit(" ", 1)[0] + "..."
