@@ -124,3 +124,11 @@ copilot plugin install context-engineering@awesome-copilot
 
 # Factory-droid
 curl -fsSL https://app.factory.ai/cli | bash
+
+bun i -g rulesync
+# Create necessary directories, sample rule files, and configuration file
+rulesync init
+# Install official skills (recommended)
+rulesync fetch dyoshikawa/rulesync --features skills
+# Generate unified configurations with all features
+rulesync generate --targets "*" --features "*"
