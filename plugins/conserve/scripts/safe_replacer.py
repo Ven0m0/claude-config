@@ -21,22 +21,22 @@ class SafeDependencyUpdater:
     def __init__(self) -> None:
         """Initialize the safe dependency updater."""
         self.patterns = {
-            # Match only standalone references (not already prefixed)
-            "standalone_git_review": r"\bgit-workspace-review\b",
-            "standalone_review_core": r"\breview-core\b",
-            # Match wrong prefixes
+            # Match wrong prefixes first
             "wrong_workspace_prefix": r"workspace-utils:git-workspace-review",
             "wrong_workflow_prefix": r"workflow-utils:review-core",
             # Match full old plugin paths
             "old_skill_paths": r"~?/\.claude/skills/",
+            # Match only standalone references (not already prefixed)
+            "standalone_git_review": r"(?<!:)\bgit-workspace-review\b",
+            "standalone_review_core": r"(?<!:)\breview-core\b",
         }
 
         self.replacements = {
-            "standalone_git_review": "sanctum:git-workspace-review",
-            "standalone_review_core": "imbue:review-core",
             "wrong_workspace_prefix": "sanctum:git-workspace-review",
             "wrong_workflow_prefix": "imbue:review-core",
             "old_skill_paths": "",
+            "standalone_git_review": "sanctum:git-workspace-review",
+            "standalone_review_core": "imbue:review-core",
         }
 
     def update_file(self, file_path: Path) -> tuple[bool, int]:
