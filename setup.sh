@@ -113,8 +113,8 @@ else
 fi
 
 # Bun
-bun install -g --trust pm2 @github/copilot @ai-sdk/openai-compatible @blowmage/cursor-agent-acp @openchamber/web @th0rgal/ralph-wiggum @toon-format/cli \
-  fish-lsp openclaw zon-format @zed-industries/claude-code-acp fast-filesystem-mcp code-mode-toon happy-coder @twsxtd/hapi
+bun i -g --trust pm2 @github/copilot @ai-sdk/openai-compatible @blowmage/cursor-agent-acp @openchamber/web @th0rgal/ralph-wiggum @toon-format/cli \
+  fish-lsp zon-format @zed-industries/claude-code-acp fast-filesystem-mcp code-mode-toon happy-coder @twsxtd/hapi
 
 # UV
 source ~/.venv/bin/activate
@@ -125,3 +125,6 @@ paru -S docker-language-server vtsls basedpyright
 
 # Copilot
 copilot plugin install context-engineering@awesome-copilot
+
+# Factory-droid
+curl -fsSL https://app.factory.ai/cli | bash
