@@ -4,10 +4,10 @@ set -euo pipefail
 # Claude Code Setup Script
 # This script installs plugins and configures Claude Code based on your existing setup
 
-CLAUDE_DIR="$HOME/.claude"
-SETTINGS_FILE="$CLAUDE_DIR/settings.json"
-CLAUDE_JSON="$HOME/.claude.json"
-MARKETPLACE_DIR="$CLAUDE_DIR/plugins/marketplaces"
+CLAUDE_DIR="${HOME}/.claude"
+SETTINGS_FILE="${CLAUDE_DIR}/settings.json"
+CLAUDE_JSON="${HOME}/.claude.json"
+MARKETPLACE_DIR="${CLAUDE_DIR}/plugins/marketplaces"
 
 echo "🚀 Setting up Claude Code..."
 
@@ -59,7 +59,7 @@ done
 
 # Python-based MCP servers (using uvx)
 echo "  Installing serena (uvx)..."
-uvx --from git+https://github.com/oraios/serena serena --help 2>/dev/null || echo "    Note: serena will be installed on first use"
+uvx --from git+https://github.com/oraios/serena serena --help 2>/dev/null || echo "Note: serena will be installed on first use"
 echo "  ✅ MCP servers configured"
 
 # Create/update settings.json
@@ -78,8 +78,7 @@ fi
 
 # Create/update .claude.json with MCP servers
 # TODO: use config file from this repo
-
-echo "  ✅ MCP servers configured in .claude.json"
+echo "✅ MCP servers configured in .claude.json"
 
 # Plugin installation instructions
 echo "📝 Enabled plugins in your config:"
@@ -90,7 +89,6 @@ echo "  • LSPs: vscode-langservers, rust-analyzer, bash-language-server, yaml-
 echo "  • Repomix: repomix-explorer, repomix-mcp"
 echo "  • Others: claude-code-tools@claudex, conserve@claude-night-market, thinking-partner, block-dotfiles, config-wizard, dependency-blocker"
 echo ""
-
 echo "✨ Setup complete!"
 echo ""
 echo "⚠️  Important notes:"
@@ -103,9 +101,7 @@ echo "  • MCP servers will be downloaded on first use"
 echo ""
 echo "🔄 Restart Claude Code to apply changes"
 
-
 echo "Setup cursor"
-
 if [[ -d ~/.cursor ]]; then
   [[ -f ~/.cursor/argv.json ]] && sed -i 's/"enable-crash-reporter":[[:space:]]*true/"enable-crash-reporter": false/' ~/.cursor/argv.jsona
 else
@@ -115,8 +111,8 @@ fi
 # Bun
 bun i -g --trust pm2 @github/copilot @ai-sdk/openai-compatible @blowmage/cursor-agent-acp @openchamber/web @th0rgal/ralph-wiggum @toon-format/cli \
   fish-lsp zon-format @zed-industries/claude-code-acp fast-filesystem-mcp code-mode-toon happy-coder @twsxtd/hapi
-
 # UV
+[[ -d ~/.venv || -d .venv ]] || uv venv --seed
 source ~/.venv/bin/activate
 uv pip install -U --compile-bytecode zon-format superclaude mdminify mcp gemini-bridge claudelint
 uv tool install basedpyright
