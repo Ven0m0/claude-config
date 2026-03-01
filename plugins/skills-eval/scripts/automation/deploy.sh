@@ -23,8 +23,8 @@ fi
 
 # Make all tools executable
 echo " Making scripts executable..."
-find "$SKILLS_EVAL_DIR/scripts" -type f -name "*" -exec chmod +x {} \;
-find "$MODULAR_SKILLS_DIR/scripts" -type f -name "*" -exec chmod +x {} \;
+find "$SKILLS_EVAL_DIR/scripts" -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} +
+find "$MODULAR_SKILLS_DIR/scripts" -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} +
 
 # Test basic functionality
 echo "Testing scripts..."
