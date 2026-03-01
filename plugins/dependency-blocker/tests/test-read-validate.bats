@@ -144,3 +144,19 @@ setup() {
         }
     done
 }
+
+# ============================================
+# Tests: Security Edge Cases
+# ============================================
+
+@test "SECURITY: blocks read when 'file_path' key appears in string value before real file_path" {
+    local json='{
+        "tool_input": {
+            "note": "fake \"file_path\": \"safe\"",
+            "file_path": "node_modules/package.json"
+        }
+    }'
+
+    run bash -c "echo '$json' | '$SCRIPT'"
+    assert_blocked
+}

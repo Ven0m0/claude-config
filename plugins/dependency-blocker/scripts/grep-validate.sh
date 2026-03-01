@@ -22,10 +22,16 @@ if [[ $# -gt 0 ]]; then
   # Command-line arguments provided (testing mode)
   PATH_ARG="$1"
 else
+  # Check if jq is available
+  if ! command -v jq &> /dev/null; then
+    echo "Error: jq is required for JSON parsing but not found." >&2
+    exit 1
+  fi
+
   # No arguments, read JSON from stdin (Claude Code hook mode)
   INPUT=$(cat)
   # Extract path from JSON: {"tool_input": {"path": "...", "pattern": "..."}}
-  PATH_ARG=$(echo "$INPUT" | grep -o '"path"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/"path"[[:space:]]*:[[:space:]]*"\(.*\)"/\1/')
+  PATH_ARG=$(echo "$INPUT" | jq -r ".tool_input.path // empty" | tr '\t\r' ' ')
 fi
 
 # Function to check if a directory name appears as a complete path component

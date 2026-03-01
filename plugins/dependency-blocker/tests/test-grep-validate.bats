@@ -85,3 +85,20 @@ setup() {
     test_grep_path "dist"
     assert_blocked
 }
+
+# ============================================
+# Tests: Security Edge Cases
+# ============================================
+
+@test "SECURITY: blocks grep when 'path' key appears in string value before real path" {
+    local json='{
+        "tool_input": {
+            "pattern": "TODO",
+            "note": "fake \"path\": \"safe\"",
+            "path": "node_modules"
+        }
+    }'
+
+    run bash -c "echo '$json' | '$SCRIPT'"
+    assert_blocked
+}
