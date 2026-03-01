@@ -87,3 +87,32 @@ setup() {
     test_glob_pattern "build/*"
     assert_blocked
 }
+
+# ============================================
+# Tests: Security Edge Cases
+# ============================================
+
+@test "SECURITY: blocks glob when 'pattern' key appears in string value before real pattern" {
+    local json='{
+        "tool_input": {
+            "note": "fake \"pattern\": \"safe\"",
+            "pattern": "node_modules/**"
+        }
+    }'
+
+    run bash -c "echo '$json' | '$SCRIPT'"
+    assert_blocked
+}
+
+@test "SECURITY: blocks glob when 'path' key appears in string value before real path" {
+    local json='{
+        "tool_input": {
+            "pattern": "*.js",
+            "note": "fake \"path\": \"safe\"",
+            "path": "node_modules"
+        }
+    }'
+
+    run bash -c "echo '$json' | '$SCRIPT'"
+    assert_blocked
+}
