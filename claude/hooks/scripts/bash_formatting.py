@@ -20,7 +20,7 @@ def format_bash_with_prettier(temp_dir: Path) -> None:
             ["npm", "root", "-g"],
             capture_output=True,
             text=True,
-            check=True
+            check=True,
         )
         npm_root = npm_root_proc.stdout.strip()
         plugin_path = f"{npm_root}/prettier-plugin-sh/lib/index.cjs"
