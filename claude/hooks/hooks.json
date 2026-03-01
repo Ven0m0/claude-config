@@ -1,14 +1,117 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "description": "Code formatting and quality hooks for development",
+  "description": "Code formatting, quality, and warden safety hooks",
   "hooks": {
     "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/warden/pre-tool-use",
+            "timeout": 30
+          }
+        ]
+      },
       {
         "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/quality_gate.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/warden/read-guard",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/warden/post-tool-use",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/warden/read-compress",
+            "timeout": 7
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file_path=$(jq -r '.tool_input.file_path // empty' 2>/dev/null); if [[ -n \"$file_path\" && -f \"$file_path\" ]]; then case \"$file_path\" in *.py|*.js|*.jsx|*.ts|*.tsx) if [[ \"$OSTYPE\" == \"darwin\"* ]]; then sed -i '' 's/^[[:space:]]*$//g' \"$file_path\" 2>/dev/null || true; else sed -i 's/^[[:space:]]*$//g' \"$file_path\" 2>/dev/null || true; fi ;; esac; fi"
+          },
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/post-edit-format.py"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/warden/permission-request",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/warden/stop",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/warden/subagent-start",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/warden/subagent-stop",
+            "timeout": 10
           }
         ]
       }
@@ -20,21 +123,47 @@
           {
             "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/load-mcp-skills.sh"
+          },
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/warden/session-start",
+            "timeout": 10
           }
         ]
       }
     ],
-    "PostToolUse": [
+    "SessionEnd": [
       {
-        "matcher": "Edit|MultiEdit|Write",
+        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "file_path=$(jq -r '.tool_input.file_path // empty' 2>/dev/null); if [[ -n \"$file_path\" && -f \"$file_path\" ]]; then case \"$file_path\" in *.py|*.js|*.jsx|*.ts|*.tsx) if [[ \"$OSTYPE\" == \"darwin\"* ]]; then sed -i '' 's/^[[:space:]]*$//g' \"$file_path\" 2>/dev/null || true; else sed -i 's/^[[:space:]]*$//g' \"$file_path\" 2>/dev/null || true; fi ;; esac; fi"
-          },
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/warden/session-end",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "*",
+        "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/post-edit-format.py"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/warden/tool-error",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/warden/pre-compact",
+            "timeout": 10
           }
         ]
       }
