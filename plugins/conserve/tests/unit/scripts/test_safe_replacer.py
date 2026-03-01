@@ -117,7 +117,7 @@ class TestSafeDependencyUpdaterImplementation:
         Given a skill file with wrong workspace-utils: prefix
         When updating the file
         Then patterns are applied in dictionary order
-        Note: This reveals that standalone pattern runs before wrong_prefix pattern
+        Note: Specific patterns now run before standalone patterns.
         """
         # Arrange
         temp_skill_file.write_text("Use workspace-utils:git-workspace-review\n")
@@ -128,9 +128,9 @@ class TestSafeDependencyUpdaterImplementation:
         # Assert
         assert updated is True
         content = temp_skill_file.read_text()
-        # Due to pattern processing order, standalone pattern matches first
-        # This creates "workspace-utils:sanctum:git-workspace-review"
-        # (This could be considered a bug - more specific patterns should run first)
+        # Due to correct pattern processing order, specific pattern matches first
+        # This creates "sanctum:git-workspace-review" and not double prefixed.
+        assert "workspace-utils:sanctum:git-workspace-review" not in content
         assert "sanctum:git-workspace-review" in content
 
     @pytest.mark.bdd
