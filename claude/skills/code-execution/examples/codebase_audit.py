@@ -18,12 +18,15 @@ issues = {
     'no_docstrings': []
 }
 
+total_lines = 0
+
 # Analyze each file (metadata only, not source!)
 for file in files:
     file_str = str(file)
 
     # Get complexity metrics
     deps = analyze_dependencies(file_str)
+    total_lines += deps.get('lines', 0)
 
     # Flag high complexity
     if deps.get('complexity', 0) > 15:
@@ -54,7 +57,7 @@ for file in files:
 # Return summary (NOT all the data!)
 result = {
     'files_audited': len(files),
-    'total_lines': sum(d.get('lines', 0) for d in [analyze_dependencies(str(f)) for f in files]),
+    'total_lines': total_lines,
     'issues': {
         'high_complexity': len(issues['high_complexity']),
         'unused_imports': len(issues['unused_imports']),
@@ -67,7 +70,7 @@ result = {
     )[:5]  # Only top 5
 }
 
-print(f"\\nAudit complete:")
+print("\\nAudit complete:")
 print(f"  High complexity files: {result['issues']['high_complexity']}")
 print(f"  Files with unused imports: {result['issues']['unused_imports']}")
 print(f"  Large files (>500 lines): {result['issues']['large_files']}")

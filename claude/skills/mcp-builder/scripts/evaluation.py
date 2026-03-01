@@ -245,7 +245,7 @@ async def run_evaluation(
     tools = await connection.list_tools()
     print(f"📋 Loaded {len(tools)} tools from MCP server")
 
-    qa_pairs = parse_evaluation_file(eval_path)
+    qa_pairs = await asyncio.to_thread(parse_evaluation_file, eval_path)
     print(f"📋 Loaded {len(qa_pairs)} evaluation tasks")
 
     if concurrency < 1:

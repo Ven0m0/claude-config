@@ -12,9 +12,27 @@ def format_bash_with_prettier(temp_dir: Path) -> None:
         temp_dir (Path): Directory containing extracted Bash blocks.
     """
     try:
+        sh_files = list(temp_dir.rglob("*.sh"))
+        if not sh_files:
+            return
+
+        npm_root_proc = subprocess.run(
+            ["npm", "root", "-g"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        npm_root = npm_root_proc.stdout.strip()
+        plugin_path = f"{npm_root}/prettier-plugin-sh/lib/index.cjs"
+
+        cmd = [
+            "npx", "prettier", "--write", "--print-width", "120",
+            f"--plugin={plugin_path}"
+        ] + [str(f.relative_to(temp_dir)) for f in sh_files]
+
         result = subprocess.run(
-            "npx prettier --write --print-width 120 --plugin=$(npm root -g)/prettier-plugin-sh/lib/index.cjs ./**/*.sh",
-            shell=True,
+            cmd,
+            shell=False,
             capture_output=True,
             text=True,
             cwd=temp_dir,

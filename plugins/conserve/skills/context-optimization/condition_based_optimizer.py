@@ -109,15 +109,19 @@ class ConditionBasedOptimizer:
         """Register built-in condition checkers."""
         self.condition_checkers.update(
             {
-                "compression_ratio": lambda r: r.get("compression_ratio", 0)
-                > COMPRESSION_RATIO_THRESHOLD,  # noqa: E501
-                "token_reduction": lambda r: r.get("tokens_saved", 0)
-                > TOKEN_REDUCTION_THRESHOLD,  # noqa: E501
-                "priority_preserved": lambda r: r.get("high_priority_kept", 0)
-                > PRIORITY_THRESHOLD,  # noqa: E501
+                "compression_ratio": lambda r: (
+                    r.get("compression_ratio", 0) > COMPRESSION_RATIO_THRESHOLD
+                ),  # noqa: E501
+                "token_reduction": lambda r: (
+                    r.get("tokens_saved", 0) > TOKEN_REDUCTION_THRESHOLD
+                ),  # noqa: E501
+                "priority_preserved": lambda r: (
+                    r.get("high_priority_kept", 0) > PRIORITY_THRESHOLD
+                ),  # noqa: E501
                 "structure_intact": lambda r: r.get("structure_preserved", False),
-                "semantic_coherence": lambda r: r.get("coherence_score", 0)
-                > SEMANTIC_COHERENCE_THRESHOLD,  # noqa: E501
+                "semantic_coherence": lambda r: (
+                    r.get("coherence_score", 0) > SEMANTIC_COHERENCE_THRESHOLD
+                ),  # noqa: E501
             },
         )
 
@@ -169,7 +173,8 @@ class ConditionBasedOptimizer:
 
             # Exponential backoff for next poll
             current_poll_interval = min(current_poll_interval * 1.5, max_poll_interval)
-    async def optimize_with_conditions(
+
+    async def optimize_with_conditions(  # noqa: PLR0912, PLR0915
         self,
         request: OptimizationRequest,
     ) -> OptimizationResult:
@@ -204,7 +209,7 @@ class ConditionBasedOptimizer:
                     max_tokens=request.max_tokens,
                     strategy=request.strategy,
                     preserve_structure=True,
-                )
+                ),
             )
 
             # Step 2: Wait for optimization to complete successfully
@@ -216,22 +221,39 @@ class ConditionBasedOptimizer:
                 # Default condition: good compression ratio
                 completion_condition = self.condition_checkers["compression_ratio"]
 
-            # Wait for condition to be met
-            await self.wait_for_condition(
-                condition=lambda: completion_condition(optimization_result),
-                description=f"optimization {optimization_id} completion",
-                timeout_ms=request.timeout_ms,
-            )
+            # Verify optimization completion condition on the static result
+            if asyncio.iscoroutinefunction(completion_condition):
+                is_completed = await completion_condition(optimization_result)
+            else:
+                is_completed = completion_condition(optimization_result)
+                if asyncio.iscoroutine(is_completed):
+                    is_completed = await is_completed
+
+            if not is_completed:
+                msg = (
+                    f"Timeout waiting for optimization {optimization_id} "
+                    f"completion after {request.timeout_ms}ms"
+                )
+                raise TimeoutError(msg)
 
             # Step 3: Validate result meets requirements
-            await self.wait_for_condition(
-                condition=lambda: self._validate_optimization_result(
-                    optimization_result,
-                    request,
-                ),
-                description=f"optimization {optimization_id} validation",
-                timeout_ms=5000,
-            )
+            if asyncio.iscoroutinefunction(self._validate_optimization_result):
+                is_valid = await self._validate_optimization_result(
+                    optimization_result, request
+                )
+            else:
+                is_valid = self._validate_optimization_result(
+                    optimization_result, request
+                )
+                if asyncio.iscoroutine(is_valid):
+                    is_valid = await is_valid
+
+            if not is_valid:
+                msg = (
+                    f"Timeout waiting for optimization {optimization_id} "
+                    "validation after 5000ms"
+                )
+                raise TimeoutError(msg)
 
             # Step 4: Finalize result
             result.status = "completed"
@@ -316,7 +338,7 @@ class ConditionBasedOptimizer:
 
         self.logger.info(f"Starting batch optimization of {len(requests)} requests")
 
-        # Wait for completion condition using asyncio.gather which is much more efficient
+        # Wait for completion condition using asyncio.gather which is more efficient
         # than polling.
         task_results = await asyncio.gather(*tasks, return_exceptions=True)
         total_count = len(requests)
@@ -363,9 +385,9 @@ class ConditionBasedOptimizer:
             """Check if a specific plugin is ready for coordination."""
             # In real implementation, this would check plugin state
             # For now, simulate varied readiness times
-            # Note: sleeping in synchronous function blocks loop, but since we are refactoring,
+            # Note: sleeping in synchronous function blocks loop, but during refactor,
             # this helper should ideally be async or fast.
-            # Keeping it as is but removing sleep simulation or assuming it's fast check.
+            # Keeping as is but removing sleep simulation or assuming it's fast check.
             # If we want to simulate delay, we should not block.
             return True  # Assume ready for demo
 
@@ -494,6 +516,7 @@ if __name__ == "__main__":
 
     # Needs asyncio loop to run
     async def main():
+        """Run demonstration."""
         # Create test content blocks
         test_blocks = [
             ContentBlock(
@@ -536,7 +559,7 @@ if __name__ == "__main__":
         )
 
         # Example 3: Context pressure monitoring
-        pressure = await condition_optimizer.monitor_context_pressure(
+        _pressure = await condition_optimizer.monitor_context_pressure(
             threshold=0.7,
             check_interval_ms=50,
         )
