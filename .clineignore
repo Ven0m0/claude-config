@@ -1,6 +1,8 @@
 # Dependencies
 node_modules/
 **/node_modules/
+.venv/
+**/.venv/
 
 # Build outputs
 /build/
@@ -23,3 +25,7 @@ node_modules/
 # Generated/minified code
 *.min.js
 *.map
+
+package-lock.json
+uv.lock
+bun.lockb
