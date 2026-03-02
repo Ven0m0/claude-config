@@ -64,6 +64,15 @@
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
         "GITHUB_TOKEN": "${GITHUB_TOKEN}"
       }
+    },
+    "fast-filesystem": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "fast-filesystem-mcp"],
+      "tools": ["*"]
+      "env": {
+        "MCP_SILENT_ERRORS": "true"
+      }
     }
   }
 }
