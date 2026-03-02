@@ -181,6 +181,44 @@
     "playwright": {
       "command": "bunx",
       "args": ["@playwright/mcp@latest"]
+    },
+    "github-mcp-server": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp",
+      "tools": ["*"],
+      "headers": {
+        "X-MCP-Toolsets": "default,actions,web_search,code_security,copilot,dependabot,git,secret_protection,security_advisories,stargazers,copilot,github_support_docs_search,labels,gists",
+        "X-MCP-Insiders": "true"
+        "Authorization": "Bearer ${input:github_mcp_pat}"
+      }
+    },
+      "exa": {
+      "type": "http",
+      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa,company_research_exa,people_search_exa,deep_researcher_start,deep_researcher_check",
+      "tools": ["*"]
+      "headers": {
+        "EXA_API_KEY": "${EXA_API_KEY}"
+      }
+    },
+    "ref-tools": {
+      "type": "http",
+      "url": "https://api.ref.tools/mcp",
+      "tools": ["*"]
+    },
+    "ast-grep": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": ["@notprolands/ast-grep-mcp@latest"],
+      "tools": ["*"]
+    },
+    "fast-filesystem": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": ["fast-filesystem-mcp@latest"],
+      "tools": ["*"]
+      "env": {
+        "MCP_SILENT_ERRORS": "true"
+      }
     }
   }
 }
