@@ -5,7 +5,7 @@
       "url": "https://api.githubcopilot.com/mcp",
       "tools": ["*"],
       "headers": {
-        "X-MCP-Toolsets": "repos,issues,users,pull_requests,actions,web_search",
+        "X-MCP-Toolsets": "default,actions,web_search,code_security,copilot,dependabot,git,secret_protection,security_advisories,stargazers,copilot,github_support_docs_search,labels,gists",
         "X-MCP-Insiders": "true"
         "Authorization": "Bearer ${input:github_mcp_pat}"
       }
@@ -13,13 +13,7 @@
     "sequential-thinking": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
-      "tools": ["*"]
-    },
-    "coding-thinker": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "mcp-coding-thinker"],
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking@latest"],
       "tools": ["*"]
     },
     "exa": {
@@ -43,16 +37,10 @@
         "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
       }
     },
-    "grepika": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@agentika/grepika", "--mcp"],
-      "tools": ["*"]
-    },
     "ast-grep": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@notprolands/ast-grep-mcp"],
+      "args": ["-y", "@notprolands/ast-grep-mcp@latest"],
       "tools": ["*"]
     },
     "octocode": {
@@ -68,7 +56,7 @@
     "fast-filesystem": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "fast-filesystem-mcp"],
+      "args": ["-y", "fast-filesystem-mcp@latest"],
       "tools": ["*"]
       "env": {
         "MCP_SILENT_ERRORS": "true"
