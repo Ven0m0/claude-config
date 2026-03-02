@@ -2,11 +2,12 @@
   "mcpServers": {
     "github-mcp-server": {
       "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/insiders",
+      "url": "https://api.githubcopilot.com/mcp",
       "tools": ["*"],
       "headers": {
-        "X-MCP-Toolsets": "repos,issues,users,pull_requests,actions,web_search"
-        "Authorization": "Bearer ${GITHUB_TOKEN}"
+        "X-MCP-Toolsets": "repos,issues,users,pull_requests,actions,web_search",
+        "X-MCP-Insiders": "true"
+        "Authorization": "Bearer ${input:github_mcp_pat}"
       }
     },
     "sequential-thinking": {
@@ -23,11 +24,16 @@
     },
     "exa": {
       "type": "http",
-      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
-      "tools": ["*"],
+      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa,company_research_exa,people_search_exa,deep_researcher_start,deep_researcher_check",
+      "tools": ["*"]
       "headers": {
         "EXA_API_KEY": "${EXA_API_KEY}"
       }
+    },
+    "ref-tools": {
+      "type": "http",
+      "url": "https://api.ref.tools/mcp",
+      "tools": ["*"]
     },
     "context7": {
       "type": "http",
@@ -55,6 +61,7 @@
       "args": ["-y", "octocode-mcp@latest"],
       "tools": ["*"]
       "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
         "GITHUB_TOKEN": "${GITHUB_TOKEN}"
       }
     }
