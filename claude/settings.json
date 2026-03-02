@@ -13,7 +13,7 @@
     "CLAUDE_CODE_SKIP_VERTEX_AUTH": "1",
     "CLAUDE_CODE_DISABLE_TERMINAL_TITLE": "1",
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1",
-    "ENABLE_TOOL_SEARCH": "1",
+    "ENABLE_TOOL_SEARCH": "true",
     "ENABLE_LSP_TOOL": "1",
     "USE_BUILTIN_RIPGREP": "0",
     "CLAUDE_CODE_SHELL": "bash",
@@ -31,7 +31,8 @@
     "MAX_THINKING_TOKENS": "16000",
     "PYTHONUNBUFFERED": "1",
     "PYTHONDONTWRITEBYTECODE": "1",
-    "PYTHONOPTIMIZE": "1"
+    "PYTHONOPTIMIZE": "1",
+    "BUN_OPTIONS": "--bun --prefer-offline --prefer-latest --parallel --silent"
   },
   "includeCoAuthoredBy": false,
   "cleanupPeriodDays": 7,
@@ -43,6 +44,7 @@
   "prefersReducedMotion": true,
   "teammateMode": "auto",
   "model": "opusplan",
+  "allowManagedHooksOnly": false,
   "permissions": {
     "allow": [
       "Bash",
@@ -108,25 +110,25 @@
     ],
     "defaultMode": "acceptEdits"
   },
-  "allowManagedHooksOnly": false,
   "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$HOME/.claude/hooks/gsd-intel-session.js\""
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
       {
-        "matcher": "Edit|Write",
+        "matcher": "Edit|MultiEdit|Write",
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '.tool_input.file_path' | xargs bunx --bun --silent prettier -w --bracket-same-line --print-width 120 --tab-width 2 --log-level silent"
+            "command": "bash -c 'if [[ \"$CLAUDE_TOOL_INPUT_FILE_PATH\" == *.sh ]]; then shellcheck \"$CLAUDE_TOOL_INPUT_FILE_PATH\" 2>/dev/null && shfmt -d -i 2 -bn -ci -s \"$CLAUDE_TOOL_INPUT_FILE_PATH\" 2>/dev/null; fi'",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if [[ -n \"$CLAUDE_TOOL_INPUT_FILE_PATH\" ]] && LC_ALL=C git rev-parse --git-dir >/dev/null 2>&1; then git add \"$CLAUDE_TOOL_FILE_PATH\" 2>/dev/null || :; fi'",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | xargs bunx --bun --silent prettier -w --bracket-same-line --print-width 120 --tab-width 2 --log-level silent",
+            "timeout": 30
           }
         ]
       }
@@ -174,5 +176,11 @@
     "ultralytics-dev@claude-settings": true,
     "optimize-claude-md@lifegenie-marketplace": true,
     "claude-tools@claude-settings": true
+  },
+  "mcpServers": {
+    "playwright": {
+      "command": "bunx",
+      "args": ["@playwright/mcp@latest"]
+    }
   }
 }
