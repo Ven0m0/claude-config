@@ -177,10 +177,36 @@
     "optimize-claude-md@lifegenie-marketplace": true,
     "claude-tools@claude-settings": true
   },
+  "extraKnownMarketplaces": {
+    "knowledge-work-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/knowledge-work-plugins"
+      }
+    },
+    "claude-code-lsps": {
+      "source": {
+        "source": "github",
+        "repo": "Piebald-AI/claude-code-lsps"
+      }
+    },
+    "everything-claude-code": {
+      "source": {
+        "source": "github",
+        "repo": "affaan-m/everything-claude-code"
+      }
+    },
+    "oh-my-claudecode": {
+      "source": {
+        "source": "github",
+        "repo": "Yeachan-Heo/oh-my-claudecode"
+      }
+    }
+  },
   "mcpServers": {
     "playwright": {
       "command": "bunx",
-      "args": ["@playwright/mcp@latest"]
+      "args": ["--bun", "@playwright/mcp@latest"]
     },
     "github-mcp-server": {
       "type": "http",
@@ -192,13 +218,19 @@
         "Authorization": "Bearer ${input:github_mcp_pat}"
       }
     },
-      "exa": {
+    "exa": {
       "type": "http",
       "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa,company_research_exa,people_search_exa,deep_researcher_start,deep_researcher_check",
-      "tools": ["*"]
+      "tools": ["*"],
       "headers": {
         "EXA_API_KEY": "${EXA_API_KEY}"
       }
+    },
+    "sequential-thinking": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": ["--bun", "@modelcontextprotocol/server-sequential-thinking@latest"],
+      "tools": ["*"]
     },
     "ref-tools": {
       "type": "http",
@@ -214,7 +246,7 @@
     "fast-filesystem": {
       "type": "stdio",
       "command": "bunx",
-      "args": ["fast-filesystem-mcp@latest"],
+      "args": ["--bun", "fast-filesystem-mcp@latest"],
       "tools": ["*"]
       "env": {
         "MCP_SILENT_ERRORS": "true"
