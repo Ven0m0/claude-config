@@ -3,6 +3,9 @@
 # Mark the current repository as safe for Git to prevent "dubious ownership" errors,
 # which can occur in containerized environments when directory ownership doesn't match the current user
 git config --global --add safe.directory "$(realpath .)"
+git config --global index.version "4"
+git config --global http.version "HTTP/2"
+git config --global protocol.version "2"
 
 command -v uv || wget -qO- https://astral.sh/uv/install.sh | sh
 
