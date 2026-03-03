@@ -11,7 +11,7 @@
       }
     },
     "sequential-thinking": {
-      "type": "stdio",
+      "type": "local",
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking@latest"],
       "tools": ["*"]
@@ -44,7 +44,7 @@
       "tools": ["*"]
     },
     "octocode": {
-      "type": "stdio",
+      "type": "local",
       "command": "npx",
       "args": ["-y", "octocode-mcp@latest"],
       "tools": ["*"]
@@ -54,10 +54,21 @@
       }
     },
     "fast-filesystem": {
-      "type": "stdio",
+      "type": "local",
       "command": "npx",
       "args": ["-y", "fast-filesystem-mcp@latest"],
       "tools": ["*"]
+      "env": {
+        "MCP_SILENT_ERRORS": "true"
+      }
+    },
+    "serena": {
+      "type": "local",
+      "command": "docker",
+      "args": ["run", "--rm", "-i", "--network", "host",
+        "-v", "/workspaces:/workspaces", "ghcr.io/oraios/serena:latest", "serena"
+      ],
+      "tools": ["*"],
       "env": {
         "MCP_SILENT_ERRORS": "true"
       }
