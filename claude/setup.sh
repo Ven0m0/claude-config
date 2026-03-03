@@ -10,12 +10,14 @@ git config --global protocol.version 2
 git config --global core.compression 9
 git config --global core.preloadindex true
 git config --global diff.suppressBlankEmpty true
-git config --global index diff.compactionHeuristic true
-git config --global index diff.ignoreSubmodules true
-git config --global index diff.algorithm histogram
-git config --global index merge.conflictStyle zdiff3
-git config --global index fetch.parallel 0
-git config --global index pack.threads 0
+git config --global diff.compactionHeuristic true
+git config --global diff.ignoreSubmodules true
+git config --global diff.algorithm histogram
+git config --global merge.conflictStyle zdiff3
+git config --global fetch.parallel 0
+git config --global pack.threads 0
+git config --global status.short true
+git config --global commit.verbose false
 
 command -v uv || wget -qO- https://astral.sh/uv/install.sh | sh
 
