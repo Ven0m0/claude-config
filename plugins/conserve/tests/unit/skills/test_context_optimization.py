@@ -121,10 +121,7 @@ tags:
         assert len(context_optimization_items) == FIVE
         for expected_item in expected_items:
             assert expected_item in context_optimization_items
-        assert all(
-            item.startswith("context-optimization:")
-            for item in context_optimization_items
-        )
+        assert all(item.startswith("context-optimization:") for item in context_optimization_items)
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -150,10 +147,7 @@ tags:
                 scenario["context_tokens"],
             )
 
-            assert (
-                analysis["utilization_percentage"]
-                == (scenario["context_tokens"] / 200000) * 100
-            )
+            assert analysis["utilization_percentage"] == (scenario["context_tokens"] / 200000) * 100
             assert analysis["status"] == scenario["expected_status"]
 
             # Check MECW compliance (50% rule)
@@ -165,9 +159,7 @@ tags:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_context_classification_categorizes_usage_patterns(
-        self, mock_claude_tools
-    ) -> None:
+    def test_context_classification_categorizes_usage_patterns(self, mock_claude_tools) -> None:
         """Scenario: Context classification categorizes usage patterns effectively.
 
         Given various context usage patterns
@@ -208,9 +200,7 @@ tags:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_module_coordination_selects_optimal_modules(
-        self, mock_claude_tools
-    ) -> None:
+    def test_module_coordination_selects_optimal_modules(self, mock_claude_tools) -> None:
         """Scenario: Module coordination selects optimal optimization modules.
 
         Given different context situations and task complexities
@@ -323,9 +313,7 @@ tags:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_validation_confirms_optimization_effectiveness(
-        self, mock_mecw_analyzer
-    ) -> None:
+    def test_validation_confirms_optimization_effectiveness(self, mock_mecw_analyzer) -> None:
         """Scenario: Validation confirms optimization effectiveness.
 
         Given context optimization applied
@@ -343,10 +331,7 @@ tags:
 
         # Act - calculate improvements
         improvement_percentage = (
-            (
-                before_optimization["utilization_percentage"]
-                - after_optimization["utilization_percentage"]
-            )
+            (before_optimization["utilization_percentage"] - after_optimization["utilization_percentage"])
             / before_optimization["utilization_percentage"]
         ) * 100
 
@@ -441,10 +426,7 @@ tags:
         # Assert
         assert len(error_log) == THREE
         assert len(fallback_strategies) == THREE
-        assert all(
-            strategy["strategy"] == "use_estimated_context"
-            for strategy in fallback_strategies
-        )
+        assert all(strategy["strategy"] == "use_estimated_context" for strategy in fallback_strategies)
         assert all("invalid" in error.lower() for error in error_log)
 
     @pytest.mark.unit

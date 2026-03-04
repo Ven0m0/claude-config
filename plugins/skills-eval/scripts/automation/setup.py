@@ -61,7 +61,7 @@ def setup_skills_eval() -> bool:
             else:
                 pass
         except Exception as e:
-            logger.debug(f"Setup command failed: {e}")
+            logger.debug("Setup command failed: %s", e)
 
     return True
 

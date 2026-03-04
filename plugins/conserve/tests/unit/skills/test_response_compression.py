@@ -99,9 +99,7 @@ class TestResponseCompressionBloatElimination:
         When checking for emoji guidance
         Then emoji elimination should be documented.
         """
-        assert re.search(r"emoji", skill_content, re.IGNORECASE), (
-            "Emoji elimination not covered"
-        )
+        assert re.search(r"emoji", skill_content, re.IGNORECASE), "Emoji elimination not covered"
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -113,10 +111,7 @@ class TestResponseCompressionBloatElimination:
         Then filler words like 'just', 'simply' should be mentioned.
         """
         filler_words = ["just", "simply", "basically", "essentially"]
-        has_filler_guidance = any(
-            re.search(rf"\b{word}\b", skill_content, re.IGNORECASE)
-            for word in filler_words
-        )
+        has_filler_guidance = any(re.search(rf"\b{word}\b", skill_content, re.IGNORECASE) for word in filler_words)
         assert has_filler_guidance, "Filler word elimination not covered"
 
     @pytest.mark.bdd
@@ -128,9 +123,7 @@ class TestResponseCompressionBloatElimination:
         When checking for hedging guidance
         Then hedging words should be documented.
         """
-        assert re.search(r"hedg", skill_content, re.IGNORECASE), (
-            "Hedging language elimination not covered"
-        )
+        assert re.search(r"hedg", skill_content, re.IGNORECASE), "Hedging language elimination not covered"
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -142,10 +135,7 @@ class TestResponseCompressionBloatElimination:
         Then hype words should be mentioned.
         """
         hype_indicators = ["powerful", "amazing", "robust", "hype"]
-        has_hype_guidance = any(
-            re.search(rf"\b{word}\b", skill_content, re.IGNORECASE)
-            for word in hype_indicators
-        )
+        has_hype_guidance = any(re.search(rf"\b{word}\b", skill_content, re.IGNORECASE) for word in hype_indicators)
         assert has_hype_guidance, "Hype word elimination not covered"
 
     @pytest.mark.bdd
@@ -157,12 +147,8 @@ class TestResponseCompressionBloatElimination:
         When checking for examples
         Then before and after examples should exist.
         """
-        assert re.search(r"before", skill_content, re.IGNORECASE), (
-            "Before examples not found"
-        )
-        assert re.search(r"after", skill_content, re.IGNORECASE), (
-            "After examples not found"
-        )
+        assert re.search(r"before", skill_content, re.IGNORECASE), "Before examples not found"
+        assert re.search(r"after", skill_content, re.IGNORECASE), "After examples not found"
 
 
 class TestResponseTermination:
@@ -191,8 +177,7 @@ class TestResponseTermination:
         """
         termination_indicators = ["terminat", "end response", "stop", "conclud"]
         has_termination = any(
-            re.search(indicator, skill_content, re.IGNORECASE)
-            for indicator in termination_indicators
+            re.search(indicator, skill_content, re.IGNORECASE) for indicator in termination_indicators
         )
         assert has_termination, "Response termination rules not covered"
 
@@ -205,9 +190,7 @@ class TestResponseTermination:
         When checking for summary guidance
         Then unnecessary summary avoidance should be mentioned.
         """
-        assert re.search(r"summar", skill_content, re.IGNORECASE), (
-            "Summary avoidance not covered"
-        )
+        assert re.search(r"summar", skill_content, re.IGNORECASE), "Summary avoidance not covered"
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -218,9 +201,7 @@ class TestResponseTermination:
         When checking for next steps guidance
         Then 'next steps' pattern should be addressed.
         """
-        assert re.search(r"next step", skill_content, re.IGNORECASE), (
-            "'Next steps' avoidance not covered"
-        )
+        assert re.search(r"next step", skill_content, re.IGNORECASE), "'Next steps' avoidance not covered"
 
 
 class TestDirectnessGuidelines:
@@ -254,8 +235,7 @@ class TestDirectnessGuidelines:
             "encouragement",
         ]
         has_encouragement_guidance = any(
-            re.search(pattern, skill_content, re.IGNORECASE)
-            for pattern in encouragement_patterns
+            re.search(pattern, skill_content, re.IGNORECASE) for pattern in encouragement_patterns
         )
         assert has_encouragement_guidance, "Encouragement bloat not covered"
 
@@ -269,10 +249,7 @@ class TestDirectnessGuidelines:
         Then phrases like "I'd be happy to" should be addressed.
         """
         rapport_indicators = ["happy to", "feel free", "rapport", "let me know"]
-        has_rapport_guidance = any(
-            re.search(pattern, skill_content, re.IGNORECASE)
-            for pattern in rapport_indicators
-        )
+        has_rapport_guidance = any(re.search(pattern, skill_content, re.IGNORECASE) for pattern in rapport_indicators)
         assert has_rapport_guidance, "Rapport-building avoidance not covered"
 
     @pytest.mark.bdd
@@ -285,10 +262,7 @@ class TestDirectnessGuidelines:
         Then the skill should clarify directness is not rudeness.
         """
         balance_indicators = ["not rude", "direct", "helpful", "balance", "preserve"]
-        has_balance = any(
-            re.search(indicator, skill_content, re.IGNORECASE)
-            for indicator in balance_indicators
-        )
+        has_balance = any(re.search(indicator, skill_content, re.IGNORECASE) for indicator in balance_indicators)
         assert has_balance, "Direct != rude balance not covered"
 
 
@@ -318,10 +292,7 @@ class TestPreservationGuidelines:
         """
         # Should mention that status indicators like checkmarks are OK
         status_indicators = ["status", "indicator", "check", "warning"]
-        has_preservation = any(
-            re.search(indicator, skill_content, re.IGNORECASE)
-            for indicator in status_indicators
-        )
+        has_preservation = any(re.search(indicator, skill_content, re.IGNORECASE) for indicator in status_indicators)
         assert has_preservation, "Technical emoji preservation not covered"
 
     @pytest.mark.bdd

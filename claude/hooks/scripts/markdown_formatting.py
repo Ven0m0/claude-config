@@ -1,9 +1,13 @@
 #!/usr/bin/env -S uv run --script
 """Format embedded Python/Bash blocks in markdown files and run Prettier."""
 
+import contextlib
 import hashlib
 import json
-PYTHON_BLOCK_PATTERN = r"^(?P<indentation> *)```(?:python|py|\{[ ]*\.py[ ]*\.annotate[ ]*\})\n(?P<code>.*?)\n(?P=indentation)```"
+
+PYTHON_BLOCK_PATTERN = (
+    r"^(?P<indentation> *)```(?:python|py|\{[ ]*\.py[ ]*\.annotate[ ]*\})\n(?P<code>.*?)\n(?P=indentation)```"
+)
 BASH_BLOCK_PATTERN = r"^(?P<indentation> *)```(?:bash|sh|shell)\n(?P<code>.*?)\n(?P=indentation)```"
 
 LANGUAGE_TAGS = {
@@ -20,6 +24,7 @@ def extract_code_blocks(markdown_content: str) -> dict[str, list[tuple[str, str]
 
     Returns:
         (dict): Mapping of language names to lists of (indentation, block) pairs.
+
     """
     python_blocks = re.compile(PYTHON_BLOCK_PATTERN, re.DOTALL | re.MULTILINE).findall(markdown_content)
     bash_blocks = re.compile(BASH_BLOCK_PATTERN, re.DOTALL | re.MULTILINE).findall(markdown_content)
@@ -35,6 +40,7 @@ def remove_indentation(code_block: str, num_spaces: int) -> str:
 
     Returns:
         (str): Code with indentation removed.
+
     """
     lines = code_block.split("\n")
     stripped_lines = [line[num_spaces:] if len(line) >= num_spaces else line for line in lines]
@@ -50,6 +56,7 @@ def add_indentation(code_block: str, num_spaces: int) -> str:
 
     Returns:
         (str): Code with indentation restored.
+
     """
     indent = " " * num_spaces
     lines = code_block.split("\n")
@@ -61,14 +68,12 @@ def format_code_with_ruff(temp_dir: Path) -> None:
 
     Args:
         temp_dir (Path): Directory containing extracted Python blocks.
-    """
-    try:
-        subprocess.run(["ruff", "format", "--line-length=120", str(temp_dir)], check=True)
-        print("Completed ruff format ✅")
-    except Exception as exc:
-        print(f"ERROR running ruff format ❌ {exc}")
 
-    try:
+    """
+    with contextlib.suppress(Exception):
+        subprocess.run(["ruff", "format", "--line-length=120", str(temp_dir)], check=True)
+
+    with contextlib.suppress(Exception):
         subprocess.run(
             [
                 "ruff",
@@ -81,9 +86,6 @@ def format_code_with_ruff(temp_dir: Path) -> None:
             ],
             check=True,
         )
-        print("Completed ruff check ✅")
-    except Exception as exc:
-        print(f"ERROR running ruff check ❌ {exc}")
 
 
 def generate_temp_filename(file_path: Path, index: int, code_type: str) -> str:
@@ -96,6 +98,7 @@ def generate_temp_filename(file_path: Path, index: int, code_type: str) -> str:
 
     Returns:
         (str): Safe filename for the temporary code file.
+
     """
     stem = file_path.stem
     code_letter = code_type[0]
@@ -123,11 +126,11 @@ def process_markdown_file(
     Returns:
         markdown_content (str): Original markdown content.
         temp_files (list): Extracted block metadata.
+
     """
     try:
         markdown_content = file_path.read_text()
-    except Exception as exc:
-        print(f"Error reading file {file_path}: {exc}")
+    except Exception:
         return "", []
 
     code_blocks_by_type = extract_code_blocks(markdown_content)
@@ -145,8 +148,7 @@ def process_markdown_file(
             temp_file_path = temp_dir / generate_temp_filename(file_path, i + offset, code_type)
             try:
                 temp_file_path.write_text(code_without_indentation)
-            except Exception as exc:
-                print(f"Error writing temp file {temp_file_path}: {exc}")
+            except Exception:
                 continue
             temp_files.append((num_spaces, code_block, temp_file_path, code_type))
 
@@ -160,12 +162,12 @@ def update_markdown_file(file_path: Path, markdown_content: str, temp_files: lis
         file_path (Path): Markdown file to update.
         markdown_content (str): Original content.
         temp_files (list): Metadata for formatted code blocks.
+
     """
     for num_spaces, original_code_block, temp_file_path, code_type in temp_files:
         try:
             formatted_code = temp_file_path.read_text().rstrip("\n")
-        except Exception as exc:
-            print(f"Error reading temp file {temp_file_path}: {exc}")
+        except Exception:
             continue
         formatted_code_with_indentation = add_indentation(formatted_code, num_spaces)
 
@@ -175,10 +177,8 @@ def update_markdown_file(file_path: Path, markdown_content: str, temp_files: lis
                 f"{' ' * num_spaces}```{lang}\n{formatted_code_with_indentation}\n{' ' * num_spaces}```",
             )
 
-    try:
+    with contextlib.suppress(Exception):
         file_path.write_text(markdown_content)
-    except Exception as exc:
-        print(f"Error writing file {file_path}: {exc}")
 
 
 def run_prettier(markdown_file: Path) -> None:
@@ -186,6 +186,7 @@ def run_prettier(markdown_file: Path) -> None:
 
     Args:
         markdown_file (Path): Markdown file to format.
+
     """
     if not check_prettier_version():
         return
@@ -201,6 +202,7 @@ def format_markdown_file(markdown_file: Path) -> None:
 
     Args:
         markdown_file (Path): Markdown file to process.
+
     """
     with TemporaryDirectory() as tmp_dir_name:
         temp_dir = Path(tmp_dir_name)
@@ -225,6 +227,7 @@ def read_markdown_path() -> Path | None:
 
     Returns:
         markdown_path (Path | None): Markdown path when present and valid.
+
     """
     try:
         data = json.load(sys.stdin)
@@ -234,7 +237,7 @@ def read_markdown_path() -> Path | None:
     path = Path(file_path) if file_path else None
     if not path or path.suffix.lower() != ".md" or not path.exists():
         return None
-    if any(p in path.parts for p in ['.venv', 'venv', 'site-packages', '__pycache__', '.claude']):
+    if any(p in path.parts for p in [".venv", "venv", "site-packages", "__pycache__", ".claude"]):
         return None
     return path
 

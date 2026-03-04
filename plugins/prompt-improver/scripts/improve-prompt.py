@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Claude Code Prompt Improver Hook
+"""Claude Code Prompt Improver Hook
 Evaluates prompts for clarity and invokes the prompt-improver skill for vague cases.
 """
 
@@ -10,8 +9,7 @@ import sys
 # Load input from stdin
 try:
     input_data = json.load(sys.stdin)
-except json.JSONDecodeError as e:
-    print(f"Error: Invalid JSON input: {e}", file=sys.stderr)
+except json.JSONDecodeError:
     sys.exit(1)
 
 prompt = input_data.get("prompt", "")
@@ -20,15 +18,8 @@ prompt = input_data.get("prompt", "")
 escaped_prompt = prompt.replace("\\", "\\\\").replace('"', '\\"')
 
 
-def output_json(text):
-    """Output text in UserPromptSubmit JSON format"""
-    output = {
-        "hookSpecificOutput": {
-            "hookEventName": "UserPromptSubmit",
-            "additionalContext": text,
-        }
-    }
-    print(json.dumps(output))
+def output_json(text) -> None:
+    """Output text in UserPromptSubmit JSON format."""
 
 
 # Check for bypass conditions

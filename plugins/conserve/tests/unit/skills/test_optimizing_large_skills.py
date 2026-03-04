@@ -127,9 +127,7 @@ tags:
         assert len(optimization_items) == FIVE
         for expected_item in expected_items:
             assert expected_item in optimization_items
-        assert all(
-            item.startswith("optimizing-large-skills:") for item in optimization_items
-        )
+        assert all(item.startswith("optimizing-large-skills:") for item in optimization_items)
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -226,19 +224,13 @@ tags:
         assert len(optimization_candidates) == FOUR
 
         # Check priority assignments
-        mega_skill = next(
-            c for c in optimization_candidates if c["skill"] == "mega_skill"
-        )
+        mega_skill = next(c for c in optimization_candidates if c["skill"] == "mega_skill")
         assert mega_skill["priority"] == "critical"
 
-        complex_skill = next(
-            c for c in optimization_candidates if c["skill"] == "complex_analyzer"
-        )
+        complex_skill = next(c for c in optimization_candidates if c["skill"] == "complex_analyzer")
         assert complex_skill["priority"] == "critical"  # score=8.5 >= 8
 
-        simple_skill = next(
-            c for c in optimization_candidates if c["skill"] == "simple_skill"
-        )
+        simple_skill = next(c for c in optimization_candidates if c["skill"] == "simple_skill")
         assert simple_skill["priority"] == "low"
 
         # Verify sorting - critical should be first
@@ -322,9 +314,7 @@ tags:
                     "responsibility": section["responsibility"],
                     "estimated_lines": section["lines"],
                     "dependencies": section["dependencies"],
-                    "module_type": "independent"
-                    if len(section["dependencies"]) == 0
-                    else "dependent",
+                    "module_type": "independent" if len(section["dependencies"]) == 0 else "dependent",
                 }
                 modularization_analysis["identified_modules"].append(module)
 
@@ -339,59 +329,39 @@ tags:
 
         # Build dependency graph
         for section in large_skill_content["sections"]:
-            modularization_analysis["dependency_graph"][section["title"]] = section[
-                "dependencies"
-            ]
+            modularization_analysis["dependency_graph"][section["title"]] = section["dependencies"]
 
         # Calculate modularization benefits
-        total_module_lines = sum(
-            module["estimated_lines"]
-            for module in modularization_analysis["identified_modules"]
-        )
+        total_module_lines = sum(module["estimated_lines"] for module in modularization_analysis["identified_modules"])
         modularization_ratio = total_module_lines / large_skill_content["total_lines"]
 
         modularization_analysis["benefits"] = {
             "modules_created": len(modularization_analysis["identified_modules"]),
             "modularization_percentage": modularization_ratio * 100,
-            "maintainability_improvement": "High"
-            if modularization_ratio > ZERO_POINT_SEVEN
-            else "Medium",
+            "maintainability_improvement": "High" if modularization_ratio > ZERO_POINT_SEVEN else "Medium",
             "reusability_potential": len(
-                [
-                    m
-                    for m in modularization_analysis["identified_modules"]
-                    if m["module_type"] == "independent"
-                ],
+                [m for m in modularization_analysis["identified_modules"] if m["module_type"] == "independent"],
             ),
         }
 
         # Assert
         assert len(modularization_analysis["identified_modules"]) >= THREE
         assert len(modularization_analysis["breakdown_points"]) >= THREE
-        assert (
-            modularization_analysis["benefits"]["modularization_percentage"] > SEVENTY
-        )
+        assert modularization_analysis["benefits"]["modularization_percentage"] > SEVENTY
 
         # Verify specific modules identified
-        module_names = [
-            module["name"] for module in modularization_analysis["identified_modules"]
-        ]
+        module_names = [module["name"] for module in modularization_analysis["identified_modules"]]
         assert "security_scanning" in module_names
         assert "performance_analysis" in module_names
         assert "report_generation" in module_names
 
         # Check dependency graph
         assert "Report Generation" in modularization_analysis["dependency_graph"]
-        assert (
-            "Security Scanning"
-            in modularization_analysis["dependency_graph"]["Report Generation"]
-        )
+        assert "Security Scanning" in modularization_analysis["dependency_graph"]["Report Generation"]
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_performance_profiling_identifies_bottlenecks(
-        self, mock_claude_tools
-    ) -> None:
+    def test_performance_profiling_identifies_bottlenecks(self, mock_claude_tools) -> None:
         """Scenario: Performance profiling identifies skill execution bottlenecks.
 
         Given skill execution metrics and resource usage
@@ -462,11 +432,7 @@ tags:
 
             # Identify bottlenecks (operations taking > TWENTY% of total time)
             time_percentage = (
-                total_time
-                / sum(
-                    op["execution_time"] * op["frequency"]
-                    for op in skill_execution_data
-                )
+                total_time / sum(op["execution_time"] * op["frequency"] for op in skill_execution_data)
             ) * 100
 
             if time_percentage > TWENTY:
@@ -475,9 +441,7 @@ tags:
                         "operation": operation["operation"],
                         "impact_percentage": time_percentage,
                         "total_time": total_time,
-                        "reason": (
-                            f"Takes {time_percentage:.1f}% of total execution time"
-                        ),
+                        "reason": (f"Takes {time_percentage:.1f}% of total execution time"),
                     },
                 )
 
@@ -486,15 +450,9 @@ tags:
                 performance_analysis["optimization_targets"].append(
                     {
                         "operation": operation["operation"],
-                        "resource_type": "tokens"
-                        if total_tokens > THOUSAND
-                        else "memory",
-                        "usage_amount": total_tokens
-                        if total_tokens > THOUSAND
-                        else total_memory,
-                        "optimization_potential": "High"
-                        if total_tokens > TWO_THOUSAND
-                        else "Medium",
+                        "resource_type": "tokens" if total_tokens > THOUSAND else "memory",
+                        "usage_amount": total_tokens if total_tokens > THOUSAND else total_memory,
+                        "optimization_potential": "High" if total_tokens > TWO_THOUSAND else "Medium",
                     },
                 )
 
@@ -505,20 +463,14 @@ tags:
         )
 
         # Assert
-        assert (
-            performance_analysis["total_execution_time"] > THIRTY
-        )  # Should be significant
+        assert performance_analysis["total_execution_time"] > THIRTY  # Should be significant
         assert performance_analysis["total_token_usage"] > THREE_THOUSAND
         assert len(performance_analysis["bottlenecks"]) >= 1
         assert len(performance_analysis["optimization_targets"]) >= 1
 
         # Check specific bottlenecks
         data_processing = next(
-            (
-                b
-                for b in performance_analysis["bottlenecks"]
-                if b["operation"] == "data_processing"
-            ),
+            (b for b in performance_analysis["bottlenecks"] if b["operation"] == "data_processing"),
             None,
         )
         assert data_processing is not None
@@ -526,9 +478,7 @@ tags:
 
         # Verify optimization targets
         token_optimizations = [
-            t
-            for t in performance_analysis["optimization_targets"]
-            if t["resource_type"] == "tokens"
+            t for t in performance_analysis["optimization_targets"] if t["resource_type"] == "tokens"
         ]
         assert len(token_optimizations) >= 1
 
@@ -597,8 +547,7 @@ tags:
         # Process performance bottlenecks
         for bottleneck in analysis_results["performance_bottlenecks"]:
             priority_score = (
-                bottleneck["estimated_improvement"]
-                * {"critical": 3, "high": 2, "medium": 1}[bottleneck["impact"]]
+                bottleneck["estimated_improvement"] * {"critical": 3, "high": 2, "medium": 1}[bottleneck["impact"]]
             ) / effort_factors[bottleneck["implementation_effort"]]
 
             recommendations.append(
@@ -610,20 +559,17 @@ tags:
                     "estimated_improvement": bottleneck["estimated_improvement"],
                     "implementation_effort": bottleneck["implementation_effort"],
                     "description": (
-                        f"Optimize {bottleneck['operation']} for "
-                        f"{bottleneck['estimated_improvement']}% improvement"
+                        f"Optimize {bottleneck['operation']} for {bottleneck['estimated_improvement']}% improvement"
                     ),
                 },
             )
 
         # Process modularization opportunities
         for module in analysis_results["modularization_opportunities"]:
-            reusability_factor = {"high": 1.5, "medium": 1.0, "low": 0.5}[
-                module["reusability"]
+            reusability_factor = {"high": 1.5, "medium": 1.0, "low": 0.5}[module["reusability"]]
+            priority_score = (module["complexity_reduction"] * reusability_factor) / effort_factors[
+                module["implementation_effort"]
             ]
-            priority_score = (
-                module["complexity_reduction"] * reusability_factor
-            ) / effort_factors[module["implementation_effort"]]
 
             recommendations.append(
                 {
@@ -640,9 +586,9 @@ tags:
         # Process resource inefficiencies
         for inefficiency in analysis_results["resource_inefficiencies"]:
             urgency_factor = 1.5 if inefficiency["type"] == "memory_leaks" else 1.0
-            priority_score = (
-                inefficiency["potential_savings"] * urgency_factor
-            ) / effort_factors[inefficiency["implementation_effort"]]
+            priority_score = (inefficiency["potential_savings"] * urgency_factor) / effort_factors[
+                inefficiency["implementation_effort"]
+            ]
 
             recommendations.append(
                 {
@@ -652,9 +598,7 @@ tags:
                     "priority_score": priority_score,
                     "estimated_improvement": inefficiency["potential_savings"],
                     "implementation_effort": inefficiency["implementation_effort"],
-                    "description": (
-                        f"Fix {inefficiency['source']} to reduce {inefficiency['type']}"
-                    ),
+                    "description": (f"Fix {inefficiency['source']} to reduce {inefficiency['type']}"),
                 },
             )
 
@@ -663,23 +607,14 @@ tags:
 
         # Generate implementation plan
         implementation_plan = {
-            "immediate_wins": [
-                r for r in recommendations if r["implementation_effort"] == "low"
-            ][:3],
-            "medium_term_projects": [
-                r for r in recommendations if r["implementation_effort"] == "medium"
-            ][:2],
-            "long_term_improvements": [
-                r for r in recommendations if r["implementation_effort"] == "high"
-            ][:1],
+            "immediate_wins": [r for r in recommendations if r["implementation_effort"] == "low"][:3],
+            "medium_term_projects": [r for r in recommendations if r["implementation_effort"] == "medium"][:2],
+            "long_term_improvements": [r for r in recommendations if r["implementation_effort"] == "high"][:1],
         }
 
         # Assert
         assert len(recommendations) >= FIVE
-        assert (
-            recommendations[0]["priority_score"]
-            >= recommendations[-1]["priority_score"]
-        )
+        assert recommendations[0]["priority_score"] >= recommendations[-1]["priority_score"]
 
         # Verify implementation plan structure
         assert len(implementation_plan["immediate_wins"]) >= 1
@@ -776,73 +711,45 @@ tags:
                 )
             ),
             "token_efficiency": baseline_metrics["token_efficiency"]
-            * (
-                1
-                + performance_improvement["token_efficiency"]
-                + resource_improvement["token_savings"]
-            ),
+            * (1 + performance_improvement["token_efficiency"] + resource_improvement["token_savings"]),
             "execution_success_rate": min(
-                baseline_metrics["execution_success_rate"]
-                + performance_improvement["success_rate"],
+                baseline_metrics["execution_success_rate"] + performance_improvement["success_rate"],
                 1.0,
             ),
-            "user_satisfaction_score": modularization_improvement[
-                "maintainability_score"
-            ],
+            "user_satisfaction_score": modularization_improvement["maintainability_score"],
         }
 
         # Calculate improvements
         validation_results = {
             "load_time_improvement_percentage": (
-                (
-                    baseline_metrics["skill_load_time"]
-                    - post_optimization_metrics["skill_load_time"]
-                )
+                (baseline_metrics["skill_load_time"] - post_optimization_metrics["skill_load_time"])
                 / baseline_metrics["skill_load_time"]
             )
             * 100,
             "memory_savings_percentage": (
-                (
-                    baseline_metrics["memory_usage_mb"]
-                    - post_optimization_metrics["memory_usage_mb"]
-                )
+                (baseline_metrics["memory_usage_mb"] - post_optimization_metrics["memory_usage_mb"])
                 / baseline_metrics["memory_usage_mb"]
             )
             * 100,
             "token_efficiency_improvement": (
-                (
-                    post_optimization_metrics["token_efficiency"]
-                    - baseline_metrics["token_efficiency"]
-                )
+                (post_optimization_metrics["token_efficiency"] - baseline_metrics["token_efficiency"])
                 / baseline_metrics["token_efficiency"]
             )
             * 100,
             "success_rate_improvement": (
-                (
-                    post_optimization_metrics["execution_success_rate"]
-                    - baseline_metrics["execution_success_rate"]
-                )
+                (post_optimization_metrics["execution_success_rate"] - baseline_metrics["execution_success_rate"])
                 / baseline_metrics["execution_success_rate"]
             )
             * 100,
-            "satisfaction_improvement": post_optimization_metrics[
-                "user_satisfaction_score"
-            ]
+            "satisfaction_improvement": post_optimization_metrics["user_satisfaction_score"]
             - baseline_metrics["user_satisfaction_score"],
         }
 
         # Determine success criteria
         success_criteria = {
-            "load_time_target_met": validation_results[
-                "load_time_improvement_percentage"
-            ]
-            >= TWENTY,
-            "memory_target_met": validation_results["memory_savings_percentage"]
-            >= FIFTEEN,
-            "token_efficiency_target_met": validation_results[
-                "token_efficiency_improvement"
-            ]
-            >= TWENTY_FIVE,
+            "load_time_target_met": validation_results["load_time_improvement_percentage"] >= TWENTY,
+            "memory_target_met": validation_results["memory_savings_percentage"] >= FIFTEEN,
+            "token_efficiency_target_met": validation_results["token_efficiency_improvement"] >= TWENTY_FIVE,
             "overall_success": all(
                 [
                     validation_results["load_time_improvement_percentage"] >= FIFTEEN,
@@ -867,19 +774,7 @@ tags:
         assert success_criteria["overall_success"] is True
 
         # Verify post-optimization metrics are better than baseline
-        assert (
-            post_optimization_metrics["skill_load_time"]
-            < baseline_metrics["skill_load_time"]
-        )
-        assert (
-            post_optimization_metrics["memory_usage_mb"]
-            < baseline_metrics["memory_usage_mb"]
-        )
-        assert (
-            post_optimization_metrics["token_efficiency"]
-            > baseline_metrics["token_efficiency"]
-        )
-        assert (
-            post_optimization_metrics["execution_success_rate"]
-            > baseline_metrics["execution_success_rate"]
-        )
+        assert post_optimization_metrics["skill_load_time"] < baseline_metrics["skill_load_time"]
+        assert post_optimization_metrics["memory_usage_mb"] < baseline_metrics["memory_usage_mb"]
+        assert post_optimization_metrics["token_efficiency"] > baseline_metrics["token_efficiency"]
+        assert post_optimization_metrics["execution_success_rate"] > baseline_metrics["execution_success_rate"]

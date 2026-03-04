@@ -133,7 +133,34 @@
         ]
       }
   },
+  "extraKnownMarketplaces": {
+    "claude-code-lsps": {
+      "source": {
+        "source": "github",
+        "repo": "Piebald-AI/claude-code-lsps"
+      }
+    },
+    "everything-claude-code": {
+      "source": {
+        "source": "github",
+        "repo": "affaan-m/everything-claude-code"
+      }
+    },
+    "oh-my-claudecode": {
+      "source": {
+        "source": "github",
+        "repo": "Yeachan-Heo/oh-my-claudecode"
+      }
+    },
+    "pdugan20-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "pdugan20/claudelint"
+      }
+    }
+  },
   "enabledPlugins": {
+    "claudelint@pdugan20-plugins": true,
     "claude-md-management@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
@@ -154,26 +181,6 @@
     "superpowers@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "oh-my-claudecode@omc": true
-  },
-  "extraKnownMarketplaces": {
-    "claude-code-lsps": {
-      "source": {
-        "source": "github",
-        "repo": "Piebald-AI/claude-code-lsps"
-      }
-    },
-    "everything-claude-code": {
-      "source": {
-        "source": "github",
-        "repo": "affaan-m/everything-claude-code"
-      }
-    },
-    "oh-my-claudecode": {
-      "source": {
-        "source": "github",
-        "repo": "Yeachan-Heo/oh-my-claudecode"
-      }
-    }
   },
   "mcpServers": {
     "playwright": {

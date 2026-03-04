@@ -24,9 +24,7 @@ class TestContextOptimizerAgent:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_agent_autonomously_monitors_context_pressure(
-        self, mock_mecw_analyzer
-    ) -> None:
+    def test_agent_autonomously_monitors_context_pressure(self, mock_mecw_analyzer) -> None:
         """Scenario: Agent autonomously monitors context pressure.
 
         Given varying context usage levels
@@ -163,19 +161,12 @@ class TestContextOptimizerAgent:
 
             for strategy in optimization_strategies:
                 # Check if strategy is applicable
-                if any(
-                    condition in strategy["applicable_conditions"]
-                    for condition in scenario["conditions"]
-                ):
+                if any(condition in strategy["applicable_conditions"] for condition in scenario["conditions"]):
                     # Calculate decision score (effectiveness / risk_factor) -
                     # cost_penalty
-                    risk_factor = {"low": 1.0, "medium": 1.5, "high": 2.0}[
-                        strategy["risk"]
-                    ]
+                    risk_factor = {"low": 1.0, "medium": 1.5, "high": 2.0}[strategy["risk"]]
                     cost_penalty = strategy["cost"] / 1000  # Normalize cost
-                    decision_score = (
-                        strategy["effectiveness"] / risk_factor
-                    ) - cost_penalty
+                    decision_score = (strategy["effectiveness"] / risk_factor) - cost_penalty
 
                     candidate_strategies.append(
                         {
@@ -196,8 +187,7 @@ class TestContextOptimizerAgent:
                     "selected_strategy": best_strategy["strategy"],
                     "decision_score": best_strategy["score"],
                     "expected_strategy": scenario["expected_strategy"],
-                    "decision_correct": best_strategy["strategy"]
-                    == scenario["expected_strategy"],
+                    "decision_correct": best_strategy["strategy"] == scenario["expected_strategy"],
                 }
 
                 agent_decisions.append(agent_decision)
@@ -257,9 +247,7 @@ class TestContextOptimizerAgent:
             context = outcome["context_type"]
 
             # Calculate success score
-            success_score = (
-                outcome["effectiveness_achieved"] + outcome["user_satisfaction"]
-            ) / 2
+            success_score = (outcome["effectiveness_achieved"] + outcome["user_satisfaction"]) / 2
 
             # Update learning weights
             if strategy not in learning_weights:
@@ -299,8 +287,7 @@ class TestContextOptimizerAgent:
                         "selected_strategy": best_strategy["strategy"],
                         "learned_score": best_strategy["learned_score"],
                         "expected_strategy": scenario["expected_best"],
-                        "improvement_applied": best_strategy["strategy"]
-                        == scenario["expected_best"],
+                        "improvement_applied": best_strategy["strategy"] == scenario["expected_best"],
                     },
                 )
 

@@ -141,10 +141,7 @@ tags:
         assert len(performance_monitoring_items) == FIVE
         for expected_item in expected_items:
             assert expected_item in performance_monitoring_items
-        assert all(
-            item.startswith("performance-monitoring:")
-            for item in performance_monitoring_items
-        )
+        assert all(item.startswith("performance-monitoring:") for item in performance_monitoring_items)
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -286,11 +283,7 @@ tags:
             all_alerts.extend(alerts)
 
         # Prioritize alerts
-        critical_alerts = [
-            alert
-            for alert in all_alerts
-            if "critical" in alert.lower() or "95%" in alert
-        ]
+        critical_alerts = [alert for alert in all_alerts if "critical" in alert.lower() or "95%" in alert]
         [alert for alert in all_alerts if "warning" in alert.lower() or "80%" in alert]
 
         # Assert
@@ -333,30 +326,20 @@ tags:
             recommendations.append(
                 {
                     "area": "CPU Optimization",
-                    "current_state": (
-                        f"Average CPU usage: {performance_data['cpu_avg']}%"
-                    ),
-                    "recommendation": (
-                        "Implement task batching and reduce concurrent operations"
-                    ),
+                    "current_state": (f"Average CPU usage: {performance_data['cpu_avg']}%"),
+                    "recommendation": ("Implement task batching and reduce concurrent operations"),
                     "estimated_improvement": "15-25% CPU reduction",
                     "implementation_effort": "Medium",
                 },
             )
 
         # Memory optimization
-        if (
-            performance_data["memory_peak"] > EIGHT_THOUSAND_ONE_HUNDRED_NINETY_TWO
-        ):  # > 8GB
+        if performance_data["memory_peak"] > EIGHT_THOUSAND_ONE_HUNDRED_NINETY_TWO:  # > 8GB
             recommendations.append(
                 {
                     "area": "Memory Optimization",
-                    "current_state": (
-                        f"Peak memory usage: {performance_data['memory_peak']}MB"
-                    ),
-                    "recommendation": (
-                        "Implement memory pooling and reduce object retention"
-                    ),
+                    "current_state": (f"Peak memory usage: {performance_data['memory_peak']}MB"),
+                    "recommendation": ("Implement memory pooling and reduce object retention"),
                     "estimated_improvement": "20-30% memory reduction",
                     "implementation_effort": "High",
                 },
@@ -367,12 +350,8 @@ tags:
             recommendations.append(
                 {
                     "area": "Token Efficiency",
-                    "current_state": (
-                        f"Token efficiency: {performance_data['token_efficiency']:.2%}"
-                    ),
-                    "recommendation": (
-                        "Apply context compression and prompt optimization"
-                    ),
+                    "current_state": (f"Token efficiency: {performance_data['token_efficiency']:.2%}"),
+                    "recommendation": ("Apply context compression and prompt optimization"),
                     "estimated_improvement": "25-40% token savings",
                     "implementation_effort": "Low",
                 },
@@ -418,21 +397,13 @@ tags:
             hour_offset = i
             # Simulate daily pattern with growth trend
             cpu_usage = (
-                base_cpu
-                + (hour_offset * 0.5)
-                + (10 if FOURTEEN <= hour_offset <= EIGHTEEN else 0)
+                base_cpu + (hour_offset * 0.5) + (10 if FOURTEEN <= hour_offset <= EIGHTEEN else 0)
             )  # Peak afternoon
-            memory_usage = (
-                base_memory
-                + (hour_offset * 50)
-                + (1024 if FOURTEEN <= hour_offset <= EIGHTEEN else 0)
-            )
+            memory_usage = base_memory + (hour_offset * 50) + (1024 if FOURTEEN <= hour_offset <= EIGHTEEN else 0)
 
             historical_data.append(
                 {
-                    "timestamp": datetime.now(UTC)
-                    .replace(hour=hour_offset)
-                    .isoformat(),
+                    "timestamp": datetime.now(UTC).replace(hour=hour_offset).isoformat(),
                     "cpu_usage": min(cpu_usage, 95.0),  # Cap at 95%
                     "memory_usage": min(memory_usage, 16384),  # Cap at 16GB
                     "token_usage": 5000 + (i * 100),
@@ -440,12 +411,8 @@ tags:
             )
 
         # Act - analyze trends
-        cpu_trend = (
-            historical_data[-1]["cpu_usage"] - historical_data[0]["cpu_usage"]
-        ) / len(historical_data)
-        memory_trend = (
-            historical_data[-1]["memory_usage"] - historical_data[0]["memory_usage"]
-        ) / len(historical_data)
+        cpu_trend = (historical_data[-1]["cpu_usage"] - historical_data[0]["cpu_usage"]) / len(historical_data)
+        memory_trend = (historical_data[-1]["memory_usage"] - historical_data[0]["memory_usage"]) / len(historical_data)
 
         # Identify peak hours
         hourly_avg = {}
@@ -474,9 +441,7 @@ tags:
                 "Monitor resource growth - consider scaling strategies",
             )
 
-        if (
-            trend_analysis["peak_usage_average"] > FORTY
-        ):  # Realistic threshold for test data
+        if trend_analysis["peak_usage_average"] > FORTY:  # Realistic threshold for test data
             trend_analysis["recommendations"].append(
                 f"Optimize for peak hours around {highest_usage_hour}:00",
             )
@@ -516,7 +481,7 @@ tags:
                 int(mock_claude_tools["Bash"]("nvidia-smi --list-gpus | wc -l")),
             )
             performance_status["gpu_available"] = gpu_available
-        except (ValueError, Exception):
+        except ValueError, Exception:
             performance_status["gpu_available"] = False
             error_count += 1
 
@@ -600,8 +565,7 @@ tags:
                 "cpu_warning_threshold": cpu_threshold,
                 "memory_warning_threshold": memory_threshold,
                 "adaptations": {
-                    "memory_adjustment": memory_threshold
-                    - config["expected_memory_threshold"],
+                    "memory_adjustment": memory_threshold - config["expected_memory_threshold"],
                     "cpu_adjustment": cpu_threshold - config["expected_cpu_threshold"],
                 },
             }
@@ -612,16 +576,12 @@ tags:
         assert len(adapted_configurations) == THREE
 
         # Check low-end system has stricter thresholds
-        low_end = next(
-            c for c in adapted_configurations if c["system"] == "low_end_system"
-        )
+        low_end = next(c for c in adapted_configurations if c["system"] == "low_end_system")
         assert low_end["cpu_warning_threshold"] < SEVENTY
         assert low_end["memory_warning_threshold"] < EIGHTY
 
         # Check high-end system has more lenient thresholds
-        high_end = next(
-            c for c in adapted_configurations if c["system"] == "high_end_system"
-        )
+        high_end = next(c for c in adapted_configurations if c["system"] == "high_end_system")
         assert high_end["cpu_warning_threshold"] >= EIGHTY_FIVE
         assert high_end["memory_warning_threshold"] >= NINETY
 

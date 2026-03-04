@@ -44,9 +44,7 @@ except ImportError as err:
             parse_yaml_frontmatter as parse_frontmatter,
         )
     else:
-        msg = (
-            "Cannot import abstract package. Run: uv pip install -e . from project root"
-        )
+        msg = "Cannot import abstract package. Run: uv pip install -e . from project root"
         raise ImportError(
             msg,
         ) from err

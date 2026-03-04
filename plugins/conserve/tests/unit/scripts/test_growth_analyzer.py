@@ -13,9 +13,7 @@ import pytest
 
 # Load the growth-analyzer module dynamically (hyphenated filename)
 scripts_dir = Path(__file__).parent.parent.parent.parent / "scripts"
-spec = importlib.util.spec_from_file_location(
-    "growth_analyzer_module", scripts_dir / "growth-analyzer.py"
-)
+spec = importlib.util.spec_from_file_location("growth_analyzer_module", scripts_dir / "growth-analyzer.py")
 assert spec is not None
 assert spec.loader is not None
 growth_analyzer_module = importlib.util.module_from_spec(spec)
@@ -116,9 +114,7 @@ class TestGrowthAnalyzerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_analyzer_detects_critical_growth(
-        self, analyzer: GrowthAnalyzer, critical_growth_data: dict
-    ) -> None:
+    def test_analyzer_detects_critical_growth(self, analyzer: GrowthAnalyzer, critical_growth_data: dict) -> None:
         """Scenario: Analyzer detects critical growth requiring urgent action.
 
         Given context growth data with high growth rate and acceleration
@@ -141,9 +137,7 @@ class TestGrowthAnalyzerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_analyzer_generates_valid_projections(
-        self, analyzer: GrowthAnalyzer, stable_growth_data: dict
-    ) -> None:
+    def test_analyzer_generates_valid_projections(self, analyzer: GrowthAnalyzer, stable_growth_data: dict) -> None:
         """Scenario: Analyzer generates accurate growth projections.
 
         Given current growth metrics
@@ -159,11 +153,7 @@ class TestGrowthAnalyzerImplementation:
         assert len(projections) > 0, "Should generate projections"
 
         # Projections are keyed by turn count (e.g., "5_turns", "10_turns")
-        turn_keys = [
-            k
-            for k in projections.keys()
-            if k.endswith("_turns") and k != "mecw_violation_turns"
-        ]
+        turn_keys = [k for k in projections.keys() if k.endswith("_turns") and k != "mecw_violation_turns"]
         assert len(turn_keys) > 0, "Should have turn-based projections"
 
         # Verify projection structure
@@ -181,9 +171,7 @@ class TestGrowthAnalyzerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_analyzer_calculates_controllable_growth(
-        self, analyzer: GrowthAnalyzer, stable_growth_data: dict
-    ) -> None:
+    def test_analyzer_calculates_controllable_growth(self, analyzer: GrowthAnalyzer, stable_growth_data: dict) -> None:
         """Scenario: Analyzer identifies controllable vs uncontrollable growth.
 
         Given content breakdown data
@@ -242,9 +230,7 @@ class TestGrowthAnalyzerImplementation:
         result = analyzer.analyze_growth_patterns(test_data)
 
         # Assert
-        assert result["severity"] == expected_severity, (
-            f"Growth rate {growth_rate} should be {expected_severity}"
-        )
+        assert result["severity"] == expected_severity, f"Growth rate {growth_rate} should be {expected_severity}"
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -276,9 +262,7 @@ class TestGrowthAnalyzerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_analyzer_handles_missing_optional_data(
-        self, analyzer: GrowthAnalyzer
-    ) -> None:
+    def test_analyzer_handles_missing_optional_data(self, analyzer: GrowthAnalyzer) -> None:
         """Scenario: Analyzer handles missing optional data gracefully.
 
         Given incomplete context data
@@ -305,9 +289,7 @@ class TestGrowthAnalyzerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_urgency_considers_both_rate_and_acceleration(
-        self, analyzer: GrowthAnalyzer
-    ) -> None:
+    def test_urgency_considers_both_rate_and_acceleration(self, analyzer: GrowthAnalyzer) -> None:
         """Scenario: Urgency assessment considers both rate and acceleration.
 
         Given growth with moderate rate but high acceleration
@@ -439,9 +421,7 @@ class TestGrowthAnalyzerEdgeCases:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_analyzer_produces_consistent_results(
-        self, analyzer: GrowthAnalyzer
-    ) -> None:
+    def test_analyzer_produces_consistent_results(self, analyzer: GrowthAnalyzer) -> None:
         """Scenario: Analyzer produces consistent results for same input.
 
         Given identical input data
@@ -476,9 +456,7 @@ class TestGrowthAnalyzerEdgeCases:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_analyzer_handles_zero_growth_rate_mecw(
-        self, analyzer: GrowthAnalyzer
-    ) -> None:
+    def test_analyzer_handles_zero_growth_rate_mecw(self, analyzer: GrowthAnalyzer) -> None:
         """Scenario: MECW estimation handles zero growth rate.
 
         Given zero or negative growth
@@ -510,9 +488,7 @@ class TestGrowthAnalyzerEdgeCases:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_analyzer_mecw_with_positive_acceleration(
-        self, analyzer: GrowthAnalyzer
-    ) -> None:
+    def test_analyzer_mecw_with_positive_acceleration(self, analyzer: GrowthAnalyzer) -> None:
         """Scenario: MECW estimation handles positive acceleration.
 
         Given positive acceleration
@@ -536,9 +512,7 @@ class TestGrowthAnalyzerEdgeCases:
         assert "projections" in result
         if "mecw_violation_turns" in result["projections"]:
             # Should calculate violation turns
-            assert isinstance(
-                result["projections"]["mecw_violation_turns"], int | float
-            )
+            assert isinstance(result["projections"]["mecw_violation_turns"], int | float)
 
 
 if __name__ == "__main__":

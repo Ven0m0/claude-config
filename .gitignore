@@ -29,6 +29,10 @@ conversations/
 # MCP configuration with API keys
 .mcp.json
 
+# Claudelint cache
+.claudelint-cache
+**/.claudelint-cache
+
 # IDE and editor
 .vscode/
 .idea/

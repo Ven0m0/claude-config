@@ -129,10 +129,7 @@ def sample_plugin_json():
     return {
         "name": "conservation",
         "version": "2.0.0",
-        "description": (
-            "Resource optimization and performance monitoring toolkit for "
-            "efficient Claude Code workflows"
-        ),
+        "description": ("Resource optimization and performance monitoring toolkit for efficient Claude Code workflows"),
         "skills": [
             {
                 "name": "context-optimization",
@@ -409,9 +406,7 @@ def mock_token_quota_tracker():
             self.weekly_limit = 100000
 
         def check_quota(self):
-            session_duration = (
-                datetime.now(UTC) - self.session_start
-            ).total_seconds() / 3600
+            session_duration = (datetime.now(UTC) - self.session_start).total_seconds() / 3600
             remaining = self.weekly_limit - self.weekly_usage
             return {
                 "session_duration_hours": session_duration,
@@ -462,15 +457,13 @@ def pytest_collection_modifyitems(config, items) -> None:
     for item in items:
         # Add performance marker to performance tests
         if "performance" in item.nodeid or any(
-            keyword in item.nodeid
-            for keyword in ["performance", "scalability", "benchmark"]
+            keyword in item.nodeid for keyword in ["performance", "scalability", "benchmark"]
         ):
             item.add_marker(pytest.mark.performance)
 
         # Add bdd marker to BDD-style tests
         if "bdd" in item.nodeid or any(
-            keyword in item.nodeid
-            for keyword in ["bdd", "behavior", "feature", "scenario"]
+            keyword in item.nodeid for keyword in ["bdd", "behavior", "feature", "scenario"]
         ):
             item.add_marker(pytest.mark.bdd)
 

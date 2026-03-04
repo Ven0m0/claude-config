@@ -63,11 +63,7 @@ def analyze_skill_file(file_path: str) -> dict[str, Any]:
         "total_lines": total_lines,
         "code_blocks": code_blocks,
         "python_functions": python_functions,
-        "long_functions": [
-            (start + 1, lines)
-            for start, lines in long_functions
-            if lines > LONG_FUNCTION_LINES
-        ],
+        "long_functions": [(start + 1, lines) for start, lines in long_functions if lines > LONG_FUNCTION_LINES],
         "needs_optimization": total_lines > MAX_TOTAL_LINES_FOR_OPTIMIZATION
         or code_blocks > MAX_CODE_BLOCKS
         or python_functions > MAX_PYTHON_FUNCTIONS,

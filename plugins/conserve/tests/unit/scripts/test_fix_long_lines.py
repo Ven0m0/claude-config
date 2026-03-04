@@ -12,9 +12,7 @@ import pytest
 
 # Load the fix_long_lines module dynamically
 scripts_dir = Path(__file__).parent.parent.parent.parent / "scripts"
-spec = importlib.util.spec_from_file_location(
-    "fix_long_lines_module", scripts_dir / "fix_long_lines.py"
-)
+spec = importlib.util.spec_from_file_location("fix_long_lines_module", scripts_dir / "fix_long_lines.py")
 assert spec is not None
 assert spec.loader is not None
 fix_long_lines_module = importlib.util.module_from_spec(spec)
@@ -65,8 +63,7 @@ class TestFixLongLinesImplementation:
         """
         # Arrange
         long_line = (
-            "description: This is a very long description that exceeds "
-            "the maximum line length, and needs to be broken"
+            "description: This is a very long description that exceeds the maximum line length, and needs to be broken"
         )
 
         # Act
@@ -107,9 +104,7 @@ class TestFixLongLinesImplementation:
         Then it should break at 'and'
         """
         # Arrange
-        line = (
-            "description: This describes something and another thing that makes it long"
-        )
+        line = "description: This describes something and another thing that makes it long"
 
         # Act
         result = break_description_line(line, max_length=80)
@@ -128,9 +123,7 @@ class TestFixLongLinesImplementation:
         Then it should break after the colon
         """
         # Arrange
-        line = (
-            "- **Long Item Name**: This is a very long description that needs breaking"
-        )
+        line = "- **Long Item Name**: This is a very long description that needs breaking"
 
         # Act
         result = break_list_item_line(line, max_length=60)
@@ -279,10 +272,7 @@ Regular text that is also quite long and should be broken at a
         Then lines should respect the specified limit
         """
         # Arrange
-        long_line = (
-            "This is a very long line that definitely needs to be "
-            "broken into multiple pieces"
-        )
+        long_line = "This is a very long line that definitely needs to be broken into multiple pieces"
 
         # Act
         result = break_generic_line(long_line, max_length=max_length)
@@ -374,9 +364,7 @@ class TestFixLongLinesEdgeCases:
         Then indentation should be maintained
         """
         # Arrange
-        content = (
-            "    Indented line that is quite long and needs breaking at some point"
-        )
+        content = "    Indented line that is quite long and needs breaking at some point"
 
         # Act
         break_generic_line(content, max_length=40)
@@ -394,10 +382,7 @@ class TestFixLongLinesEdgeCases:
         Then it should handle them correctly
         """
         # Arrange
-        content = (
-            "description: This line contains émojis 🎉 and Üñíçödé "
-            "characters, making it longer"
-        )
+        content = "description: This line contains émojis 🎉 and Üñíçödé characters, making it longer"
 
         # Act
         result = fix_long_descriptions(content, max_length=60)

@@ -4,20 +4,21 @@
 import json
 import sys
 import webbrowser
-from pathlib import Path
 from collections import Counter
+from pathlib import Path
 
-IGNORE = {'.git', 'node_modules', '__pycache__', '.venv', 'venv', 'dist', 'build'}
+IGNORE = {".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build"}
+
 
 def scan(path: Path, stats: dict) -> dict:
     result = {"name": path.name, "children": [], "size": 0}
     try:
         for item in sorted(path.iterdir()):
-            if item.name in IGNORE or item.name.startswith('.'):
+            if item.name in IGNORE or item.name.startswith("."):
                 continue
             if item.is_file():
                 size = item.stat().st_size
-                ext = item.suffix.lower() or '(no ext)'
+                ext = item.suffix.lower() or "(no ext)"
                 result["children"].append({"name": item.name, "size": size, "ext": ext})
                 result["size"] += size
                 stats["files"] += 1
@@ -33,28 +34,44 @@ def scan(path: Path, stats: dict) -> dict:
         pass
     return result
 
+
 def generate_html(data: dict, stats: dict, output: Path) -> None:
     ext_sizes = stats["ext_sizes"]
     total_size = sum(ext_sizes.values()) or 1
     sorted_exts = sorted(ext_sizes.items(), key=lambda x: -x[1])[:8]
     colors = {
-        '.js': '#f7df1e', '.ts': '#3178c6', '.py': '#3776ab', '.go': '#00add8',
-        '.rs': '#dea584', '.rb': '#cc342d', '.css': '#264de4', '.html': '#e34c26',
-        '.json': '#6b7280', '.md': '#083fa1', '.yaml': '#cb171e', '.yml': '#cb171e',
-        '.mdx': '#083fa1', '.tsx': '#3178c6', '.jsx': '#61dafb', '.sh': '#4eaa25',
+        ".js": "#f7df1e",
+        ".ts": "#3178c6",
+        ".py": "#3776ab",
+        ".go": "#00add8",
+        ".rs": "#dea584",
+        ".rb": "#cc342d",
+        ".css": "#264de4",
+        ".html": "#e34c26",
+        ".json": "#6b7280",
+        ".md": "#083fa1",
+        ".yaml": "#cb171e",
+        ".yml": "#cb171e",
+        ".mdx": "#083fa1",
+        ".tsx": "#3178c6",
+        ".jsx": "#61dafb",
+        ".sh": "#4eaa25",
     }
     lang_bars = "".join(
         f'<div class="bar-row"><span class="bar-label">{ext}</span>'
-        f'<div class="bar" style="width:{(size/total_size)*100}%;background:{colors.get(ext,"#6b7280")}"></div>'
-        f'<span class="bar-pct">{(size/total_size)*100:.1f}%</span></div>'
+        f'<div class="bar" style="width:{(size / total_size) * 100}%;background:{colors.get(ext, "#6b7280")}"></div>'
+        f'<span class="bar-pct">{(size / total_size) * 100:.1f}%</span></div>'
         for ext, size in sorted_exts
     )
-    def fmt(b):
-        if b < 1024: return f"{b} B"
-        if b < 1048576: return f"{b/1024:.1f} KB"
-        return f"{b/1048576:.1f} MB"
 
-    html = f'''<!DOCTYPE html>
+    def fmt(b) -> str:
+        if b < 1024:
+            return f"{b} B"
+        if b < 1048576:
+            return f"{b / 1024:.1f} KB"
+        return f"{b / 1048576:.1f} MB"
+
+    html = f"""<!DOCTYPE html>
 <html><head>
   <meta charset="utf-8"><title>Codebase Explorer</title>
   <style>
@@ -118,14 +135,14 @@ def generate_html(data: dict, stats: dict, output: Path) -> None:
     }}
     data.children.forEach(c => render(c, document.getElementById('root')));
   </script>
-</body></html>'''
+</body></html>"""
     output.write_text(html)
 
-if __name__ == '__main__':
-    target = Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
+
+if __name__ == "__main__":
+    target = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
     stats = {"files": 0, "dirs": 0, "extensions": Counter(), "ext_sizes": Counter()}
     data = scan(target, stats)
-    out = Path('codebase-map.html')
+    out = Path("codebase-map.html")
     generate_html(data, stats, out)
-    print(f'Generated {out.absolute()}')
-    webbrowser.open(f'file://{out.absolute()}')
+    webbrowser.open(f"file://{out.absolute()}")

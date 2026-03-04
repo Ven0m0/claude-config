@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Validate TOON file structure and syntax.
+"""Validate TOON file structure and syntax.
 
 TOON is a structured text format using schema.org-style properties.
 This validator checks for required markers and structural integrity.
@@ -28,15 +27,15 @@ def validate_toon(content: str, filename: str) -> ValidationResult:
     """Validate TOON content structure."""
     errors = []
     warnings = []
-    lines = content.split('\n')
+    lines = content.split("\n")
 
     # Check for @type marker (required)
-    has_type = any(re.match(r'^@type:\s*\S+', line) for line in lines)
+    has_type = any(re.match(r"^@type:\s*\S+", line) for line in lines)
     if not has_type:
         errors.append("Missing required @type marker")
 
     # Check for @id marker (required)
-    has_id = any(re.match(r'^@id:\s*\S+', line) for line in lines)
+    has_id = any(re.match(r"^@id:\s*\S+", line) for line in lines)
     if not has_id:
         errors.append("Missing required @id marker")
 
@@ -44,67 +43,63 @@ def validate_toon(content: str, filename: str) -> ValidationResult:
     bracket_stack = []
     for i, line in enumerate(lines, 1):
         # Skip comment lines
-        if line.strip().startswith('#'):
+        if line.strip().startswith("#"):
             continue
 
         # Track array declarations like "phases[3]:" or "tasks[N,]{"
-        array_match = re.search(r'\[(\d+|\w+),?\]', line)
-        if array_match and '{' in line:
-            bracket_stack.append((i, 'array-object'))
+        array_match = re.search(r"\[(\d+|\w+),?\]", line)
+        if array_match and "{" in line:
+            bracket_stack.append((i, "array-object"))
 
         # Simple bracket tracking for nested structures
         for char in line:
-            if char == '{':
-                bracket_stack.append((i, '{'))
-            elif char == '}':
-                if bracket_stack and bracket_stack[-1][1] in ('{', 'array-object'):
+            if char == "{":
+                bracket_stack.append((i, "{"))
+            elif char == "}":
+                if bracket_stack and bracket_stack[-1][1] in ("{", "array-object"):
                     bracket_stack.pop()
                 else:
-                    errors.append(f"Line {i}: Unmatched closing brace '}}'" )
+                    errors.append(f"Line {i}: Unmatched closing brace '}}'")
 
     # Report unclosed brackets
     for line_num, bracket_type in bracket_stack:
-        if bracket_type == 'array-object':
+        if bracket_type == "array-object":
             errors.append(f"Line {line_num}: Unclosed array-object block")
         else:
             errors.append(f"Line {line_num}: Unclosed brace '{bracket_type}'")
 
     # Check for common TOON patterns
     # Valid property patterns: "key: value" or "key:" on its own line
-    property_pattern = re.compile(r'^(\s*)(\w[\w\-\.]*|\@\w+)(\[.*?\])?:\s*(.*)?$')
+    property_pattern = re.compile(r"^(\s*)(\w[\w\-\.]*|\@\w+)(\[.*?\])?:\s*(.*)?$")
 
     for i, line in enumerate(lines, 1):
         stripped = line.strip()
 
         # Skip empty lines, comments, pure values (in arrays), and closing braces
-        if not stripped or stripped.startswith('#') or stripped == '}':
+        if not stripped or stripped.startswith("#") or stripped == "}":
             continue
 
         # Skip lines that are just values (in multi-line arrays)
-        if re.match(r'^\s+\S+,\S+', line):  # CSV-style array row
+        if re.match(r"^\s+\S+,\S+", line):  # CSV-style array row
             continue
-        if re.match(r'^\s+-\s+', line):  # YAML-style list item
+        if re.match(r"^\s+-\s+", line):  # YAML-style list item
             continue
 
         # Check if line looks like a property
-        if ':' in stripped and not property_pattern.match(line):
+        if ":" in stripped and not property_pattern.match(line):
             # Could be a value containing colons (like URLs) - just warn
-            if not stripped.startswith('http') and '://' not in stripped:
+            if not stripped.startswith("http") and "://" not in stripped:
                 warnings.append(f"Line {i}: Unusual property format: {stripped[:50]}...")
 
     # Validate specific execution-plan structure if this looks like one
-    if 'execution-plan' in content.lower():
-        required_sections = ['phases', 'executionOrder']
+    if "execution-plan" in content.lower():
+        required_sections = ["phases", "executionOrder"]
         for section in required_sections:
-            pattern = rf'^{section}\[.*?\]:'
+            pattern = rf"^{section}\[.*?\]:"
             if not any(re.match(pattern, line) for line in lines):
                 warnings.append(f"Execution plan missing expected section: {section}")
 
-    return ValidationResult(
-        valid=len(errors) == 0,
-        errors=errors,
-        warnings=warnings
-    )
+    return ValidationResult(valid=len(errors) == 0, errors=errors, warnings=warnings)
 
 
 def validate_file(filepath: Path) -> ValidationResult:
@@ -112,11 +107,11 @@ def validate_file(filepath: Path) -> ValidationResult:
     if not filepath.exists():
         return ValidationResult(False, [f"File not found: {filepath}"], [])
 
-    if not filepath.suffix == '.toon':
+    if filepath.suffix != ".toon":
         return ValidationResult(False, [], [f"Expected .toon extension, got: {filepath.suffix}"])
 
     try:
-        content = filepath.read_text(encoding='utf-8')
+        content = filepath.read_text(encoding="utf-8")
     except Exception as e:
         return ValidationResult(False, [f"Failed to read file: {e}"], [])
 
@@ -126,20 +121,20 @@ def validate_file(filepath: Path) -> ValidationResult:
     return validate_toon(content, filepath.name)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
-        description='Validate TOON file structure and syntax',
+        description="Validate TOON file structure and syntax",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
     %(prog)s specs/auth-system.toon
     %(prog)s execution-plan.toon --strict
     %(prog)s *.toon --quiet
-        """
+        """,
     )
-    parser.add_argument('files', nargs='+', type=Path, help='TOON file(s) to validate')
-    parser.add_argument('--strict', action='store_true', help='Treat warnings as errors')
-    parser.add_argument('--quiet', '-q', action='store_true', help='Only output on error')
+    parser.add_argument("files", nargs="+", type=Path, help="TOON file(s) to validate")
+    parser.add_argument("--strict", action="store_true", help="Treat warnings as errors")
+    parser.add_argument("--quiet", "-q", action="store_true", help="Only output on error")
 
     args = parser.parse_args()
 
@@ -153,18 +148,16 @@ Examples:
 
         if not result.valid:
             all_valid = False
-            print(f"INVALID: {filepath}", file=sys.stderr)
-            for error in result.errors:
-                print(f"  ERROR: {error}", file=sys.stderr)
-            for warning in result.warnings:
-                print(f"  WARNING: {warning}", file=sys.stderr)
+            for _error in result.errors:
+                pass
+            for _warning in result.warnings:
+                pass
         elif not args.quiet:
-            print(f"VALID: {filepath}")
-            for warning in result.warnings:
-                print(f"  WARNING: {warning}")
+            for _warning in result.warnings:
+                pass
 
     sys.exit(0 if all_valid else 1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

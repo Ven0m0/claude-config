@@ -66,13 +66,12 @@ if __name__ == "__main__":
 
         if results["recommendations"]:
             lines.extend(["## Recommendations", ""])
-            for rec in results["recommendations"]:
-                lines.append(f"- {rec}")
+            lines.extend(f"- {rec}" for rec in results["recommendations"])
 
         output = "\n".join(lines)
 
     if args.output:
-        with open(args.output, "w") as f:
+        with Path(args.output).open("w") as f:
             f.write(output)
     else:
         pass

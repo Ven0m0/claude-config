@@ -13,9 +13,7 @@ import pytest
 
 # Load the growth-controller module dynamically (hyphenated filename)
 scripts_dir = Path(__file__).parent.parent.parent.parent / "scripts"
-spec = importlib.util.spec_from_file_location(
-    "growth_controller_module", scripts_dir / "growth-controller.py"
-)
+spec = importlib.util.spec_from_file_location("growth_controller_module", scripts_dir / "growth-controller.py")
 assert spec is not None
 assert spec.loader is not None
 growth_controller_module = importlib.util.module_from_spec(spec)
@@ -159,9 +157,7 @@ class TestGrowthControllerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_controller_includes_strategy_metadata(
-        self, controller: GrowthController, stable_analysis: dict
-    ) -> None:
+    def test_controller_includes_strategy_metadata(self, controller: GrowthController, stable_analysis: dict) -> None:
         """Scenario: Controller includes detailed strategy metadata.
 
         Given any analysis results
@@ -182,9 +178,7 @@ class TestGrowthControllerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_controller_handles_missing_analysis_fields(
-        self, controller: GrowthController
-    ) -> None:
+    def test_controller_handles_missing_analysis_fields(self, controller: GrowthController) -> None:
         """Scenario: Controller handles incomplete analysis results gracefully.
 
         Given analysis results with missing optional fields
@@ -216,24 +210,15 @@ class TestGrowthControllerImplementation:
         Then action priorities should differ appropriately
         """
         # Act
-        conservative = controller.generate_control_strategies(
-            stable_analysis, "conservative"
-        )
-        aggressive = controller.generate_control_strategies(
-            stable_analysis, "aggressive"
-        )
+        conservative = controller.generate_control_strategies(stable_analysis, "conservative")
+        aggressive = controller.generate_control_strategies(stable_analysis, "aggressive")
 
         # Assert - strategies should differ
-        assert (
-            conservative["metadata"]["strategy_type"]
-            != aggressive["metadata"]["strategy_type"]
-        )
+        assert conservative["metadata"]["strategy_type"] != aggressive["metadata"]["strategy_type"]
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_controller_produces_consistent_results(
-        self, controller: GrowthController, stable_analysis: dict
-    ) -> None:
+    def test_controller_produces_consistent_results(self, controller: GrowthController, stable_analysis: dict) -> None:
         """Scenario: Controller produces deterministic results.
 
         Given identical analysis results
@@ -245,17 +230,9 @@ class TestGrowthControllerImplementation:
         result2 = controller.generate_control_strategies(stable_analysis, "moderate")
 
         # Assert - key fields should match
-        assert (
-            result1["metadata"]["strategy_type"] == result2["metadata"]["strategy_type"]
-        )
-        assert (
-            result1["metadata"]["analysis_severity"]
-            == result2["metadata"]["analysis_severity"]
-        )
-        assert (
-            result1["metadata"]["analysis_urgency"]
-            == result2["metadata"]["analysis_urgency"]
-        )
+        assert result1["metadata"]["strategy_type"] == result2["metadata"]["strategy_type"]
+        assert result1["metadata"]["analysis_severity"] == result2["metadata"]["analysis_severity"]
+        assert result1["metadata"]["analysis_urgency"] == result2["metadata"]["analysis_urgency"]
 
 
 class TestGrowthControllerStrategyTypes:
@@ -268,9 +245,7 @@ class TestGrowthControllerStrategyTypes:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_conservative_strategy_characteristics(
-        self, controller: GrowthController
-    ) -> None:
+    def test_conservative_strategy_characteristics(self, controller: GrowthController) -> None:
         """Scenario: Conservative strategy has appropriate characteristics.
 
         Given the conservative strategy type
@@ -286,9 +261,7 @@ class TestGrowthControllerStrategyTypes:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_aggressive_strategy_characteristics(
-        self, controller: GrowthController
-    ) -> None:
+    def test_aggressive_strategy_characteristics(self, controller: GrowthController) -> None:
         """Scenario: Aggressive strategy has appropriate characteristics.
 
         Given the aggressive strategy type
@@ -304,9 +277,7 @@ class TestGrowthControllerStrategyTypes:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_all_strategy_types_have_required_fields(
-        self, controller: GrowthController
-    ) -> None:
+    def test_all_strategy_types_have_required_fields(self, controller: GrowthController) -> None:
         """Scenario: All strategy types have complete definitions.
 
         Given all defined strategy types
@@ -351,9 +322,7 @@ class TestGrowthControllerEdgeCases:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_controller_handles_extreme_growth_rate(
-        self, controller: GrowthController
-    ) -> None:
+    def test_controller_handles_extreme_growth_rate(self, controller: GrowthController) -> None:
         """Scenario: Controller handles extreme growth rates.
 
         Given analysis with extreme growth rate
@@ -377,9 +346,7 @@ class TestGrowthControllerEdgeCases:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_controller_handles_zero_controllable_growth(
-        self, controller: GrowthController
-    ) -> None:
+    def test_controller_handles_zero_controllable_growth(self, controller: GrowthController) -> None:
         """Scenario: Controller handles zero controllable growth.
 
         Given analysis with no controllable growth
@@ -409,9 +376,7 @@ class TestGrowthControllerEdgeCases:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_controller_handles_empty_analysis(
-        self, controller: GrowthController
-    ) -> None:
+    def test_controller_handles_empty_analysis(self, controller: GrowthController) -> None:
         """Scenario: Controller handles empty analysis gracefully.
 
         Given empty analysis results

@@ -34,9 +34,7 @@ def test_bloat_detector_modules():
             rf"{module_name}\.md",  # File reference
         ]
 
-        is_referenced = any(
-            re.search(pattern, skill_content, re.IGNORECASE) for pattern in patterns
-        )
+        is_referenced = any(re.search(pattern, skill_content, re.IGNORECASE) for pattern in patterns)
 
         if is_referenced:
             referenced_modules.add(module_name)
@@ -58,8 +56,7 @@ def test_bloat_detector_modules():
         for module in unreferenced_modules:
             print(f"  ✗ {module}")
         raise AssertionError(
-            f"{len(unreferenced_modules)} module(s) not referenced in SKILL.md: "
-            f"{', '.join(unreferenced_modules)}"
+            f"{len(unreferenced_modules)} module(s) not referenced in SKILL.md: {', '.join(unreferenced_modules)}"
         )
 
     print(f"\n✅ All {len(module_files)} modules are properly referenced!")
@@ -130,10 +127,7 @@ def test_no_spoke_to_spoke_references():
 
             for pattern in patterns:
                 if re.search(pattern, content, re.IGNORECASE):
-                    violations.append(
-                        f"{current_module}.md references {other_module}.md "
-                        f"(violates hub-spoke pattern)"
-                    )
+                    violations.append(f"{current_module}.md references {other_module}.md (violates hub-spoke pattern)")
                     break
 
     if violations:

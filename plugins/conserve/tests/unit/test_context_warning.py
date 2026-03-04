@@ -110,9 +110,7 @@ class TestContextWarningHook:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_warning_status_between_forty_and_fifty_percent(
-        self, context_warning_module
-    ) -> None:
+    def test_warning_status_between_forty_and_fifty_percent(self, context_warning_module) -> None:
         """Scenario: Context usage between 40-50% returns WARNING.
 
         Given context usage is between 40% and 50%
@@ -131,10 +129,7 @@ class TestContextWarningHook:
             assert alert.severity == ContextSeverity.WARNING
             assert alert.usage_percent == usage
             assert "WARNING" in alert.message
-            assert any(
-                "optimization" in rec.lower() or "monitor" in rec.lower()
-                for rec in alert.recommendations
-            )
+            assert any("optimization" in rec.lower() or "monitor" in rec.lower() for rec in alert.recommendations)
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -293,10 +288,7 @@ class TestContextWarningHook:
         # Critical level should recommend immediate action
         critical_alert = assess(SIXTY_PERCENT)
         assert any(
-            any(
-                word in rec.lower()
-                for word in ["summarize", "delegate", "clear", "immediate"]
-            )
+            any(word in rec.lower() for word in ["summarize", "delegate", "clear", "immediate"])
             for rec in critical_alert.recommendations
         )
 
@@ -441,9 +433,7 @@ class TestFormatHookOutput:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_warning_output_has_additional_context(
-        self, context_warning_module
-    ) -> None:
+    def test_warning_output_has_additional_context(self, context_warning_module) -> None:
         """Scenario: WARNING alert includes additionalContext.
 
         Given a WARNING severity alert
@@ -460,9 +450,7 @@ class TestFormatHookOutput:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_critical_output_has_additional_context(
-        self, context_warning_module
-    ) -> None:
+    def test_critical_output_has_additional_context(self, context_warning_module) -> None:
         """Scenario: CRITICAL alert includes additionalContext.
 
         Given a CRITICAL severity alert
@@ -549,9 +537,7 @@ class TestGetContextUsageFromEnv:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_returns_none_without_env(
-        self, context_warning_module, monkeypatch
-    ) -> None:
+    def test_returns_none_without_env(self, context_warning_module, monkeypatch) -> None:
         """Scenario: Returns None without environment variable.
 
         Given CLAUDE_CONTEXT_USAGE is not set
@@ -564,9 +550,7 @@ class TestGetContextUsageFromEnv:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_handles_invalid_env_value(
-        self, context_warning_module, monkeypatch
-    ) -> None:
+    def test_handles_invalid_env_value(self, context_warning_module, monkeypatch) -> None:
         """Scenario: Handle invalid environment value gracefully.
 
         Given invalid CLAUDE_CONTEXT_USAGE value
@@ -618,9 +602,7 @@ class TestMainEntryPoint:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_main_with_no_context_usage(
-        self, context_warning_module, monkeypatch
-    ) -> None:
+    def test_main_with_no_context_usage(self, context_warning_module, monkeypatch) -> None:
         """Scenario: main() with no context usage outputs minimal JSON.
 
         Given no context usage available from env or stdin
@@ -633,7 +615,7 @@ class TestMainEntryPoint:
         monkeypatch.setattr("sys.stdin", StringIO("{}"))
 
         output_capture = StringIO()
-        monkeypatch.setattr("builtins.print", lambda x: output_capture.write(x))
+        monkeypatch.setattr("builtins.print", output_capture.write)
 
         result = context_warning_module.main()
 
@@ -657,7 +639,7 @@ class TestMainEntryPoint:
         monkeypatch.setattr("sys.stdin", StringIO("{}"))
 
         output_capture = StringIO()
-        monkeypatch.setattr("builtins.print", lambda x: output_capture.write(x))
+        monkeypatch.setattr("builtins.print", output_capture.write)
 
         result = context_warning_module.main()
 
@@ -682,7 +664,7 @@ class TestMainEntryPoint:
         monkeypatch.setattr("sys.stdin", StringIO("{}"))
 
         output_capture = StringIO()
-        monkeypatch.setattr("builtins.print", lambda x: output_capture.write(x))
+        monkeypatch.setattr("builtins.print", output_capture.write)
 
         result = context_warning_module.main()
 
@@ -693,9 +675,7 @@ class TestMainEntryPoint:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_main_with_invalid_json_input(
-        self, context_warning_module, monkeypatch
-    ) -> None:
+    def test_main_with_invalid_json_input(self, context_warning_module, monkeypatch) -> None:
         """Scenario: main() handles malformed JSON on stdin.
 
         Given malformed JSON on stdin
@@ -708,7 +688,7 @@ class TestMainEntryPoint:
         monkeypatch.setattr("sys.stdin", StringIO("not valid json {"))
 
         output_capture = StringIO()
-        monkeypatch.setattr("builtins.print", lambda x: output_capture.write(x))
+        monkeypatch.setattr("builtins.print", output_capture.write)
 
         result = context_warning_module.main()
 
@@ -720,9 +700,7 @@ class TestMainEntryPoint:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_main_with_hook_input_usage(
-        self, context_warning_module, monkeypatch
-    ) -> None:
+    def test_main_with_hook_input_usage(self, context_warning_module, monkeypatch) -> None:
         """Scenario: main() reads usage from hook input JSON.
 
         Given context_usage in hook input JSON
@@ -736,7 +714,7 @@ class TestMainEntryPoint:
         monkeypatch.setattr("sys.stdin", StringIO(hook_input))
 
         output_capture = StringIO()
-        monkeypatch.setattr("builtins.print", lambda x: output_capture.write(x))
+        monkeypatch.setattr("builtins.print", output_capture.write)
 
         result = context_warning_module.main()
 
@@ -747,9 +725,7 @@ class TestMainEntryPoint:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_main_env_takes_priority_over_input(
-        self, context_warning_module, monkeypatch
-    ) -> None:
+    def test_main_env_takes_priority_over_input(self, context_warning_module, monkeypatch) -> None:
         """Scenario: Environment variable takes priority over hook input.
 
         Given both env var (20%) and hook input (55%) have usage
@@ -763,7 +739,7 @@ class TestMainEntryPoint:
         monkeypatch.setattr("sys.stdin", StringIO(hook_input))
 
         output_capture = StringIO()
-        monkeypatch.setattr("builtins.print", lambda x: output_capture.write(x))
+        monkeypatch.setattr("builtins.print", output_capture.write)
 
         result = context_warning_module.main()
 
@@ -775,9 +751,7 @@ class TestMainEntryPoint:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_main_with_critical_level(
-        self, context_warning_module, monkeypatch
-    ) -> None:
+    def test_main_with_critical_level(self, context_warning_module, monkeypatch) -> None:
         """Scenario: main() with 60% usage outputs CRITICAL.
 
         Given 60% context usage in environment
@@ -790,7 +764,7 @@ class TestMainEntryPoint:
         monkeypatch.setattr("sys.stdin", StringIO("{}"))
 
         output_capture = StringIO()
-        monkeypatch.setattr("builtins.print", lambda x: output_capture.write(x))
+        monkeypatch.setattr("builtins.print", output_capture.write)
 
         result = context_warning_module.main()
 
@@ -802,9 +776,7 @@ class TestMainEntryPoint:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_main_with_invalid_usage_value(
-        self, context_warning_module, monkeypatch
-    ) -> None:
+    def test_main_with_invalid_usage_value(self, context_warning_module, monkeypatch) -> None:
         """Scenario: main() handles invalid usage value from hook input.
 
         Given invalid context_usage value (negative) in hook input
@@ -818,7 +790,7 @@ class TestMainEntryPoint:
         monkeypatch.setattr("sys.stdin", StringIO(hook_input))
 
         output_capture = StringIO()
-        monkeypatch.setattr("builtins.print", lambda x: output_capture.write(x))
+        monkeypatch.setattr("builtins.print", output_capture.write)
 
         result = context_warning_module.main()
 

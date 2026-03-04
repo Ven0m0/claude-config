@@ -1,5 +1,5 @@
 ---
-name: optimizing-bash-scripts
+name: bash-optimizer
 description: Analyzes bash scripts for performance bottlenecks, coding standards, and modern tool replacements. Use when optimizing shell scripts, consolidating scripts, or preparing for production. Triggers include "optimize bash", "shellcheck", "script performance", or "consolidate scripts".
 allowed-tools: Bash, Read, Edit, Grep, Glob
 user-invocable: true
@@ -53,7 +53,7 @@ IFS=$'\n\t' LC_ALL=C
 - gh → git
 - aria2/axel → curl → wget
 
-See `references/standards.md` for complete specification.
+See [references/standards.md](./references/standards.md) for complete specification.
 
 ## Analysis Categories
 
@@ -111,7 +111,7 @@ Extract common functions to `lib/common.sh`, source in scripts.
 **Configuration-driven logic:**
 Replace script proliferation with data structures (assoc arrays).
 
-See `references/patterns.md` for detailed consolidation strategies.
+See [references/patterns.md](./references/patterns.md) for detailed consolidation strategies.
 
 ## Optimization Workflow
 
@@ -230,6 +230,6 @@ Example:
 
 ## Resources
 
-- `scripts/analyze.py` - Automated script analyzer
-- `references/standards.md` - Complete coding standards
-- `references/patterns.md` - Optimization patterns and consolidation strategies
+- [scripts/analyze.py](./scripts/analyze.py) - Automated script analyzer
+- [references/standards.md](./references/standards.md) - Complete coding standards
+- [references/patterns.md](./references/patterns.md) - Optimization patterns and consolidation strategies

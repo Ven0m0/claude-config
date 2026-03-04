@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """Bash script analyzer: performance, standards, patterns."""
 
-import re
-import sys
-import subprocess
 import json
-from pathlib import Path
+import re
+import subprocess
+import sys
 from collections import defaultdict
+from pathlib import Path
 
 
 class BashAnalyzer:
-    def __init__(self, script_path):
+    def __init__(self, script_path) -> None:
         self.path = Path(script_path)
         self.content = self.path.read_text()
         self.lines = self.content.splitlines()
@@ -27,13 +27,11 @@ class BashAnalyzer:
         self._run_shellcheck()
         return self._format_results()
 
-    def _check_shebang(self):
+    def _check_shebang(self) -> None:
         if not self.lines or not self.lines[0].startswith("#!/usr/bin/env bash"):
-            self.issues["critical"].append(
-                "Missing/wrong shebang (need: #!/usr/bin/env bash)"
-            )
+            self.issues["critical"].append("Missing/wrong shebang (need: #!/usr/bin/env bash)")
 
-    def _check_options(self):
+    def _check_options(self) -> None:
         required = {"set -euo pipefail", "shopt -s nullglob", "shopt -s globstar"}
         found = set()
         for line in self.lines[:20]:
@@ -44,7 +42,7 @@ class BashAnalyzer:
         if missing:
             self.issues["standards"].extend(f"Missing: {m}" for m in missing)
 
-    def _count_forks_subshells(self):
+    def _count_forks_subshells(self) -> None:
         for i, line in enumerate(self.lines, 1):
             clean = re.sub(r"#.*", "", line)
             self.stats["subshells"] += clean.count("$(")
@@ -54,17 +52,13 @@ class BashAnalyzer:
             if re.search(r"\b(cat|echo|ls|which|type|basename|dirname)\b", clean):
                 self.stats["forks"] += 1
                 if "cat" in clean and "|" in clean:
-                    self.issues["performance"].append(
-                        f"L{i}: unnecessary cat (use < redirect)"
-                    )
+                    self.issues["performance"].append(f"L{i}: unnecessary cat (use < redirect)")
                 if "echo" in clean:
                     self.issues["performance"].append(f"L{i}: prefer printf over echo")
                 if "ls" in clean:
-                    self.issues["critical"].append(
-                        f"L{i}: parsing ls output (use arrays/globs)"
-                    )
+                    self.issues["critical"].append(f"L{i}: parsing ls output (use arrays/globs)")
 
-    def _check_tool_usage(self):
+    def _check_tool_usage(self) -> None:
         tools = {
             "find": "fd/fdfind",
             "grep": "rg",
@@ -77,7 +71,7 @@ class BashAnalyzer:
                 if re.search(rf"\b{old}\b", line) and "#" not in line.split(old)[0]:
                     self.issues["optimization"].append(f"L{i}: consider {new} → {old}")
 
-    def _check_patterns(self):
+    def _check_patterns(self) -> None:
         for i, line in enumerate(self.lines, 1):
             if re.search(r"\[\s+.*\s+\]", line):
                 self.issues["standards"].append(f"L{i}: use [[ ]] not [ ]")
@@ -87,17 +81,15 @@ class BashAnalyzer:
             if "eval" in line:
                 self.issues["critical"].append(f"L{i}: avoid eval")
             if re.search(r"function\s+\w+", line):
-                self.issues["standards"].append(
-                    f"L{i}: prefer fn(){{}} over function fn"
-                )
+                self.issues["standards"].append(f"L{i}: prefer fn(){{}} over function fn")
 
-    def _check_indentation(self):
+    def _check_indentation(self) -> None:
         for i, line in enumerate(self.lines, 1):
             if line and line[0] == " " and (len(line) - len(line.lstrip())) % 2 != 0:
                 self.issues["standards"].append(f"L{i}: use 2-space indent")
                 break
 
-    def _run_shellcheck(self):
+    def _run_shellcheck(self) -> None:
         try:
             r = subprocess.run(
                 ["shellcheck", "-f", "json", str(self.path)],
@@ -115,7 +107,7 @@ class BashAnalyzer:
     def _format_results(self):
         out = ["=== BASH SCRIPT ANALYSIS ===", f"File: {self.path}", ""]
         out.append(
-            f"Stats: {self.stats['subshells']} subshells | {self.stats['forks']} forks | {self.stats['pipes']} pipes"
+            f"Stats: {self.stats['subshells']} subshells | {self.stats['forks']} forks | {self.stats['pipes']} pipes",
         )
         if self.stats["subshells"] > 10:
             out.append("⚠ High subshell count ⇒ performance impact")
@@ -135,4 +127,3 @@ class BashAnalyzer:
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         sys.exit("Usage: analyze.py <script.sh>")
-    print(BashAnalyzer(sys.argv[1]).analyze())

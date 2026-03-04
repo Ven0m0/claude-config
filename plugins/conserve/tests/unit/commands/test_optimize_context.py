@@ -60,9 +60,7 @@ class TestOptimizeContextCommand:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_command_parses_parameters_correctly(
-        self, mock_optimize_context_command
-    ) -> None:
+    def test_command_parses_parameters_correctly(self, mock_optimize_context_command) -> None:
         """Scenario: Command parses parameters correctly.
 
         Given various parameter combinations
@@ -119,17 +117,11 @@ class TestOptimizeContextCommand:
         assert no_params["parsed_parameters"]["target"] == "current_session"
         assert no_params["parsed_parameters"]["aggressiveness"] == "moderate"
 
-        target_only = next(
-            r for r in parsed_results if r["input"] == "/optimize-context src/main.py"
-        )
+        target_only = next(r for r in parsed_results if r["input"] == "/optimize-context src/main.py")
         assert target_only["parsed_parameters"]["target"] == "src/main.py"
         assert target_only["parsed_parameters"]["aggressiveness"] == "moderate"
 
-        both_params = next(
-            r
-            for r in parsed_results
-            if "src/" in r["input"] and "--aggressiveness" in r["input"]
-        )
+        both_params = next(r for r in parsed_results if "src/" in r["input"] and "--aggressiveness" in r["input"])
         assert both_params["parsed_parameters"]["target"] == "src/"
         assert both_params["parsed_parameters"]["aggressiveness"] == "light"
 
@@ -201,14 +193,9 @@ class TestOptimizeContextCommand:
 
         # Calculate overall results
         successful_skills = [
-            skill
-            for skill, result in workflow_execution["results"].items()
-            if result.get("status") == "success"
+            skill for skill, result in workflow_execution["results"].items() if result.get("status") == "success"
         ]
-        total_tokens_saved = sum(
-            result.get("tokens_saved", 0)
-            for result in workflow_execution["results"].values()
-        )
+        total_tokens_saved = sum(result.get("tokens_saved", 0) for result in workflow_execution["results"].values())
 
         workflow_execution["summary"] = {
             "skills_successful": len(successful_skills),
@@ -314,13 +301,8 @@ class TestOptimizeContextCommand:
             total_savings = sum(strategy["savings"] for strategy in applied_strategies)
             # Use proper risk ordering (not lexicographic string comparison)
             risk_order = {"low": 1, "medium": 2, "high": 3}
-            max_risk = max(applied_strategies, key=lambda s: risk_order[s["risk"]])[
-                "risk"
-            ]
-            avg_risk = [
-                {"low": 1, "medium": 2, "high": 3}[strategy["risk"]]
-                for strategy in applied_strategies
-            ]
+            max_risk = max(applied_strategies, key=lambda s: risk_order[s["risk"]])["risk"]
+            avg_risk = [{"low": 1, "medium": 2, "high": 3}[strategy["risk"]] for strategy in applied_strategies]
             avg_risk_score = sum(avg_risk) / len(avg_risk)
 
             result = {
@@ -329,8 +311,7 @@ class TestOptimizeContextCommand:
                 "total_savings": total_savings,
                 "max_risk_level": max_risk,
                 "avg_risk_score": avg_risk_score,
-                "improvement_percentage": (total_savings / 5000)
-                * 100,  # Assume 5000 baseline tokens
+                "improvement_percentage": (total_savings / 5000) * 100,  # Assume 5000 baseline tokens
             }
 
             optimization_results.append(result)
@@ -339,35 +320,25 @@ class TestOptimizeContextCommand:
         assert len(optimization_results) == THREE
 
         # Check light optimization
-        light_result = next(
-            r for r in optimization_results if r["aggressiveness"] == "light"
-        )
+        light_result = next(r for r in optimization_results if r["aggressiveness"] == "light")
         assert "basic_compression" in light_result["strategies_applied"]
         assert light_result["max_risk_level"] == "low"
         assert light_result["improvement_percentage"] >= TEN
 
         # Check moderate optimization
-        moderate_result = next(
-            r for r in optimization_results if r["aggressiveness"] == "moderate"
-        )
+        moderate_result = next(r for r in optimization_results if r["aggressiveness"] == "moderate")
         assert "context_compression" in moderate_result["strategies_applied"]
         assert moderate_result["max_risk_level"] == "medium"
         assert moderate_result["improvement_percentage"] >= THIRTY
 
         # Check aggressive optimization
-        aggressive_result = next(
-            r for r in optimization_results if r["aggressiveness"] == "aggressive"
-        )
+        aggressive_result = next(r for r in optimization_results if r["aggressiveness"] == "aggressive")
         assert "deep_compression" in aggressive_result["strategies_applied"]
         assert aggressive_result["max_risk_level"] == "high"
         assert aggressive_result["improvement_percentage"] >= FIFTY
 
         # Verify progression - more aggressive should save more tokens
-        assert (
-            light_result["total_savings"]
-            < moderate_result["total_savings"]
-            < aggressive_result["total_savings"]
-        )
+        assert light_result["total_savings"] < moderate_result["total_savings"] < aggressive_result["total_savings"]
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -460,9 +431,9 @@ class TestOptimizeContextCommand:
                 }
 
             # Calculate expected effectiveness
-            overall_effectiveness = sum(
-                s["effectiveness"] for s in optimization_approach["strategies"]
-            ) / len(optimization_approach["strategies"])
+            overall_effectiveness = sum(s["effectiveness"] for s in optimization_approach["strategies"]) / len(
+                optimization_approach["strategies"]
+            )
 
             result = {
                 "target": scenario["target"],
@@ -471,9 +442,7 @@ class TestOptimizeContextCommand:
                 "analysis_method": optimization_approach["analysis_method"],
                 "compression_level": optimization_approach["compression_level"],
                 "context_preservation": optimization_approach["context_preservation"],
-                "strategies_applied": [
-                    s["name"] for s in optimization_approach["strategies"]
-                ],
+                "strategies_applied": [s["name"] for s in optimization_approach["strategies"]],
                 "expected_effectiveness": overall_effectiveness,
             }
 
@@ -483,25 +452,19 @@ class TestOptimizeContextCommand:
         assert len(target_optimization_results) == FOUR
 
         # Check file optimization
-        file_result = next(
-            r for r in target_optimization_results if r["type"] == "file"
-        )
+        file_result = next(r for r in target_optimization_results if r["type"] == "file")
         assert file_result["target"] == "src/main.py"
         assert file_result["analysis_method"] == "individual_file_analysis"
         assert file_result["context_preservation"] == "high"
 
         # Check directory optimization
-        dir_result = next(
-            r for r in target_optimization_results if r["type"] == "directory"
-        )
+        dir_result = next(r for r in target_optimization_results if r["type"] == "directory")
         assert dir_result["target"] == "src/"
         assert dir_result["compression_level"] == "detailed"
         assert "bulk_compression" in dir_result["strategies_applied"]
 
         # Check session optimization
-        session_result = next(
-            r for r in target_optimization_results if r["type"] == "session"
-        )
+        session_result = next(r for r in target_optimization_results if r["type"] == "session")
         assert session_result["target"] == "current_session"
         assert session_result["analysis_method"] == "session_wide_analysis"
         assert session_result["context_preservation"] == "selective"
@@ -512,9 +475,7 @@ class TestOptimizeContextCommand:
             assert "type" in result
             assert "strategies_applied" in result
             assert "expected_effectiveness" in result
-            assert (
-                result["expected_effectiveness"] >= ZERO_POINT_FIVE
-            )  # Should be reasonably effective
+            assert result["expected_effectiveness"] >= ZERO_POINT_FIVE  # Should be reasonably effective
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -577,37 +538,23 @@ class TestOptimizeContextCommand:
         }
 
         # Calculate achievements
-        context_result = optimization_results["detailed_results"][
-            "context-optimization"
-        ]
+        context_result = optimization_results["detailed_results"]["context-optimization"]
         token_result = optimization_results["detailed_results"]["token-conservation"]
 
-        context_savings = (
-            context_result["tokens_before"] - context_result["tokens_after"]
-        )
-        quota_savings = (
-            token_result["quota_before"]["weekly_usage"]
-            - token_result["quota_after"]["weekly_usage"]
-        )
+        context_savings = context_result["tokens_before"] - context_result["tokens_after"]
+        quota_savings = token_result["quota_before"]["weekly_usage"] - token_result["quota_after"]["weekly_usage"]
 
-        user_feedback["achievements"]["total_tokens_saved"] = (
-            context_savings + quota_savings
-        )
+        user_feedback["achievements"]["total_tokens_saved"] = context_savings + quota_savings
         user_feedback["achievements"]["context_reduction_percentage"] = (
             context_savings / context_result["tokens_before"]
         ) * 100
         user_feedback["achievements"]["quota_conservation"] = quota_savings
 
         # Compile changes made
-        for skill_name, skill_result in optimization_results[
-            "detailed_results"
-        ].items():
+        for skill_name, skill_result in optimization_results["detailed_results"].items():
             if "changes_made" in skill_result:
                 user_feedback["changes_made"].extend(
-                    [
-                        f"{skill_name}: {change}"
-                        for change in skill_result["changes_made"]
-                    ],
+                    [f"{skill_name}: {change}" for change in skill_result["changes_made"]],
                 )
 
         # Generate recommendations
@@ -646,21 +593,15 @@ class TestOptimizeContextCommand:
 
         # Verify changes are detailed
         assert len(user_feedback["changes_made"]) >= FOUR  # From both skills
-        assert any(
-            "context-optimization" in change for change in user_feedback["changes_made"]
-        )
-        assert any(
-            "token-conservation" in change for change in user_feedback["changes_made"]
-        )
+        assert any("context-optimization" in change for change in user_feedback["changes_made"])
+        assert any("token-conservation" in change for change in user_feedback["changes_made"])
 
         # Verify recommendations are actionable
         assert len(user_feedback["recommendations"]) >= THREE
         assert all(isinstance(rec, str) for rec in user_feedback["recommendations"])
 
     @pytest.mark.unit
-    def test_command_handles_optimization_errors_gracefully(
-        self, mock_claude_tools
-    ) -> None:
+    def test_command_handles_optimization_errors_gracefully(self, mock_claude_tools) -> None:
         """Scenario: Command handles optimization errors gracefully.
 
         Given various error conditions during optimization
@@ -762,29 +703,21 @@ class TestOptimizeContextCommand:
         assert len(error_handling_results) == FOUR
 
         # Check that recovery was attempted when possible
-        recoverable_errors = [
-            r for r in error_handling_results if r["recovery_attempted"]
-        ]
+        recoverable_errors = [r for r in error_handling_results if r["recovery_attempted"]]
         assert len(recoverable_errors) >= THREE
 
         # Verify successful recoveries
-        successful_recoveries = [
-            r for r in error_handling_results if r["recovery_successful"]
-        ]
+        successful_recoveries = [r for r in error_handling_results if r["recovery_successful"]]
         assert len(successful_recoveries) >= TWO
 
         # Check permission denied handling
-        permission_error = next(
-            r for r in error_handling_results if r["scenario"] == "permission_denied"
-        )
+        permission_error = next(r for r in error_handling_results if r["scenario"] == "permission_denied")
         assert permission_error["recovery_attempted"] is False
         assert permission_error["recovery_successful"] is False
         assert len(permission_error["user_guidance"]) >= TWO
 
         # Check fallback strategies
-        scenarios_with_fallback = [
-            r for r in error_handling_results if r["fallback_applied"]
-        ]
+        scenarios_with_fallback = [r for r in error_handling_results if r["fallback_applied"]]
         assert len(scenarios_with_fallback) >= TWO
 
         fallback_types = [r["fallback_applied"] for r in scenarios_with_fallback]
@@ -794,6 +727,4 @@ class TestOptimizeContextCommand:
         # Verify user guidance is provided for all scenarios
         for result in error_handling_results:
             assert len(result["user_guidance"]) >= 1
-            assert all(
-                isinstance(guidance, str) for guidance in result["user_guidance"]
-            )
+            assert all(isinstance(guidance, str) for guidance in result["user_guidance"])

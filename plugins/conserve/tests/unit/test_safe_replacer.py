@@ -56,16 +56,11 @@ class TestSafeDependencyUpdater:
         assert "wrong_workflow_prefix" in updater.patterns
         assert "old_skill_paths" in updater.patterns
 
-        assert (
-            updater.replacements["standalone_git_review"]
-            == "sanctum:git-workspace-review"
-        )
+        assert updater.replacements["standalone_git_review"] == "sanctum:git-workspace-review"
         assert updater.replacements["standalone_review_core"] == "imbue:review-core"
 
     @pytest.mark.unit
-    def test_update_file_nonexistent(
-        self, updater: SafeDependencyUpdater, tmp_path: Path
-    ) -> None:
+    def test_update_file_nonexistent(self, updater: SafeDependencyUpdater, tmp_path: Path) -> None:
         """Scenario: Update file that doesn't exist.
 
         Given a path to a non-existent file
@@ -76,9 +71,7 @@ class TestSafeDependencyUpdater:
         assert result == (False, 0)
 
     @pytest.mark.unit
-    def test_update_file_no_changes_needed(
-        self, updater: SafeDependencyUpdater, skill_dir: Path
-    ) -> None:
+    def test_update_file_no_changes_needed(self, updater: SafeDependencyUpdater, skill_dir: Path) -> None:
         """Scenario: File with no problematic references.
 
         Given a skill file with correct references
@@ -86,17 +79,13 @@ class TestSafeDependencyUpdater:
         Then it should return False with 0 changes.
         """
         skill_file = skill_dir / "SKILL.md"
-        skill_file.write_text(
-            "# Test Skill\n\nUses sanctum:git-workspace-review correctly."
-        )
+        skill_file.write_text("# Test Skill\n\nUses sanctum:git-workspace-review correctly.")
 
         result = updater.update_file(skill_file)
         assert result == (False, 0)
 
     @pytest.mark.unit
-    def test_update_file_standalone_reference(
-        self, updater: SafeDependencyUpdater, skill_dir: Path
-    ) -> None:
+    def test_update_file_standalone_reference(self, updater: SafeDependencyUpdater, skill_dir: Path) -> None:
         """Scenario: File with standalone reference needing prefix.
 
         Given a skill file with standalone git-workspace-review reference
@@ -104,9 +93,7 @@ class TestSafeDependencyUpdater:
         Then it should add the sanctum: prefix.
         """
         skill_file = skill_dir / "SKILL.md"
-        skill_file.write_text(
-            "# Test Skill\n\nUses git-workspace-review for workspace."
-        )
+        skill_file.write_text("# Test Skill\n\nUses git-workspace-review for workspace.")
 
         updated, changes = updater.update_file(skill_file)
 
@@ -116,9 +103,7 @@ class TestSafeDependencyUpdater:
         assert "sanctum:git-workspace-review" in content
 
     @pytest.mark.unit
-    def test_update_file_wrong_prefix(
-        self, updater: SafeDependencyUpdater, skill_dir: Path
-    ) -> None:
+    def test_update_file_wrong_prefix(self, updater: SafeDependencyUpdater, skill_dir: Path) -> None:
         """Scenario: File with wrong plugin prefix.
 
         Given a skill file with workspace-utils:git-workspace-review
@@ -140,9 +125,7 @@ class TestSafeDependencyUpdater:
         assert "sanctum:git-workspace-review" in content
 
     @pytest.mark.unit
-    def test_update_file_review_core_reference(
-        self, updater: SafeDependencyUpdater, skill_dir: Path
-    ) -> None:
+    def test_update_file_review_core_reference(self, updater: SafeDependencyUpdater, skill_dir: Path) -> None:
         """Scenario: File with review-core reference.
 
         Given a skill file with standalone review-core reference
@@ -159,9 +142,7 @@ class TestSafeDependencyUpdater:
         assert "imbue:review-core" in content
 
     @pytest.mark.unit
-    def test_validate_references_clean(
-        self, updater: SafeDependencyUpdater, skill_dir: Path
-    ) -> None:
+    def test_validate_references_clean(self, updater: SafeDependencyUpdater, skill_dir: Path) -> None:
         """Scenario: Validate file with no issues.
 
         Given a skill file with correct references
@@ -175,9 +156,7 @@ class TestSafeDependencyUpdater:
         assert issues == []
 
     @pytest.mark.unit
-    def test_validate_references_old_prefixes(
-        self, updater: SafeDependencyUpdater, skill_dir: Path
-    ) -> None:
+    def test_validate_references_old_prefixes(self, updater: SafeDependencyUpdater, skill_dir: Path) -> None:
         """Scenario: Validate file with old plugin prefixes.
 
         Given a skill file with workspace-utils: references
@@ -194,9 +173,7 @@ class TestSafeDependencyUpdater:
         assert any("workflow-utils:" in issue for issue in issues)
 
     @pytest.mark.unit
-    def test_validate_references_old_paths(
-        self, updater: SafeDependencyUpdater, skill_dir: Path
-    ) -> None:
+    def test_validate_references_old_paths(self, updater: SafeDependencyUpdater, skill_dir: Path) -> None:
         """Scenario: Validate file with old skill paths.
 
         Given a skill file with ~/.claude/skills/ references
@@ -212,9 +189,7 @@ class TestSafeDependencyUpdater:
         assert "old skill paths" in issues[0].lower()
 
     @pytest.mark.unit
-    def test_validate_references_duplicates(
-        self, updater: SafeDependencyUpdater, skill_dir: Path
-    ) -> None:
+    def test_validate_references_duplicates(self, updater: SafeDependencyUpdater, skill_dir: Path) -> None:
         """Scenario: Validate file with duplicate prefixes.
 
         Given a skill file with sanctum:sanctum: prefix
@@ -230,9 +205,7 @@ class TestSafeDependencyUpdater:
         assert "duplicate sanctum:" in issues[0].lower()
 
     @pytest.mark.unit
-    def test_update_directory(
-        self, updater: SafeDependencyUpdater, tmp_path: Path
-    ) -> None:
+    def test_update_directory(self, updater: SafeDependencyUpdater, tmp_path: Path) -> None:
         """Scenario: Update all skill files in directory.
 
         Given a directory with multiple skill files
@@ -391,9 +364,7 @@ class TestMainCLI:
         """
         original_content = (skill_tree / "skills" / "test" / "SKILL.md").read_text()
 
-        with patch.object(
-            sys, "argv", ["safe_replacer", "--path", str(skill_tree), "--validate-only"]
-        ):
+        with patch.object(sys, "argv", ["safe_replacer", "--path", str(skill_tree), "--validate-only"]):
             main()
 
         # File should be unchanged
@@ -401,9 +372,7 @@ class TestMainCLI:
         assert new_content == original_content
 
         captured = capsys.readouterr()
-        assert (
-            "Files updated:" in captured.out or "files_scanned" in captured.out.lower()
-        )
+        assert "Files updated:" in captured.out or "files_scanned" in captured.out.lower()
 
     @pytest.mark.bdd
     @pytest.mark.integration
@@ -414,9 +383,7 @@ class TestMainCLI:
         When main is called with --output-json
         Then it should output valid JSON.
         """
-        with patch.object(
-            sys, "argv", ["safe_replacer", "--path", str(skill_tree), "--output-json"]
-        ):
+        with patch.object(sys, "argv", ["safe_replacer", "--path", str(skill_tree), "--output-json"]):
             main()
 
         captured = capsys.readouterr()
@@ -499,9 +466,7 @@ class TestEdgeCases:
         return SafeDependencyUpdater()
 
     @pytest.mark.unit
-    def test_multiple_references_same_line(
-        self, updater: SafeDependencyUpdater, tmp_path: Path
-    ) -> None:
+    def test_multiple_references_same_line(self, updater: SafeDependencyUpdater, tmp_path: Path) -> None:
         """Scenario: Multiple references on same line.
 
         Given a file with multiple standalone references on one line
@@ -519,9 +484,7 @@ class TestEdgeCases:
         assert "imbue:review-core" in content
 
     @pytest.mark.unit
-    def test_already_correct_not_duplicated(
-        self, updater: SafeDependencyUpdater, tmp_path: Path
-    ) -> None:
+    def test_already_correct_not_duplicated(self, updater: SafeDependencyUpdater, tmp_path: Path) -> None:
         """Scenario: Already correct reference not duplicated.
 
         Given a file with correct sanctum:git-workspace-review
@@ -538,9 +501,7 @@ class TestEdgeCases:
         assert "sanctum:sanctum:" not in content
 
     @pytest.mark.unit
-    def test_empty_directory(
-        self, updater: SafeDependencyUpdater, tmp_path: Path
-    ) -> None:
+    def test_empty_directory(self, updater: SafeDependencyUpdater, tmp_path: Path) -> None:
         """Scenario: Empty directory with no skill files.
 
         Given an empty directory

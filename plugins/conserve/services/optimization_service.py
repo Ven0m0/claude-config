@@ -339,9 +339,7 @@ class OptimizationServiceInterface:
             "optimized_content": result.optimized_content,
             "metrics": result.metrics,
             "error_message": result.error_message,
-            "duration_seconds": (
-                result.end_time - result.start_time if result.end_time else None
-            ),
+            "duration_seconds": (result.end_time - result.start_time if result.end_time else None),
             "service": "conservation_optimization",
             "condition_based": True,
         }

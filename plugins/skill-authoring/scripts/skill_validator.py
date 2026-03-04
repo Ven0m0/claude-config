@@ -251,8 +251,7 @@ class SkillValidator:
                 self.result.add_error("estimated_tokens must be positive")
             elif fm["estimated_tokens"] > MAX_ESTIMATED_TOKENS:
                 self.result.add_warning(
-                    f"estimated_tokens very high ({fm['estimated_tokens']}). "
-                    "Consider modularization.",
+                    f"estimated_tokens very high ({fm['estimated_tokens']}). Consider modularization.",
                 )
 
         # Dependencies (optional but validate if present)
@@ -308,12 +307,11 @@ class SkillValidator:
             self.result.add_info("Description length optimal (200-400 chars)")
 
         # Third person check
-        first_sentence = desc.split(".")[0].lower()
+        first_sentence = desc.split(".", maxsplit=1)[0].lower()
 
         # Check for first person patterns
         has_first_person = any(
-            re.search(pattern, first_sentence, re.IGNORECASE)
-            for pattern in self.FIRST_PERSON_PATTERNS
+            re.search(pattern, first_sentence, re.IGNORECASE) for pattern in self.FIRST_PERSON_PATTERNS
         )
 
         if has_first_person:
@@ -323,9 +321,7 @@ class SkillValidator:
             )
 
         # Check for third person verbs
-        has_third_person = any(
-            verb in first_sentence for verb in self.THIRD_PERSON_VERBS
-        )
+        has_third_person = any(verb in first_sentence for verb in self.THIRD_PERSON_VERBS)
 
         if not has_third_person and not has_first_person:
             self.result.add_warning(
@@ -384,8 +380,7 @@ class SkillValidator:
 
         if lines > self.MAX_SKILL_LINES:
             self.result.add_warning(
-                f"SKILL.md has {lines} lines (recommend <{self.MAX_SKILL_LINES}). "
-                "Consider moving content to modules/",
+                f"SKILL.md has {lines} lines (recommend <{self.MAX_SKILL_LINES}). Consider moving content to modules/",
             )
         else:
             self.result.add_info(f"Line count OK: {lines}/{self.MAX_SKILL_LINES}")
@@ -419,8 +414,7 @@ class SkillValidator:
         modules_dir = self.skill_dir / "modules"
         if not modules_dir.exists() and referenced_modules:
             self.result.add_error(
-                f"References {len(referenced_modules)} modules but "
-                f"modules/ doesn't exist",
+                f"References {len(referenced_modules)} modules but modules/ doesn't exist",
             )
             return
 
@@ -458,8 +452,7 @@ class SkillValidator:
             # Line count check
             if lines > self.MAX_MODULE_LINES:
                 self.result.add_warning(
-                    f"{module_path.name}: {lines} lines "
-                    f"(recommend <{self.MAX_MODULE_LINES})",
+                    f"{module_path.name}: {lines} lines (recommend <{self.MAX_MODULE_LINES})",
                 )
             elif lines < self.MIN_MODULE_LINES:
                 self.result.add_warning(

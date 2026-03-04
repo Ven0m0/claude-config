@@ -24,9 +24,7 @@ def aggressive_optimize_skill(skill_file: str) -> int:
         code = match.group(1)
         lines = code.split("\n")
 
-        if (
-            len(lines) > MAX_CODE_BLOCK_LINES
-        ):  # Replace blocks longer than MAX_CODE_BLOCK_LINES lines
+        if len(lines) > MAX_CODE_BLOCK_LINES:  # Replace blocks longer than MAX_CODE_BLOCK_LINES lines
             tool_name = "extracted_tool"
             return f"""Uses `tools/{tool_name}.py` for code execution:
 

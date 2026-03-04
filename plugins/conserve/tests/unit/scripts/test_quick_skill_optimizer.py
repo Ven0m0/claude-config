@@ -12,9 +12,7 @@ import pytest
 
 # Load the quick_skill_optimizer module
 scripts_dir = Path(__file__).parent.parent.parent.parent / "scripts"
-spec = importlib.util.spec_from_file_location(
-    "quick_skill_optimizer_module", scripts_dir / "quick_skill_optimizer.py"
-)
+spec = importlib.util.spec_from_file_location("quick_skill_optimizer_module", scripts_dir / "quick_skill_optimizer.py")
 assert spec is not None
 assert spec.loader is not None
 quick_skill_optimizer_module = importlib.util.module_from_spec(spec)

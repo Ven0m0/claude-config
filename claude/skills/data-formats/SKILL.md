@@ -1,5 +1,5 @@
 ---
-name: moai-formats-data
+name: data-formats
 description:
   Data format specialist covering TOON encoding, JSON/YAML optimization,
   serialization patterns, and data validation for modern applications. Use when

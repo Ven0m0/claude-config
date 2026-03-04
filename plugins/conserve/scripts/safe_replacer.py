@@ -113,9 +113,7 @@ class SafeDependencyUpdater:
 
 def main() -> None:
     """Safe update of dependency references."""
-    parser = argparse.ArgumentParser(
-        description="Safely update dependency references in skill files"
-    )
+    parser = argparse.ArgumentParser(description="Safely update dependency references in skill files")
     parser.add_argument(
         "--path",
         type=str,
@@ -149,12 +147,7 @@ def main() -> None:
             for skill_file in base_path.rglob("SKILL.md"):
                 file_issues = updater.validate_references(skill_file)
                 if file_issues:
-                    issues.extend(
-                        [
-                            {"file": str(skill_file), "issue": issue}
-                            for issue in file_issues
-                        ]
-                    )
+                    issues.extend([{"file": str(skill_file), "issue": issue} for issue in file_issues])
 
             result = {
                 "files_scanned": len(list(base_path.rglob("SKILL.md"))),
@@ -171,12 +164,7 @@ def main() -> None:
             for skill_file in base_path.rglob("SKILL.md"):
                 file_issues = updater.validate_references(skill_file)
                 if file_issues:
-                    issues.extend(
-                        [
-                            {"file": str(skill_file), "issue": issue}
-                            for issue in file_issues
-                        ]
-                    )
+                    issues.extend([{"file": str(skill_file), "issue": issue} for issue in file_issues])
 
             result = {
                 "files_updated": files_updated,

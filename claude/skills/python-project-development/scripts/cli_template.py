@@ -26,6 +26,7 @@ def parse_args() -> Config:
 
     Returns:
       Config object with validated arguments.
+
     """
     parser = argparse.ArgumentParser(
         prog="script_name",
@@ -47,9 +48,7 @@ def parse_args() -> Config:
         metavar="PATH",
         help="Output file or directory (default: derived from input)",
     )
-    parser.add_argument(
-        "-v", "--verbose", action="store_true", help="Enable verbose output"
-    )
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
     parser.add_argument(
         "-n",
         "--dry-run",
@@ -80,29 +79,27 @@ def process(cfg: Config) -> int:
 
     Returns:
       Exit code (0=success, 1=error)
+
     """
     try:
         if cfg.verbose:
-            print(f"Processing: {cfg.input_path}", file=sys.stderr)
+            pass
 
         if cfg.dry_run:
-            print("DRY RUN: No changes will be made", file=sys.stderr)
+            pass
 
         # TODO: Implement core logic here
 
         if cfg.verbose:
-            print("Processing complete", file=sys.stderr)
+            pass
 
         return 0
 
-    except PermissionError as e:
-        print(f"Permission denied: {e}", file=sys.stderr)
+    except PermissionError:
         return 1
-    except FileNotFoundError as e:
-        print(f"File not found: {e}", file=sys.stderr)
+    except FileNotFoundError:
         return 1
-    except ValueError as e:
-        print(f"Invalid input: {e}", file=sys.stderr)
+    except ValueError:
         return 1
 
 
@@ -111,15 +108,14 @@ def main() -> int:
 
     Returns:
       Exit code
+
     """
     try:
         cfg = parse_args()
         return process(cfg)
     except KeyboardInterrupt:
-        print("\nInterrupted", file=sys.stderr)
         return 130
-    except Exception as e:
-        print(f"Unexpected error: {e}", file=sys.stderr)
+    except Exception:
         return 1
 
 

@@ -60,9 +60,7 @@ def optimizer_module():
     skill_path = Path(__file__).resolve().parents[3] / "skills" / "context-optimization"
     module_path = skill_path / "condition_based_optimizer.py"
 
-    spec = importlib.util.spec_from_file_location(
-        "condition_based_optimizer", module_path
-    )
+    spec = importlib.util.spec_from_file_location("condition_based_optimizer", module_path)
     module = importlib.util.module_from_spec(spec)
     sys.modules["condition_based_optimizer"] = module
     spec.loader.exec_module(module)
@@ -163,9 +161,7 @@ class TestModuleConstants:
 
     def test_compression_threshold(self, optimizer_module) -> None:
         """Compression ratio threshold should be 0.3."""
-        assert (
-            optimizer_module.COMPRESSION_RATIO_THRESHOLD == COMPRESSION_RATIO_THRESHOLD
-        )
+        assert optimizer_module.COMPRESSION_RATIO_THRESHOLD == COMPRESSION_RATIO_THRESHOLD
 
     def test_token_reduction_threshold(self, optimizer_module) -> None:
         """Token reduction threshold should be 100."""
@@ -244,6 +240,7 @@ class TestWaitForCondition:
 
     def test_wait_for_condition_immediate_success(self, mock_optimizer) -> None:
         """Should return immediately when condition is already met."""
+
         async def _test():
             call_count = 0
 
@@ -268,6 +265,7 @@ class TestWaitForCondition:
 
     def test_wait_for_condition_eventual_success(self, mock_optimizer) -> None:
         """Should poll until condition becomes true."""
+
         async def _test():
             call_count = 0
 
@@ -290,6 +288,7 @@ class TestWaitForCondition:
 
     def test_wait_for_condition_async_condition(self, mock_optimizer) -> None:
         """Should handle async condition functions."""
+
         async def _test():
             call_count = 0
 
@@ -313,6 +312,7 @@ class TestWaitForCondition:
 
     def test_wait_for_condition_timeout(self, mock_optimizer) -> None:
         """Should raise TimeoutError when condition never met."""
+
         async def _test():
             def never_true():
                 return False
@@ -332,6 +332,7 @@ class TestWaitForCondition:
 
     def test_wait_for_condition_handles_exceptions(self, mock_optimizer) -> None:
         """Should continue polling if condition raises exception."""
+
         async def _test():
             call_count = 0
 
@@ -380,9 +381,7 @@ class TestValidateOptimizationResult:
             "compression_ratio": 0.5,  # Above minimum
         }
 
-        assert (
-            mock_optimizer._validate_optimization_result(result, mock_request) is True
-        )
+        assert mock_optimizer._validate_optimization_result(result, mock_request) is True
 
     def test_validate_fails_tokens_exceeded(self, mock_optimizer, mock_request) -> None:
         """Should fail if optimized tokens >= max_tokens."""
@@ -392,9 +391,7 @@ class TestValidateOptimizationResult:
             "compression_ratio": 0.5,
         }
 
-        assert (
-            mock_optimizer._validate_optimization_result(result, mock_request) is False
-        )
+        assert mock_optimizer._validate_optimization_result(result, mock_request) is False
 
     def test_validate_fails_no_blocks_kept(self, mock_optimizer, mock_request) -> None:
         """Should fail if no blocks were kept."""
@@ -404,9 +401,7 @@ class TestValidateOptimizationResult:
             "compression_ratio": 0.5,
         }
 
-        assert (
-            mock_optimizer._validate_optimization_result(result, mock_request) is False
-        )
+        assert mock_optimizer._validate_optimization_result(result, mock_request) is False
 
     def test_validate_fails_low_compression(self, mock_optimizer, mock_request) -> None:
         """Should fail if compression ratio too low."""
@@ -416,9 +411,7 @@ class TestValidateOptimizationResult:
             "compression_ratio": 0.05,  # Below 0.1 minimum
         }
 
-        assert (
-            mock_optimizer._validate_optimization_result(result, mock_request) is False
-        )
+        assert mock_optimizer._validate_optimization_result(result, mock_request) is False
 
 
 class TestContextPressureMonitoring:
@@ -431,6 +424,7 @@ class TestContextPressureMonitoring:
 
     def test_monitor_returns_when_threshold_reached(self, mock_optimizer) -> None:
         """Should return when usage exceeds threshold."""
+
         async def _test():
             mock_optimizer._get_current_context_usage = MagicMock(return_value=0.85)
 
@@ -449,6 +443,7 @@ class TestContextPressureMonitoring:
 
     def test_monitor_warning_level(self, mock_optimizer) -> None:
         """Should return warning level for usage >= 40%."""
+
         async def _test():
             mock_optimizer._get_current_context_usage = MagicMock(return_value=0.45)
 
@@ -465,6 +460,7 @@ class TestContextPressureMonitoring:
 
     def test_monitor_critical_level(self, mock_optimizer) -> None:
         """Should return critical level for usage >= 50%."""
+
         async def _test():
             mock_optimizer._get_current_context_usage = MagicMock(return_value=0.55)
 
@@ -481,6 +477,7 @@ class TestContextPressureMonitoring:
 
     def test_monitor_high_pressure_detection(self, mock_optimizer) -> None:
         """Should detect high pressure above 90%."""
+
         async def _test():
             mock_optimizer._get_current_context_usage = MagicMock(return_value=0.95)
 
@@ -495,6 +492,7 @@ class TestContextPressureMonitoring:
 
     def test_monitor_moderate_pressure_detection(self, mock_optimizer) -> None:
         """Should detect moderate pressure below 90%."""
+
         async def _test():
             mock_optimizer._get_current_context_usage = MagicMock(return_value=0.85)
 
@@ -518,6 +516,7 @@ class TestPluginCoordination:
 
     def test_coordination_returns_ready_status(self, mock_optimizer) -> None:
         """Should return ready status for all plugins."""
+
         async def _test():
             plugins = ["abstract", "sanctum", "imbue"]
 
@@ -550,11 +549,10 @@ class TestModuleExports:
 
     def test_wait_for_optimal_conditions_invalid_type(self, optimizer_module) -> None:
         """Should raise ValueError for unknown optimization type."""
+
         async def _test():
             with pytest.raises(ValueError) as exc_info:
-                await optimizer_module.wait_for_optimal_conditions(
-                    optimization_type="invalid_type"
-                )
+                await optimizer_module.wait_for_optimal_conditions(optimization_type="invalid_type")
 
             assert "Unknown optimization type" in str(exc_info.value)
 

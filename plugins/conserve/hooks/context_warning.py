@@ -73,10 +73,7 @@ def assess_context_usage(usage: float) -> ContextAlert:
         return ContextAlert(
             severity=ContextSeverity.CRITICAL,
             usage_percent=usage,
-            message=(
-                f"CRITICAL: Context at {usage * 100:.1f}% - "
-                "Immediate optimization required!"
-            ),
+            message=(f"CRITICAL: Context at {usage * 100:.1f}% - Immediate optimization required!"),
             recommendations=[
                 "Summarize completed work immediately",
                 "Delegate remaining tasks to subagents",
@@ -115,9 +112,7 @@ def get_context_usage_from_env() -> float | None:
         try:
             return float(usage_str)
         except ValueError:
-            logger.warning(
-                "Invalid CLAUDE_CONTEXT_USAGE value: %r (expected float)", usage_str
-            )
+            logger.warning("Invalid CLAUDE_CONTEXT_USAGE value: %r (expected float)", usage_str)
 
     # Try to parse from stdin hook input
     return None
@@ -142,9 +137,8 @@ def format_hook_output(alert: ContextAlert) -> dict[str, Any]:
 
     # Add additionalContext for WARNING and CRITICAL levels
     if alert.severity != ContextSeverity.OK:
-        output["hookSpecificOutput"]["additionalContext"] = (
-            f"{alert.message}\n\nRecommendations:\n"
-            + "\n".join(f"- {rec}" for rec in alert.recommendations)
+        output["hookSpecificOutput"]["additionalContext"] = f"{alert.message}\n\nRecommendations:\n" + "\n".join(
+            f"- {rec}" for rec in alert.recommendations
         )
 
     return output

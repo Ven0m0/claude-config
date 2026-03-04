@@ -1,5 +1,5 @@
 ---
-name: github-operations
+name: github
 description: >
   Comprehensive GitHub operations using the gh CLI tool. Supports pull requests,
   issues, workflows/actions, releases, repositories, gists, and advanced Git

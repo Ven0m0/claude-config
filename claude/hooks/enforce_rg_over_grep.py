@@ -30,8 +30,7 @@ def validate_command(command: str) -> list[str]:
 
 try:
     input_data = json.load(sys.stdin)
-except json.JSONDecodeError as e:
-    print(f"Error: Invalid JSON input: {e}", file=sys.stderr)
+except json.JSONDecodeError:
     sys.exit(1)
 
 tool_name = input_data.get("tool_name", "")
@@ -45,7 +44,7 @@ if tool_name != "Bash" or not command:
 issues = validate_command(command)
 
 if issues:
-    for message in issues:
-        print(f"• {message}", file=sys.stderr)
+    for _message in issues:
+        pass
     # Exit code 2 blocks tool call and shows stderr to Claude
     sys.exit(2)

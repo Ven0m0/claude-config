@@ -1,21 +1,26 @@
 #!/usr/bin/env python3
-"""
-MCP server exposing only `jaq` for structured data querying over JSON/YAML/TOML/XML/CBOR.
+"""MCP server exposing only `jaq` for structured data querying over JSON/YAML/TOML/XML/CBOR.
 
 Tools:
  - jaq_query: single filter against file or inline content
  Supports streaming and chunking.
 """
 
-import json, sys, subprocess, shutil
+import contextlib
+import json
+import shutil
+import subprocess
+import sys
 
 DEFAULT_CHUNK = 16 * 1024
 
-def send(obj):
+
+def send(obj) -> None:
     sys.stdout.write(json.dumps(obj, ensure_ascii=False) + "\n")
     sys.stdout.flush()
 
-def reply(id_, result=None, error=None, more=False):
+
+def reply(id_, result=None, error=None, more=False) -> None:
     out = {"jsonrpc": "2.0", "id": id_}
     if error:
         out["error"] = {"code": -1, "message": error}
@@ -26,7 +31,8 @@ def reply(id_, result=None, error=None, more=False):
         out["result"] = result
     send(out)
 
-def stream_subprocess(id_, proc, chunk_size):
+
+def stream_subprocess(id_, proc, chunk_size) -> bool | None:
     try:
         while True:
             chunk = proc.stdout.read(chunk_size)
@@ -37,32 +43,30 @@ def stream_subprocess(id_, proc, chunk_size):
         proc.wait()
         return True
     except Exception as e:
-        try: proc.kill()
-        except Exception: pass
+        with contextlib.suppress(Exception):
+            proc.kill()
         reply(id_, error=f"stream error: {e}")
         return False
 
-def run_streaming_cmd(id_, cmd, chunk_size):
-    proc = subprocess.Popen(cmd,
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.DEVNULL,
-                            text=True)
+
+def run_streaming_cmd(id_, cmd, chunk_size) -> None:
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
     stream_subprocess(id_, proc, chunk_size)
     reply(id_, {"content": [{"type": "text", "text": ""}]}, more=False)
 
+
 def run_capture(cmd, input_text=None):
     try:
-        return subprocess.check_output(
-            cmd, input=input_text,
-            stderr=subprocess.DEVNULL, text=True
-        )
+        return subprocess.check_output(cmd, input=input_text, stderr=subprocess.DEVNULL, text=True)
     except subprocess.CalledProcessError:
         return ""
 
-def check_bins():
+
+def check_bins() -> None:
     if not shutil.which("jaq"):
         sys.stderr.write("error: `jaq` not found\n")
         sys.stderr.flush()
+
 
 check_bins()
 
@@ -94,13 +98,13 @@ for raw in sys.stdin:
                                 "output_format": {"type": "string"},
                                 "stream": {"type": "boolean"},
                                 "chunk_size": {"type": "integer"},
-                                "inline": {"type": "string"}
+                                "inline": {"type": "string"},
                             },
-                            "required": ["filter"]
-                        }
-                    }
-                ]
-            }
+                            "required": ["filter"],
+                        },
+                    },
+                ],
+            },
         }
         reply(mid, caps)
         continue
@@ -128,20 +132,18 @@ for raw in sys.stdin:
             base += ["--to", outf]
 
         if path:
-            cmd = base + [filt, path]
+            cmd = [*base, filt, path]
             if stream:
                 run_streaming_cmd(mid, cmd, chunk_size)
             else:
                 out = run_capture(cmd)
                 reply(mid, {"content": [{"type": "text", "text": out}]}, more=False)
         else:
-            cmd = base + [filt]
+            cmd = [*base, filt]
             if stream:
-                proc = subprocess.Popen(cmd,
-                                        stdin=subprocess.PIPE,
-                                        stdout=subprocess.PIPE,
-                                        stderr=subprocess.DEVNULL,
-                                        text=True)
+                proc = subprocess.Popen(
+                    cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True,
+                )
                 if inline:
                     try:
                         proc.stdin.write(inline)

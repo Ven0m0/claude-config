@@ -50,7 +50,7 @@ class TokenUsageTracker:
 
         for skill_file in skill_files:
             try:
-                with open(skill_file, encoding="utf-8") as f:
+                with Path(skill_file).open(encoding="utf-8") as f:
                     content = f.read()
                 tokens = len(content) // 4
                 total_tokens += tokens
@@ -62,7 +62,7 @@ class TokenUsageTracker:
 
             except (OSError, UnicodeDecodeError) as e:
                 # Log the error if needed, but continue processing other files
-                logger.debug(f"Skipping file {skill_file}: {e}")
+                logger.debug("Skipping file %s: %s", skill_file, e)
                 continue
 
         return {
@@ -85,10 +85,8 @@ class TokenUsageTracker:
             f"- **Total Skills:** {results['total_skills']}",
             f"- **Total Tokens:** {results['total_tokens']:,}",
             f"- **Average Tokens:** {results['average_tokens']:,}",
-            f"- **Skills Over Limit ({self.optimal_limit}):** "
-            f"{results['skills_over_limit']}",
-            f"- **Optimal Usage (≤{self.optimal_limit}):** "
-            f"{results['optimal_usage_count']}",
+            f"- **Skills Over Limit ({self.optimal_limit}):** {results['skills_over_limit']}",
+            f"- **Optimal Usage (≤{self.optimal_limit}):** {results['optimal_usage_count']}",
             "",
         ]
 
@@ -120,7 +118,7 @@ if __name__ == "__main__":
     output = tracker.get_usage_report()
 
     if args.output:
-        with open(args.output, "w") as f:
+        with Path(args.output).open("w") as f:
             f.write(output)
     else:
         pass

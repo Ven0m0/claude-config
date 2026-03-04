@@ -14,9 +14,7 @@ import pytest
 
 # Load the dependency_manager module dynamically
 scripts_dir = Path(__file__).parent.parent.parent.parent / "scripts"
-spec = importlib.util.spec_from_file_location(
-    "dependency_manager_module", scripts_dir / "dependency_manager.py"
-)
+spec = importlib.util.spec_from_file_location("dependency_manager_module", scripts_dir / "dependency_manager.py")
 assert spec is not None
 assert spec.loader is not None
 dependency_manager_module = importlib.util.module_from_spec(spec)
@@ -78,9 +76,7 @@ class TestDependencyManagerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_manager_scans_dependencies_from_plugin_json(
-        self, manager: DependencyManager
-    ) -> None:
+    def test_manager_scans_dependencies_from_plugin_json(self, manager: DependencyManager) -> None:
         """Scenario: Manager reads expected dependencies from plugin.json.
 
         Given a plugin.json with declared dependencies
@@ -122,9 +118,7 @@ class TestDependencyManagerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_manager_detects_missing_dependencies(
-        self, manager: DependencyManager, temp_plugin_root: Path
-    ) -> None:
+    def test_manager_detects_missing_dependencies(self, manager: DependencyManager, temp_plugin_root: Path) -> None:
         """Scenario: Manager detects expected but unused dependencies.
 
         Given expected dependencies not used in skills
@@ -141,9 +135,7 @@ class TestDependencyManagerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_manager_detects_unexpected_dependencies(
-        self, temp_plugin_root: Path
-    ) -> None:
+    def test_manager_detects_unexpected_dependencies(self, temp_plugin_root: Path) -> None:
         """Scenario: Manager detects undeclared dependencies in use.
 
         Given skill files using undeclared dependencies
@@ -152,9 +144,7 @@ class TestDependencyManagerImplementation:
         """
         # Arrange
         # Update plugin.json to have no dependencies
-        (temp_plugin_root / "plugin.json").write_text(
-            json.dumps({"name": "test", "dependencies": {}})
-        )
+        (temp_plugin_root / "plugin.json").write_text(json.dumps({"name": "test", "dependencies": {}}))
 
         # Add skill with dependency
         skill_file = temp_plugin_root / "skills" / "SKILL.md"
@@ -171,9 +161,7 @@ class TestDependencyManagerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_manager_detects_old_reference_patterns(
-        self, manager: DependencyManager, temp_plugin_root: Path
-    ) -> None:
+    def test_manager_detects_old_reference_patterns(self, manager: DependencyManager, temp_plugin_root: Path) -> None:
         """Scenario: Manager detects old workspace-utils references.
 
         Given skill files with old reference patterns
@@ -238,9 +226,7 @@ class TestDependencyManagerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_manager_fixes_dependencies_dry_run(
-        self, manager: DependencyManager, temp_plugin_root: Path
-    ) -> None:
+    def test_manager_fixes_dependencies_dry_run(self, manager: DependencyManager, temp_plugin_root: Path) -> None:
         """Scenario: Manager performs dry run of dependency fixes.
 
         Given skill files with fixable issues
@@ -265,9 +251,7 @@ class TestDependencyManagerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_manager_fixes_dependencies_actual_run(
-        self, manager: DependencyManager, temp_plugin_root: Path
-    ) -> None:
+    def test_manager_fixes_dependencies_actual_run(self, manager: DependencyManager, temp_plugin_root: Path) -> None:
         """Scenario: Manager actually fixes dependency issues.
 
         Given skill files with fixable issues
@@ -292,9 +276,7 @@ class TestDependencyManagerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_manager_reports_no_changes_needed(
-        self, manager: DependencyManager, temp_plugin_root: Path
-    ) -> None:
+    def test_manager_reports_no_changes_needed(self, manager: DependencyManager, temp_plugin_root: Path) -> None:
         """Scenario: Manager reports when no fixes are needed.
 
         Given skill files with correct references
@@ -315,9 +297,7 @@ class TestDependencyManagerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_manager_generates_comprehensive_report(
-        self, manager: DependencyManager
-    ) -> None:
+    def test_manager_generates_comprehensive_report(self, manager: DependencyManager) -> None:
         """Scenario: Manager generates detailed dependency report.
 
         Given a plugin with dependencies
@@ -336,9 +316,7 @@ class TestDependencyManagerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_manager_handles_list_dependencies_format(
-        self, temp_plugin_root: Path
-    ) -> None:
+    def test_manager_handles_list_dependencies_format(self, temp_plugin_root: Path) -> None:
         """Scenario: Manager handles dependencies as list format.
 
         Given plugin.json with dependencies as list
@@ -383,9 +361,7 @@ class TestDependencyManagerImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_manager_removes_old_skill_paths(
-        self, manager: DependencyManager, temp_plugin_root: Path
-    ) -> None:
+    def test_manager_removes_old_skill_paths(self, manager: DependencyManager, temp_plugin_root: Path) -> None:
         """Scenario: Manager removes old ~/.claude/skills/ paths.
 
         Given skill files with old skill paths
@@ -431,9 +407,7 @@ class TestDependencyManagerEdgeCases:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_manager_handles_empty_skills_directory(
-        self, temp_plugin_root: Path
-    ) -> None:
+    def test_manager_handles_empty_skills_directory(self, temp_plugin_root: Path) -> None:
         """Scenario: Manager handles plugins with no skill files.
 
         Given a plugin with no SKILL.md files
@@ -473,9 +447,7 @@ class TestDependencyManagerEdgeCases:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_manager_processes_multiple_skill_files(
-        self, temp_plugin_root: Path
-    ) -> None:
+    def test_manager_processes_multiple_skill_files(self, temp_plugin_root: Path) -> None:
         """Scenario: Manager processes multiple skill files correctly.
 
         Given multiple skill files with various dependencies

@@ -95,8 +95,7 @@ class DependencyManager:
             for pattern_name, pattern in old_patterns.items():
                 if re.search(pattern, content):
                     issues.append(
-                        f"Found old reference pattern '{pattern_name}' "
-                        f"in {skill_file.name}",
+                        f"Found old reference pattern '{pattern_name}' in {skill_file.name}",
                     )
 
         return issues

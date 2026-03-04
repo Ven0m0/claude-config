@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""
-Integration tests for the prompt-improver system
-Tests the complete flow from hook to skill
+"""Integration tests for the prompt-improver system
+Tests the complete flow from hook to skill.
 """
 
 import json
@@ -17,7 +16,7 @@ SKILL_DIR = PROJECT_ROOT / "skills" / "prompt-improver"
 
 
 def run_hook(prompt):
-    """Run the hook script with given prompt"""
+    """Run the hook script with given prompt."""
     input_data = json.dumps({"prompt": prompt})
 
     result = subprocess.run(
@@ -28,21 +27,20 @@ def run_hook(prompt):
     )
 
     if result.returncode != 0:
-        raise Exception(f"Hook failed: {result.stderr}")
+        msg = f"Hook failed: {result.stderr}"
+        raise Exception(msg)
 
     return json.loads(result.stdout)
 
 
-def test_plugin_configuration():
-    """Test that plugin.json is properly configured"""
+def test_plugin_configuration() -> None:
+    """Test that plugin.json is properly configured."""
     assert PLUGIN_JSON.exists(), "plugin.json not found"
 
     config = json.loads(PLUGIN_JSON.read_text())
 
     # Check version is 0.5.0
-    assert config["version"] == "0.5.0", (
-        f"Expected version 0.5.0, got {config['version']}"
-    )
+    assert config["version"] == "0.5.0", f"Expected version 0.5.0, got {config['version']}"
 
     # Check skills field exists
     assert "skills" in config, "Missing 'skills' field in plugin.json"
@@ -50,27 +48,20 @@ def test_plugin_configuration():
     assert len(config["skills"]) > 0, "'skills' list is empty"
 
     # Check hooks field is NOT present (standard hooks/hooks.json is auto-discovered)
-    assert "hooks" not in config, (
-        "The 'hooks' field should not be present (standard location is auto-discovered)"
-    )
+    assert "hooks" not in config, "The 'hooks' field should not be present (standard location is auto-discovered)"
 
     # Check skill path
     skill_path = config["skills"][0]
-    assert skill_path == "./skills/prompt-improver", (
-        f"Unexpected skill path: {skill_path}"
-    )
+    assert skill_path == "./skills/prompt-improver", f"Unexpected skill path: {skill_path}"
 
     # Verify skill directory exists
     resolved_skill_path = PROJECT_ROOT / skill_path.lstrip("./")
-    assert resolved_skill_path.exists(), (
-        f"Skill directory not found: {resolved_skill_path}"
-    )
-
-    print("✓ Plugin configuration is correct")
+    assert resolved_skill_path.exists(), f"Skill directory not found: {resolved_skill_path}"
 
 
-def test_end_to_end_flow():
-    """Test complete flow from prompt to evaluation"""
+
+def test_end_to_end_flow() -> None:
+    """Test complete flow from prompt to evaluation."""
     # Test normal prompt
     output = run_hook("add authentication")
 
@@ -82,11 +73,10 @@ def test_end_to_end_flow():
     # Should mention skill for vague cases
     assert "skill" in context.lower()
 
-    print("✓ End-to-end flow works (normal prompt → evaluation wrapper)")
 
 
-def test_bypass_flow():
-    """Test that bypass mechanism works end-to-end"""
+def test_bypass_flow() -> None:
+    """Test that bypass mechanism works end-to-end."""
     # Test asterisk bypass
     output = run_hook("* just do it")
     context = output["hookSpecificOutput"]["additionalContext"]
@@ -103,11 +93,10 @@ def test_bypass_flow():
     context = output["hookSpecificOutput"]["additionalContext"]
     assert context == "# note for later"
 
-    print("✓ Bypass mechanisms work end-to-end")
 
 
-def test_skill_file_integrity():
-    """Test that all skill files are present and valid"""
+def test_skill_file_integrity() -> None:
+    """Test that all skill files are present and valid."""
     # Check SKILL.md
     skill_md = SKILL_DIR / "SKILL.md"
     assert skill_md.exists(), "SKILL.md missing"
@@ -130,11 +119,10 @@ def test_skill_file_integrity():
         ref_file = references_dir / ref
         assert ref_file.exists(), f"Missing reference file: {ref}"
 
-    print("✓ All skill files present and valid")
 
 
-def test_token_overhead():
-    """Test that hook overhead is reasonable"""
+def test_token_overhead() -> None:
+    """Test that hook overhead is reasonable."""
     output = run_hook("test")
 
     context = output["hookSpecificOutput"]["additionalContext"]
@@ -145,25 +133,18 @@ def test_token_overhead():
 
     # New version should be ~200-220 tokens (evaluation prompt with preface instruction)
     # Old v0.3.2 was ~275 tokens (embedded evaluation logic)
-    assert estimated_tokens < 250, (
-        f"Hook overhead too high: ~{estimated_tokens} tokens (expected <250)"
-    )
+    assert estimated_tokens < 250, f"Hook overhead too high: ~{estimated_tokens} tokens (expected <250)"
 
     # Should be less than old version
     old_estimated_tokens = 275
     if estimated_tokens < old_estimated_tokens:
-        reduction_percent = (
-            (old_estimated_tokens - estimated_tokens) / old_estimated_tokens
-        ) * 100
-        print(
-            f"✓ Token overhead acceptable: ~{estimated_tokens} tokens (<250), ~{reduction_percent:.0f}% reduction from v0.3.2"
-        )
+        ((old_estimated_tokens - estimated_tokens) / old_estimated_tokens) * 100
     else:
-        print(f"✓ Token overhead acceptable: ~{estimated_tokens} tokens (<250)")
+        pass
 
 
-def test_hook_output_consistency():
-    """Test that hook output is consistent across different prompts"""
+def test_hook_output_consistency() -> None:
+    """Test that hook output is consistent across different prompts."""
     prompts = [
         "fix the bug",
         "add tests",
@@ -184,11 +165,10 @@ def test_hook_output_consistency():
         assert "EVALUATE" in context or "evaluate" in context.lower()
         assert prompt in context
 
-    print(f"✓ Hook output consistent across {len(prompts)} different prompts")
 
 
-def test_architecture_separation():
-    """Test that architecture properly separates concerns"""
+def test_architecture_separation() -> None:
+    """Test that architecture properly separates concerns."""
     # Hook should be reasonably sized (< 80 lines)
     hook_lines = len(HOOK_SCRIPT.read_text().split("\n"))
     assert hook_lines < 80, f"Hook too large: {hook_lines} lines (expected <80)"
@@ -206,11 +186,10 @@ def test_architecture_separation():
     # Skill should mention being invoked for vague prompts
     assert "vague" in skill_content.lower()
 
-    print("✓ Architecture properly separates concerns (hook evaluates, skill enriches)")
 
 
-def run_all_tests():
-    """Run all integration tests"""
+def run_all_tests() -> None:
+    """Run all integration tests."""
     tests = [
         test_plugin_configuration,
         test_end_to_end_flow,
@@ -221,27 +200,21 @@ def run_all_tests():
         test_architecture_separation,
     ]
 
-    print(f"Running {len(tests)} integration tests...\n")
 
     failed = []
     for test in tests:
         try:
             test()
         except AssertionError as e:
-            print(f"✗ {test.__name__} failed: {e}")
             failed.append((test.__name__, e))
         except Exception as e:
-            print(f"✗ {test.__name__} error: {e}")
             failed.append((test.__name__, e))
 
-    print(f"\n{'=' * 60}")
     if failed:
-        print(f"FAILED: {len(failed)}/{len(tests)} tests failed")
-        for name, error in failed:
-            print(f"  - {name}: {error}")
+        for _name, _error in failed:
+            pass
         sys.exit(1)
     else:
-        print(f"SUCCESS: All {len(tests)} integration tests passed!")
         sys.exit(0)
 
 

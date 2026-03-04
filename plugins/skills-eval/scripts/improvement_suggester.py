@@ -61,7 +61,7 @@ if __name__ == "__main__":
         output = suggester.generate_improvement_plan(skill_name)
 
     if args.output:
-        with open(args.output, "w") as f:
+        with Path(args.output).open("w") as f:
             f.write(output)
     else:
         pass

@@ -1,5 +1,5 @@
 ---
-name: substituting-modern-tools
+name: modern-tool-substitution
 description: Substitutes modern performant tools for legacy equivalents in generated code (npm→bun, find→fd, pip→uv, grep→rg, jq→jaq, eslint→biome, black→ruff, git→gix). Use when generating shell commands or scripts.
 user-invocable: false
 ---

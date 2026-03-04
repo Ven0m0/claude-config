@@ -82,7 +82,7 @@ def normalize_line(line: str, lang: str = "python") -> str:
     if lang == "python":
         # Remove # comments but not inside strings (simplified)
         if "#" in line and not ('"' in line or "'" in line):
-            line = line.split("#")[0]
+            line = line.split("#", maxsplit=1)[0]
     elif lang in ("javascript", "typescript", "java", "c", "cpp", "go", "rust"):
         # Remove // comments
         if "//" in line:
@@ -124,7 +124,7 @@ def extract_blocks(
         try:
             content = filepath.read_text(encoding="utf-8", errors="ignore")
             lines = content.splitlines()
-        except (OSError, UnicodeDecodeError):
+        except OSError, UnicodeDecodeError:
             return []
 
     if len(lines) < min_lines:
@@ -157,9 +157,7 @@ def extract_blocks(
         # Use pre-normalized lines for hashing
         block_normalized = [nl for nl in normalized_lines[start:end] if nl]
         content_for_hash = "\n".join(block_normalized)
-        block_hash = hashlib.md5(
-            content_for_hash.encode(), usedforsecurity=False
-        ).hexdigest()
+        block_hash = hashlib.md5(content_for_hash.encode(), usedforsecurity=False).hexdigest()
 
         block_content = "\n".join(lines[start:end])
         blocks.append((block_hash, start + 1, end, block_content))  # Line numbers are 1-indexed.
@@ -179,6 +177,7 @@ def find_files(
 
     Returns:
         List of Path objects.
+
     """
     if extensions is None:
         extensions = {
@@ -235,7 +234,7 @@ def find_duplicates(
             content = filepath.read_text(encoding="utf-8", errors="ignore")
             lines = content.splitlines()
             total_lines += len(lines)
-        except (OSError, UnicodeDecodeError):
+        except OSError, UnicodeDecodeError:
             continue
 
         # Extract blocks
@@ -250,9 +249,7 @@ def find_duplicates(
 
     # Find duplicates (blocks appearing in multiple locations)
     duplicates: list[DuplicateBlock] = []
-    seen_ranges_by_file: dict[str, list[tuple[int, int]]] = defaultdict(
-        list
-    )  # Avoid overlapping reports
+    seen_ranges_by_file: dict[str, list[tuple[int, int]]] = defaultdict(list)  # Avoid overlapping reports
 
     for block_hash, locations in hash_to_locations.items():
         if len(locations) < 2:
@@ -283,9 +280,7 @@ def find_duplicates(
             duplicates.append(dup)
 
     # Calculate duplicate line count (approximate, avoids double-counting)
-    duplicate_lines = sum(
-        dup.line_count * (dup.occurrence_count - 1) for dup in duplicates
-    )
+    duplicate_lines = sum(dup.line_count * (dup.occurrence_count - 1) for dup in duplicates)
 
     # Sort by occurrence count (most duplicated first)
     duplicates.sort(key=lambda d: d.occurrence_count, reverse=True)
@@ -307,8 +302,10 @@ def find_similar_functions(files: list[Path]) -> list[tuple[str, list[str]]]:
 
     Args:
         files (list[Path]): List of files to scan.
+
     Returns:
         list[tuple[str, list[str]]]: A list of (base_name, [full_names]) tuples.
+
     """
     # Extract function definitions
     func_pattern = re.compile(r"^\s*(?:def|function|fn|func)\s+(\w+)", re.MULTILINE)
@@ -325,7 +322,7 @@ def find_similar_functions(files: list[Path]) -> list[tuple[str, list[str]]]:
         try:
             content = filepath.read_text(encoding="utf-8", errors="ignore")
             func_names.extend(func_pattern.findall(content))
-        except (OSError, UnicodeDecodeError):
+        except OSError, UnicodeDecodeError:
             continue
 
     # Group by common prefixes/suffixes
@@ -360,9 +357,7 @@ def format_text(report: DuplicateReport) -> str:
         lines.append("-" * 40)
 
         for i, dup in enumerate(report.duplicates[:10], 1):
-            summary = (
-                f"\n[{i}] {dup.occurrence_count} occurrences ({dup.line_count} lines)"
-            )
+            summary = f"\n[{i}] {dup.occurrence_count} occurrences ({dup.line_count} lines)"
             lines.append(summary)
             for filepath, start, end in dup.locations[:5]:
                 lines.append(f"    {filepath}:{start}-{end}")
@@ -390,13 +385,9 @@ def format_text(report: DuplicateReport) -> str:
     lines.append("RECOMMENDATIONS")
     lines.append("-" * 40)
     if report.duplication_percentage > 15:
-        lines.append(
-            "HIGH duplication detected. Extract common patterns to shared utilities."
-        )
+        lines.append("HIGH duplication detected. Extract common patterns to shared utilities.")
     elif report.duplication_percentage > 5:
-        lines.append(
-            "MODERATE duplication. Review top blocks for refactoring opportunities."
-        )
+        lines.append("MODERATE duplication. Review top blocks for refactoring opportunities.")
     else:
         lines.append("LOW duplication. Codebase appears well-factored.")
 
@@ -417,16 +408,12 @@ def format_json(report: DuplicateReport) -> str:
                 {
                     "occurrences": dup.occurrence_count,
                     "lines": dup.line_count,
-                    "locations": [
-                        {"file": f, "start": s, "end": e} for f, s, e in dup.locations
-                    ],
+                    "locations": [{"file": f, "start": s, "end": e} for f, s, e in dup.locations],
                     "hash": dup.normalized_hash,
                 }
                 for dup in report.duplicates
             ],
-            "similar_functions": [
-                {"base_name": base, "variants": names} for base, names in report.similar_functions
-            ],
+            "similar_functions": [{"base_name": base, "variants": names} for base, names in report.similar_functions],
         },
         indent=2,
     )

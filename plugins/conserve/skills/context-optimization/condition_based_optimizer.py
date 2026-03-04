@@ -109,19 +109,11 @@ class ConditionBasedOptimizer:
         """Register built-in condition checkers."""
         self.condition_checkers.update(
             {
-                "compression_ratio": lambda r: (
-                    r.get("compression_ratio", 0) > COMPRESSION_RATIO_THRESHOLD
-                ),  # noqa: E501
-                "token_reduction": lambda r: (
-                    r.get("tokens_saved", 0) > TOKEN_REDUCTION_THRESHOLD
-                ),  # noqa: E501
-                "priority_preserved": lambda r: (
-                    r.get("high_priority_kept", 0) > PRIORITY_THRESHOLD
-                ),  # noqa: E501
+                "compression_ratio": lambda r: r.get("compression_ratio", 0) > COMPRESSION_RATIO_THRESHOLD,  # noqa: E501
+                "token_reduction": lambda r: r.get("tokens_saved", 0) > TOKEN_REDUCTION_THRESHOLD,  # noqa: E501
+                "priority_preserved": lambda r: r.get("high_priority_kept", 0) > PRIORITY_THRESHOLD,  # noqa: E501
                 "structure_intact": lambda r: r.get("structure_preserved", False),
-                "semantic_coherence": lambda r: (
-                    r.get("coherence_score", 0) > SEMANTIC_COHERENCE_THRESHOLD
-                ),  # noqa: E501
+                "semantic_coherence": lambda r: r.get("coherence_score", 0) > SEMANTIC_COHERENCE_THRESHOLD,  # noqa: E501
             },
         )
 
@@ -195,8 +187,7 @@ class ConditionBasedOptimizer:
 
         try:
             self.logger.info(
-                f"Starting optimization {optimization_id} "
-                f"for plugin {request.plugin_name}",
+                f"Starting optimization {optimization_id} for plugin {request.plugin_name}",
             )
 
             # Step 1: Perform optimization
@@ -230,29 +221,19 @@ class ConditionBasedOptimizer:
                     is_completed = await is_completed
 
             if not is_completed:
-                msg = (
-                    f"Timeout waiting for optimization {optimization_id} "
-                    f"completion after {request.timeout_ms}ms"
-                )
+                msg = f"Timeout waiting for optimization {optimization_id} completion after {request.timeout_ms}ms"
                 raise TimeoutError(msg)
 
             # Step 3: Validate result meets requirements
             if asyncio.iscoroutinefunction(self._validate_optimization_result):
-                is_valid = await self._validate_optimization_result(
-                    optimization_result, request
-                )
+                is_valid = await self._validate_optimization_result(optimization_result, request)
             else:
-                is_valid = self._validate_optimization_result(
-                    optimization_result, request
-                )
+                is_valid = self._validate_optimization_result(optimization_result, request)
                 if asyncio.iscoroutine(is_valid):
                     is_valid = await is_valid
 
             if not is_valid:
-                msg = (
-                    f"Timeout waiting for optimization {optimization_id} "
-                    "validation after 5000ms"
-                )
+                msg = f"Timeout waiting for optimization {optimization_id} validation after 5000ms"
                 raise TimeoutError(msg)
 
             # Step 4: Finalize result
@@ -281,8 +262,7 @@ class ConditionBasedOptimizer:
                     request.callback(result_dict)
 
             self.logger.info(
-                f"Optimization {optimization_id} completed successfully "
-                f"in {result.end_time - result.start_time:.2f}s",
+                f"Optimization {optimization_id} completed successfully in {result.end_time - result.start_time:.2f}s",
             )
 
         except TimeoutError as e:
@@ -362,9 +342,7 @@ class ConditionBasedOptimizer:
 
         self.logger.info(
             f"Batch optimization completed: "
-            f"{sum(1 for r in results if r.status == 'completed')}/{
-                total_count
-            } successful",
+            f"{sum(1 for r in results if r.status == 'completed')}/{total_count} successful",
         )
 
         return results
@@ -392,9 +370,7 @@ class ConditionBasedOptimizer:
             return True  # Assume ready for demo
 
         def coordination_condition():
-            ready_plugins = {
-                plugin: check_plugin_readiness(plugin) for plugin in plugins
-            }
+            ready_plugins = {plugin: check_plugin_readiness(plugin) for plugin in plugins}
             all_ready = all(ready_plugins.values())
             return ready_plugins if all_ready else None
 
@@ -444,9 +420,7 @@ class ConditionBasedOptimizer:
                     "usage": usage,
                     "threshold": threshold,
                     "timestamp": time.time(),
-                    "pressure_level": (
-                        "high" if usage > HIGH_PRESSURE_THRESHOLD else "moderate"
-                    ),
+                    "pressure_level": ("high" if usage > HIGH_PRESSURE_THRESHOLD else "moderate"),
                     "alert_level": alert_level,
                     "recommendations": recommendations,
                 }

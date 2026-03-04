@@ -106,15 +106,11 @@ class ConservationContextOptimizer:
         if preserve_structure:
             result["optimized_content"] = self._rebuild_structure(optimized_blocks)
         else:
-            result["optimized_content"] = "\n\n".join(
-                b.content for b in optimized_blocks
-            )
+            result["optimized_content"] = "\n\n".join(b.content for b in optimized_blocks)
 
         # Calculate metrics
         result["optimized_tokens"] = sum(b.token_estimate for b in optimized_blocks)
-        result["compression_ratio"] = (
-            result["optimized_tokens"] / result["original_tokens"]
-        )
+        result["compression_ratio"] = result["optimized_tokens"] / result["original_tokens"]
         result["blocks_kept"] = len(optimized_blocks)
         result["blocks_dropped"] = len(content_blocks) - len(optimized_blocks)
 
@@ -139,10 +135,7 @@ class ConservationContextOptimizer:
                 current_tokens += block.token_estimate
             else:
                 # Try to truncate the last block if it's important
-                if (
-                    block.priority > HIGH_PRIORITY_THRESHOLD
-                    and current_tokens < max_tokens * TOKEN_BUFFER_MULTIPLIER
-                ):
+                if block.priority > HIGH_PRIORITY_THRESHOLD and current_tokens < max_tokens * TOKEN_BUFFER_MULTIPLIER:
                     remaining_tokens = max_tokens - current_tokens
                     truncated = self._truncate_block(block, remaining_tokens)
                     if truncated:
@@ -176,7 +169,7 @@ class ConservationContextOptimizer:
                 current_tokens += block.token_estimate
 
         # Return in original order
-        return sorted(kept_blocks, key=lambda b: blocks.index(b))
+        return sorted(kept_blocks, key=blocks.index)
 
     def _optimize_by_importance(
         self,
@@ -225,7 +218,7 @@ class ConservationContextOptimizer:
                 kept_blocks.append(block)
                 current_tokens += block.token_estimate
 
-        return sorted(kept_blocks, key=lambda b: blocks.index(b))
+        return sorted(kept_blocks, key=blocks.index)
 
     def _optimize_by_semantic_importance(
         self,
@@ -274,7 +267,7 @@ class ConservationContextOptimizer:
                 kept_blocks.append(block)
                 current_tokens += block.token_estimate
 
-        return sorted(kept_blocks, key=lambda b: blocks.index(b))
+        return sorted(kept_blocks, key=blocks.index)
 
     def _optimize_balanced(
         self,
@@ -314,10 +307,7 @@ class ConservationContextOptimizer:
             if current_tokens + block.token_estimate <= max_tokens:
                 kept_blocks.append(block)
                 current_tokens += block.token_estimate
-            elif (
-                block.score > HIGH_SCORE_THRESHOLD
-                and current_tokens < max_tokens * LOW_TOKEN_MULTIPLIER
-            ):
+            elif block.score > HIGH_SCORE_THRESHOLD and current_tokens < max_tokens * LOW_TOKEN_MULTIPLIER:
                 # Try to fit very important blocks by truncating
                 remaining = max_tokens - current_tokens
                 truncated = self._truncate_block(block, remaining)
@@ -325,7 +315,7 @@ class ConservationContextOptimizer:
                     kept_blocks.append(truncated)
                     current_tokens += truncated.token_estimate
 
-        return sorted(kept_blocks, key=lambda b: blocks.index(b))
+        return sorted(kept_blocks, key=blocks.index)
 
     def _truncate_block(
         self,
@@ -419,9 +409,7 @@ class ConservationServiceRegistry:
 # Register the optimizer as a service
 registry = ConservationServiceRegistry()
 optimizer_instance = ConservationContextOptimizer()
-registry.register_service(
-    "context_optimizer", lambda *args, **kwargs: optimizer_instance
-)
+registry.register_service("context_optimizer", lambda *args, **kwargs: optimizer_instance)
 registry.register_service(
     "optimize_content",
     lambda *args, **kwargs: ConservationContextOptimizer().optimize_content(
@@ -498,10 +486,7 @@ if __name__ == "__main__":
     # Create example content blocks
     example_blocks = [
         ContentBlock(
-            content=(
-                "# Main Analysis Function\n\n"
-                "def analyze(data):\n    return process(data)"
-            ),
+            content=("# Main Analysis Function\n\ndef analyze(data):\n    return process(data)"),
             priority=0.9,
             source="core_code",
             token_estimate=100,

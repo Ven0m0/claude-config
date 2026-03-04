@@ -14,9 +14,7 @@ scripts_dir = Path(__file__).parent.parent.parent.parent / "scripts"
 
 def load_module(script_name: str):
     """Dynamically load a script module."""
-    spec = importlib.util.spec_from_file_location(
-        f"{script_name}_module", scripts_dir / f"{script_name}.py"
-    )
+    spec = importlib.util.spec_from_file_location(f"{script_name}_module", scripts_dir / f"{script_name}.py")
     assert spec is not None
     assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
@@ -49,22 +47,18 @@ class TestCLISmokeTests:
         growth_analyzer = load_module("growth-analyzer")
         input_file = tmp_path / "context.json"
         input_file.write_text(
-            json.dumps(
-                {
-                    "growth_trend": {
-                        "current_usage": 50,
-                        "rate": 0.05,
-                        "acceleration": 0.001,
-                    },
-                    "content_breakdown": {},
-                }
-            )
+            json.dumps({
+                "growth_trend": {
+                    "current_usage": 50,
+                    "rate": 0.05,
+                    "acceleration": 0.001,
+                },
+                "content_breakdown": {},
+            })
         )
 
         # Act
-        with patch(
-            "sys.argv", ["growth-analyzer.py", "--context-file", str(input_file)]
-        ):
+        with patch("sys.argv", ["growth-analyzer.py", "--context-file", str(input_file)]):
             # Should complete without crashing
             try:
                 growth_analyzer.main()
@@ -80,9 +74,7 @@ class TestCLISmokeTests:
         nonexistent = str(tmp_path / "missing.json")
 
         # Act & Assert
-        with patch(
-            "sys.argv", ["growth-controller.py", "--analysis-file", nonexistent]
-        ):
+        with patch("sys.argv", ["growth-controller.py", "--analysis-file", nonexistent]):
             with pytest.raises(SystemExit):
                 growth_controller.main()
 
@@ -93,16 +85,10 @@ class TestCLISmokeTests:
         # Arrange
         growth_controller = load_module("growth-controller")
         input_file = tmp_path / "analysis.json"
-        input_file.write_text(
-            json.dumps(
-                {"severity": "MODERATE", "urgency": "MEDIUM", "growth_rate": 0.15}
-            )
-        )
+        input_file.write_text(json.dumps({"severity": "MODERATE", "urgency": "MEDIUM", "growth_rate": 0.15}))
 
         # Act
-        with patch(
-            "sys.argv", ["growth-controller.py", "--analysis-file", str(input_file)]
-        ):
+        with patch("sys.argv", ["growth-controller.py", "--analysis-file", str(input_file)]):
             try:
                 growth_controller.main()
             except SystemExit:
@@ -116,9 +102,7 @@ class TestCLISmokeTests:
         dependency_manager = load_module("dependency_manager")
 
         # Act
-        with patch(
-            "sys.argv", ["dependency_manager.py", "--root", str(tmp_path), "--scan"]
-        ):
+        with patch("sys.argv", ["dependency_manager.py", "--root", str(tmp_path), "--scan"]):
             try:
                 dependency_manager.main()
             except SystemExit:
@@ -135,9 +119,7 @@ class TestCLISmokeTests:
         (tmp_path / "plugin.json").write_text(json.dumps({"dependencies": {}}))
 
         # Act
-        with patch(
-            "sys.argv", ["dependency_manager.py", "--root", str(tmp_path), "--report"]
-        ):
+        with patch("sys.argv", ["dependency_manager.py", "--root", str(tmp_path), "--report"]):
             try:
                 dependency_manager.main()
             except SystemExit:
@@ -172,7 +154,7 @@ class TestCLISmokeTests:
         with patch("sys.argv", ["quick_skill_optimizer.py", str(skill_file)]):
             try:
                 quick_skill_optimizer.main()
-            except (SystemExit, AttributeError):
+            except SystemExit, AttributeError:
                 pass
 
     @pytest.mark.bdd
@@ -188,7 +170,7 @@ class TestCLISmokeTests:
         with patch("sys.argv", ["aggressive_skill_optimizer.py", str(skill_file)]):
             try:
                 aggressive_skill_optimizer.main()
-            except (SystemExit, AttributeError):
+            except SystemExit, AttributeError:
                 pass
 
 

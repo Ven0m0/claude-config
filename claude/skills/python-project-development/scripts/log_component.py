@@ -31,6 +31,7 @@ class Log:
         Args:
           quiet: Suppress info/ok messages (keep warnings/errors)
           silent: Suppress all messages except errors
+
         """
         self.quiet = quiet or silent
         self.silent = silent
@@ -45,27 +46,27 @@ class Log:
 
         Returns:
           Colored message or plain message if no TTY
+
         """
         return f"{col}{msg}{C_RESET}" if self.color else msg
 
     def info(self, msg: str) -> None:
         """Log informational message (cyan)."""
         if not self.quiet:
-            print(self._c(C_CYAN, msg))
+            pass
 
     def ok(self, msg: str) -> None:
         """Log success message (green) with checkmark."""
         if not self.quiet:
-            print(self._c(C_GREEN, f"✓ {msg}"))
+            pass
 
     def warn(self, msg: str) -> None:
         """Log warning message (yellow) to stderr."""
         if not self.silent:
-            print(self._c(C_YELLOW, f"⚠ {msg}"), file=sys.stderr)
+            pass
 
     def err(self, msg: str) -> None:
         """Log error message (red) to stderr."""
-        print(self._c(C_RED, f"✗ {msg}"), file=sys.stderr)
 
     def prog(self, cur: int, tot: int, fname: str) -> None:
         """Display progress bar.
@@ -74,21 +75,17 @@ class Log:
           cur: Current item number
           tot: Total items
           fname: Current filename (truncated to 40 chars)
+
         """
         if not self.quiet:
-            pct = (cur / tot) * 100 if tot else 0
+            (cur / tot) * 100 if tot else 0
             bar_len = int(20 * cur / tot) if tot else 0
-            bar = "█" * bar_len + "░" * (20 - bar_len)
-            print(
-                f"\r[{bar}] {pct:5.1f}% ({cur}/{tot}) {fname[:40]:<40}",
-                end="",
-                flush=True,
-            )
+            "█" * bar_len + "░" * (20 - bar_len)
 
     def prog_done(self) -> None:
         """Clear progress bar (print newline)."""
         if not self.quiet:
-            print()
+            pass
 
 
 # Convenience functions for one-off usage

@@ -91,9 +91,7 @@ tags:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_mcp_code_execution_creates_required_todowrite_items(
-        self, mock_todo_write
-    ) -> None:
+    def test_mcp_code_execution_creates_required_todowrite_items(self, mock_todo_write) -> None:
         """Scenario: MCP code execution creates required TodoWrite items.
 
         Given the mcp-code-execution skill is executed
@@ -123,9 +121,7 @@ tags:
         assert len(mcp_execution_items) == FIVE
         for expected_item in expected_items:
             assert expected_item in mcp_execution_items
-        assert all(
-            item.startswith("mcp-code-execution:") for item in mcp_execution_items
-        )
+        assert all(item.startswith("mcp-code-execution:") for item in mcp_execution_items)
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -173,18 +169,14 @@ tags:
         delegation_candidates = []
         for task in tasks:
             # Determine delegation suitability
-            should_delegate = (
-                task["compute_complexity"] in ["high", "medium"]
-                and task["estimated_tokens"] > THOUSAND
-            )
+            should_delegate = task["compute_complexity"] in ["high", "medium"] and task["estimated_tokens"] > THOUSAND
 
             if should_delegate:
                 delegation_candidates.append(
                     {
                         "task": task["name"],
                         "reason": (
-                            f"High compute ({task['compute_complexity']}) and "
-                            f"token cost ({task['estimated_tokens']})"
+                            f"High compute ({task['compute_complexity']}) and token cost ({task['estimated_tokens']})"
                         ),
                         "recommended_tool": "qwen_mcp_executor",
                         "estimated_savings": task["estimated_tokens"] * 0.7,
@@ -202,9 +194,7 @@ tags:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_delegation_assessment_evaluates_tool_suitability(
-        self, mock_claude_tools
-    ) -> None:
+    def test_delegation_assessment_evaluates_tool_suitability(self, mock_claude_tools) -> None:
         """Scenario: Delegation assessment evaluates MCP tool suitability.
 
         Given available MCP tools and task requirements
@@ -279,8 +269,7 @@ tags:
                             {
                                 "tool": tool["name"],
                                 "suitability_score": suitability_score,
-                                "token_margin": tool["max_tokens"]
-                                - task["estimated_tokens"],
+                                "token_margin": tool["max_tokens"] - task["estimated_tokens"],
                             },
                         )
 
@@ -300,26 +289,18 @@ tags:
         assert len(delegation_recommendations) == THREE
 
         # Check specific recommendations
-        stat_analysis = next(
-            r for r in delegation_recommendations if r["task"] == "statistical_analysis"
-        )
+        stat_analysis = next(r for r in delegation_recommendations if r["task"] == "statistical_analysis")
         assert stat_analysis["recommended_tool"] == "qwen_code_executor"
 
-        file_compilation = next(
-            r for r in delegation_recommendations if r["task"] == "file_compilation"
-        )
+        file_compilation = next(r for r in delegation_recommendations if r["task"] == "file_compilation")
         assert file_compilation["recommended_tool"] == "bash_processor"
 
-        json_transform = next(
-            r for r in delegation_recommendations if r["task"] == "json_transformation"
-        )
+        json_transform = next(r for r in delegation_recommendations if r["task"] == "json_transformation")
         assert json_transform["recommended_tool"] == "json_formatter"
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_external_execution_manages_delegation_workflow(
-        self, mock_claude_tools
-    ) -> None:
+    def test_external_execution_manages_delegation_workflow(self, mock_claude_tools) -> None:
         """Scenario: External execution manages delegation workflow effectively.
 
         Given selected delegation tasks and tools
@@ -405,15 +386,11 @@ tags:
             assert "output" in result
 
         # Check specific results
-        analysis_result = next(
-            r for r in execution_results if r["task_name"] == "data_analysis"
-        )
+        analysis_result = next(r for r in execution_results if r["task_name"] == "data_analysis")
         assert analysis_result["tokens_used"] == TWELVE_THOUSAND
         assert "statistics" in analysis_result["output"]
 
-        compilation_result = next(
-            r for r in execution_results if r["task_name"] == "code_compilation"
-        )
+        compilation_result = next(r for r in execution_results if r["task_name"] == "code_compilation")
         assert compilation_result["tokens_used"] == EIGHT_HUNDRED
         assert "Compilation successful" in compilation_result["output"]
 
@@ -446,10 +423,7 @@ tags:
             {
                 "task_id": "processing_1",
                 "source_tool": "bash_processor",
-                "raw_output": (
-                    "Processing completed successfully. "
-                    "Generated files: output.json, report.txt"
-                ),
+                "raw_output": ("Processing completed successfully. Generated files: output.json, report.txt"),
                 "execution_metadata": {
                     "execution_time": 15.7,
                     "exit_code": 0,
@@ -472,9 +446,7 @@ tags:
             # Check output completeness
             if isinstance(result["raw_output"], dict):
                 required_fields = ["analysis_complete", "data_summary", "statistics"]
-                validation_status["output_complete"] = all(
-                    field in result["raw_output"] for field in required_fields
-                )
+                validation_status["output_complete"] = all(field in result["raw_output"] for field in required_fields)
             elif isinstance(result["raw_output"], str):
                 validation_status["output_complete"] = len(result["raw_output"]) > TEN
 
@@ -484,8 +456,7 @@ tags:
                 "source_tool": result["source_tool"],
                 "validation": validation_status,
                 "summary": {
-                    "success": validation_status["has_output"]
-                    and validation_status["output_complete"],
+                    "success": validation_status["has_output"] and validation_status["output_complete"],
                     "execution_time": result["execution_metadata"]["execution_time"],
                     "tokens_consumed": result["execution_metadata"]["tokens_consumed"],
                 },
@@ -496,16 +467,12 @@ tags:
             if result["source_tool"] == "qwen_code_executor":
                 formatted_result["tool_specific"] = {
                     "result_type": "statistical_analysis",
-                    "data_quality": "high"
-                    if validation_status["output_complete"]
-                    else "medium",
+                    "data_quality": "high" if validation_status["output_complete"] else "medium",
                 }
             elif result["source_tool"] == "bash_processor":
                 formatted_result["tool_specific"] = {
                     "result_type": "command_execution",
-                    "exit_status": "success"
-                    if "successfully" in result["raw_output"]
-                    else "unknown",
+                    "exit_status": "success" if "successfully" in result["raw_output"] else "unknown",
                 }
 
             integrated_results.append(formatted_result)
@@ -520,15 +487,11 @@ tags:
             assert "tool_specific" in result
 
         # Check specific formatting
-        analysis_result = next(
-            r for r in integrated_results if r["source_tool"] == "qwen_code_executor"
-        )
+        analysis_result = next(r for r in integrated_results if r["source_tool"] == "qwen_code_executor")
         assert analysis_result["tool_specific"]["result_type"] == "statistical_analysis"
         assert analysis_result["tool_specific"]["data_quality"] == "high"
 
-        processing_result = next(
-            r for r in integrated_results if r["source_tool"] == "bash_processor"
-        )
+        processing_result = next(r for r in integrated_results if r["source_tool"] == "bash_processor")
         assert processing_result["tool_specific"]["result_type"] == "command_execution"
         assert processing_result["tool_specific"]["exit_status"] == "success"
 
@@ -582,23 +545,17 @@ tags:
             delegated = comparison["delegated_execution"]
 
             # Calculate savings and improvements
-            token_savings = local["tokens_used"] - (
-                delegated["tokens_used"] + delegated["delegation_overhead"]
-            )
+            token_savings = local["tokens_used"] - (delegated["tokens_used"] + delegated["delegation_overhead"])
             token_savings_percentage = (token_savings / local["tokens_used"]) * 100
 
             time_improvement = local["execution_time"] - delegated["execution_time"]
-            time_improvement_percentage = (
-                time_improvement / local["execution_time"]
-            ) * 100
+            time_improvement_percentage = (time_improvement / local["execution_time"]) * 100
 
             success_rate_change = delegated["success_rate"] - local["success_rate"]
 
             # Calculate ROI
             net_token_savings = token_savings
-            time_value = (
-                time_improvement * 100
-            )  # Value time at 100 tokens per minute saved
+            time_value = time_improvement * 100  # Value time at 100 tokens per minute saved
             total_roi = net_token_savings + time_value
 
             analysis = {
@@ -636,19 +593,13 @@ tags:
             assert analysis["roi_metrics"]["total_roi"] > 0
 
         # Check specific task benefits
-        data_analysis = next(
-            a for a in delegation_analysis if a["task"] == "large_data_analysis"
-        )
+        data_analysis = next(a for a in delegation_analysis if a["task"] == "large_data_analysis")
         assert data_analysis["token_savings"]["absolute"] > FIFTEEN_THOUSAND
         assert data_analysis["roi_metrics"]["total_roi"] > TWENTY_THOUSAND
 
-        compilation = next(
-            a for a in delegation_analysis if a["task"] == "code_compilation"
-        )
+        compilation = next(a for a in delegation_analysis if a["task"] == "code_compilation")
         assert compilation["token_savings"]["absolute"] > FIVE_THOUSAND
-        assert (
-            compilation["quality_impact"]["success_rate_change"] < 0
-        )  # Slightly lower success rate
+        assert compilation["quality_impact"]["success_rate_change"] < 0  # Slightly lower success rate
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -714,9 +665,7 @@ tags:
             elif scenario["failure_type"] == "resource_limit":
                 # Try local execution with resource optimization
                 fallback_strategy["fallback_applied"] = "local_optimized"
-                fallback_strategy["additional_tokens_used"] = (
-                    5000  # More expensive but works
-                )
+                fallback_strategy["additional_tokens_used"] = 5000  # More expensive but works
                 fallback_strategy["fallback_success"] = True
 
             elif scenario["failure_type"] == "invalid_format":
@@ -737,18 +686,12 @@ tags:
             assert result["additional_tokens_used"] >= 0
 
         # Check specific fallback strategies
-        timeout_result = next(
-            r for r in failure_handling_results if r["failure_type"] == "timeout"
-        )
+        timeout_result = next(r for r in failure_handling_results if r["failure_type"] == "timeout")
         assert timeout_result["fallback_applied"] == "simplified_input"
 
-        resource_result = next(
-            r for r in failure_handling_results if r["failure_type"] == "resource_limit"
-        )
+        resource_result = next(r for r in failure_handling_results if r["failure_type"] == "resource_limit")
         assert resource_result["fallback_applied"] == "local_optimized"
-        assert (
-            resource_result["additional_tokens_used"] == FIVE_THOUSAND
-        )  # Most expensive fallback
+        assert resource_result["additional_tokens_used"] == FIVE_THOUSAND  # Most expensive fallback
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -827,18 +770,14 @@ tags:
         total_tasks_original = len(tasks_for_delegation)
         total_delegations_with_batching = len(batched_tasks) + len(unbatched_tasks)
         delegation_reduction = total_tasks_original - total_delegations_with_batching
-        delegation_reduction_percentage = (
-            delegation_reduction / total_tasks_original
-        ) * 100
+        delegation_reduction_percentage = (delegation_reduction / total_tasks_original) * 100
 
         # Assert
         assert len(batched_tasks) >= 1  # At least one batch created
         assert delegation_reduction_percentage > TWENTY  # Significant reduction
 
         # Verify statistical analysis batch
-        stat_batch = next(
-            b for b in batched_tasks if b["task_type"] == "statistical_analysis"
-        )
+        stat_batch = next(b for b in batched_tasks if b["task_type"] == "statistical_analysis")
         assert len(stat_batch["tasks"]) == TWO
         assert stat_batch["combined_tokens"] == EIGHT_THOUSAND_TWO_HUNDRED
         assert stat_batch["batch_efficiency"] == TWO

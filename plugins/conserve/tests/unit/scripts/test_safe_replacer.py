@@ -13,9 +13,7 @@ import pytest
 
 # Load the safe-replacer module dynamically
 scripts_dir = Path(__file__).parent.parent.parent.parent / "scripts"
-spec = importlib.util.spec_from_file_location(
-    "safe_replacer_module", scripts_dir / "safe_replacer.py"
-)
+spec = importlib.util.spec_from_file_location("safe_replacer_module", scripts_dir / "safe_replacer.py")
 assert spec is not None
 assert spec.loader is not None
 safe_replacer_module = importlib.util.module_from_spec(spec)
@@ -62,9 +60,7 @@ class TestSafeDependencyUpdaterImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_updater_handles_nonexistent_file(
-        self, updater: SafeDependencyUpdater, tmp_path: Path
-    ) -> None:
+    def test_updater_handles_nonexistent_file(self, updater: SafeDependencyUpdater, tmp_path: Path) -> None:
         """Scenario: Updater handles nonexistent files gracefully.
 
         Given a path to a nonexistent file
@@ -103,15 +99,11 @@ class TestSafeDependencyUpdaterImplementation:
         assert changes > 0
         content = temp_skill_file.read_text()
         assert "sanctum:git-workspace-review" in content
-        assert "git-workspace-review" not in content.replace(
-            "sanctum:git-workspace-review", ""
-        )
+        assert "git-workspace-review" not in content.replace("sanctum:git-workspace-review", "")
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_updater_processes_patterns_in_order(
-        self, updater: SafeDependencyUpdater, temp_skill_file: Path
-    ) -> None:
+    def test_updater_processes_patterns_in_order(self, updater: SafeDependencyUpdater, temp_skill_file: Path) -> None:
         """Scenario: Updater processes patterns sequentially.
 
         Given a skill file with wrong workspace-utils: prefix
@@ -135,9 +127,7 @@ class TestSafeDependencyUpdaterImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_updater_prevents_duplicate_prefixes(
-        self, updater: SafeDependencyUpdater, temp_skill_file: Path
-    ) -> None:
+    def test_updater_prevents_duplicate_prefixes(self, updater: SafeDependencyUpdater, temp_skill_file: Path) -> None:
         """Scenario: Updater prevents creating duplicate prefixes.
 
         Given a skill file that already has correct sanctum: prefix
@@ -158,9 +148,7 @@ class TestSafeDependencyUpdaterImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_updater_validates_references(
-        self, updater: SafeDependencyUpdater, temp_skill_file: Path
-    ) -> None:
+    def test_updater_validates_references(self, updater: SafeDependencyUpdater, temp_skill_file: Path) -> None:
         """Scenario: Updater validates references for problematic patterns.
 
         Given a skill file with various reference patterns
@@ -168,9 +156,7 @@ class TestSafeDependencyUpdaterImplementation:
         Then it should identify all issues
         """
         # Arrange
-        temp_skill_file.write_text(
-            "Use workspace-utils:something and workflow-utils:other\n"
-        )
+        temp_skill_file.write_text("Use workspace-utils:something and workflow-utils:other\n")
 
         # Act
         issues = updater.validate_references(temp_skill_file)
@@ -181,9 +167,7 @@ class TestSafeDependencyUpdaterImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_updater_detects_duplicate_prefixes(
-        self, updater: SafeDependencyUpdater, temp_skill_file: Path
-    ) -> None:
+    def test_updater_detects_duplicate_prefixes(self, updater: SafeDependencyUpdater, temp_skill_file: Path) -> None:
         """Scenario: Updater detects duplicate prefixes in validation.
 
         Given a skill file with duplicate sanctum:sanctum: prefix
@@ -202,9 +186,7 @@ class TestSafeDependencyUpdaterImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_updater_handles_file_with_no_issues(
-        self, updater: SafeDependencyUpdater, temp_skill_file: Path
-    ) -> None:
+    def test_updater_handles_file_with_no_issues(self, updater: SafeDependencyUpdater, temp_skill_file: Path) -> None:
         """Scenario: Updater handles clean files correctly.
 
         Given a skill file with correct references
@@ -222,9 +204,7 @@ class TestSafeDependencyUpdaterImplementation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_updater_processes_directory(
-        self, updater: SafeDependencyUpdater, tmp_path: Path
-    ) -> None:
+    def test_updater_processes_directory(self, updater: SafeDependencyUpdater, tmp_path: Path) -> None:
         """Scenario: Updater processes all SKILL.md files in directory.
 
         Given a directory with multiple skill files
@@ -259,9 +239,7 @@ class TestSafeDependencyUpdaterImplementation:
         Then it should fix all issues
         """
         # Arrange
-        temp_skill_file.write_text(
-            "Use git-workspace-review and review-core together.\n"
-        )
+        temp_skill_file.write_text("Use git-workspace-review and review-core together.\n")
 
         # Act
         updated, changes = updater.update_file(temp_skill_file)
@@ -291,9 +269,7 @@ class TestSafeDependencyUpdaterEdgeCases:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_updater_handles_empty_file(
-        self, updater: SafeDependencyUpdater, temp_skill_file: Path
-    ) -> None:
+    def test_updater_handles_empty_file(self, updater: SafeDependencyUpdater, temp_skill_file: Path) -> None:
         """Scenario: Updater handles empty files gracefully.
 
         Given an empty skill file
@@ -312,9 +288,7 @@ class TestSafeDependencyUpdaterEdgeCases:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_updater_handles_directory_with_no_skills(
-        self, updater: SafeDependencyUpdater, tmp_path: Path
-    ) -> None:
+    def test_updater_handles_directory_with_no_skills(self, updater: SafeDependencyUpdater, tmp_path: Path) -> None:
         """Scenario: Updater handles directories without SKILL.md files.
 
         Given a directory with no skill files
@@ -330,9 +304,7 @@ class TestSafeDependencyUpdaterEdgeCases:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_updater_preserves_other_content(
-        self, updater: SafeDependencyUpdater, temp_skill_file: Path
-    ) -> None:
+    def test_updater_preserves_other_content(self, updater: SafeDependencyUpdater, temp_skill_file: Path) -> None:
         """Scenario: Updater preserves unrelated content.
 
         Given a skill file with mixed content

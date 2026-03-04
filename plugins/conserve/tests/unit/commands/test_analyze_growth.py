@@ -69,9 +69,7 @@ class TestAnalyzeGrowthCommand:
                     "trend": "accelerating",
                     "growth_percentage": 280.5,
                     "peak_hour": "15:30",
-                    "recommendation": (
-                        "Consider optimization strategies and scaling plans"
-                    ),
+                    "recommendation": ("Consider optimization strategies and scaling plans"),
                 }
 
             analysis_results.append({"timeframe": timeframe, "pattern": pattern})
@@ -125,9 +123,7 @@ class TestAnalyzeGrowthCommand:
 
         for resource_type, metrics in resource_metrics.items():
             if resource_type == "token_usage":
-                efficiency_score = (
-                    metrics["quota_limit"] - metrics["current"]
-                ) / metrics["quota_limit"]
+                efficiency_score = (metrics["quota_limit"] - metrics["current"]) / metrics["quota_limit"]
                 efficiency_analysis["token_efficiency"] = {
                     "score": efficiency_score,
                     "status": "excellent"
@@ -135,12 +131,8 @@ class TestAnalyzeGrowthCommand:
                     else "good"
                     if efficiency_score > ZERO_POINT_SEVEN
                     else "needs_improvement",
-                    "growth_rate": (
-                        (metrics["current"] - metrics["baseline"]) / metrics["baseline"]
-                    )
-                    * 100,
-                    "quota_utilization": (metrics["current"] / metrics["quota_limit"])
-                    * 100,
+                    "growth_rate": ((metrics["current"] - metrics["baseline"]) / metrics["baseline"]) * 100,
+                    "quota_utilization": (metrics["current"] / metrics["quota_limit"]) * 100,
                 }
 
             elif resource_type == "context_usage":
@@ -189,9 +181,7 @@ class TestAnalyzeGrowthCommand:
         assert context_eff["status"] == "acceptable"
 
     @pytest.mark.unit
-    def test_command_provides_actionable_recommendations(
-        self, sample_growth_analysis
-    ) -> None:
+    def test_command_provides_actionable_recommendations(self, sample_growth_analysis) -> None:
         """Scenario: Command provides actionable optimization recommendations.
 
         Given growth analysis and efficiency metrics
@@ -212,10 +202,7 @@ class TestAnalyzeGrowthCommand:
         recommendations = []
 
         # Growth-based recommendations
-        if (
-            analysis_data["growth_trend"] == "increasing"
-            and analysis_data["growth_percentage"] > HUNDRED
-        ):
+        if analysis_data["growth_trend"] == "increasing" and analysis_data["growth_percentage"] > HUNDRED:
             recommendations.append(
                 {
                     "category": "growth_management",
@@ -233,13 +220,8 @@ class TestAnalyzeGrowthCommand:
                     "category": "efficiency_improvement",
                     "priority": "medium",
                     "action": "Optimize resource usage patterns",
-                    "impact": (
-                        f"Improve efficiency by "
-                        f"{(1 - analysis_data['efficiency_score']) * 100:.1f}%"
-                    ),
-                    "implementation": (
-                        "Apply token conservation and context optimization"
-                    ),
+                    "impact": (f"Improve efficiency by {(1 - analysis_data['efficiency_score']) * 100:.1f}%"),
+                    "implementation": ("Apply token conservation and context optimization"),
                 },
             )
 
@@ -252,8 +234,7 @@ class TestAnalyzeGrowthCommand:
                     "action": "Optimize for peak usage periods",
                     "impact": "Reduce performance degradation during peak hours",
                     "implementation": (
-                        f"Schedule resource-intensive tasks outside "
-                        f"{analysis_data['peak_usage_times'][0]}"
+                        f"Schedule resource-intensive tasks outside {analysis_data['peak_usage_times'][0]}"
                     ),
                 },
             )
@@ -277,9 +258,7 @@ class TestAnalyzeGrowthCommand:
                         "priority": "medium",
                         "action": "Apply MECW principles",
                         "impact": "Maintain context under 50% threshold",
-                        "implementation": (
-                            "Enable progressive loading and context compression"
-                        ),
+                        "implementation": ("Enable progressive loading and context compression"),
                     },
                 )
 

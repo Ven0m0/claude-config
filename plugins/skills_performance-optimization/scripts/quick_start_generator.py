@@ -53,7 +53,7 @@ class QuickStartGenerator:
     def _load_skill_content(self) -> list[str]:
         """Load skill content as lines."""
         try:
-            with open(self.skill_path, encoding="utf-8") as f:
+            with Path(self.skill_path).open(encoding="utf-8") as f:
                 return f.readlines()
         except FileNotFoundError as err:
             msg = f"Skill file not found: {self.skill_path}"
@@ -161,7 +161,7 @@ class QuickStartGenerator:
                 logger.warning(
                     f"Skipping {section_name} section - would exceed token budget "
                     f"({self.generated_tokens + self._estimate_tokens(section_text)} "
-                    f"> {self.token_target})"
+                    f"> {self.token_target})",
                 )
                 break
 
@@ -188,9 +188,7 @@ class QuickStartGenerator:
             "quick_start_tokens": self.generated_tokens,
             "tokens_saved": original_tokens - self.generated_tokens,
             "reduction_percentage": (
-                (original_tokens - self.generated_tokens) / original_tokens * 100
-                if original_tokens > 0
-                else 0
+                (original_tokens - self.generated_tokens) / original_tokens * 100 if original_tokens > 0 else 0
             ),
             "target_met": self.generated_tokens <= self.token_target,
         }
@@ -214,9 +212,7 @@ class QuickStartGenerator:
                     self.token_target,
                 ),
                 "complexity": quick_frontmatter.get("complexity", "basic"),
-                "description": (
-                    f"{quick_frontmatter.get('description', '')} (Quick Start variant)"
-                ),
+                "description": (f"{quick_frontmatter.get('description', '')} (Quick Start variant)"),
             },
         )
 
@@ -228,8 +224,7 @@ class QuickStartGenerator:
         for key, value in quick_frontmatter.items():
             if isinstance(value, list):
                 frontmatter_lines.append(f"{key}:\n")
-                for item in value:
-                    frontmatter_lines.append(f"  - {item}\n")
+                frontmatter_lines.extend(f"  - {item}\n" for item in value)
             else:
                 frontmatter_lines.append(f"{key}: {value}\n")
         frontmatter_lines.append("---\n")
@@ -353,9 +348,7 @@ class QuickStartGenerator:
             if isinstance(tools, list) and tools:
                 usage_lines.append("```bash\n")
                 # Show first 2 tools only
-                for tool in tools[:2]:
-                    if isinstance(tool, str):
-                        usage_lines.append(f"# {tool}\n")
+                usage_lines.extend(f"# {tool}\n" for tool in tools[:2] if isinstance(tool, str))
                 usage_lines.append("```\n")
 
         return usage_lines
@@ -393,9 +386,7 @@ class QuickStartGenerator:
         # Look for tool descriptions in content
         content_text = "".join(self.content)
 
-        tool_pattern = (
-            rf"(?:{re.escape(tool_name)}.*?)(?:-|:)\s*([^.!?\n]*[.!?]?)(?=\n|$)"
-        )
+        tool_pattern = rf"(?:{re.escape(tool_name)}.*?)(?:-|:)\s*([^.!?\n]*[.!?]?)(?=\n|$)"
         match = re.search(tool_pattern, content_text, re.IGNORECASE)
         if match:
             return match.group(1).strip()
@@ -428,7 +419,7 @@ class QuickStartGenerator:
         quick_start_content = self.generate_quick_start()
 
         try:
-            with open(output_path, "w", encoding="utf-8") as f:
+            with Path(output_path).open("w", encoding="utf-8") as f:
                 f.write(quick_start_content)
         except OSError as err:
             msg = f"Failed to save quick start to {output_path}"
@@ -453,7 +444,7 @@ def _process_batch_directory(batch_path: str, show_stats: bool, token_target: in
 
     skill_files = list(batch_dir.glob("**/SKILL.md"))
     if not skill_files:
-        logger.warning(f"No SKILL.md files found in {batch_path}")
+        logger.warning("No SKILL.md files found in %s", batch_path)
         sys.exit(1)
 
     generated_count = 0
@@ -478,11 +469,11 @@ def _process_batch_directory(batch_path: str, show_stats: bool, token_target: in
                     f"  Quick Start: {metrics['quick_start_tokens']} tokens\n"
                     f"  Saved: {metrics['tokens_saved']} tokens "
                     f"({metrics['reduction_percentage']:.1f}% reduction)\n"
-                    f"  Target met: {metrics['target_met']}"
+                    f"  Target met: {metrics['target_met']}",
                 )
 
         except Exception as e:
-            logger.error(f"Failed to process {skill_file}: {e}")
+            logger.exception("Failed to process %s: %s", skill_file, e)
 
     if show_stats and generated_count > 0:
         avg_tokens_saved = total_tokens_saved // generated_count
@@ -491,7 +482,7 @@ def _process_batch_directory(batch_path: str, show_stats: bool, token_target: in
             f"\nBatch summary:\n"
             f"  Files processed: {generated_count}\n"
             f"  Average tokens saved: {avg_tokens_saved}\n"
-            f"  Average reduction: {avg_reduction:.1f}%"
+            f"  Average reduction: {avg_reduction:.1f}%",
         )
 
 
@@ -521,7 +512,7 @@ def _process_single_skill(
             f"Quick Start tokens: {metrics['quick_start_tokens']}\n"
             f"Tokens saved: {metrics['tokens_saved']} "
             f"({metrics['reduction_percentage']:.1f}% reduction)\n"
-            f"Target ({token_target} tokens) met: {metrics['target_met']}"
+            f"Target ({token_target} tokens) met: {metrics['target_met']}",
         )
 
 
@@ -568,7 +559,7 @@ def main() -> None:
             )
 
     except Exception as e:
-        logger.error(f"Error: {e}")
+        logger.exception("Error: %s", e)
         sys.exit(1)
 
 

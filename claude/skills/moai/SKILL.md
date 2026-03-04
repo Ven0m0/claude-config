@@ -1,5 +1,5 @@
 ---
-name: moai-foundation-claude
+name: moai
 description: Core Claude Code extension-authoring playbook for skills, agents, commands, plugins, hooks, and settings. Use when creating or reviewing Claude Code extensions and automation workflows.
 license: Apache-2.0
 compatibility: Designed for Claude Code

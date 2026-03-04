@@ -108,9 +108,7 @@ tags:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_token_conservation_creates_required_todowrite_items(
-        self, mock_todo_write
-    ) -> None:
+    def test_token_conservation_creates_required_todowrite_items(self, mock_todo_write) -> None:
         """Scenario: Token conservation creates required TodoWrite items.
 
         Given the token-conservation skill is executed
@@ -140,9 +138,7 @@ tags:
         assert len(token_conservation_items) == FIVE
         for expected_item in expected_items:
             assert expected_item in token_conservation_items
-        assert all(
-            item.startswith("token-conservation:") for item in token_conservation_items
-        )
+        assert all(item.startswith("token-conservation:") for item in token_conservation_items)
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -233,9 +229,7 @@ tags:
         assert selected_strategy["approach"] == "grep_patterns"
         assert selected_strategy["estimated_tokens"] == FIFTY
         assert selected_strategy["tools"] == ["Grep"]
-        assert (
-            selected_strategy["estimated_tokens"] < TWO_THOUSAND
-        )  # Much more efficient
+        assert selected_strategy["estimated_tokens"] < TWO_THOUSAND  # Much more efficient
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -293,23 +287,17 @@ tags:
                     {
                         "task": task["task"],
                         "reason": (
-                            f"High compute ({task['compute_intensity']}) and "
-                            f"token cost ({task['estimated_tokens']})"
+                            f"High compute ({task['compute_intensity']}) and token cost ({task['estimated_tokens']})"
                         ),
                         "recommended_tool": "qwen_code_executor",
-                        "estimated_savings": task["estimated_tokens"]
-                        * ZERO_POINT_SEVEN,  # 70% savings
+                        "estimated_savings": task["estimated_tokens"] * ZERO_POINT_SEVEN,  # 70% savings
                     },
                 )
 
         # Assert
         assert len(delegation_opportunities) == THREE  # All but simple_string_search
-        assert any(
-            opp["task"] == "large_code_analysis" for opp in delegation_opportunities
-        )
-        assert any(
-            opp["task"] == "performance_profiling" for opp in delegation_opportunities
-        )
+        assert any(opp["task"] == "large_code_analysis" for opp in delegation_opportunities)
+        assert any(opp["task"] == "performance_profiling" for opp in delegation_opportunities)
         assert all(opp["estimated_savings"] > 0 for opp in delegation_opportunities)
 
     @pytest.mark.bdd
@@ -336,10 +324,7 @@ tags:
             },
             {
                 "type": "instruction",
-                "text": (
-                    "Analyze code: explain functionality, identify issues, "
-                    "suggest improvements."
-                ),
+                "text": ("Analyze code: explain functionality, identify issues, suggest improvements."),
                 "word_count": 8,
             },
             {
@@ -414,12 +399,8 @@ tags:
 
         # Assert
         assert len(compression_opportunities) >= 1
-        assert all(
-            opp["total_potential_savings"] > 0 for opp in compression_opportunities
-        )
-        assert all(
-            0 < opp["compression_ratio"] <= 1 for opp in compression_opportunities
-        )
+        assert all(opp["total_potential_savings"] > 0 for opp in compression_opportunities)
+        assert all(0 < opp["compression_ratio"] <= 1 for opp in compression_opportunities)
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -468,9 +449,7 @@ tags:
         # Calculate aggregate metrics
         total_tokens_used = sum(activity["tokens_used"] for activity in activities)
         total_tokens_saved = sum(activity["tokens_saved"] for activity in activities)
-        average_efficiency = sum(
-            activity["efficiency_score"] for activity in activities
-        ) / len(activities)
+        average_efficiency = sum(activity["efficiency_score"] for activity in activities) / len(activities)
         net_savings = total_tokens_saved - total_tokens_used
 
         # Assert
@@ -510,10 +489,7 @@ tags:
         # Act - implement conservation measures
         conservation_measures = []
 
-        if (
-            not quota_status["within_limits"]
-            or quota_status["remaining_budget"] <= FIVE_THOUSAND
-        ):
+        if not quota_status["within_limits"] or quota_status["remaining_budget"] <= FIVE_THOUSAND:
             conservation_measures.extend(
                 [
                     {
@@ -525,9 +501,7 @@ tags:
                     {
                         "measure": "delegate_all_compute",
                         "priority": "P1",
-                        "description": (
-                            "Delegate compute-intensive tasks to external tools"
-                        ),
+                        "description": ("Delegate compute-intensive tasks to external tools"),
                         "expected_savings": "70-80%",
                     },
                     {
@@ -542,9 +516,7 @@ tags:
         # Assert
         assert quota_status["remaining_budget"] == FIVE_THOUSAND
         assert len(conservation_measures) == THREE
-        assert all(
-            measure["priority"] in ["P1", "P2"] for measure in conservation_measures
-        )
+        assert all(measure["priority"] in ["P1", "P2"] for measure in conservation_measures)
 
         # Verify all measures have expected savings
         for measure in conservation_measures:
@@ -615,23 +587,17 @@ tags:
         assert len(adapted_strategies) == THREE
 
         # Check simple bug fix strategy
-        simple_task = next(
-            s for s in adapted_strategies if s["task"] == "simple_bug_fix"
-        )
+        simple_task = next(s for s in adapted_strategies if s["task"] == "simple_bug_fix")
         assert simple_task["strategy"]["approach"] == "minimal_viable"
         assert simple_task["strategy"]["compression_level"] == "maximum"
 
         # Check system refactoring strategy
-        complex_task = next(
-            s for s in adapted_strategies if s["task"] == "system_refactoring"
-        )
+        complex_task = next(s for s in adapted_strategies if s["task"] == "system_refactoring")
         assert complex_task["strategy"]["approach"] == "detailed"
         assert complex_task["strategy"]["compression_level"] == "light"
 
     @pytest.mark.unit
-    def test_token_conservation_measures_effectiveness(
-        self, sample_token_quota
-    ) -> None:
+    def test_token_conservation_measures_effectiveness(self, sample_token_quota) -> None:
         """Scenario: Token conservation measures actual effectiveness.
 
         Given applied conservation strategies
@@ -656,54 +622,29 @@ tags:
         }
 
         # Calculate effectiveness metrics
-        daily_savings = (
-            baseline_usage["daily_tokens"]
-            - conservation_results["daily_after_conservation"]
-        )
-        weekly_savings = (
-            baseline_usage["weekly_tokens"]
-            - conservation_results["weekly_after_conservation"]
-        )
-        net_weekly_savings = (
-            weekly_savings - conservation_results["conservation_overhead_tokens"]
-        )
+        daily_savings = baseline_usage["daily_tokens"] - conservation_results["daily_after_conservation"]
+        weekly_savings = baseline_usage["weekly_tokens"] - conservation_results["weekly_after_conservation"]
+        net_weekly_savings = weekly_savings - conservation_results["conservation_overhead_tokens"]
 
         cost_savings = net_weekly_savings * baseline_usage["cost_per_token"]
         roi_time_minutes = conservation_results["time_spent_conservation_minutes"]
 
         effectiveness_metrics = {
-            "daily_savings_percentage": (daily_savings / baseline_usage["daily_tokens"])
-            * 100,
-            "weekly_savings_percentage": (
-                weekly_savings / baseline_usage["weekly_tokens"]
-            )
-            * 100,
+            "daily_savings_percentage": (daily_savings / baseline_usage["daily_tokens"]) * 100,
+            "weekly_savings_percentage": (weekly_savings / baseline_usage["weekly_tokens"]) * 100,
             "net_weekly_savings": net_weekly_savings,
             "cost_savings_weekly": cost_savings,
             "efficiency_improvement": (
-                conservation_results["weekly_after_conservation"]
-                / baseline_usage["weekly_tokens"]
+                conservation_results["weekly_after_conservation"] / baseline_usage["weekly_tokens"]
             )
             * 100,
             "roi_tokens_per_minute": net_weekly_savings / roi_time_minutes,
         }
 
         # Assert
-        assert (
-            effectiveness_metrics["daily_savings_percentage"] == THIRTY_FIVE_POINT_ZERO
-        )
-        assert (
-            effectiveness_metrics["weekly_savings_percentage"] == THIRTY_FIVE_POINT_ZERO
-        )
-        assert (
-            effectiveness_metrics["net_weekly_savings"] >= TWENTY_FOUR_THOUSAND
-        )  # Significant net savings
-        assert (
-            effectiveness_metrics["cost_savings_weekly"] > ZERO_POINT_TWENTY_FOUR
-        )  # $0.24+ weekly savings
-        assert (
-            effectiveness_metrics["efficiency_improvement"] == SIXTY_FIVE_POINT_ZERO
-        )  # Better efficiency
-        assert (
-            effectiveness_metrics["roi_tokens_per_minute"] >= EIGHT_HUNDRED
-        )  # Good ROI per minute
+        assert effectiveness_metrics["daily_savings_percentage"] == THIRTY_FIVE_POINT_ZERO
+        assert effectiveness_metrics["weekly_savings_percentage"] == THIRTY_FIVE_POINT_ZERO
+        assert effectiveness_metrics["net_weekly_savings"] >= TWENTY_FOUR_THOUSAND  # Significant net savings
+        assert effectiveness_metrics["cost_savings_weekly"] > ZERO_POINT_TWENTY_FOUR  # $0.24+ weekly savings
+        assert effectiveness_metrics["efficiency_improvement"] == SIXTY_FIVE_POINT_ZERO  # Better efficiency
+        assert effectiveness_metrics["roi_tokens_per_minute"] >= EIGHT_HUNDRED  # Good ROI per minute

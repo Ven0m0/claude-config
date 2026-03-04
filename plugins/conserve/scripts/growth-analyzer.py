@@ -7,8 +7,8 @@ Support multiple output formats and customizable projection horizons.
 import argparse
 import json
 import math
-from datetime import datetime
 import sys
+from datetime import datetime
 
 # Constants
 CONTROLLABLE_GROWTH_THRESHOLD = 0.10
@@ -133,9 +133,7 @@ class GrowthAnalyzer:
                 "projected_usage": round(projected_usage, 2),
                 "projected_growth": round(projected_usage - current_usage, 2),
                 "growth_percentage": (
-                    round(((projected_usage / current_usage) - 1) * 100, 2)
-                    if current_usage > 0
-                    else 0
+                    round(((projected_usage / current_usage) - 1) * 100, 2) if current_usage > 0 else 0
                 ),
             }
 

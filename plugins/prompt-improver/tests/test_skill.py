@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""
-Tests for the prompt-improver skill
-Tests YAML frontmatter, file structure, and content validation
+"""Tests for the prompt-improver skill
+Tests YAML frontmatter, file structure, and content validation.
 """
 
 import re
@@ -14,22 +13,20 @@ SKILL_MD = SKILL_DIR / "SKILL.md"
 REFERENCES_DIR = SKILL_DIR / "references"
 
 
-def test_skill_directory_exists():
-    """Test that skill directory exists"""
+def test_skill_directory_exists() -> None:
+    """Test that skill directory exists."""
     assert SKILL_DIR.exists(), f"Skill directory not found: {SKILL_DIR}"
     assert SKILL_DIR.is_dir(), f"Skill path is not a directory: {SKILL_DIR}"
-    print("✓ Skill directory exists")
 
 
-def test_skill_md_exists():
-    """Test that SKILL.md file exists"""
+def test_skill_md_exists() -> None:
+    """Test that SKILL.md file exists."""
     assert SKILL_MD.exists(), f"SKILL.md not found: {SKILL_MD}"
     assert SKILL_MD.is_file(), f"SKILL.md is not a file: {SKILL_MD}"
-    print("✓ SKILL.md exists")
 
 
-def test_yaml_frontmatter():
-    """Test that SKILL.md has valid YAML frontmatter"""
+def test_yaml_frontmatter() -> None:
+    """Test that SKILL.md has valid YAML frontmatter."""
     content = SKILL_MD.read_text()
 
     # Check for opening ---
@@ -60,17 +57,12 @@ def test_yaml_frontmatter():
 
     description = desc_match.group(1).strip()
     assert len(description) > 0, "Description is empty"
-    assert len(description) <= 1024, (
-        f"Description too long (max 1024 chars): {len(description)}"
-    )
-
-    print(
-        f"✓ YAML frontmatter valid (name: {name}, description: {len(description)} chars)"
-    )
+    assert len(description) <= 1024, f"Description too long (max 1024 chars): {len(description)}"
 
 
-def test_skill_content_structure():
-    """Test that SKILL.md has expected content sections"""
+
+def test_skill_content_structure() -> None:
+    """Test that SKILL.md has expected content sections."""
     content = SKILL_MD.read_text()
 
     # Check for main sections (updated for v0.4.0 with 4 phases)
@@ -90,11 +82,10 @@ def test_skill_content_structure():
     for section in expected_sections:
         assert section in content, f"Missing expected section: {section}"
 
-    print("✓ SKILL.md has expected content structure")
 
 
-def test_references_directory():
-    """Test that references directory exists with expected files"""
+def test_references_directory() -> None:
+    """Test that references directory exists with expected files."""
     assert REFERENCES_DIR.exists(), f"References directory not found: {REFERENCES_DIR}"
     assert REFERENCES_DIR.is_dir(), "References path is not a directory"
 
@@ -113,11 +104,10 @@ def test_references_directory():
         content = file_path.read_text()
         assert len(content) > 100, f"Reference file seems too small: {filename}"
 
-    print(f"✓ References directory has all {len(expected_files)} expected files")
 
 
-def test_forward_slash_paths():
-    """Test that all file paths use forward slashes (Unix style)"""
+def test_forward_slash_paths() -> None:
+    """Test that all file paths use forward slashes (Unix style)."""
     content = SKILL_MD.read_text()
 
     # Check for backslashes in file paths
@@ -126,15 +116,12 @@ def test_forward_slash_paths():
 
     for link in links:
         assert "\\" not in link, f"Found backslash in file path: {link}"
-        assert link.startswith("references/") or link.startswith("./"), (
-            f"File path should be relative: {link}"
-        )
-
-    print("✓ All file paths use forward slashes")
+        assert link.startswith(("references/", "./")), f"File path should be relative: {link}"
 
 
-def test_reference_file_structure():
-    """Test that reference files have proper structure"""
+
+def test_reference_file_structure() -> None:
+    """Test that reference files have proper structure."""
     reference_files = [
         "question-patterns.md",
         "research-strategies.md",
@@ -153,11 +140,10 @@ def test_reference_file_structure():
                 f"{filename} is long but missing table of contents"
             )
 
-    print("✓ Reference files have proper structure")
 
 
-def test_skill_references_valid():
-    """Test that SKILL.md references to other files are valid"""
+def test_skill_references_valid() -> None:
+    """Test that SKILL.md references to other files are valid."""
     content = SKILL_MD.read_text()
 
     # Find all markdown links
@@ -170,27 +156,24 @@ def test_skill_references_valid():
 
         # Resolve relative path
         referenced_file = SKILL_DIR / link
-        assert referenced_file.exists(), (
-            f"Broken reference: {link} -> {referenced_file}"
-        )
-
-    print("✓ All SKILL.md file references are valid")
+        assert referenced_file.exists(), f"Broken reference: {link} -> {referenced_file}"
 
 
-def test_skill_line_count():
-    """Test that SKILL.md is under recommended 500 lines"""
+
+def test_skill_line_count() -> None:
+    """Test that SKILL.md is under recommended 500 lines."""
     content = SKILL_MD.read_text()
     line_count = content.count("\n")
 
     # Warning if over 500 lines (best practice)
     if line_count > 500:
-        print(f"⚠  Warning: SKILL.md is {line_count} lines (recommended: <500)")
+        pass
     else:
-        print(f"✓ SKILL.md is {line_count} lines (under 500 line recommendation)")
+        pass
 
 
-def run_all_tests():
-    """Run all skill tests"""
+def run_all_tests() -> None:
+    """Run all skill tests."""
     tests = [
         test_skill_directory_exists,
         test_skill_md_exists,
@@ -203,27 +186,21 @@ def run_all_tests():
         test_skill_line_count,
     ]
 
-    print(f"Running {len(tests)} skill tests...\n")
 
     failed = []
     for test in tests:
         try:
             test()
         except AssertionError as e:
-            print(f"✗ {test.__name__} failed: {e}")
             failed.append((test.__name__, e))
         except Exception as e:
-            print(f"✗ {test.__name__} error: {e}")
             failed.append((test.__name__, e))
 
-    print(f"\n{'=' * 60}")
     if failed:
-        print(f"FAILED: {len(failed)}/{len(tests)} tests failed")
-        for name, error in failed:
-            print(f"  - {name}: {error}")
+        for _name, _error in failed:
+            pass
         sys.exit(1)
     else:
-        print(f"SUCCESS: All {len(tests)} skill tests passed!")
         sys.exit(0)
 
 

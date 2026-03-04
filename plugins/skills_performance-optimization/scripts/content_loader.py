@@ -32,7 +32,7 @@ class ContentLoader:
     def _load_skill_content(self) -> list[str]:
         """Load skill content as lines."""
         try:
-            with open(self.skill_path, encoding="utf-8") as f:
+            with Path(self.skill_path).open(encoding="utf-8") as f:
                 return f.readlines()
         except FileNotFoundError as err:
             msg = f"Skill file not found: {self.skill_path}"
@@ -87,11 +87,7 @@ class ContentLoader:
         content_lines.extend(quick_content.split("\n"))
 
         # Add examples if marker exists
-        example_markers = [
-            k
-            for k in self.loading_markers
-            if "EXAMPLE" in k.upper() or "DETAILED" in k.upper()
-        ]
+        example_markers = [k for k in self.loading_markers if "EXAMPLE" in k.upper() or "DETAILED" in k.upper()]
 
         if example_markers:
             for marker in example_markers:
@@ -142,15 +138,9 @@ class ContentLoader:
         # Check for explicit requests
         content = " ".join(user_context.get("query", "").lower().split())
 
-        if any(
-            keyword in content
-            for keyword in ["advanced", "detailed", "detailed", "full"]
-        ):
+        if any(keyword in content for keyword in ["advanced", "detailed", "detailed", "full"]):
             return "full_content"
-        if any(
-            keyword in content
-            for keyword in ["example", "how to", "implement", "step by step"]
-        ):
+        if any(keyword in content for keyword in ["example", "how to", "implement", "step by step"]):
             return "with_examples"
         return "quick_start"
 
@@ -206,7 +196,7 @@ def main() -> None:
             content = loader.load_optimal_content(user_context)
 
         if args.output:
-            with open(args.output, "w", encoding="utf-8") as f:
+            with Path(args.output).open("w", encoding="utf-8") as f:
                 f.write(content)
         else:
             pass

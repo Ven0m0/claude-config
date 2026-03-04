@@ -84,8 +84,7 @@ class TestConservationWorkflowIntegration:
 
         # Step 4: Result integration
         total_saved = sum(
-            result["tokens_saved"]
-            for result in workflow_results["optimization_execution"]["results"].values()
+            result["tokens_saved"] for result in workflow_results["optimization_execution"]["results"].values()
         )
         workflow_results["result_integration"] = {
             "status": "success",
@@ -209,9 +208,7 @@ class TestConservationWorkflowIntegration:
         assert "context-optimization" in data_sources
 
     @pytest.mark.integration
-    def test_performance_monitoring_across_workflow(
-        self, mock_performance_monitor
-    ) -> None:
+    def test_performance_monitoring_across_workflow(self, mock_performance_monitor) -> None:
         """Scenario: Performance monitoring tracks workflow efficiency.
 
         Given complex conservation workflow
@@ -239,12 +236,8 @@ class TestConservationWorkflowIntegration:
 
         for phase in workflow_phases:
             # Simulate phase execution with performance metrics
-            actual_time = phase["expected_time"] * (
-                1 + (hash(phase["phase"]) % 10) / 100
-            )  # Add variance
-            actual_memory = phase["expected_memory"] * (
-                1 + (hash(phase["phase"]) % 20) / 100
-            )
+            actual_time = phase["expected_time"] * (1 + (hash(phase["phase"]) % 10) / 100)  # Add variance
+            actual_memory = phase["expected_memory"] * (1 + (hash(phase["phase"]) % 20) / 100)
 
             phase_metrics = {
                 "phase": phase["phase"],
@@ -262,9 +255,7 @@ class TestConservationWorkflowIntegration:
         performance_tracking["workflow_summary"] = {
             "total_execution_time": total_time,
             "peak_memory_usage": peak_memory,
-            "average_efficiency": sum(
-                m["efficiency_score"] for m in performance_tracking["phase_metrics"]
-            )
+            "average_efficiency": sum(m["efficiency_score"] for m in performance_tracking["phase_metrics"])
             / len(performance_tracking["phase_metrics"]),
             "phases_completed": len(performance_tracking["phase_metrics"]),
         }
@@ -276,24 +267,15 @@ class TestConservationWorkflowIntegration:
                     {
                         "phase": metrics["phase"],
                         "current_efficiency": metrics["efficiency_score"],
-                        "potential_improvement": (1 - metrics["efficiency_score"])
-                        * 100,
-                        "recommendation": (
-                            f"Optimize {metrics['phase']} for better performance"
-                        ),
+                        "potential_improvement": (1 - metrics["efficiency_score"]) * 100,
+                        "recommendation": (f"Optimize {metrics['phase']} for better performance"),
                     },
                 )
 
         # Assert
         assert len(performance_tracking["phase_metrics"]) == EXPECTED_PHASE_COUNT
-        assert (
-            performance_tracking["workflow_summary"]["total_execution_time"]
-            > MIN_EXECUTION_TIME
-        )
-        assert (
-            performance_tracking["workflow_summary"]["peak_memory_usage"]
-            > MIN_PEAK_MEMORY
-        )
+        assert performance_tracking["workflow_summary"]["total_execution_time"] > MIN_EXECUTION_TIME
+        assert performance_tracking["workflow_summary"]["peak_memory_usage"] > MIN_PEAK_MEMORY
 
         # Verify efficiency tracking
         summary = performance_tracking["workflow_summary"]
@@ -301,11 +283,5 @@ class TestConservationWorkflowIntegration:
         assert summary["phases_completed"] == EXPECTED_PHASE_COUNT
 
         # Verify optimization opportunities are identified when appropriate
-        if any(
-            m["efficiency_score"] < EFFICIENCY_THRESHOLD
-            for m in performance_tracking["phase_metrics"]
-        ):
-            assert (
-                len(performance_tracking["optimization_opportunities"])
-                >= MIN_OPTIMIZATION_OPPORTUNITIES
-            )
+        if any(m["efficiency_score"] < EFFICIENCY_THRESHOLD for m in performance_tracking["phase_metrics"]):
+            assert len(performance_tracking["optimization_opportunities"]) >= MIN_OPTIMIZATION_OPPORTUNITIES

@@ -327,10 +327,7 @@ class TestHookOutput:
         output = format_hook_output(decision)
 
         assert output["hookSpecificOutput"]["decision"]["behavior"] == "deny"
-        assert (
-            output["hookSpecificOutput"]["decision"]["message"]
-            == "Blocked: dangerous pattern"
-        )
+        assert output["hookSpecificOutput"]["decision"]["message"] == "Blocked: dangerous pattern"
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -566,9 +563,7 @@ class TestMainEntryPoint:
 
         from permission_request import main
 
-        hook_input = json.dumps(
-            {"tool_name": "Bash", "tool_input": {"command": "ls -la"}}
-        )
+        hook_input = json.dumps({"tool_name": "Bash", "tool_input": {"command": "ls -la"}})
 
         with patch("sys.stdin", StringIO(hook_input)):
             with patch("builtins.print") as mock_print:
@@ -594,9 +589,7 @@ class TestMainEntryPoint:
 
         from permission_request import main
 
-        hook_input = json.dumps(
-            {"tool_name": "Bash", "tool_input": {"command": "sudo rm -rf /"}}
-        )
+        hook_input = json.dumps({"tool_name": "Bash", "tool_input": {"command": "sudo rm -rf /"}})
 
         with patch("sys.stdin", StringIO(hook_input)):
             with patch("builtins.print") as mock_print:
@@ -622,9 +615,7 @@ class TestMainEntryPoint:
 
         from permission_request import main
 
-        hook_input = json.dumps(
-            {"tool_name": "Bash", "tool_input": {"command": "my-custom-command arg"}}
-        )
+        hook_input = json.dumps({"tool_name": "Bash", "tool_input": {"command": "my-custom-command arg"}})
 
         with patch("sys.stdin", StringIO(hook_input)):
             with patch("builtins.print") as mock_print:
@@ -675,9 +666,7 @@ class TestMainEntryPoint:
 
         from permission_request import main
 
-        hook_input = json.dumps(
-            {"tool_name": "Read", "tool_input": {"file_path": "/etc/passwd"}}
-        )
+        hook_input = json.dumps({"tool_name": "Read", "tool_input": {"file_path": "/etc/passwd"}})
 
         with patch("sys.stdin", StringIO(hook_input)):
             with patch("builtins.print") as mock_print:

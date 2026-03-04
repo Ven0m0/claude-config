@@ -43,9 +43,7 @@ class GrowthController:
             },
         }
 
-    def generate_control_strategies(
-        self, analysis_results: dict, strategy_type: str = "moderate"
-    ) -> dict:
+    def generate_control_strategies(self, analysis_results: dict, strategy_type: str = "moderate") -> dict:
         """Generate control strategies based on analysis results."""
         if strategy_type not in self.strategy_types:
             msg = f"Invalid strategy type: {strategy_type}"
@@ -85,9 +83,7 @@ class GrowthController:
             "monitoring_requirements": self._generate_monitoring_requirements(severity),
         }
 
-    def _calculate_target_growth_rate(
-        self, current_rate: float, strategy_type: str
-    ) -> float:
+    def _calculate_target_growth_rate(self, current_rate: float, strategy_type: str) -> float:
         """Calculate target growth rate based on strategy type."""
         if strategy_type == "conservative":
             return min(current_rate * 0.7, 0.05)  # 30% reduction, max 5%
@@ -96,9 +92,7 @@ class GrowthController:
         # aggressive
         return min(current_rate * 0.3, 0.02)  # 70% reduction, max 2%
 
-    def _generate_automated_controls(
-        self, severity: str, urgency: str, strategy_type: str
-    ) -> list[dict]:
+    def _generate_automated_controls(self, severity: str, urgency: str, strategy_type: str) -> list[dict]:
         """Generate automated control strategies."""
         controls: list[dict] = []
 
@@ -118,9 +112,7 @@ class GrowthController:
             controls.append(
                 {
                     "name": "Emergency Context Compression",
-                    "description": (
-                        "Automated compression of older, low-priority context"
-                    ),
+                    "description": ("Automated compression of older, low-priority context"),
                     "priority": "Critical" if urgency in ["HIGH", "URGENT"] else "High",
                     "effectiveness": "60-80%",
                     "implementation_time": "1-2 turns",
@@ -143,9 +135,7 @@ class GrowthController:
             controls.append(
                 {
                     "name": "Aggressive Context Pruning",
-                    "description": (
-                        "Automated removal of non-essential context elements"
-                    ),
+                    "description": ("Automated removal of non-essential context elements"),
                     "priority": "Critical",
                     "effectiveness": "70-90%",
                     "implementation_time": "1 turn",
@@ -154,9 +144,7 @@ class GrowthController:
 
         return controls
 
-    def _generate_manual_controls(
-        self, controllable_percentage: float, strategy_type: str
-    ) -> list[dict]:
+    def _generate_manual_controls(self, controllable_percentage: float, strategy_type: str) -> list[dict]:
         """Generate manual control strategies."""
         controls = []
 
@@ -165,8 +153,7 @@ class GrowthController:
                 {
                     "name": "Category-Specific Optimization",
                     "description": (
-                        f"Manual optimization of {controllable_percentage:.0f}% "
-                        f"controllable growth sources"
+                        f"Manual optimization of {controllable_percentage:.0f}% controllable growth sources"
                     ),
                     "priority": "High",
                     "frequency": "Every 5 turns",
@@ -177,13 +164,9 @@ class GrowthController:
         controls.append(
             {
                 "name": "Context Review and Cleanup",
-                "description": (
-                    "Periodic manual review of context elements for relevance"
-                ),
+                "description": ("Periodic manual review of context elements for relevance"),
                 "priority": "Medium",
-                "frequency": "Every 10 turns"
-                if strategy_type == "conservative"
-                else "Every 5 turns",
+                "frequency": "Every 10 turns" if strategy_type == "conservative" else "Every 5 turns",
                 "effectiveness": "50-70%",
             },
         )
@@ -201,9 +184,7 @@ class GrowthController:
 
         return controls
 
-    def _generate_preventive_strategies(
-        self, growth_rate: float, strategy_type: str
-    ) -> list[dict]:
+    def _generate_preventive_strategies(self, growth_rate: float, strategy_type: str) -> list[dict]:
         """Generate preventive strategies."""
         strategies = []
 
@@ -222,9 +203,7 @@ class GrowthController:
                 {
                     "name": "Growth Acceleration Control",
                     "description": "Implement measures to control growth acceleration",
-                    "priority": "Critical"
-                    if growth_rate > GROWTH_RATE_CRITICAL
-                    else "High",
+                    "priority": "Critical" if growth_rate > GROWTH_RATE_CRITICAL else "High",
                     "implementation": "2-3 turns",
                     "ongoing_maintenance": "Continuous monitoring",
                 },
@@ -242,9 +221,7 @@ class GrowthController:
 
         return strategies
 
-    def _generate_implementation_plan(
-        self, strategy_type: str
-    ) -> dict[str, dict[str, object]]:
+    def _generate_implementation_plan(self, strategy_type: str) -> dict[str, dict[str, object]]:
         """Generate implementation timeline and steps."""
         _ = self.strategy_types[strategy_type]
 
@@ -326,8 +303,7 @@ class GrowthController:
             base_requirements.update(
                 {
                     "frequency": "Every 5 turns",
-                    "alerts": list(base_requirements["alerts"])
-                    + ["growth_spike", "acceleration_detected"],
+                    "alerts": list(base_requirements["alerts"]) + ["growth_spike", "acceleration_detected"],
                 },
             )
 
@@ -335,8 +311,7 @@ class GrowthController:
             base_requirements.update(
                 {
                     "frequency": "Every 2 turns",
-                    "alerts": list(base_requirements["alerts"])
-                    + ["critical_threshold", "strategy_failure"],
+                    "alerts": list(base_requirements["alerts"]) + ["critical_threshold", "strategy_failure"],
                     "real_time_monitoring": True,
                 },
             )
@@ -344,17 +319,16 @@ class GrowthController:
         return base_requirements
 
 
-
 def output_strategies(strategies: dict[str, Any], args: argparse.Namespace) -> None:
     """Output control strategies in the requested format."""
     if args.output_json:
         print(json.dumps(strategies, indent=2))
     else:
-        strategy_type = strategies['metadata']['strategy_type'].upper()
+        strategy_type = strategies["metadata"]["strategy_type"].upper()
         print(f"Growth Control Strategy: {strategy_type}")
         print("=" * 60)
         print(f"Analysis Severity: {strategies['metadata']['analysis_severity']}")
-        target_rate = strategies['metadata']['target_growth_rate']
+        target_rate = strategies["metadata"]["target_growth_rate"]
         print(f"Target Growth Rate: {target_rate:.1%}")
         print()
 
@@ -381,10 +355,10 @@ def output_strategies(strategies: dict[str, Any], args: argparse.Namespace) -> N
             print("-" * 20)
             for phase, details in strategies["implementation_plan"].items():
                 if isinstance(details, dict):
-                    title = phase.replace('_', ' ').title()
-                    duration = details.get('duration', 'Unknown duration')
+                    title = phase.replace("_", " ").title()
+                    duration = details.get("duration", "Unknown duration")
                     print(f"\n{title} ({duration}):")
-                    actions = details.get('actions', [])
+                    actions = details.get("actions", [])
                     if isinstance(actions, list):
                         for action in actions:
                             print(f"  - {action}")

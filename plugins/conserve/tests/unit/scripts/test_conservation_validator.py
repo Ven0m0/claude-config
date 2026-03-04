@@ -66,9 +66,7 @@ class TestConservationValidator:
             },
         ]
 
-        mock_conservation_validator.scan_conservation_workflows.return_value = (
-            mock_patterns
-        )
+        mock_conservation_validator.scan_conservation_workflows.return_value = mock_patterns
 
         # Act
         patterns = mock_conservation_validator.scan_conservation_workflows()
@@ -104,10 +102,7 @@ class TestConservationValidator:
         for context in test_contexts:
             analysis = mock_mecw_analyzer.analyze_context_usage(context["tokens"])
 
-            assert (
-                analysis["utilization_percentage"]
-                == (context["tokens"] / context["window"]) * 100
-            )
+            assert analysis["utilization_percentage"] == (context["tokens"] / context["window"]) * 100
             assert "status" in analysis
             assert "mecw_compliant" in analysis
             assert "recommended_actions" in analysis
@@ -258,12 +253,8 @@ class TestConservationValidator:
         assert "performance_analysis" in report_data
 
         mecw = report_data["mecw_analysis"]
-        assert (
-            mecw["compliant_skills"] < mecw["total_skills"]
-        )  # Some optimization needed
-        assert (
-            mecw["average_utilization"] < FIFTY_POINT_ZERO
-        )  # Should be under MECW threshold
+        assert mecw["compliant_skills"] < mecw["total_skills"]  # Some optimization needed
+        assert mecw["average_utilization"] < FIFTY_POINT_ZERO  # Should be under MECW threshold
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -304,14 +295,10 @@ class TestConservationValidator:
             },
         ]
 
-        mock_conservation_validator.identify_optimization_opportunities.return_value = (
-            mock_opportunities
-        )
+        mock_conservation_validator.identify_optimization_opportunities.return_value = mock_opportunities
 
         # Act
-        opportunities = (
-            mock_conservation_validator.identify_optimization_opportunities()
-        )
+        opportunities = mock_conservation_validator.identify_optimization_opportunities()
 
         # Assert
         assert len(opportunities) == THREE
@@ -383,9 +370,7 @@ class TestConservationValidator:
         assert any("No frontmatter" in error["error"] for error in errors)
 
     @pytest.mark.unit
-    def test_validator_performance_with_large_plugin(
-        self, mock_conservation_validator
-    ) -> None:
+    def test_validator_performance_with_large_plugin(self, mock_conservation_validator) -> None:
         """Scenario: Validator maintains performance with large plugin structures.
 
         Given a plugin with many skills and complex configurations
@@ -401,14 +386,9 @@ class TestConservationValidator:
             # Simulate processing time
             time.sleep(0.01)  # Small delay to simulate work
 
-            return [
-                {"file": skill, "type": "conservation", "confidence": 0.8}
-                for skill in large_skill_set
-            ]
+            return [{"file": skill, "type": "conservation", "confidence": 0.8} for skill in large_skill_set]
 
-        mock_conservation_validator.scan_conservation_workflows.side_effect = (
-            mock_large_scan
-        )
+        mock_conservation_validator.scan_conservation_workflows.side_effect = mock_large_scan
 
         # Act
         start_time = time.time()
@@ -442,9 +422,7 @@ class TestConservationValidator:
             },
         }
 
-        mock_conservation_validator.check_dependencies.return_value = (
-            plugin_dependencies
-        )
+        mock_conservation_validator.check_dependencies.return_value = plugin_dependencies
 
         # Act
         dependency_check = mock_conservation_validator.check_dependencies()
@@ -468,9 +446,7 @@ class TestConservationWorkflowValidation:
 
     @pytest.mark.bdd
     @pytest.mark.unit
-    def test_workflow_validation_covers_all_phases(
-        self, mock_conservation_validator
-    ) -> None:
+    def test_workflow_validation_covers_all_phases(self, mock_conservation_validator) -> None:
         """Scenario: Workflow validation covers all conservation phases.
 
         Given a complete conservation workflow
@@ -532,15 +508,9 @@ class TestConservationWorkflowValidation:
         metrics = mock_conservation_validator.measure_efficiency()
 
         # Assert
-        assert (
-            metrics["token_savings_percentage"] > TWENTY_POINT_ZERO
-        )  # Significant savings
-        assert (
-            metrics["performance_improvement_percentage"] > TEN_POINT_ZERO
-        )  # Notable improvement
-        assert (
-            metrics["resource_optimization_score"] > ZERO_POINT_EIGHT
-        )  # Good optimization
+        assert metrics["token_savings_percentage"] > TWENTY_POINT_ZERO  # Significant savings
+        assert metrics["performance_improvement_percentage"] > TEN_POINT_ZERO  # Notable improvement
+        assert metrics["resource_optimization_score"] > ZERO_POINT_EIGHT  # Good optimization
         assert metrics["overall_efficiency_grade"] in [
             "A",
             "A-",

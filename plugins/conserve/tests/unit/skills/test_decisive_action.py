@@ -78,10 +78,7 @@ class TestDecisiveActionThresholds:
         Then criteria for asking should be defined.
         """
         ask_indicators = ["when to ask", "ask if", "clarif", "ambigui"]
-        has_ask_threshold = any(
-            re.search(indicator, skill_content, re.IGNORECASE)
-            for indicator in ask_indicators
-        )
+        has_ask_threshold = any(re.search(indicator, skill_content, re.IGNORECASE) for indicator in ask_indicators)
         assert has_ask_threshold, "Ask threshold not defined"
 
     @pytest.mark.bdd
@@ -95,8 +92,7 @@ class TestDecisiveActionThresholds:
         """
         proceed_indicators = ["proceed", "without asking", "assume", "default"]
         has_proceed_threshold = any(
-            re.search(indicator, skill_content, re.IGNORECASE)
-            for indicator in proceed_indicators
+            re.search(indicator, skill_content, re.IGNORECASE) for indicator in proceed_indicators
         )
         assert has_proceed_threshold, "Proceed threshold not defined"
 
@@ -111,8 +107,7 @@ class TestDecisiveActionThresholds:
         """
         destructive_indicators = ["destruct", "delete", "irreversible", "data loss"]
         has_destructive_guidance = any(
-            re.search(indicator, skill_content, re.IGNORECASE)
-            for indicator in destructive_indicators
+            re.search(indicator, skill_content, re.IGNORECASE) for indicator in destructive_indicators
         )
         assert has_destructive_guidance, "Destructive operation guidance not covered"
 
@@ -125,9 +120,7 @@ class TestDecisiveActionThresholds:
         When checking for reversibility guidance
         Then reversible operations should be treated differently.
         """
-        assert re.search(r"revers", skill_content, re.IGNORECASE), (
-            "Reversibility not covered"
-        )
+        assert re.search(r"revers", skill_content, re.IGNORECASE), "Reversibility not covered"
 
 
 class TestDecisiveActionSafetyMechanisms:
@@ -155,10 +148,7 @@ class TestDecisiveActionSafetyMechanisms:
         Then preview mechanisms should be mentioned.
         """
         preview_indicators = ["dry.?run", "preview", "show.*before"]
-        has_preview = any(
-            re.search(indicator, skill_content, re.IGNORECASE)
-            for indicator in preview_indicators
-        )
+        has_preview = any(re.search(indicator, skill_content, re.IGNORECASE) for indicator in preview_indicators)
         assert has_preview, "Dry-run/preview not covered"
 
     @pytest.mark.bdd
@@ -171,10 +161,7 @@ class TestDecisiveActionSafetyMechanisms:
         Then undo/rollback should be mentioned.
         """
         undo_indicators = ["undo", "rollback", "revert", "backup"]
-        has_undo = any(
-            re.search(indicator, skill_content, re.IGNORECASE)
-            for indicator in undo_indicators
-        )
+        has_undo = any(re.search(indicator, skill_content, re.IGNORECASE) for indicator in undo_indicators)
         assert has_undo, "Undo capability not covered"
 
 
@@ -203,11 +190,9 @@ class TestDecisiveActionExamples:
         Then examples of when to ask should be present.
         """
         # Should have concrete examples
-        assert re.search(
-            r"(example|scenario).*ask", skill_content, re.IGNORECASE
-        ) or re.search(r"ask.*(example|scenario)", skill_content, re.IGNORECASE), (
-            "Should-ask examples not found"
-        )
+        assert re.search(r"(example|scenario).*ask", skill_content, re.IGNORECASE) or re.search(
+            r"ask.*(example|scenario)", skill_content, re.IGNORECASE
+        ), "Should-ask examples not found"
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -225,7 +210,6 @@ class TestDecisiveActionExamples:
             "clear",
         ]
         has_proceed_examples = any(
-            re.search(indicator, skill_content, re.IGNORECASE)
-            for indicator in proceed_example_indicators
+            re.search(indicator, skill_content, re.IGNORECASE) for indicator in proceed_example_indicators
         )
         assert has_proceed_examples, "Should-proceed examples not found"

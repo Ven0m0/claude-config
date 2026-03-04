@@ -98,9 +98,7 @@ class TestCodeQualityPrinciplesContent:
         Then KISS principle should be documented.
         """
         assert re.search(r"\bKISS\b", skill_content), "KISS principle not covered"
-        assert re.search(r"Keep\s+It\s+Simple", skill_content, re.IGNORECASE), (
-            "KISS expansion not present"
-        )
+        assert re.search(r"Keep\s+It\s+Simple", skill_content, re.IGNORECASE), "KISS expansion not present"
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -112,9 +110,7 @@ class TestCodeQualityPrinciplesContent:
         Then YAGNI principle should be documented.
         """
         assert re.search(r"\bYAGNI\b", skill_content), "YAGNI principle not covered"
-        assert re.search(
-            r"You\s+Aren'?t\s+Gonna\s+Need", skill_content, re.IGNORECASE
-        ), "YAGNI expansion not present"
+        assert re.search(r"You\s+Aren'?t\s+Gonna\s+Need", skill_content, re.IGNORECASE), "YAGNI expansion not present"
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -136,9 +132,7 @@ class TestCodeQualityPrinciplesContent:
         ]
 
         for principle in solid_principles:
-            assert re.search(principle, skill_content, re.IGNORECASE), (
-                f"SOLID principle '{principle}' not covered"
-            )
+            assert re.search(principle, skill_content, re.IGNORECASE), f"SOLID principle '{principle}' not covered"
 
     @pytest.mark.bdd
     @pytest.mark.unit
@@ -172,13 +166,8 @@ class TestCodeQualityPrinciplesContent:
             r"# Don't",
         ]
 
-        has_anti_patterns = any(
-            re.search(pattern, skill_content, re.IGNORECASE)
-            for pattern in anti_pattern_indicators
-        )
-        assert has_anti_patterns, (
-            "Skill should document anti-patterns with 'Bad' or 'Avoid' markers"
-        )
+        has_anti_patterns = any(re.search(pattern, skill_content, re.IGNORECASE) for pattern in anti_pattern_indicators)
+        assert has_anti_patterns, "Skill should document anti-patterns with 'Bad' or 'Avoid' markers"
 
 
 class TestCodeQualityPrinciplesTriggers:
@@ -211,7 +200,5 @@ class TestCodeQualityPrinciplesTriggers:
 
         # Check for trigger keywords in description
         trigger_keywords = ["KISS", "YAGNI", "SOLID", "code quality", "clean code"]
-        has_trigger = any(
-            keyword.lower() in frontmatter.lower() for keyword in trigger_keywords
-        )
+        has_trigger = any(keyword.lower() in frontmatter.lower() for keyword in trigger_keywords)
         assert has_trigger, "Frontmatter description should contain trigger keywords"

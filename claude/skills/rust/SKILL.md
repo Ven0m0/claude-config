@@ -1,5 +1,5 @@
 ---
-name: moai-lang-rust
+name: rust
 description: Rust specialist for async services, safe systems programming, and production tooling with Tokio, Axum, SQLx, and clippy-driven quality checks. Use when building or refactoring Rust code.
 license: Apache-2.0
 compatibility: Designed for Claude Code
@@ -57,6 +57,6 @@ metadata:
 
 ## References
 
-- `references/reference.md` - compact guidance and docs links
-- `references/examples.md` - concise service/test patterns
+- [references/reference.md](./references/reference.md) - compact guidance and docs links
+- [references/examples.md](./references/examples.md) - concise service/test patterns
 - `../AGENT_SKILL_SPEC.md` - shared Anthropic/Copilot alignment
