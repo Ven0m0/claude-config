@@ -64,9 +64,7 @@
     "serena": {
       "type": "local",
       "command": "docker",
-      "args": ["run", "--rm", "-i", "--network", "host",
-        "-v", "/workspaces:/workspaces", "ghcr.io/oraios/serena:latest", "serena"
-      ],
+      "args": ["run", "--rm", "-i", "--network", "host", "-v", "/workspaces:/workspaces", "ghcr.io/oraios/serena:latest", "serena"],
       "tools": ["*"],
       "env": {
         "MCP_SILENT_ERRORS": "true"
