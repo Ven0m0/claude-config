@@ -92,5 +92,6 @@
   "git.ignoreLegacyWarning": true,
   "npm.packageManager": "bun",
   "npm.runSilent": true,
-  "npm.scriptRunner": "bun"
+  "npm.scriptRunner": "bun",
+  "kilocode.useAgentRules": true
 }
