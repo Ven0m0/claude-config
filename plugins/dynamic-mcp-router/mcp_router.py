@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Dynamic MCP Router Server (Optimized with AI Integrations)
+"""Dynamic MCP Router Server (Optimized with AI Integrations)
 ===========================================================
 
 This version integrates `uv` for Python execution, `bunx` for Node.js packages,
@@ -97,7 +96,7 @@ def orjson_dumps_safe(obj: Any, **kwargs) -> str:
         # Use OPT_INDENT_2 for pretty printing, OPT_NON_STR_KEYS for compatibility
         return orjson.dumps(obj, option=orjson.OPT_INDENT_2 | orjson.OPT_NON_STR_KEYS).decode("utf-8")
     except Exception as e:
-        logger.error(f"orjson dump failed: {e}. Falling back to json.dumps.")
+        logger.error("orjson dump failed: %s. Falling back to json.dumps.", e)
         return json.dumps(obj, indent=2)
 
 
@@ -113,7 +112,7 @@ def safe_json_loads(data: str | bytes) -> Any:
             try:
                 return json.loads(repair_json(data))
             except Exception as repair_e:
-                logger.error(f"json_repair also failed: {repair_e}")
+                logger.error("json_repair also failed: %s", repair_e)
                 raise ValueError("Failed to parse JSON even after repair attempt.") from repair_e
         else:
             raise ValueError("Failed to parse JSON and json_repair is not available.")
@@ -145,7 +144,7 @@ except ImportError:
             raise RuntimeError(
                 "MCP SSE client support is not available but a remote server URL was requested. "
                 "Install the MCP client SSE dependencies (e.g. `pip install mcp[client] httpx`) "
-                "or remove the `url` configuration for this server."
+                "or remove the `url` configuration for this server.",
             )
 
     SseClient = _SseUnavailable  # type: ignore[assignment]
@@ -224,7 +223,7 @@ class ConfigManager:
         ]
         for path in search_paths:
             if path.exists():
-                logger.info(f"Found config at: {path}")
+                logger.info("Found config at: %s", path)
                 return str(path)
         logger.warning("No pyproject.toml found with [tool.mcp-router] section.")
         return None
@@ -233,14 +232,16 @@ class ConfigManager:
         return hashlib.md5(content.encode()).hexdigest()
 
     async def load(self) -> RouterConfig:
-        if not self.config_path or not Path(self.config_path).exists():
+        if not self.config_path:
             logger.warning("No config file found. Using empty configuration.")
             return RouterConfig()
 
         try:
 
             def _read_and_parse():
-                with open(self.config_path, "rb") as f:
+                if not Path(self.config_path).exists():
+                    return None
+                with Path(self.config_path).open("rb") as f:
                     content_bytes = f.read()
                     stat = os.fstat(f.fileno())
                 content_str = content_bytes.decode(errors="ignore")
@@ -252,13 +253,18 @@ class ConfigManager:
                 data = tomli.loads(content_str)
                 return new_hash, data, stat.st_mtime
 
-            self._config_hash, data, mtime = await asyncio.to_thread(_read_and_parse)
+            result = await asyncio.to_thread(_read_and_parse)
+            if result is None:
+                logger.warning("No config file found. Using empty configuration.")
+                return RouterConfig()
+
+            self._config_hash, data, mtime = result
             self._last_mtime = mtime
 
             mcp_router_data = data.get("tool", {}).get("mcp-router", {})
             return self._parse_config(mcp_router_data)
         except Exception as e:
-            logger.error(f"Failed to load config: {e}")
+            logger.error("Failed to load config: %s", e)
             raise
 
     def _parse_config(self, data: dict) -> RouterConfig:
@@ -296,28 +302,30 @@ class ConfigManager:
         self._last_check = current_time
 
         try:
-            try:
-                stat = os.stat(self.config_path)
-            except OSError:
-                return False
+            def _check_and_read() -> tuple[bool, str | None, float | None]:
+                try:
+                    stat = os.stat(self.config_path)
+                except OSError:
+                    return False, None, None
 
-            if stat.st_mtime == self._last_mtime:
-                return False
+                if stat.st_mtime == self._last_mtime:
+                    return False, None, None
 
-            def _read_and_hash() -> tuple[str, float]:
-                with open(self.config_path, "rb") as f:
+                with Path(self.config_path).open("rb") as f:
                     content_bytes = f.read()
                     new_stat = os.fstat(f.fileno())
-                return self._compute_hash(content_bytes.decode(errors="ignore")), new_stat.st_mtime
+                return True, self._compute_hash(content_bytes.decode(errors="ignore")), new_stat.st_mtime
 
-            new_hash, new_mtime = await asyncio.to_thread(_read_and_hash)
+            changed, new_hash, new_mtime = await asyncio.to_thread(_check_and_read)
+            if not changed:
+                return False
 
             self._last_mtime = new_mtime
             if new_hash != self._config_hash:
                 self._config_hash = new_hash
                 return True
         except Exception as e:
-            logger.error(f"Error checking config changes: {e}")
+            logger.error("Error checking config changes: %s", e)
         return False
 
 
@@ -355,7 +363,7 @@ class ServerManager:
         self._idle_checker_task = asyncio.create_task(self._idle_checker())
         for name, server_config in self.config.servers.items():
             if server_config.auto_load and server_config.enabled and (server_config.command or server_config.url):
-                logger.info(f"Auto-loading server: {name}")
+                logger.info("Auto-loading server: %s", name)
                 await self.load_server(name)
 
     async def stop(self):
@@ -380,12 +388,12 @@ class ServerManager:
                             if idle_time > server.config.idle_timeout:
                                 servers_to_unload.append(name)
                 for name in servers_to_unload:
-                    logger.info(f"Unloading idle server: {name}")
+                    logger.info("Unloading idle server: %s", name)
                     await self.unload_server(name)
             except asyncio.CancelledError:
                 break
             except Exception as e:
-                logger.error(f"Error in idle checker: {e}")
+                logger.error("Error in idle checker: %s", e)
 
     async def load_server(self, name: str) -> LoadedServer:
         async with self._lock:
@@ -412,7 +420,7 @@ class ServerManager:
         except Exception as e:
             loaded.is_loading = False
             loaded.load_error = str(e)
-            logger.error(f"❌ Failed to load server {name}: {e}")
+            logger.error("❌ Failed to load server %s: %s", name, e)
             raise
 
     async def _connect_to_server(self, loaded: LoadedServer):
@@ -506,11 +514,11 @@ class ServerManager:
                     await asyncio.wait_for(loaded.process.wait(), timeout=5.0)
                 except TimeoutError:
                     loaded.process.kill()
-                logger.info(f"Terminated subprocess for server: {name}")
+                logger.info("Terminated subprocess for server: %s", name)
         except Exception as e:
-            logger.error(f"Error unloading server {name}: {e}")
+            logger.error("Error unloading server %s: %s", name, e)
         del self.loaded_servers[name]
-        logger.info(f"🔌 Unloaded server: {name}")
+        logger.info("🔌 Unloaded server: %s", name)
         return True
 
     async def call_tool(self, server_name: str, tool_name: str, arguments: dict) -> Any:
@@ -743,7 +751,7 @@ async def get_status_resource() -> str:
 
 
 async def run_router(
-    config_path: str | None = None, transport: str = "stdio", host: str = "127.0.0.1", port: int = 8000
+    config_path: str | None = None, transport: str = "stdio", host: str = "127.0.0.1", port: int = 8000,
 ):
     global config_manager, server_manager
     config_manager = ConfigManager(config_path)
@@ -761,7 +769,7 @@ async def run_router(
                     new_config = await config_manager.load()
                     server_manager.update_config(new_config)
                 except Exception as e:
-                    logger.error(f"Failed to reload config: {e}")
+                    logger.error("Failed to reload config: %s", e)
 
     if config.hot_reload:
         asyncio.create_task(hot_reload_checker())
@@ -785,7 +793,7 @@ def main():
     parser = argparse.ArgumentParser(description="Optimized MCP Router Server")
     parser.add_argument("-c", "--config", help="Path to pyproject.toml config file")
     parser.add_argument(
-        "--transport", choices=["stdio", "http", "sse"], default="stdio", help="Transport type (default: stdio)"
+        "--transport", choices=["stdio", "http", "sse"], default="stdio", help="Transport type (default: stdio)",
     )
     parser.add_argument("--host", default="0.0.0.0", help="Host for HTTP/SSE transport")
     parser.add_argument("--port", type=int, default=8000, help="Port for HTTP/SSE transport")
@@ -873,7 +881,7 @@ def create_example_config():
 
     filename = "pyproject.toml"
     try:
-        with open(filename, "w") as f:
+        with Path(filename).open("w") as f:
             f.write(
                 textwrap.dedent("""\
                 [project]
@@ -906,7 +914,7 @@ def create_example_config():
                 max_loaded_servers = 15
 
                 # --- Server Definitions ---
-                """)
+                """),
             )
             for name, cfg in example_config["servers"].items():
                 f.write(f"\n[tool.mcp-router.servers.{name}]\n")
@@ -922,8 +930,7 @@ def create_example_config():
                     f.write(f"args = {json.dumps(cfg['args'])}\n")
                 if cfg.get("env"):
                     f.write("env = {\n")
-                    for key, val in cfg["env"].items():
-                        f.write(f'    {key} = "{val}"\n')
+                    f.writelines(f'    {key} = "{val}"\n' for key, val in cfg["env"].items())
                     f.write("    }\n")
                 if cfg.get("url"):
                     f.write(f'url = "{cfg["url"]}"\n')
@@ -940,7 +947,7 @@ def create_example_config():
                 if cfg.get("working_dir"):
                     f.write(f'working_dir = "{cfg["working_dir"]}"\n')
     except Exception as e:
-        logger.error(f"Failed to create example config file: {e}")
+        logger.error("Failed to create example config file: %s", e)
         return
     print(f"\n✅ Created example configuration: {filename}")
     print("\nEdit this file to configure your MCP servers.")
