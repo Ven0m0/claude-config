@@ -124,7 +124,7 @@ def extract_blocks(
         try:
             content = filepath.read_text(encoding="utf-8", errors="ignore")
             lines = content.splitlines()
-        except OSError, UnicodeDecodeError:
+        except (OSError, UnicodeDecodeError):
             return []
 
     if len(lines) < min_lines:
@@ -234,7 +234,7 @@ def find_duplicates(
             content = filepath.read_text(encoding="utf-8", errors="ignore")
             lines = content.splitlines()
             total_lines += len(lines)
-        except OSError, UnicodeDecodeError:
+        except (OSError, UnicodeDecodeError):
             continue
 
         # Extract blocks
@@ -322,7 +322,7 @@ def find_similar_functions(files: list[Path]) -> list[tuple[str, list[str]]]:
         try:
             content = filepath.read_text(encoding="utf-8", errors="ignore")
             func_names.extend(func_pattern.findall(content))
-        except OSError, UnicodeDecodeError:
+        except (OSError, UnicodeDecodeError):
             continue
 
     # Group by common prefixes/suffixes

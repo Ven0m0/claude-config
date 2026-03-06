@@ -50,14 +50,18 @@ def stream_subprocess(id_, proc, chunk_size) -> bool | None:
 
 
 def run_streaming_cmd(id_, cmd, chunk_size) -> None:
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+    proc = subprocess.Popen(
+        cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True
+    )
     stream_subprocess(id_, proc, chunk_size)
     reply(id_, {"content": [{"type": "text", "text": ""}]}, more=False)
 
 
 def run_capture(cmd, input_text=None):
     try:
-        return subprocess.check_output(cmd, input=input_text, stderr=subprocess.DEVNULL, text=True)
+        return subprocess.check_output(
+            cmd, input=input_text, stderr=subprocess.DEVNULL, text=True
+        )
     except subprocess.CalledProcessError:
         return ""
 
@@ -125,11 +129,19 @@ for raw in sys.stdin:
         chunk_size = int(args.get("chunk_size", DEFAULT_CHUNK))
         inline = args.get("inline")
 
+        if infmt and not str(infmt).isalnum():
+            reply(mid, error="invalid input_format")
+            continue
+        if outf and not str(outf).isalnum():
+            reply(mid, error="invalid output_format")
+            continue
+
         base = ["jaq", "--monochrome-output", "-c"]
         if infmt:
-            base += ["--from", infmt]
+            base += ["--from", str(infmt)]
         if outf:
-            base += ["--to", outf]
+            base += ["--to", str(outf)]
+        base.append("--")
 
         if path:
             cmd = [*base, filt, path]
@@ -142,7 +154,11 @@ for raw in sys.stdin:
             cmd = [*base, filt]
             if stream:
                 proc = subprocess.Popen(
-                    cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True,
+                    cmd,
+                    stdin=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.DEVNULL,
+                    text=True,
                 )
                 if inline:
                     try:
