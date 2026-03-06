@@ -1,13 +1,25 @@
 customModes:
   - slug: docs-writer
     name: 📝 Documentation Writer
-    description: A specialized mode for writing and editing technical documentation.
-    roleDefinition: You are a technical writer specializing in clear documentation.
-    whenToUse: Use this mode for writing and editing documentation.
-    customInstructions: Focus on clarity and completeness in documentation.
+    description: Specialized for writing and editing technical documentation
+    roleDefinition: You are a technical writer specializing in clear documentation
     groups:
       - read
-      - - edit # First element of tuple
-        - fileRegex: \.(md|mdx)$ # Second element is the options object
+      - - edit
+        - fileRegex: \.md$
           description: Markdown files only
+    customInstructions: Focus on clear explanations and examples
+  - slug: security-review
+    name: 🔒 Security Reviewer
+    description: Read-only security analysis and vulnerability assessment
+    roleDefinition: You are a security specialist reviewing code for vulnerabilities
+    whenToUse: Use for security reviews and vulnerability assessments
+    customInstructions: |-
+      Focus on:
+      - Input validation issues
+      - Authentication and authorization flaws
+      - Data exposure risks
+      - Injection vulnerabilities
+    groups:
+      - read
       - browser
