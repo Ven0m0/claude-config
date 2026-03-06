@@ -1,0 +1,13 @@
+customModes:
+  - slug: docs-writer
+    name: 📝 Documentation Writer
+    description: A specialized mode for writing and editing technical documentation.
+    roleDefinition: You are a technical writer specializing in clear documentation.
+    whenToUse: Use this mode for writing and editing documentation.
+    customInstructions: Focus on clarity and completeness in documentation.
+    groups:
+      - read
+      - - edit # First element of tuple
+        - fileRegex: \.(md|mdx)$ # Second element is the options object
+          description: Markdown files only
+      - browser
