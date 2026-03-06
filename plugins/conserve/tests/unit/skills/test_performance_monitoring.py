@@ -74,7 +74,7 @@ tags:
 
 # Performance Monitoring Hub
 
-## TodoWrite Items
+## Required TodoWrite Items
 
 - `performance-monitoring:metrics-collection`
 - `performance-monitoring:threshold-analysis`
@@ -481,7 +481,7 @@ tags:
                 int(mock_claude_tools["Bash"]("nvidia-smi --list-gpus | wc -l")),
             )
             performance_status["gpu_available"] = gpu_available
-        except ValueError, Exception:
+        except (ValueError, Exception):
             performance_status["gpu_available"] = False
             error_count += 1
 

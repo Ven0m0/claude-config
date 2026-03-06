@@ -154,7 +154,7 @@ class TestCLISmokeTests:
         with patch("sys.argv", ["quick_skill_optimizer.py", str(skill_file)]):
             try:
                 quick_skill_optimizer.main()
-            except SystemExit, AttributeError:
+            except (SystemExit, AttributeError):
                 pass
 
     @pytest.mark.bdd
@@ -170,7 +170,7 @@ class TestCLISmokeTests:
         with patch("sys.argv", ["aggressive_skill_optimizer.py", str(skill_file)]):
             try:
                 aggressive_skill_optimizer.main()
-            except SystemExit, AttributeError:
+            except (SystemExit, AttributeError):
                 pass
 
 

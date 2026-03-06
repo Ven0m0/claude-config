@@ -62,7 +62,7 @@ tags:
 
 # Context Optimization Hub
 
-## TodoWrite Items
+## Required TodoWrite Items
 
 - `context-optimization:mecw-assessment`
 - `context-optimization:context-classification`
