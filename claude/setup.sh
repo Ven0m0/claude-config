@@ -4,7 +4,7 @@
 git config --global --add safe.directory "$(realpath .)"
 git config --global index.version 4
 git config --global index.threads 0
-git config --global http.version "HTTP/2"
+git config --global http.version "HTTP/1.1"
 git config --global protocol.version 2
 git config --global core.compression 9
 git config --global core.preloadindex true
