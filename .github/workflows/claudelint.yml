@@ -1,9 +1,6 @@
 name: Lint Claude Plugins
 
 on:
-  push:
-    branches: [main]
-  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -20,3 +17,15 @@ jobs:
 
       - name: Run claudelint
         run: uv tool run "claudelint@${CLAUDELINT_VERSION}" --strict .
+ 
+      - name: Validate agent configs
+        uses: agent-sh/agnix@v0
+        with:
+          target: 'claude-code'
+      - uses: agent-sh/agnix@v0
+      - uses: agent-sh/agnix@v0
+        with:
+          target: 'cursor'
+       - uses: agent-sh/agnix@v0
+        with:
+          target: 'codex'
