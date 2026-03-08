@@ -109,8 +109,8 @@ else
 fi
 
 # Bun
-bun i -g --trust pm2 @github/copilot @ai-sdk/openai-compatible @blowmage/cursor-agent-acp @openchamber/web @th0rgal/ralph-wiggum @toon-format/cli \
-  fish-lsp zon-format @zed-industries/claude-code-acp fast-filesystem-mcp code-mode-toon happy-coder @twsxtd/hapi
+bun i -g --trust @github/copilot @ai-sdk/openai-compatible @blowmage/cursor-agent-acp @openchamber/web @th0rgal/ralph-wiggum @toon-format/cli \
+  fish-lsp zon-format @zed-industries/claude-code-acp fast-filesystem-mcp code-mode-toon happy-coder @twsxtd/hapi @nicepkg/vsync
 # UV
 [[ -d ~/.venv || -d .venv ]] || uv venv --seed
 source ~/.venv/bin/activate
@@ -125,10 +125,7 @@ copilot plugin install context-engineering@awesome-copilot
 # Factory-droid
 curl -fsSL https://app.factory.ai/cli | bash
 
-bun i -g rulesync
-# Create necessary directories, sample rule files, and configuration file
-rulesync init
-# Install official skills (recommended)
-rulesync fetch dyoshikawa/rulesync --features skills
-# Generate unified configurations with all features
-rulesync generate --targets "*" --features "*"
+bun i -g claude-code-lint agnix @nicepkg/vsync
+
+vsync init; vsync init --user
+vsync sync --prune
