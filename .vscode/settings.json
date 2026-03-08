@@ -94,5 +94,6 @@
   "npm.packageManager": "bun",
   "npm.runSilent": true,
   "npm.scriptRunner": "bun",
-  "kilocode.useAgentRules": true
+  "vitest.disableWorkspaceWarning": true
+  "kilocode.useAgentRules": true,
 }
