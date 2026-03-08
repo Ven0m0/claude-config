@@ -66,7 +66,7 @@ tags:
 
 Test skill for validating token conservation workflow patterns.
 
-## TodoWrite Items
+## Required TodoWrite Items
 
 - `token-conservation-test:quota-check`
 - `token-conservation-test:context-plan`
@@ -109,7 +109,7 @@ tags:
 
 Test skill for validating context optimization and MECW principles.
 
-## TodoWrite Items
+## Required TodoWrite Items
 
 - `context-optimization-test:mecw-assessment`
 - `context-optimization-test:context-classification`

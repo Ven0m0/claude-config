@@ -66,7 +66,7 @@ tags:
 
 # Large Skill Optimization Hub
 
-## TodoWrite Items
+## Required TodoWrite Items
 
 - `optimizing-large-skills:skill-analysis`
 - `optimizing-large-skills:modularization-assessment`

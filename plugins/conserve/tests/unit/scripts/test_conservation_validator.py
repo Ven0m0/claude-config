@@ -201,7 +201,7 @@ class TestConservationValidator:
         assert "token_budget:" in frontmatter
         assert "progressive_loading:" in frontmatter
         assert "category: conservation" in frontmatter
-        assert "TodoWrite Items" in skill_content  # Conservation skills need tracking
+        assert "Required TodoWrite Items" in skill_content  # Conservation skills need tracking
 
     @pytest.mark.bdd
     @pytest.mark.unit
