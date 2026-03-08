@@ -130,5 +130,6 @@ bun i -g claude-code-lint agnix @nicepkg/vsync
 vsync init --user
 vsync sync --prune --user
 
+agnix --fix .
 bunx rulegen-ai --format agents-md
 bunx rulegen-ai --format copilot
