@@ -64,7 +64,7 @@ echo "  ✅ MCP servers configured"
 
 # Create/update settings.json
 echo "⚙️  Creating settings.json..."
-# TODO: use config file from this repo
+cp "claude/settings.json" "$SETTINGS_FILE"
 
 echo "  ✅ settings.json created"
 
@@ -77,7 +77,7 @@ if [ -f "$CLAUDE_JSON" ]; then
 fi
 
 # Create/update .claude.json with MCP servers
-# TODO: use config file from this repo
+cp "claude/.mcp.json" "$CLAUDE_JSON"
 echo "✅ MCP servers configured in .claude.json"
 
 # Plugin installation instructions
