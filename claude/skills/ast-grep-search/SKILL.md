@@ -2,7 +2,7 @@
 name: ast-grep-search
 description: Performs structural code search and safe rewrite planning with ast-grep. Use when pattern matching must follow AST structure instead of plain text.
 compatibility: Designed for Claude Code
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob, Bash(git:*)
 user-invocable: false
 ---
 

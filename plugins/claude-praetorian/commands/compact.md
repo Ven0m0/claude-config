@@ -6,6 +6,18 @@ arguments: type?, title?
 
 # /compact
 
+## Name
+
+claude-praetorian:compact - Save current context to praetorian memory
+
+## Synopsis
+
+/compact
+
+## Description
+
+Saves valuable context from the current session to praetorian memory for retrieval in future sessions. Supports structured types: web_research, task_result, file_reads, and decisions.
+
 Save valuable context for future sessions using praetorian memory.
 
 ## Usage
@@ -45,3 +57,7 @@ praetorian_compact(
   refs: []
 )
 ```
+
+## Implementation
+
+See the usage and workflow sections above for implementation details.

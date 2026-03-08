@@ -119,7 +119,7 @@ All tools that return data should support multiple formats for flexibility:
 - Human-readable formatted text
 - Use headers, lists, and formatting for clarity
 - Convert timestamps to human-readable format (e.g., "2024-01-15 10:30:00 UTC" instead of epoch)
-- Show display names with IDs in parentheses (e.g., "@john.doe (U123456)")
+- Show display names with IDs in parentheses (e.g., `@john.doe` (U123456))
 - Omit verbose metadata (e.g., show only one profile image URL, not all sizes)
 - Group related information logically
 - Use for when presenting information to users

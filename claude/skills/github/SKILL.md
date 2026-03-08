@@ -6,7 +6,7 @@ description: >
   operations with full access to GitHub API through gh. Use when working with GitHub
   PRs, issues, actions, releases, or repos. Triggers: gh, GitHub, pull request, PR,
   issue, workflow, actions, release, gist.
-allowed-tools: Bash Read
+allowed-tools: Bash(git:*) Read
 ---
 
 # GitHub Operations with gh CLI

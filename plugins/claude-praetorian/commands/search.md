@@ -6,6 +6,18 @@ arguments: query
 
 # /search
 
+## Name
+
+claude-praetorian:search - Search praetorian memory for past context
+
+## Synopsis
+
+/search
+
+## Description
+
+Performs a targeted search across all praetorian memory compactions using the provided query term. Returns matching compaction titles, types, and key insights.
+
 Search for specific context in praetorian memory.
 
 ## Usage
@@ -32,3 +44,7 @@ Returns compactions about auth implementation, JWT patterns, session management,
 /search file_reads
 ```
 Returns all codebase exploration compactions.
+
+## Implementation
+
+See the usage and workflow sections above for implementation details.

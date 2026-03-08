@@ -43,13 +43,13 @@ We categorize skills into three types: **Technique** skills for specific methods
 ## Quick Start
 
 ### Skill Analysis
-\`\`\`bash
+/`/`/`bash
 # Analyze skill complexity
 python scripts/analyze.py
 
 # Estimate tokens
 python scripts/tokens.py
-\`\`\`
+/`/`/`
 
 ### Validation
 \`\`\`bash

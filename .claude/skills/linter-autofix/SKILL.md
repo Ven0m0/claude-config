@@ -1,8 +1,8 @@
 ---
 model: haiku
 name: linter-autofix
-description: Cross-language linter autofix commands and common fix patterns for biome, ruff, clippy, shellcheck, and more.
-allowed-tools: Bash, Read, Edit, Grep
+description: Use when user wants to Cross-language linter autofix commands and common fix patterns for biome, ruff, clippy, shellcheck, and more.
+allowed-tools: Bash(git:*), Read, Edit, Grep
 ---
 
 # Linter Autofix Patterns

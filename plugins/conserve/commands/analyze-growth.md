@@ -6,6 +6,18 @@ usage: /analyze-growth [skill-path]
 
 # Analyze Growth Patterns
 
+## Name
+
+conserve:analyze-growth - Analyze skill growth patterns and predict context budget impact
+
+## Synopsis
+
+/analyze-growth
+
+## Description
+
+Analyzes skill file growth patterns over time and predicts future context budget impact. Helps identify skills that need proactive optimization.
+
 Analyzes skill file growth patterns over time and predicts future context budget impact. Helps identify skills that need proactive optimization.
 
 ## Usage

@@ -57,7 +57,7 @@
         },
         "context": {
             "discoveryMaxDirs": 100,
-            "includeDirectories": ["~/.gemini/extensions/ralph"]
+            "includeDirectories": ["~/.gemini/extensions/ralph"],
             "fileName": [
                 "AGENTS.md",
                 "CLAUDE.md",

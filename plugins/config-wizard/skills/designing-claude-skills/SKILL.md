@@ -1,16 +1,6 @@
 ---
 name: designing-claude-skills
-description: |-
-  Comprehensive guide for creating, reviewing, and improving skills that extend
-  Claude's capabilities with specialized knowledge, workflows, and tool
-  integrations. Use this skill when: (1) Creating a new skill from scratch, (2)
-  Reviewing or auditing an existing skill for quality and adherence to best
-  practices, (3) Updating or refactoring an existing skill, (4) Understanding
-  skill architecture, anatomy, and design patterns, (5) Troubleshooting skill
-  loading, triggering, or packaging issues, (6) Learning how to effectively use
-  bundled resources like scripts, references, and assets, (7) Planning what type
-  of skill structure is appropriate for a given use case. Trigger with phrases
-  like "design skill", "skill review", "SKILL.md", or "skill structure".
+description: 'Use when creating, reviewing, or improving SKILL.md files. Covers skill anatomy, types (knowledge/workflow), design patterns, frontmatter fields, bundled resources, and troubleshooting. Trigger with: design skill, skill review, SKILL.md, skill structure, create skill.'
 ---
 
 # Designing Claude Skills
@@ -113,7 +103,7 @@ The skill should only contain the information needed for an AI agent to do the j
 Skills use a three-level loading system to manage context efficiently:
 
 1. **Metadata (name + description)** - Always in context (~100 words)
-1. **SKILL.md body** - When skill triggers (\<5k words)
+1. **SKILL.md body** - When skill triggers (/<5k words)
 1. **Bundled resources** - As needed by Claude (Unlimited because scripts can be executed without reading into context window)
 
 #### Progressive Disclosure Patterns

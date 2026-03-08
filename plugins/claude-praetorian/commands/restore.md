@@ -6,6 +6,18 @@ arguments: query?
 
 # /restore
 
+## Name
+
+claude-praetorian:restore - Load previous context from praetorian memory
+
+## Synopsis
+
+/restore
+
+## Description
+
+Retrieves and displays previously compacted context from praetorian memory. Without a query shows recent compactions; with a query performs semantic search across all stored compactions.
+
 Load previous work from praetorian memory.
 
 ## Usage
@@ -40,3 +52,7 @@ Found 2 relevant compactions:
    - REST best practices from OpenAPI spec
    - Rate limiting patterns
 ```
+
+## Implementation
+
+See the usage and workflow sections above for implementation details.

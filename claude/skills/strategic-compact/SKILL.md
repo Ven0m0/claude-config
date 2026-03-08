@@ -38,7 +38,7 @@ Add to `~/.claude/settings.json`:
 {
   "hooks": {
     "PreToolUse": [{
-      "matcher": "tool == \"Edit\" || tool == \"Write\"",
+      "matcher": "tool == /"Edit/" || tool == /"Write/"",
       "hooks": [{
         "type": "command",
         "command": "~/.claude/skills/strategic-compact/suggest-compact.sh"

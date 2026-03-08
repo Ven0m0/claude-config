@@ -3,7 +3,7 @@ name: rust
 description: Rust specialist for async services, safe systems programming, and production tooling with Tokio, Axum, SQLx, and clippy-driven quality checks. Use when building or refactoring Rust code.
 license: Apache-2.0
 compatibility: Designed for Claude Code
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob, Bash(git:*)
 user-invocable: false
 metadata:
   version: "2.0.0"

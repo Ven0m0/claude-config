@@ -6,7 +6,7 @@ description: |
   configuration patterns, input/output schemas, and common automation use cases.
   Use when user mentions hooks, automation, PreToolUse, PostToolUse, SessionStart,
   SubagentStart, or needs to enforce consistent behavior in Claude Code workflows.
-allowed-tools: Bash, Read, Write, Edit, Glob, Grep, TodoWrite
+allowed-tools: Bash(git:*), Read, Write, Edit, Glob, Grep, TodoWrite
 ---
 
 # Claude Code Hooks Configuration
@@ -329,7 +329,7 @@ exit 0
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'FILE=$(cat | jq -r \".tool_input.file_path\"); [[ \"$FILE\" == *.py ]] && ruff format \"$FILE\"'"
+            "command": "bash -c 'FILE=$(cat | jq -r /".tool_input.file_path/"); [[ /"$FILE/" == *.py ]] && ruff format \"$FILE\"'"
           }
         ]
       }
@@ -349,7 +349,7 @@ exit 0
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'changes=$(git status --porcelain | wc -l); [ $changes -gt 0 ] && echo \"Reminder: $changes uncommitted changes\"'"
+            "command": "bash -c 'changes=$(git status --porcelain | wc -l); [ $changes -gt 0 ] && echo \"Reminder: $changes uncommitted changes/"'"
           }
         ]
       }

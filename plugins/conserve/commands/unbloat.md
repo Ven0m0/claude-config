@@ -6,6 +6,18 @@ usage: /unbloat [--from-scan REPORT] [--auto-approve low] [--dry-run] [--focus c
 
 # Unbloat Command
 
+## Name
+
+conserve:unbloat - Safe bloat remediation with user approval at each step
+
+## Synopsis
+
+/unbloat
+
+## Description
+
+Execute safe bloat remediation workflows with user approval at each step. Scans or loads a prior bloat-scan report, creates a backup branch, and interactively applies approved changes.
+
 <identification>
 triggers: unbloat, remove bloat, cleanup codebase, reduce bloat
 
@@ -121,6 +133,10 @@ git reset --hard backup/unbloat-YYYYMMDD-HHMMSS
 # Restore specific file
 git checkout backup/unbloat-YYYYMMDD-HHMMSS -- path/to/file
 ```
+
+## Implementation
+
+See the implementation details in the sections above.
 
 ## Integration
 

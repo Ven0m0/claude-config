@@ -6,6 +6,13 @@ exclude = [
   "node_modules/**",
   ".git/**",
   "target/**",
+  # claude-code-lsps uses versioned subdirectory structure (plugin-name/version/)
+  # rather than the standard .claude-plugin/ layout - exclude from plugin validation
+  "plugins/claude-code-lsps/**",
+  # shared-patterns is a stub module directory, not an agent config
+  "shared-patterns/**",
+  # copilot-cli uses GitHub Copilot CLI MCP format with 'local' type (not stdio/http/sse)
+  "copilot-cli/**",
 ]
 
 [rules]
@@ -25,7 +32,13 @@ cross_platform = true      # XP-* rules
 agents_md = true           # AGM-* rules
 
 # Disable specific rules by ID
-disabled_rules = []
+disabled_rules = [
+  # CDX-AG-002: False positive - "token" in docs refers to LLM tokens, not auth tokens
+  "CDX-AG-002",
+  # AS-014: False positive - escaped backticks (\`\`\`) in markdown and bash variable
+  # quoting ("$FILE") are detected as Windows path separators; these are valid posix content
+  "AS-014",
+]
 
 # Version-aware validation (optional)
 [tool_versions]
@@ -44,4 +57,6 @@ disabled_rules = []
 # include_as_generic = ["internal/*.md"]
 
 # Exclude from validation entirely (even built-in file types)
-# exclude = ["vendor/**", "generated/**"]
+# opencode/ uses OpenCode-specific agent format (tools as permission map, not list)
+# and uses @file references as lazy-loading instructions, not Claude Code @import syntax
+exclude = ["opencode/**"]

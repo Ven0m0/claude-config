@@ -1,6 +1,6 @@
 ---
 name: claude-praetorian
-description: Automatic context preservation - saves 50-60% tokens across sessions
+description: Use when user wants to Automatic context preservation - saves 50-60% tokens across sessions
 triggers: [SessionStart, PreCompact, PostToolUse, Stop]
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: ralph-planner
-description: Unified planner+executor for continuous workflow
+description: Use when user wants to Unified planner+executor for continuous workflow
 user-invocable: false
 ---
 

@@ -48,7 +48,7 @@ dependencies:
 
 ### Basic Usage
 
-\`\`\`bash
+/`/`/`bash
 
 # Run the main command
 
@@ -57,7 +57,7 @@ python -m module_name
 # Show help
 
 python -m module_name --help
-\`\`\`
+/`/`/`
 
 **Verification**: Run with `--help` flag to confirm installation.
 

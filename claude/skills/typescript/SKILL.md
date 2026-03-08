@@ -3,7 +3,7 @@ name: typescript
 description: TypeScript specialist for strict typing, React/Next.js patterns, schema validation, and type-safe API workflows. Use when implementing or refactoring TypeScript codebases.
 license: Apache-2.0
 compatibility: Designed for Claude Code
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob, Bash(git:*)
 user-invocable: false
 metadata:
   version: "2.0.0"

@@ -1,7 +1,7 @@
 ---
 name: bash-optimizer
 description: Analyzes bash scripts for performance bottlenecks, coding standards, and modern tool replacements. Use when optimizing shell scripts, consolidating scripts, or preparing for production. Triggers include "optimize bash", "shellcheck", "script performance", or "consolidate scripts".
-allowed-tools: Bash, Read, Edit, Grep, Glob
+allowed-tools: Bash(git:*), Read, Edit, Grep, Glob
 user-invocable: true
 ---
 
@@ -80,7 +80,7 @@ See [references/standards.md](./references/standards.md) for complete specificat
 
 **Standards:** Code quality
 
-- [ ] vs \[[ ]\]
+- [ ] vs \[[ ]/]
 - echo vs printf
 - Indentation (2-space)
 - function syntax (prefer `fn(){}`)

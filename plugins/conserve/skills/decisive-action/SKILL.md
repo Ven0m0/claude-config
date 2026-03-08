@@ -1,9 +1,6 @@
 ---
 name: decisive-action
-description: |
-  Triggers: question threshold, decisive, autonomous, clarifying questions
-  Guidance on when to ask clarifying questions vs proceed with standard approaches.
-  Reduces interaction rounds while preventing wrong assumptions.
+description: 'Use when the user needs guidance on question threshold, decisive action, autonomous operation, or clarifying questions. Guidance on when to ask clarifying questions vs proceed with standard approaches. Reduces interaction rounds while preventing wrong assumptions.'
 category: workflow
 tags: [efficiency, workflow, decision-making]
 tools: []

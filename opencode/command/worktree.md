@@ -9,3 +9,4 @@ Call the `worktree` tool with:
 If no arguments provided, call `worktree` with no target to show current status.
 
 Example: `worktree(target: "feature-branch", workdir: "/path/to/repo")`
+</branch>

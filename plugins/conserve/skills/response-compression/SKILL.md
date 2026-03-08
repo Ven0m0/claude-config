@@ -1,9 +1,6 @@
 ---
 name: response-compression
-description: |
-  Triggers: verbose, bloat, concise, compress, direct, efficient response
-  Eliminates response bloat including emojis, filler words, hedging language,
-  hype, and unnecessary framing. Includes termination and directness guidelines.
+description: 'Use when the user wants verbose, bloated, or non-concise responses compressed to be direct and efficient. Eliminates response bloat including emojis, filler words, hedging language, hype, and unnecessary framing. Includes termination and directness guidelines.'
 category: optimization
 tags: [tokens, efficiency, communication, directness]
 tools: []

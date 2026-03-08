@@ -4,6 +4,20 @@ description: Review an existing slash command from the current project.
 
 # Command Review
 
+## Name
+
+config-wizard:cmd-review - Review an existing slash command
+
+## Synopsis
+
+/cmd-review
+
+## Description
+
+Interactively select and review a slash command from the current project or installed plugins. Provides comprehensive analysis covering purpose, clarity, potential improvements, and Claude Code convention compliance.
+
+## Implementation
+
 First, search for all command files in:
 
 1. The current project's .claude/commands directory

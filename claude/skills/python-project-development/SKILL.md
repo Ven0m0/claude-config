@@ -1,8 +1,8 @@
 ---
 name: python-project-development
-description: Builds and refactors production-ready Python CLI tools and packages with modern pyproject layouts, uv workflows, and robust testing.
+description: Use when user wants to Builds and refactors production-ready Python CLI tools and packages with modern pyproject layouts, uv workflows, and robust testing.
 compatibility: Designed for Claude Code
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob, Bash(git:*)
 user-invocable: false
 ---
 

@@ -6,6 +6,18 @@ usage: /optimize-context [path]
 
 # Optimize Context Usage
 
+## Name
+
+conserve:optimize-context - Analyze and optimize context window usage
+
+## Synopsis
+
+/optimize-context
+
+## Description
+
+Analyzes context window usage and provides optimization recommendations based on Maximum Effective Context Window (MECW) principles.
+
 Analyzes context window usage and provides optimization recommendations based on Maximum Effective Context Window (MECW) principles.
 
 ## Usage

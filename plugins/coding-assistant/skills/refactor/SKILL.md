@@ -1,6 +1,6 @@
 ---
 name: refactor
-description: Refactor code to improve structure, readability, and maintainability
+description: Use when user wants to Refactor code to improve structure, readability, and maintainability
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Edit, Write
 argument-hint: '[file-path or component-name]'
@@ -147,3 +147,4 @@ ${ARGUMENTS}
 1. Explain the improvements made
 
 Remember: Refactoring is about improving internal structure without changing external behavior. Always ensure tests pass!
+$ARGUMENTS

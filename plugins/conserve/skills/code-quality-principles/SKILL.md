@@ -1,9 +1,6 @@
 ---
 name: code-quality-principles
-description: |
-  Triggers: KISS, YAGNI, SOLID, clean code, code quality, refactor, design principles
-  Provides guidance on fundamental software design principles to reduce complexity,
-  prevent over-engineering, and improve maintainability.
+description: 'Use when the user wants guidance on KISS, YAGNI, SOLID, clean code, code quality, refactoring, or design principles. Provides guidance on fundamental software design principles to reduce complexity, prevent over-engineering, and improve maintainability.'
 category: development
 tags: [design, principles, clean-code, architecture]
 tools: []

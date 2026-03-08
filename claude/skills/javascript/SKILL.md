@@ -3,7 +3,7 @@ name: javascript
 description: JavaScript specialist for Node.js, Bun, and Deno with modern async patterns, API development, testing, and lint/format workflows. Use when building or refactoring JavaScript applications.
 license: Apache-2.0
 compatibility: Designed for Claude Code
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob, Bash(git:*)
 user-invocable: false
 metadata:
   version: "2.0.0"

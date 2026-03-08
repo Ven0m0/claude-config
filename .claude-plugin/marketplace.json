@@ -121,6 +121,21 @@
       "source": "gemini-delegation",
       "keywords": ["gemini", "delegation", "research", "web-search"],
       "category": "utilities"
+    },
+    {
+      "name": "claude-praetorian",
+      "description": "Security guardrails and context memory for Claude Code sessions",
+      "version": "1.0.0",
+      "author": {
+        "name": "Ven0m0",
+        "url": "https://github.com/Ven0m0"
+      },
+      "homepage": "https://github.com/Ven0m0/claude-config",
+      "repository": "https://github.com/Ven0m0/claude-config",
+      "license": "MIT",
+      "source": "claude-praetorian",
+      "keywords": ["security", "context", "memory", "guardrails", "compaction"],
+      "category": "security"
     }
   ]
 }

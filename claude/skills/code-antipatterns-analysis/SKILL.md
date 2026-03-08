@@ -2,7 +2,7 @@
 model: opus
 name: code-antipatterns-analysis
 description: Analyze codebases for anti-patterns, code smells, and quality issues using ast-grep structural pattern matching. Use when reviewing code quality, identifying technical debt, or performing comprehensive code analysis across JavaScript, TypeScript, Python, Vue, React, or other supported languages.
-allowed-tools: Bash, Read, Grep, Glob, TodoWrite, Task
+allowed-tools: Bash(git:*), Read, Grep, Glob, TodoWrite, Task
 ---
 
 # Code Anti-patterns Analysis

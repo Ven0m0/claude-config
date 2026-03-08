@@ -1,6 +1,6 @@
 ---
 name: deep-research
-description: Research a topic thoroughly
+description: Use when user wants to Research a topic thoroughly
 context: fork
 agent: Explore
 ---

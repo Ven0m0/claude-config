@@ -1,9 +1,9 @@
 ---
 name: pr-summary
-description: Summarize changes in a pull request
+description: Use when user wants to Summarize changes in a pull request
 context: fork
 agent: Explore
-allowed-tools: Bash(gh *)
+allowed-tools: Bash(gh*)
 ---
 
 ## Pull request context

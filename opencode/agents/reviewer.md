@@ -1,4 +1,5 @@
 ---
+name: reviewer
 description: Expert code reviewer for security, performance, and philosophy compliance
 mode: subagent
 ---

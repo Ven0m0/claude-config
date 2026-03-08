@@ -1,5 +1,9 @@
 {
   "name": "dependency-blocker",
   "description": "Prevents Claude from accessing dependency directories to save tokens",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "author": {
+    "name": "wombat9000",
+    "url": "https://github.com/wombat9000"
+  }
 }

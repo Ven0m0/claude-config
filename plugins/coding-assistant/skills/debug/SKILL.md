@@ -1,8 +1,8 @@
 ---
 name: debug
-description: Debug code issues, trace errors, and identify root causes
+description: Use when user wants to Debug code issues, trace errors, and identify root causes
 user-invocable: true
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob, Bash(git:*)
 argument-hint: '[error-description or file-path]'
 ---
 
@@ -87,3 +87,4 @@ ${ARGUMENTS}
 1. Suggest how to prevent similar issues in the future
 
 Remember: Be systematic and thorough. Sometimes the issue is not where it first appears!
+$ARGUMENTS

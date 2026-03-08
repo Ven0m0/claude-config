@@ -2,6 +2,10 @@
   "name": "config-wizard",
   "description": "Interactive wizard to help create new Claude Code plugins",
   "version": "1.0.0",
+  "author": {
+    "name": "wombat9000",
+    "url": "https://github.com/wombat9000"
+  },
   "commands": "./commands",
   "skills": "./skills"
 }

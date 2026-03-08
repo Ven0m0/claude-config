@@ -1,8 +1,8 @@
 ---
 name: code-review
-description: Perform comprehensive code review with security, performance, and quality checks
+description: Use when user wants to Perform comprehensive code review with security, performance, and quality checks
 user-invocable: true
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read, Grep, Glob, Bash(git:*)
 argument-hint: '[file-path or directory]'
 ---
 
@@ -79,3 +79,4 @@ ${ARGUMENTS}
 1. Give an overall assessment and recommendation
 
 Remember: Be constructive and specific in your feedback. The goal is to improve code quality while respecting the developer's work.
+$ARGUMENTS

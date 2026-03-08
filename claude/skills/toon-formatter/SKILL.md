@@ -215,8 +215,8 @@ or
 Explain when JSON is better:
 
 - **Deeply nested data**: TOON excels with flat/tabular structures
-- **Low uniformity** (\<70%): Different fields per object reduces TOON benefits
-- **Small arrays** (\<10 items): Overhead not worth it
+- **Low uniformity** (/<70%): Different fields per object reduces TOON benefits
+- **Small arrays** (/<10 items): Overhead not worth it
 - **Single records**: Use JSON for clarity
 
 ### Performance Tips

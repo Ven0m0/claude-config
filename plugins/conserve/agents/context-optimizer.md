@@ -12,34 +12,32 @@ description: |
   DO NOT use when: single skill optimization - use optimizing-large-skills skill.
   DO NOT use when: quick token counts - use skills-eval instead.
 
-  ⚠️ PRE-INVOCATION CHECK (parent must verify BEFORE calling this agent):
-  - Single skill token count? → Parent runs `wc -w skill.md` or estimates
-  - Quick size check? → Parent reads file header
-  - One-off query? → Parent uses Read tool directly
+  PRE-INVOCATION CHECK (parent must verify BEFORE calling this agent):
+  - Single skill token count? Use wc -w skill.md or parent estimates
+  - Quick size check? Parent reads file header
+  - One-off query? Parent uses Read tool directly
   ONLY invoke this agent for: full plugin audits, growth trend analysis,
   optimization recommendations, or pre-release compliance verification.
 tools: [Read, Glob, Grep, Bash, Write]
 model: haiku
-skills: conserve:context-optimization, conserve:optimizing-large-skills
-
-# Claude Code 2.1.0+ lifecycle hooks
 hooks:
   PreToolUse:
     - matcher: Read
-      command: |
-        # Track files being analyzed for context optimization
-        echo "[context-optimizer] Analyzing: $CLAUDE_TOOL_INPUT" >> ${CLAUDE_CODE_TMPDIR:-/tmp}/context-audit.log
-      once: false
+      hooks:
+        - type: command
+          command: |
+            echo "[context-optimizer] Analyzing: $CLAUDE_TOOL_INPUT" >> ${CLAUDE_CODE_TMPDIR:-/tmp}/context-audit.log
   PostToolUse:
     - matcher: Write
-      command: |
-        # Log optimization outputs
-        echo "[context-optimizer] Optimization written" >> ${CLAUDE_CODE_TMPDIR:-/tmp}/context-audit.log
+      hooks:
+        - type: command
+          command: |
+            echo "[context-optimizer] Optimization written" >> ${CLAUDE_CODE_TMPDIR:-/tmp}/context-audit.log
   Stop:
-    - command: |
-        # Summary logging at completion
-        echo "[context-optimizer] Audit completed at $(date)" >> ${CLAUDE_CODE_TMPDIR:-/tmp}/context-audit.log
-
+    - hooks:
+        - type: command
+          command: |
+            echo "[context-optimizer] Audit completed at $(date)" >> ${CLAUDE_CODE_TMPDIR:-/tmp}/context-audit.log
 escalation:
   to: sonnet
   hints:

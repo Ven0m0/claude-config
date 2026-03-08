@@ -3,6 +3,18 @@ name: bloat-scan
 description: Progressive bloat detection for dead code and duplication
 usage: /bloat-scan [--level 1|2|3] [--focus code|docs|deps] [--report FILE] [--dry-run]
 # Claude Code 2.1.0+ lifecycle hooks
+
+## Name
+
+conserve:bloat-scan - Progressive bloat detection for dead code and duplication
+
+## Synopsis
+
+/bloat-scan
+
+## Description
+
+Execute progressive bloat detection across code, documentation, and dependencies. Supports three scan tiers: quick heuristic scan, targeted static analysis, and deep audit with full tooling.
 hooks:
   PreToolUse:
     - matcher: Task
@@ -239,6 +251,10 @@ git commit -m "Remove deprecated handler (bloat scan #1)"
 1. ⏳ Create PR with detailed rationale
 
 ````
+
+## Implementation
+
+See the implementation details in the sections above.
 
 ## Integration
 

@@ -6,7 +6,7 @@ description: >
   Use when creating PRDs, generating user stories, planning features for Ralph, or
   converting ideas to executable specifications. Triggers: PRD, product requirements,
   Ralph stories, idea to spec, feature planning.
-allowed-tools: Read Bash Glob
+allowed-tools: Read Bash(git:*) Glob
 ---
 
 # /prd - Generate PRD for Ralph

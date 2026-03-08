@@ -4,6 +4,20 @@ description: Initialize a new slash command for Claude Code.
 
 # Command Initialization
 
+## Name
+
+config-wizard:cmd-init - Initialize a new slash command
+
+## Synopsis
+
+/cmd-init
+
+## Description
+
+Interactively create a new slash command for Claude Code. Supports creating commands in the current project, personal directory, or as a distributable plugin command.
+
+## Implementation
+
 First, ask the user where they want to create the command using the AskUserQuestion tool with a single choice question:
 
 - Question: "Where should this command be created?"

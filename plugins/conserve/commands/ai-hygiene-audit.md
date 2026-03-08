@@ -6,6 +6,18 @@ usage: /ai-hygiene-audit [--focus git|duplication|tests|docs] [--report FILE] [-
 
 # AI Hygiene Audit Command
 
+## Name
+
+conserve:ai-hygiene-audit - Audit codebase for AI-generated code quality issues
+
+## Synopsis
+
+/ai-hygiene-audit
+
+## Description
+
+Detect AI-specific code quality issues that traditional bloat detection misses, including tab-completion bloat, happy-path-only tests, documentation slop, and hallucinated dependencies.
+
 <identification>
 triggers: ai hygiene, ai audit, vibe coding check, ai code quality, slop detection
 
@@ -160,3 +172,7 @@ NEXT STEPS:
 - `@module:ai-generated-bloat` - Detection patterns
 - `imbue:scope-guard/anti-overengineering` - Agent psychosis warnings
 - Knowledge corpus: `agent-psychosis-codebase-hygiene.md`
+
+## Implementation
+
+See the usage and workflow sections above for implementation details.

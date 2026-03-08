@@ -124,7 +124,7 @@ Improvements are prioritized by impact. Critical issues include security vulnera
 
 ### Shared Modules: Cross-Skill Patterns
 - **Anti-Rationalization Patterns**: See [anti-rationalization.md](../skill-authoring/modules/anti-rationalization.md)
-- **Enforcement Language**: See [enforcement-language.md](../shared-patterns/modules/workflow-patterns.md)
+- **Enforcement Language**: See [enforcement-language.md](../../shared-patterns/modules/workflow-patterns.md)
 - **Trigger Patterns**: See [trigger-patterns.md](modules/evaluation-criteria.md)
 
 ### Skill-Specific Modules

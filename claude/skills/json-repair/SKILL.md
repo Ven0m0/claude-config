@@ -74,7 +74,7 @@ because it skips re-serialization.
 only when you already know the input is invalid.
 
 `ensure_ascii=False` — preserve non-Latin characters (CJK, Cyrillic, etc) in output
-instead of escaping to `\uXXXX`.
+instead of escaping to `/uXXXX`.
 
 `strict=True` — raise `ValueError` on structural issues (duplicate keys, missing
 separators, empty keys) instead of repairing them. Useful for validation with
