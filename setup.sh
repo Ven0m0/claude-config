@@ -133,3 +133,6 @@ vsync sync --prune --user
 agnix --fix .
 bunx rulegen-ai --format agents-md
 bunx rulegen-ai --format copilot
+
+claude plugin marketplace add mksglu/context-mode
+claude plugin install context-mode@context-mode
