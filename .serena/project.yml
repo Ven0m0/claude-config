@@ -114,4 +114,5 @@ languages:
   - toml
   - yaml
   - markdown
+  - typescript
   - typescript_vts
