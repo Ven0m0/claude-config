@@ -17,7 +17,8 @@
     "opencode-agent-skills@latest",
     "opencode-agent-memory@latest",
     "@zenobius/opencode-background@latest",
-    "oh-my-opencode-slim@latest"
+    "oh-my-opencode-slim@latest",
+    "opencode-plugin-search"
   ],
   "agent": {
     "explore": {
