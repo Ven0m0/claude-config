@@ -127,5 +127,8 @@ curl -fsSL https://app.factory.ai/cli | bash
 
 bun i -g claude-code-lint agnix @nicepkg/vsync
 
-vsync init; vsync init --user
-vsync sync --prune
+vsync init --user
+vsync sync --prune --user
+
+bunx rulegen-ai --format agents-md
+bunx rulegen-ai --format copilot
