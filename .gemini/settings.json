@@ -7,5 +7,21 @@
   "general": {
     "devtools": true
   },
-  "contextFileName": "AGENTS.md"
+  "contextFileName": "AGENTS.md",
+  "context": {
+    "fileName": ["AGENTS.md",]
+  },
+  "tools": {
+    "autoAccept": true,
+    "approvalMode": "auto_edit",
+    "useRipgrep": true,
+    "enableToolOutputTruncation": true,
+    "truncateToolOutputLines": 750,
+    "truncateToolOutputThreshold": 2000000,
+    "enableHooks": true,
+    "disableLLMCorrection": false,
+    "shell": {
+      "enableShellOutputEfficiency": true
+    }
+  }
 }
