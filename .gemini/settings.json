@@ -6,5 +6,6 @@
   },
   "general": {
     "devtools": true
-  }
+  },
+  "contextFileName": "AGENTS.md"
 }
