@@ -112,12 +112,8 @@ setup_uv_tools(){
 # --- Git Config (from claude/setup.sh) ---
 setup_git_config(){
   msg "Optimizing git configuration..."
-  git config --global --add safe.directory "$(realpath .)"
   git config --global index.threads 0
-  git config --global core.preloadindex true
-  git config --global diff.context 3
   git config --global diff.suppressBlankEmpty true
-  git config --global diff.compactionHeuristic true
   git config --global diff.ignoreSubmodules true
   git config --global diff.algorithm histogram
   git config --global merge.conflictStyle zdiff3
