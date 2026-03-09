@@ -1,1 +1,3 @@
-# Sample LLMs.txt\n\nSee the main SKILL.md for a sample llms.txt implementation.
+# Sample LLMs.txt
+
+See the main SKILL.md for a sample llms.txt implementation.

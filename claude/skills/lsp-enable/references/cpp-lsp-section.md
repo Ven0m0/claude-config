@@ -1,1 +1,3 @@
-# cpp LSP Reference\n\nSee the main SKILL.md for cpp language server configuration.
+# cpp LSP Reference
+
+See the main SKILL.md for cpp language server configuration.

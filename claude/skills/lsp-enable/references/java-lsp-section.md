@@ -1,1 +1,3 @@
-# java LSP Reference\n\nSee the main SKILL.md for java language server configuration.
+# java LSP Reference
+
+See the main SKILL.md for java language server configuration.

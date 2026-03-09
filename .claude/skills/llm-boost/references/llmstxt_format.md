@@ -1,1 +1,3 @@
-# LLMs.txt Format\n\nSee the main SKILL.md for llms.txt format specification.
+# LLMs.txt Format
+
+See the main SKILL.md for llms.txt format specification.

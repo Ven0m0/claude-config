@@ -1,1 +1,3 @@
-# kotlin LSP Reference\n\nSee the main SKILL.md for kotlin language server configuration.
+# kotlin LSP Reference
+
+See the main SKILL.md for kotlin language server configuration.

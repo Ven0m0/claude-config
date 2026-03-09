@@ -1,1 +1,3 @@
-# Skill Optimization Guide\n\nSee the main SKILL.md for skill optimization patterns.
+# Skill Optimization Guide
+
+See the main SKILL.md for skill optimization patterns.
