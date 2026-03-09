@@ -80,7 +80,7 @@ See [references/standards.md](./references/standards.md) for complete specificat
 
 **Standards:** Code quality
 
-- [ ] vs \[[ ]/]
+- `[ … ]` vs `[[ … ]]`
 - echo vs printf
 - Indentation (2-space)
 - function syntax (prefer `fn(){}`)
