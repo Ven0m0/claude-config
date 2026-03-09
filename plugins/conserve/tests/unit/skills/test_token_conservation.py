@@ -73,7 +73,7 @@ tags:
 
 # Token Conservation Workflow
 
-## TodoWrite Items
+## Required TodoWrite Items
 
 - `token-conservation:quota-check`
 - `token-conservation:context-plan`

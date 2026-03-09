@@ -74,7 +74,7 @@ tags:
 
 # Performance Monitoring Hub
 
-## TodoWrite Items
+## Required TodoWrite Items
 
 - `performance-monitoring:metrics-collection`
 - `performance-monitoring:threshold-analysis`

@@ -60,7 +60,7 @@ tags:
 
 # MCP Code Execution Hub
 
-## TodoWrite Items
+## Required TodoWrite Items
 
 - `mcp-code-execution:task-analysis`
 - `mcp-code-execution:delegation-assessment`
