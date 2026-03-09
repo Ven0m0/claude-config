@@ -3,7 +3,8 @@
     "github-mcp-server": {
       "type": "http",
       "url": "https://api.githubcopilot.com/mcp/x/all/insiders",
-      "tools": ["*"]
+      "tools": ["*"],
+      "headers": { "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}" }
     },
     "sequential-thinking": {
       "type": "stdio",
@@ -20,7 +21,8 @@
     "ref-tools": {
       "type": "http",
       "url": "https://api.ref.tools/mcp",
-      "tools": ["*"]
+      "tools": ["*"],
+      "headers": { "x-ref-api-key": "${REF_API_KEY" }
     },
     "grep-app": {
       "type": "http",
