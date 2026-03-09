@@ -11,15 +11,15 @@ MARKETPLACE_DIR="${CLAUDE_DIR}/plugins/marketplaces"
 EXTERNAL_SKILLS_DIR="${CLAUDE_DIR}/skills/external"
 
 # --- Helpers ---
-has() { command -v -- "$1" &>/dev/null; }
-msg() { printf '[+] %s\n' "$@"; }
-log() { printf '[!] %s\n' "$@" >&2; }
-die() { printf '[x] %s\n' "$1" >&2; exit "${2:-1}"; }
+has(){ command -v -- "$1" &>/dev/null; }
+msg(){ printf '[+] %s\n' "$@"; }
+log(){ printf '[!] %s\n' "$@" >&2; }
+die(){ printf '[x] %s\n' "$1" >&2; exit "${2:-1}"; }
 
 # --- Checks ---
 [[ ${EUID:-$(id -u)} -eq 0 ]] && die "Do not run as root."
 
-check_deps() {
+check_deps(){
   local missing=()
   for tool in bun uv git; do
     has "$tool" || missing+=("$tool")
@@ -28,7 +28,7 @@ check_deps() {
 }
 
 # --- Marketplaces ---
-setup_marketplaces() {
+setup_marketplaces(){
   msg "Installing Claude Code marketplaces..."
   local -a marketplaces=(
     "anthropics/claude-plugins-official"
@@ -56,7 +56,7 @@ setup_marketplaces() {
 }
 
 # --- MCP Servers ---
-setup_mcp() {
+setup_mcp(){
   msg "Configuring MCP servers..."
   if ! has claude; then
     log "claude CLI not found, skipping MCP configuration"
@@ -71,7 +71,7 @@ setup_mcp() {
 }
 
 # --- Bun Global Packages ---
-setup_bun_globals() {
+setup_bun_globals(){
   msg "Installing bun global packages..."
   local -a pkgs=(
     # Token optimization formats
@@ -101,7 +101,7 @@ setup_bun_globals() {
 }
 
 # --- UV Tools ---
-setup_uv_tools() {
+setup_uv_tools(){
   msg "Installing uv tools..."
   [[ -d "${HOME}/.venv" || -d .venv ]] || uv venv --seed
   for tool in beads-mcp gemini-bridge basedpyright; do
@@ -110,14 +110,10 @@ setup_uv_tools() {
 }
 
 # --- Git Config (from claude/setup.sh) ---
-setup_git_config() {
+setup_git_config(){
   msg "Optimizing git configuration..."
   git config --global --add safe.directory "$(realpath .)"
-  git config --global index.version 4
   git config --global index.threads 0
-  git config --global http.version "HTTP/1.1"
-  git config --global protocol.version 2
-  git config --global core.compression 9
   git config --global core.preloadindex true
   git config --global diff.context 3
   git config --global diff.suppressBlankEmpty true
@@ -129,11 +125,10 @@ setup_git_config() {
   git config --global pack.threads 0
   git config --global status.short true
   git config --global commit.verbose false
-  git config --global feature.manyFiles true
 }
 
 # --- External Skills ---
-setup_external_skills() {
+setup_external_skills(){
   msg "Cloning external skill repositories..."
   mkdir -p "${EXTERNAL_SKILLS_DIR}"
   local -A sources=(
@@ -151,14 +146,14 @@ setup_external_skills() {
 }
 
 # --- Optional: Prunize ---
-setup_prunize() {
+setup_prunize(){
   if [[ -d "${HOME}/tools/prunize" ]]; then
     msg "Prunize already installed"
     return
   fi
   msg "Installing prunize..."
   mkdir -p "${HOME}/tools"
-  git clone https://github.com/qirkpetrucci/prunize "${HOME}/tools/prunize" || { log "Prunize clone failed"; return; }
+  git clone --depth 1 https://github.com/qirkpetrucci/prunize "${HOME}/tools/prunize" || { log "Prunize clone failed"; return; }
   if [[ -f "${HOME}/tools/prunize/prunize.py" ]]; then
     chmod +x "${HOME}/tools/prunize/prunize.py"
     mkdir -p "${HOME}/.local/bin"
@@ -167,17 +162,16 @@ setup_prunize() {
 }
 
 # --- Optional: Tweakcc ---
-setup_tweakcc() {
+setup_tweakcc(){
   msg "Setting up tweakcc..."
   has uv || wget -qO- https://astral.sh/uv/install.sh | sh
   mkdir -p "${CLAUDE_DIR}/tweakcc"
-  export TWEAKCC_CONFIG_DIR="${CLAUDE_DIR}/tweakcc"
-  export TWEAKCC_CC_INSTALLATION_PATH="/opt/claude-code/bin/claude"
+  export TWEAKCC_CONFIG_DIR="${CLAUDE_DIR}/tweakcc" TWEAKCC_CC_INSTALLATION_PATH="/opt/claude-code/bin/claude"
   sudo bunx tweakcc --apply || log "tweakcc may require manual setup"
 }
 
 # --- Optional: Cursor ---
-setup_cursor() {
+setup_cursor(){
   msg "Configuring Cursor..."
   mkdir -p "${HOME}/.cursor"
   if [[ -f "${HOME}/.cursor/argv.json" ]]; then
@@ -186,7 +180,7 @@ setup_cursor() {
 }
 
 # --- Optional: VS Code Extensions ---
-setup_vscode() {
+setup_vscode(){
   if ! has code; then
     log "VS Code not found, skipping extensions"
     return
@@ -196,7 +190,7 @@ setup_vscode() {
 }
 
 # --- Help ---
-show_help() {
+show_help(){
   cat <<'HELP'
 Usage: ./setup.sh [OPTIONS]
 
@@ -216,7 +210,7 @@ HELP
 }
 
 # --- Main ---
-main() {
+main(){
   local dry_run=0 with_prunize=0 with_tweakcc=0 with_cursor=0 with_vscode=0
   local skip_git=0 skip_mcp=0
 
@@ -234,7 +228,6 @@ main() {
     esac
     shift
   done
-
   if [[ $dry_run -eq 1 ]]; then
     msg "DRY-RUN: would run setup_marketplaces, setup_mcp, setup_bun_globals,"
     msg "  setup_uv_tools, setup_git_config, setup_external_skills"
@@ -244,10 +237,8 @@ main() {
     [[ $with_vscode -eq 1 ]]  && msg "  + setup_vscode"
     return
   fi
-
   check_deps
   mkdir -p "${CLAUDE_DIR}" "${MARKETPLACE_DIR}"
-
   setup_marketplaces
   [[ $skip_mcp -eq 0 ]]  && setup_mcp
   setup_bun_globals
@@ -258,9 +249,7 @@ main() {
   [[ $with_tweakcc -eq 1 ]] && setup_tweakcc
   [[ $with_cursor -eq 1 ]]  && setup_cursor
   [[ $with_vscode -eq 1 ]]  && setup_vscode
-
   claude plugin marketplace update 2>/dev/null || :
   msg "Setup complete. Restart Claude Code to apply changes."
 }
-
 main "$@"
