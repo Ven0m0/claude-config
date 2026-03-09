@@ -2,8 +2,7 @@
 set -euo pipefail
 shopt -s nullglob globstar
 
-gemini extensions update --all
-claude plugin marketplace update
+gemini extensions update --all; claude plugin marketplace update
 
 CLAUDE_DIR="${HOME}/.claude"
 mkdir -p "${CLAUDE_DIR}/tweakcc"
