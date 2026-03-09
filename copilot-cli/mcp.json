@@ -2,73 +2,43 @@
   "mcpServers": {
     "github-mcp-server": {
       "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/insiders",
-      "tools": ["*"],
-      "headers": {
-        "X-MCP-Toolsets": "default,actions,web_search,code_security,copilot,dependabot,git,secret_protection,security_advisories,stargazers,github_support_docs_search,labels,gists",
-        "Authorization": "Bearer ${input:github_mcp_pat}"
-      }
+      "url": "https://api.githubcopilot.com/mcp/x/all/insiders",
+      "tools": ["*"]
     },
     "sequential-thinking": {
-      "type": "local",
+      "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking@latest"],
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
       "tools": ["*"]
     },
     "exa": {
       "type": "http",
-      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa,company_research_exa,people_search_exa,deep_researcher_start,deep_researcher_check",
-      "tools": ["*"]
-      "headers": {
-        "EXA_API_KEY": "${EXA_API_KEY}"
-      }
+      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
+      "tools": ["*"],
+      "headers": {"EXA_API_KEY": "${EXA_API_KEY}"}
     },
     "ref-tools": {
       "type": "http",
       "url": "https://api.ref.tools/mcp",
       "tools": ["*"]
     },
-    "context7": {
+    "grep-app": {
       "type": "http",
-      "url": "https://mcp.context7.com/mcp",
-      "tools": ["*"],
-      "headers": {
-        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
-      }
-    },
-    "ast-grep": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@notprolands/ast-grep-mcp@latest"],
+      "url": "https://mcp.grep.app",
       "tools": ["*"]
-    },
-    "octocode": {
-      "type": "local",
-      "command": "npx",
-      "args": ["-y", "octocode-mcp@latest"],
-      "tools": ["*"]
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
-        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
-      }
-    },
-    "fast-filesystem": {
-      "type": "local",
-      "command": "npx",
-      "args": ["-y", "fast-filesystem-mcp@latest"],
-      "tools": ["*"]
-      "env": {
-        "MCP_SILENT_ERRORS": "true"
-      }
     },
     "serena": {
       "type": "local",
-      "command": "docker",
-      "args": ["run", "--rm", "-i", "--network", "host", "-v", "/workspaces:/workspaces", "ghcr.io/oraios/serena:latest", "serena"],
       "tools": ["*"],
-      "env": {
-        "MCP_SILENT_ERRORS": "true"
-      }
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--project-from-cwd"]
+    },
+    "morph-mcp": {
+      "type": "local",
+      "tools": ["*"],
+      "command": "npx",
+      "args": ["-y", "@morphllm/morphmcp"],
+      "env": { "MORPH_API_KEY": "${MORPH_API_KEY}" }
     }
   }
 }
