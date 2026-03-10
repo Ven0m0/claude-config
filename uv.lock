@@ -4,14 +4,14 @@ requires-python = ">=3.14"
 
 [[package]]
 name = "claudelint"
-version = "0.3.4"
+version = "0.3.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/71/c2/6c754befe278e6020731323a2aca650ed6e3d5a8bc7c4dbb4870d95c8747/claudelint-0.3.4.tar.gz", hash = "sha256:7a519019bf5263df4796619beb1eac97472151eb62e873302889c7e631e4f771", size = 37367, upload-time = "2026-03-04T19:39:00.951Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f4/fc/231c66f8eb21bdedc61eb1ba9729765decbf603e2e5f2826209fd3a00fe4/claudelint-0.3.5.tar.gz", hash = "sha256:e7eb5449cf37aec8f531ec00ffd012ee2064a32195aa071f6d9ad8dc27b90664", size = 37743, upload-time = "2026-03-10T13:29:27.169Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/27/20/23414dfc9abf2992e6b861512bf1e6c67a590826b38a53341276677e6c00/claudelint-0.3.4-py3-none-any.whl", hash = "sha256:34e1c3caf16ff997bb459a61a15b592797a2ad6fb894c814580d47f9af2bc964", size = 30739, upload-time = "2026-03-04T19:38:59.796Z" },
+    { url = "https://files.pythonhosted.org/packages/a7/d5/e4073f7bcb2c01f75597a010f53cd23c521fc03640cdb672893e3848692e/claudelint-0.3.5-py3-none-any.whl", hash = "sha256:c8f6d17c68bd3b2b0de4903bc1a97dae9fc93f6d3a7f104be8d1293701b12ae3", size = 30886, upload-time = "2026-03-10T13:29:25.476Z" },
 ]
 
 [[package]]
