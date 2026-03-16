@@ -19,12 +19,6 @@ TOKEN_BUFFER_MULTIPLIER = 0.9
 HIGH_SCORE_THRESHOLD = 0.8
 LOW_TOKEN_MULTIPLIER = 0.8
 
-# Note: These imports are for example usage only
-# from conservation.context_optimization_service import (
-#     ConservationContextOptimizer,
-#     ContentBlock,
-# )
-# from conservation.context_optimization_service import ConservationServiceRegistry
 
 
 @dataclass
@@ -422,12 +416,6 @@ registry.register_service(
 # Example usage patterns for other plugins
 def example_abstract_usage():
     """Demonstrate how Abstract plugin would use Conservation."""
-    # Abstract plugin code would do:
-    # from conservation.context_optimization_service import (
-    #     ConservationContextOptimizer,
-    #     ContentBlock,
-    # )
-
     # Create content blocks from skill analysis
     blocks = [
         ContentBlock(
@@ -461,9 +449,6 @@ def example_abstract_usage():
 
 def example_sanctum_usage():
     """Demonstrate how Sanctum plugin would use Conservation."""
-    # Sanctum plugin code would do:
-    # from conservation.context_optimization_service import ConservationServiceRegistry
-
     # Get the optimization service
     registry = ConservationServiceRegistry()
     optimize = registry.get_service("optimize_content")
