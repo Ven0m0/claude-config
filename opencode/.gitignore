@@ -139,7 +139,9 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 package.json
+package-lock.json
 bun.lock
 logs/
-.env
 .bun/
+
+plans/
