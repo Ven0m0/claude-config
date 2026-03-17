@@ -1,14 +1,13 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["AGENTS.md", "CLAUDE.md"],
+  "instructions": ["AGENTS.md", "CLAUDE.md", "copilot-instructions.md", "~/.config/opencode/instructions/morph-tools.md"],
   "plugin": [
-    "@franlol/opencode-md-table-formatter@latest",
+    "github:JRedeker/opencode-morph-fast-apply",
     "@zenobius/opencode-skillful@latest",
     "@spoons-and-mirrors/subtask2@latest",
     "@ramarivera/opencode-model-announcer@latest",
     "opencode-pty@latest",
     "opencode-antigravity-auth@latest",
-    "opencode-optimal-model-temps@latest",
     "opencode-gemini-auth@latest",
     "opencode-anthropic-auth@latest",
     "opencode-copilot-auth@latest",
