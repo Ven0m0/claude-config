@@ -3,7 +3,6 @@
   "instructions": ["AGENTS.md", "CLAUDE.md", "copilot-instructions.md", "~/.config/opencode/node_modules/opencode-morph-fast-apply/instructions/morph-tools.md"],
   "plugin": [
     "github:JRedeker/opencode-morph-fast-apply",
-    "@zenobius/opencode-skillful@latest",
     "@spoons-and-mirrors/subtask2@latest",
     "@ramarivera/opencode-model-announcer@latest",
     "opencode-pty@latest",
