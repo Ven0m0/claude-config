@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["AGENTS.md", "CLAUDE.md", "copilot-instructions.md", "~/.config/opencode/instructions/morph-tools.md"],
+  "instructions": ["AGENTS.md", "CLAUDE.md", "copilot-instructions.md", "~/.config/opencode/node_modules/opencode-morph-fast-apply/instructions/morph-tools.md"],
   "plugin": [
     "github:JRedeker/opencode-morph-fast-apply",
     "@zenobius/opencode-skillful@latest",
