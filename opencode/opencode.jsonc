@@ -157,22 +157,6 @@
     }
   },
   "mcp": {
-    "web-search-prime": {
-      "type": "remote",
-      "url": "https://api.z.ai/api/mcp/web_search_prime/mcp",
-      "headers": {
-        "Authorization": "Bearer 020288db3e534c428e5d3b11b9302fcf.Fd49ls8nfFNoxc4F"
-      },
-      "enabled": true
-    },
-    "zread": {
-      "type": "remote",
-      "url": "https://api.z.ai/api/mcp/zread/mcp",
-      "headers": {
-        "Authorization": "Bearer 020288db3e534c428e5d3b11b9302fcf.Fd49ls8nfFNoxc4F"
-      },
-      "enabled": true
-    },
     "MCP_DOCKER": {
       "type": "local",
       "command": ["docker", "mcp", "gateway", "run"],
