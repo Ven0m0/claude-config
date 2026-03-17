@@ -106,7 +106,9 @@
       "Read(./.env)",
       "Read(./.env.*)",
       "Read(./secrets/**)",
-      "NotebookEdit"
+      "NotebookEdit",
+      "mcp__plugin_playwright_playwright__browser_install",
+      "mcp__plugin_playwright_playwright__browser_navigate"
     ],
     "defaultMode": "acceptEdits"
   },
