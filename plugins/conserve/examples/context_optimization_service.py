@@ -105,9 +105,12 @@ class ConservationContextOptimizer:
 
         # Calculate metrics
         result["optimized_tokens"] = sum(b.token_estimate for b in optimized_blocks)
-        result["compression_ratio"] = (
-            result["optimized_tokens"] / result["original_tokens"]
-        )
+        if result["original_tokens"] > 0:
+            result["compression_ratio"] = (
+                result["optimized_tokens"] / result["original_tokens"]
+            )
+        else:
+            result["compression_ratio"] = 0.0
         result["blocks_kept"] = len(optimized_blocks)
         result["blocks_dropped"] = len(content_blocks) - len(optimized_blocks)
 
