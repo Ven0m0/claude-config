@@ -68,7 +68,7 @@ def truncate_output(output, max_lines=100):
 
 - [ ] Promote validated candidates into `plugins/`, `claude/skills/`, or `claude/hooks/` only after a narrow proof-of-fit and minimal implementation plan exists for each item.
 - [ ] Update `.claude-plugin/marketplace.json` only for integrations that are actually shipped in this repo.
-- [ ] Mirror opencode-specific results into `/home/runner/work/claude-config/claude-config/opencode/TODO.md` once the package-level triage is complete.
+- [ ] Mirror opencode-specific results into `opencode/TODO.md` once the package-level triage is complete.
 - [ ] Keep this file as the source of truth for inbound references until each item is either integrated, documented elsewhere, or explicitly deferred.
 
 <details><summary><b>Resources</b></summary>
@@ -101,42 +101,7 @@ def truncate_output(output, max_lines=100):
 - [opencode.cafe](https://opencode.cafe)
 - [skills.rest](https://skills.rest)
 
-### Repositories and packages to evaluate
+### Candidate repos and packages
 
-- [`modu-ai/moai-adk`](https://github.com/modu-ai/moai-adk)
-- [`mattzcarey/zagi`](https://github.com/mattzcarey/zagi)
-- [`vtemian/claude-env`](https://github.com/vtemian/claude-env)
-- [`Piebald-AI/tweakcc`](https://github.com/Piebald-AI/tweakcc)
-- [`DanielNappa/tweakgc-cli`](https://github.com/DanielNappa/tweakgc-cli)
-- [`daymade/claude-code-skills`](https://github.com/daymade/claude-code-skills)
-- [`mangiucugna/json_repair`](https://github.com/mangiucugna/json_repair)
-- [`ziad-hsn/code-mode-toon`](https://github.com/ziad-hsn/code-mode-toon)
-- [`tiann/hapi`](https://github.com/tiann/hapi)
-- [`1rgs/nanocode`](https://github.com/1rgs/nanocode)
-- [`siteboon/claudecodeui`](https://github.com/siteboon/claudecodeui)
-- [`zeroclaw-labs/zeroclaw`](https://github.com/zeroclaw-labs/zeroclaw)
-- [`proliferate-ai/proliferate`](https://github.com/proliferate-ai/proliferate)
-- [`pchalasani/claude-code-tools`](https://github.com/pchalasani/claude-code-tools)
-- [`johnzfitch/claude-warden`](https://github.com/johnzfitch/claude-warden)
-- [`johnzfitch/llmx`](https://github.com/johnzfitch/llmx)
-- [`Sharper-Flow/lgrep`](https://github.com/Sharper-Flow/lgrep)
-- [`context-mode`](https://www.npmjs.com/package/context-mode)
-- [`add-mcp`](https://www.npmjs.com/package/add-mcp)
-- [`@azumag/opencode-rate-limit-fallback`](https://www.npmjs.com/package/@azumag/opencode-rate-limit-fallback)
-- [`opencode-kilo-auth`](https://www.npmjs.com/package/opencode-kilo-auth)
-- [`@dallay/agentsync`](https://www.npmjs.com/package/@dallay/agentsync)
-- [`@tuanhung303/opencode-acp`](https://www.npmjs.com/package/@tuanhung303/opencode-acp)
-- [`opencode-dir`](https://www.npmjs.com/package/opencode-dir)
-- [`opencode-websearch`](https://www.npmjs.com/package/opencode-websearch)
-- [`opencode-plugin-preload-skills`](https://www.npmjs.com/package/opencode-plugin-preload-skills)
-- [`@bastiangx/opencode-unmoji`](https://www.npmjs.com/package/@bastiangx/opencode-unmoji)
-- [`@kitlangton/tailcode`](https://www.npmjs.com/package/@kitlangton/tailcode)
-- [`opencode-fastedit`](https://www.npmjs.com/package/opencode-fastedit)
-- [`opencode-plugin-auto-update`](https://www.npmjs.com/package/opencode-plugin-auto-update)
-- [`opencode-codebase-index`](https://www.npmjs.com/package/opencode-codebase-index)
-- [`opencode-fast-apply`](https://www.npmjs.com/package/opencode-fast-apply)
-- [`opencode-cachebro`](https://www.npmjs.com/package/opencode-cachebro)
-- [`@mathew-cf/opencode-mcp-auto-reauth`](https://www.npmjs.com/package/@mathew-cf/opencode-mcp-auto-reauth)
-- [`@old-mikser/occontext-thinking-trim`](https://www.npmjs.com/package/@old-mikser/occontext-thinking-trim)
-- [`opencode-image-compress`](https://www.npmjs.com/package/opencode-image-compress)
+- See the Phase 2 checklist above for the linked repo and package inventory that needs triage.
 </details>
