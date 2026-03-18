@@ -46,7 +46,8 @@
     "cachebro@latest",
     "tailcode@latest",
     "oh-my-opencode-slim@latest",
-    "opencode-plugin-search"
+    "opencode-plugin-search",
+    "superpowers@git+https://github.com/obra/superpowers.git"
   ],
   "agent": {
     "explore": {
