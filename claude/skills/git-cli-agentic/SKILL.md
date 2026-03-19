@@ -246,9 +246,8 @@ Ensure commits are attributed to the AI agent.
 
 ```bash
 # Using Co-Authored-By in the body
-git commit -m "fix: resolve memory leak
-
-Co-Authored-By: Claude <claude@anthropic.com>"
+git commit -m "fix: resolve memory leak" \
+  -m "Co-Authored-By: Claude <claude@anthropic.com>"
 ```
 
 ### Safety and Guardrails
