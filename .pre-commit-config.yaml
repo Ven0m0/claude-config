@@ -57,4 +57,7 @@ repos:
     rev: v0.1
     hooks:
       - id: gha-update
-  
+-   repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.11.0
+    hooks:
+    -   id: shellcheck
