@@ -1,7 +1,7 @@
 ---
 name: repomix-unmixer
 description: Extracts files from repomix-packed repositories and restores directory structures. Triggers: repomix-unmix, extract-bundle.
-allowed-tools: Bash, Read, Edit
+allowed-tools: Bash, Read, Write, Edit
 ---
 
 # Repomix Unmixer
