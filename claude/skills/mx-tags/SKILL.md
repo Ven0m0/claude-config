@@ -1,7 +1,7 @@
 ---
 name: mx-tags
 description: Metadata-driven code annotation system for cross-agent communication. Use to mark anchors, warnings, context, and tasks in code. Triggers: @MX, anchor, warning, code-context.
-allowed-tools: Bash, Read, Grep
+allowed-tools: Bash, Read, rg
 ---
 
 # @MX Tagging System
