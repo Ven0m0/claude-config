@@ -58,7 +58,15 @@ def truncate_output(output, max_lines=100):
 
 #### Plugins, ecosystem integrations, and marketplace references
 
-- [ ] Compare [`mattzcarey/zagi`](https://github.com/mattzcarey/zagi), [`siteboon/claudecodeui`](https://github.com/siteboon/claudecodeui), [`zeroclaw-labs/zeroclaw`](https://github.com/zeroclaw-labs/zeroclaw), [`proliferate-ai/proliferate`](https://github.com/proliferate-ai/proliferate), [`pchalasani/claude-code-tools`](https://github.com/pchalasani/claude-code-tools), [`tiann/hapi`](https://github.com/tiann/hapi), [`glommer/cachebro`](https://github.com/glommer/cachebro), and [`glommer/codemogger`](https://github.com/glommer/codemogger) against existing plugin coverage before creating new plugin packages.
+- [ ] Compare against existing plugin coverage before creating new plugin packages:
+  - [`mattzcarey/zagi`](https://github.com/mattzcarey/zagi)
+  - [`siteboon/claudecodeui`](https://github.com/siteboon/claudecodeui)
+  - [`zeroclaw-labs/zeroclaw`](https://github.com/zeroclaw-labs/zeroclaw)
+  - [`proliferate-ai/proliferate`](https://github.com/proliferate-ai/proliferate)
+  - [`pchalasani/claude-code-tools`](https://github.com/pchalasani/claude-code-tools)
+  - [`tiann/hapi`](https://github.com/tiann/hapi)
+  - [`glommer/cachebro`](https://github.com/glommer/cachebro)
+  - [`glommer/codemogger`](https://github.com/glommer/codemogger)
 - [ ] Evaluate ecosystem packages for the `opencode/` backlog and shared plugin patterns:
   - [`context-mode`](https://www.npmjs.com/package/context-mode)
   - [`@azumag/opencode-rate-limit-fallback`](https://www.npmjs.com/package/@azumag/opencode-rate-limit-fallback)
