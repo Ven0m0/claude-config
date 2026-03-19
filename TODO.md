@@ -31,8 +31,15 @@ def truncate_output(output, max_lines=100):
 
 #### Skills, prompts, and local automation
 
-- [ ] Review [`modu-ai/moai-adk`](https://github.com/modu-ai/moai-adk), [`daymade/claude-code-skills`](https://github.com/daymade/claude-code-skills), and [`Piebald-AI/tweakcc`](https://github.com/Piebald-AI/tweakcc) for reusable skill layout, prompt modules, and workflow conventions that fit `claude/skills/`.
-- [ ] Review [`DanielNappa/tweakgc-cli`](https://github.com/DanielNappa/tweakgc-cli), [`mangiucugna/json_repair`](https://github.com/mangiucugna/json_repair), [`ziad-hsn/code-mode-toon`](https://github.com/ziad-hsn/code-mode-toon), and [`Sharper-Flow/lgrep`](https://github.com/Sharper-Flow/lgrep) for standalone utilities or wrappers that can become new skills or references in existing skill docs.
+- [ ] Review for reusable skill layout, prompt modules, and workflow conventions that fit `claude/skills/`:
+  - [`modu-ai/moai-adk`](https://github.com/modu-ai/moai-adk)
+  - [`daymade/claude-code-skills`](https://github.com/daymade/claude-code-skills)
+  - [`Piebald-AI/tweakcc`](https://github.com/Piebald-AI/tweakcc)
+- [ ] Review for standalone utilities or wrappers that can become new skills or references in existing skill docs:
+  - [`DanielNappa/tweakgc-cli`](https://github.com/DanielNappa/tweakgc-cli)
+  - [`mangiucugna/json_repair`](https://github.com/mangiucugna/json_repair)
+  - [`ziad-hsn/code-mode-toon`](https://github.com/ziad-hsn/code-mode-toon)
+  - [`Sharper-Flow/lgrep`](https://github.com/Sharper-Flow/lgrep)
 - [ ] Prototype a maintenance skill that runs the requested autofix commands before validation:
   - `claudelint check-all --fix >/dev/null 2>&1`
   - `ruff check --fix-only --unsafe-fixes . >/dev/null 2>&1`
