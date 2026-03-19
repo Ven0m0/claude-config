@@ -37,7 +37,7 @@ def scan_tags(directory):
                                         "type": tag_type,
                                         "message": match.group(1).strip(),
                                     })
-                except Exception:
+                except (IOError, OSError, UnicodeDecodeError):
                     continue
 
     return results
