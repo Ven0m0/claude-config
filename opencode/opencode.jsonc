@@ -67,6 +67,21 @@
         }
       }
     },
+    "executor": {
+      "model": "zai-coding-plan/glm-4.5-air",
+      "permission": {
+        "context7_*": "deny",
+        "exa_*": "deny",
+        "gh_grep_*": "deny",
+        "read": "allow",
+        "write": "allow",
+        "edit": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "bash": "allow",
+        "task": "deny"
+      }
+    },
     "general": {
       "disable": false
     },
