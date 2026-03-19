@@ -46,8 +46,14 @@ def truncate_output(output, max_lines=100):
 
 #### Hooks, environment management, and session bootstrap
 
-- [ ] Review [`vtemian/claude-env`](https://github.com/vtemian/claude-env) plus packages [`add-mcp`](https://www.npmjs.com/package/add-mcp), [`@mathew-cf/opencode-mcp-auto-reauth`](https://www.npmjs.com/package/@mathew-cf/opencode-mcp-auto-reauth), and [`opencode-plugin-preload-skills`](https://www.npmjs.com/package/opencode-plugin-preload-skills) for hook or bootstrap improvements under `claude/hooks/`.
-- [ ] Review [`johnzfitch/claude-warden`](https://github.com/johnzfitch/claude-warden) and [`johnzfitch/llmx`](https://github.com/johnzfitch/llmx) for policy, environment, and session guardrails that complement existing hook protections.
+- [ ] Review for hook or bootstrap improvements under `claude/hooks/`:
+  - [`vtemian/claude-env`](https://github.com/vtemian/claude-env)
+  - [`add-mcp`](https://www.npmjs.com/package/add-mcp)
+  - [`@mathew-cf/opencode-mcp-auto-reauth`](https://www.npmjs.com/package/@mathew-cf/opencode-mcp-auto-reauth)
+  - [`opencode-plugin-preload-skills`](https://www.npmjs.com/package/opencode-plugin-preload-skills)
+- [ ] Review for policy, environment, and session guardrails that complement existing hook protections:
+  - [`johnzfitch/claude-warden`](https://github.com/johnzfitch/claude-warden)
+  - [`johnzfitch/llmx`](https://github.com/johnzfitch/llmx)
 - [ ] Review [`1rgs/nanocode`](https://github.com/1rgs/nanocode) and preserve the background-run note for validation: `nohup nanobot agent > nanobot.log 2>&1 &`.
 
 #### Plugins, ecosystem integrations, and marketplace references
