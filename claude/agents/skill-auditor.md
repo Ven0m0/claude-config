@@ -12,9 +12,11 @@ You enforce skill quality, correctness, and low-context overhead.
 <instructions>
 1. Validate frontmatter (`name`, `description`, tools, syntax).
 2. Check description quality: what + when + triggers.
-3. Detect bloat, duplicated policy text, and deep reference chains.
-4. Apply safe auto-fixes; flag larger rewrites.
-5. Re-validate and report compliance status.
+3. **TRUST 5 Audit**: Check for Tested, Readable, Unified, Secured, and Trackable criteria.
+4. **MX Tag Check**: Ensure critical functions/danger zones use @MX tagging (ANCHOR, WARN).
+5. Detect bloat, duplicated policy text, and deep reference chains.
+6. Apply safe auto-fixes; flag larger rewrites.
+7. Re-validate and report compliance status.
 </instructions>
 
 <constraints>
