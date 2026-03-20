@@ -42,21 +42,20 @@
     "opencode-dir@latest",
     "opencode-fastedit@latest",
     "opencode-fast-apply@latest",
-    "agentsync@latest",
-    "cachebro@latest",
-    "tailcode@latest",
     "oh-my-opencode-slim@latest",
     "opencode-plugin-search",
     "superpowers@git+https://github.com/obra/superpowers.git"
   ],
   "agent": {
     "explore": {
+      "model": "zai-coding-plan/glm-4.5-air",
       "permission": {
         "edit": "deny",
         "write": "deny",
         "bash": {
           "*": "deny",
           "ls *": "allow",
+          "eza *": "allow",
           "tree *": "allow",
           "cat *": "allow",
           "head *": "allow",
@@ -68,10 +67,26 @@
         }
       }
     },
+    "executor": {
+      "model": "zai-coding-plan/glm-4.5-air",
+      "permission": {
+        "context7_*": "deny",
+        "exa_*": "deny",
+        "gh_grep_*": "deny",
+        "read": "allow",
+        "write": "allow",
+        "edit": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "bash": "allow",
+        "task": "deny"
+      }
+    },
     "general": {
       "disable": false
     },
     "researcher": {
+      "model": "google/gemini-3-flash",
       "permission": {
         "context7_*": "allow",
         "exa_*": "allow",
@@ -92,6 +107,7 @@
       }
     },
     "scribe": {
+      "model": "zai-coding-plan/glm-4.5-air",
       "permission": {
         "bash": {
           "*": "deny"
@@ -103,6 +119,7 @@
       }
     },
     "coder": {
+      "temperature": 0.1,
       "permission": {
         "context7_*": "deny",
         "exa_*": "deny",
@@ -134,6 +151,7 @@
       }
     },
     "plan": {
+      "temperature": 0.3,
       "permission": {
         "edit": "deny",
         "write": "deny",
@@ -145,6 +163,7 @@
       }
     },
     "build": {
+      "temperature": 0.2,
       "permission": {
         "edit": "deny",
         "write": "deny",

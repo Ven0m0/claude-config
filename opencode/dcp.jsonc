@@ -7,8 +7,8 @@
   "pruneNotification": "minimal",
   // Protect from pruning for <turns> message turns
   "turnProtection": {
-    "enabled": false,
-    "turns": 25
+    "enabled": true,
+    "turns": 15
   },
   // LLM-driven context pruning tools
   "tools": {
@@ -16,7 +16,7 @@
     "settings": {
       // Nudge the LLM to use prune tools (every <nudgeFrequency> tool results)
       "nudgeEnabled": true,
-      "nudgeFrequency": 10,
+      "nudgeFrequency": 5,
       // Additional tools to protect from pruning
       "protectedTools": []
     },
@@ -28,7 +28,7 @@
     "extract": {
       "enabled": true,
       // Show distillation content as an ignored message notification
-      "showDistillation": false
+      "showDistillation": true
     }
   },
   // Automatic pruning strategies
@@ -53,11 +53,11 @@
     },
     // (Legacy) Run an LLM to analyze what tool calls are no longer relevant on idle
     "onIdle": {
-      "enabled": false,
+      "enabled": true,
       // Additional tools to protect from pruning
       "protectedTools": [],
       // Override model for analysis (format: "provider/model")
-      // "model": "anthropic/claude-haiku-4-5",
+      "model": "anthropic/claude-haiku-4-5",
       // Show toast notifications when model selection fails
       "showModelErrorToasts": true,
       // When true, fallback models are not permitted
