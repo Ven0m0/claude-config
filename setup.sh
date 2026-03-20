@@ -227,5 +227,5 @@ main(){
 }
 main "$@"
 
-# TODO:
-systemctl --user enable --now claude-cowork
+# TODO: integrate into main() with opt-in flag before enabling
+# systemctl --user enable --now claude-cowork
