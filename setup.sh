@@ -62,36 +62,13 @@ setup_mcp(){
     log "claude CLI not found, skipping MCP configuration"
     return
   fi
-  claude mcp add --transport stdio context7 -- bunx @context7/mcp-server || :
-  claude mcp add --transport stdio sequential-thinking -- bunx @modelcontextprotocol/server-sequential-thinking || :
-  claude mcp add --transport stdio memory -- bunx @modelcontextprotocol/server-memory || :
   claude mcp add --transport http github https://api.githubcopilot.com/mcp/ || :
-  claude mcp add --transport stdio read-fast -- bunx @just-every/mcp-read-website-fast || :
-  claude mcp add --transport stdio dom-reader -- bunx @mcp-b/smart-dom-reader || :
 }
 
 # --- Bun Global Packages ---
 setup_bun_globals(){
   msg "Installing bun global packages..."
   local -a pkgs=(
-    # Token optimization formats
-    "zon-format"
-    "ploon-cli"
-    "tooner"
-    "@danyiel-colin/tree-sitter-toon"
-    "@toon-format/cli"
-    # Context engineering
-    "repomix"
-    "superclaude"
-    # MCP servers
-    "@modelcontextprotocol/server-github"
-    "@modelcontextprotocol/server-memory"
-    "@modelcontextprotocol/server-sequential-thinking"
-    "@morph-llm/morph-fast-apply"
-    "@just-every/mcp-read-website-fast"
-    "@mcp-b/smart-dom-reader"
-    "gemini-mcp-tool"
-    "@upstash/context7-mcp"
     # Utilities
     "claudelint"
     "mdminify"
@@ -104,7 +81,7 @@ setup_bun_globals(){
 setup_uv_tools(){
   msg "Installing uv tools..."
   [[ -d "${HOME}/.venv" || -d .venv ]] || uv venv --seed
-  for tool in beads-mcp gemini-bridge basedpyright; do
+  for tool in basedpyright; do
     uv tool install "$tool" --force || log "Failed: $tool"
   done
 }
@@ -249,3 +226,6 @@ main(){
   msg "Setup complete. Restart Claude Code to apply changes."
 }
 main "$@"
+
+# TODO:
+systemctl --user enable --now claude-cowork
