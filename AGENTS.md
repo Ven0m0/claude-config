@@ -1,612 +1,261 @@
-# AI Agent Configuration and Repository Guide
+# Agent Guide
 
-> **Symlinked as:** `CLAUDE.md` (Claude Code) | `GEMINI.md` (Gemini CLI)
-> **Applies to:** All AI assistants working in this repository.
+> Symlinked as `CLAUDE.md` and `GEMINI.md`.
+> Applies to coding agents working in this repository.
 
-This repository is the **Claude Code Plugin Marketplace and Configuration Repository** - a comprehensive ecosystem of plugins, agents, skills, hooks, and configurations for Claude Code, GitHub Copilot CLI, Cursor, Gemini, and Qwen.
+## Repository Snapshot
 
----
+- This repo is a configuration and plugin marketplace for Claude Code, Copilot CLI, Cursor, Gemini, and related agent tooling.
+- Main areas:
+  - `claude/agents/` - agent definitions
+  - `claude/skills/` - reusable skills
+  - `claude/hooks/` - Python, shell, and JS hook scripts
+  - `plugins/` - installable plugins with their own test setups
+  - `cursor/rules/` - Cursor rules to preserve
+  - `.github/copilot-instructions.md` - Copilot guidance to preserve
 
-## Project Overview
+## Working Rules
 
-| Field | Value |
-|---|---|
-| Type | Configuration ecosystem and plugin marketplace |
-| Primary Framework | Claude Code (CLI for Claude AI assistant) |
-| Version | v1.1.0 |
-| License | MIT |
-| Python | 3.13+ |
-| Node Runtime | Bun |
+- Follow user instructions first.
+- Prefer minimal diffs and editing existing files over creating new ones.
+- Preserve unrelated user changes; never revert work you did not make.
+- Favor subtraction over addition; avoid shims and extra abstractions unless needed.
+- Read relevant files before editing, then run the narrowest useful validation.
+- No emojis in code, comments, commits, or docs.
 
-### Technology Stack
+## Preferred Tools
 
-**Languages:**
-- TypeScript/JavaScript - Skills, MCP servers, hooks
-- Python 3.13+ - Scripting, hooks, automation
-- Shell/Bash - CLI tooling, automation
-- YAML - Configuration, CI/CD
-- JSON - Configuration, metadata
-- Markdown - Documentation (400+ files)
+- Search text with `rg`; discover files with `fd`.
+- Use `uv` for Python environments and execution.
+- Use `bun` / `bunx` for JS/TS tasks.
+- Use `ruff` for Python lint/format, `biome` for JS/TS lint/format.
+- Use `jq` for JSON and `shellcheck` for shell validation.
+- Prefer modern tools over legacy equivalents: `rg` over `grep`, `fd` over `find`, `uv` over `pip`, `bun` over `npm`.
 
-**Frameworks & Tools:**
-- Claude Code - Main framework
-- MCP (Model Context Protocol) - Extensible tool integration
-- Biome - JS/TS formatter and linter
-- Ruff - Python formatter and linter
-- Git/GitHub - Version control, CI/CD
-- Bun - JavaScript runtime and package manager
-- uv - Python package manager
+## Setup
 
----
-
-## Repository Structure
-
-```
-claude-config/
-├── AGENTS.md                   # @primary - This file (symlinked as CLAUDE.md, GEMINI.md)
-├── README.md                   # @marketplace - Plugin marketplace guide
-├── SETUP.md                    # @setup - Installation instructions
-├── CHANGELOG.md                # @history - Version history
-├── pyproject.toml              # @python-deps - Python dependencies
-├── tsconfig.json               # @ts-config - TypeScript configuration
-├── .editorconfig               # @style - Code style rules
-│
-├── claude/                     # @core - Main Claude Code config pack
-│   ├── agents/                # @agents - 12 specialized sub-agents
-│   │   ├── ci-cd-expert.md        # CI/CD pipeline specialist
-│   │   ├── code-explorer.md       # Codebase analysis and navigation
-│   │   ├── code-simplifier.md     # Refactoring and simplification
-│   │   ├── docker-specialist.md   # Docker and containerization
-│   │   ├── general-purpose.md     # Default multi-step agent
-│   │   ├── language-expert.md     # Multi-language development
-│   │   ├── maintenance.md         # Cleanup and tech debt
-│   │   ├── merge-supervisor.md    # Merge conflict resolution
-│   │   ├── optimizer.md           # Context and LLM optimization
-│   │   ├── prd.md                 # Product requirements docs
-│   │   ├── reverse-engineer.md    # Binary analysis (authorized use)
-│   │   └── skill-auditor.md       # SKILL.md compliance audits
-│   │
-│   ├── skills/                # @skills - 32 reusable skills
-│   │   ├── ast-grep-search/       # AST-based structural code search
-│   │   ├── bash-optimizer/        # Optimize bash scripts
-│   │   ├── code-antipatterns-analysis/ # Detect code antipatterns
-│   │   ├── code-execution/        # Safe code execution patterns
-│   │   ├── data-formats/          # Format conversion (JSON, TOON, etc.)
-│   │   ├── git-cli-agentic/       # Advanced git operations
-│   │   ├── github/                # GitHub CLI operations
-│   │   ├── hooks-configuration/   # Configure Claude Code hooks
-│   │   ├── javascript/            # JavaScript best practices
-│   │   ├── json-repair/           # JSON validation and repair
-│   │   ├── linter-autofix/        # Auto-fix linting errors
-│   │   ├── llm-boost/             # LLM performance tuning
-│   │   ├── lsp-enable/            # LSP-first code intelligence
-│   │   ├── mcp-builder/           # Build MCP servers
-│   │   ├── moai/                  # Claude Code authoring kit
-│   │   ├── modern-tool-substitution/ # Substitute legacy tools
-│   │   ├── prd/                   # PRD generation
-│   │   ├── python-project-development/ # Python dev patterns
-│   │   ├── ralph-planner/         # Structured planning
-│   │   ├── render-output/         # Output formatting
-│   │   ├── repomix/               # Repository mixing/bundling
-│   │   ├── ruff/                  # Python linting with ruff
-│   │   ├── rust/                  # Rust development
-│   │   ├── self-reflection/       # Agent self-evaluation
-│   │   ├── sequential-thinking/   # Step-by-step reasoning
-│   │   ├── strategic-compact/     # Context compaction
-│   │   ├── svg/                   # SVG creation and optimization
-│   │   ├── toon-formatter/        # TOON format conversion
-│   │   ├── typescript/            # TypeScript best practices
-│   │   ├── using-tmux-for-interactive-commands/ # Tmux workflows
-│   │   ├── uv/                    # Python uv package manager
-│   │   └── vulture-dead-code/     # Dead code detection
-│   │
-│   ├── hooks/                 # @hooks - Auto-running hooks
-│   │   ├── post-edit-format.py         # Auto-format on file edits
-│   │   ├── enforce_rg_over_grep.py     # Policy: block grep, use rg
-│   │   ├── context_protector.py        # Context management
-│   │   ├── precompact_context.py       # Pre-compaction processing
-│   │   ├── load-mcp-skills.sh          # MCP initialization (SessionStart)
-│   │   ├── json-to-toon.mjs            # JSON to TOON conversion
-│   │   ├── hooks.json                  # Hook configuration
-│   │   └── auto-git-add.json           # Auto git staging config
-│   │
-│   ├── docs/                  # @docs - Reference documentation
-│   │   ├── claude-md-guide.md         # CLAUDE.md authoring guide
-│   │   ├── hooks.md                   # Hooks reference
-│   │   ├── llm-tuning.md              # LLM parameter tuning
-│   │   ├── lsp-tools-integration.md   # LSP integration
-│   │   ├── memory-architecture.md     # Memory system design
-│   │   ├── optimization-patterns.md   # Performance patterns
-│   │   ├── output-styles.md           # Output formatting guide
-│   │   ├── progressive-disclosure.md  # Content architecture
-│   │   ├── prompt-best-practices.md   # Prompt patterns
-│   │   ├── python-non-obvious-patterns.md # Python tips
-│   │   ├── skills-index.md            # All skills index
-│   │   ├── toon.md                    # TOON format spec
-│   │   └── use-xml-tags.md            # XML tag structuring
-│   │
-│   └── settings.json          # @settings - Permissions, env config
-│
-├── plugins/                    # @plugins - Plugin marketplace (13 plugins)
-│   ├── coding-assistant/      # Code review, debug, refactor
-│   ├── conserve/              # Context/token optimization
-│   ├── prompt-improver/       # Prompt clarity enhancement
-│   ├── config-wizard/         # Plugin creation wizard
-│   ├── dependency-blocker/    # Block dependency directories
-│   ├── dynamic-mcp-router/    # Dynamic MCP routing
-│   ├── moderntools/           # Modern tool substitutions
-│   ├── plugin-validator/      # Plugin validation
-│   ├── skill-authoring/       # Skill creation framework
-│   ├── skills-eval/           # Skill evaluation framework
-│   ├── skills_performance-optimization/ # Skill perf tuning
-│   ├── claude-code-lsps/      # LSP integrations for Claude Code
-│   └── claude-praetorian/     # Security guardrails
-│
-├── gemini/                     # Gemini AI config
-│   ├── skills/                # Code reviewer, PR creator
-│   └── settings.json          # Gemini-specific settings
-│
-├── cursor/                     # Cursor editor config
-│   ├── rules/base.md          # Cursor rules
-│   └── mcp.json               # MCP settings
-│
-├── copilot-cli/               # GitHub Copilot CLI config
-├── opencode/                  # OpenCode references
-├── prompts/                   # Reusable prompts
-│
-├── .claude-plugin/            # @marketplace - Marketplace definition
-│   └── marketplace.json       # Plugin registry
-│
-└── .github/
-    ├── copilot-instructions.md # @copilot - Copilot guardrails
-    └── workflows/             # @ci - CI/CD automation
-        ├── claudelint.yml         # CLAUDE.md validation
-        ├── ruff.yml               # Python linting
-        ├── claude.yml             # Claude Code analysis
-        ├── claude-code-review.yml # Automated code reviews
-        ├── claude-pr-review.yml   # PR review automation
-        ├── droid.yml              # Droid automation
-        └── jules-*.yml            # Jules automated improvements
-```
-
----
-
-## Development Workflows
-
-### Setup and Installation
+Run from repo root unless a plugin says otherwise.
 
 ```bash
-# Clone repository
-git clone https://github.com/Ven0m0/claude-config.git
-
-# Install as marketplace
-/plugin marketplace add Ven0m0/claude-config
-
-# Install specific plugins
-/plugin install coding-assistant@claude-config-marketplace
-
-# Copy claude/ config pack to ~/.claude/
-cp -r claude/ ~/.claude/
+uv sync --dev
+bun install
 ```
 
-### Build and Test
+## Build, Lint, And Test Commands
 
-**Python:**
+### Whole-repo checks
+
 ```bash
-# Lint with ruff
-ruff check .
-
-# Format with ruff
-ruff format .
-
-# Run plugin tests
-cd plugins/conserve && make test
-
-# Run with uv
-uv run pytest tests/
-```
-
-**JavaScript/TypeScript:**
-```bash
-# Format with Biome
-biome format --write .
-
-# Check with Biome
-biome check .
-
-# Type-check
+uv run ruff check .
+uv run ruff format --check .
+bunx @biomejs/biome check .
 bun run tsc --noEmit
-```
-
-**Validation:**
-```bash
-# Validate AGENTS.md
-claudelint --check AGENTS.md
-
-# Validate shell scripts
+uv tool run "claudelint@0.3.3" --strict .
 shellcheck claude/hooks/*.sh
-
-# Validate YAML
-yamllint .github/workflows/*.yml
 ```
 
-### Common Development Tasks
-
-**Create a New Skill:**
-```bash
-# Use config wizard
-/skill config-wizard
-
-# Manual: create SKILL.md in claude/skills/skill-name/
-mkdir claude/skills/my-skill
-# Add SKILL.md following existing skill template format
-```
-
-**Add a New Agent:**
-1. Create `claude/agents/agent-name.md`
-2. Add YAML frontmatter: `name`, `description`, `allowed-tools`, `model`
-3. Document usage and examples in the body
-4. Test with `/agent agent-name`
-
-**Add a New Hook:**
-1. Create hook script in `claude/hooks/`
-2. Register in `claude/hooks/hooks.json`
-3. Test hook behavior in a session
-4. Document in `claude/docs/hooks.md`
-
-**Fix Linting Issues:**
-```bash
-# Python
-ruff check --fix .
-
-# JS/TS
-biome check --apply .
-
-# Or use skill
-/skill linter-autofix
-```
-
----
-
-## Conventions
-
-### Naming Conventions
-
-| Category | Convention | Example |
-|---|---|---|
-| Skills | `hyphenated-names/` | `linter-autofix/` |
-| Agents | `hyphenated-names.md` | `code-explorer.md` |
-| Plugins | `hyphenated-names/` | `coding-assistant/` |
-| Python files | `snake_case.py` | `post_edit_format.py` |
-| Config/Docs | `kebab-case.md` | `claude-md-guide.md` |
-| JS/TS functions | `camelCase` | `formatOutput()` |
-| Python functions | `snake_case` | `format_output()` |
-| Constants | `UPPER_SNAKE_CASE` | `MAX_TOKENS` |
-| Classes | `PascalCase` | `ContextManager` |
-
-### Code Style
-
-From `.editorconfig`:
-- Indentation: 2 spaces (JS/TS/YAML/JSON), 4 spaces (Python)
-- Line length: 120 characters max
-- Encoding: UTF-8
-- Line endings: LF (Unix)
-- Trailing whitespace: Remove
-
-**Engineering Principles:**
-- **KISS** - Keep It Simple, Stupid
-- **YAGNI** - You Ain't Gonna Need It
-- **DRY** - Don't Repeat Yourself
-- **Fail Fast** - Validate inputs early
-- **No Emojis** - Never in code, comments, commits, docs
-- **Error Handling** - Meaningful, actionable messages
-- **Max File Size** - 200-400 lines typical, 800 max
-
-### Tool Preferences
-
-| Category | Preferred | Fallback |
-|---|---|---|
-| File Search | `fd` | `find` |
-| Text Search | `rg` (ripgrep) | *(grep blocked by hook)* |
-| Code Structure | `ast-grep`, LSP tools | - |
-| File Listing | `eza` | `ls` |
-| JSON Processing | `jq` | - |
-| YAML Processing | `yq` | - |
-| HTTP | `aria2` | `curl` |
-| Sed replacement | `sd` | `sed` |
-
-> **Policy:** `grep` is blocked by the `enforce_rg_over_grep.py` hook. Always use `rg`.
-
-<lsp_enforcement>
-Use LSP for code navigation before edits: go-to-definition, find-references, find-implementations. Validate with LSP before making changes. Use text search (rg) only for literal strings, TODOs, and config values.
-</lsp_enforcement>
-
-### Git Conventions
-
-**Commit Messages:**
-- Format: `type(scope): description`
-- Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
-- Max subject length: 72 characters
-- Body: Explain WHY, not WHAT
-- No emojis
-
-**Branch Names:**
-- Feature: `feature/description`
-- Bug fix: `fix/description`
-- Docs: `docs/description`
-- Claude sessions: `claude/*` (auto-generated)
-
-**Pull Requests:**
-- Use descriptive titles
-- Include test plan
-- Link related issues
-
----
-
-## Agents Reference (12 Total)
-
-All agents live in `claude/agents/`. Invoke with `/agent <name>`.
-
-| Agent | Model | Description |
-|---|---|---|
-| `ci-cd-expert` | sonnet | CI/CD pipeline design, GitHub Actions, GitLab CI, troubleshooting |
-| `code-explorer` | haiku | Codebase analysis: execution paths, architecture mapping, patterns |
-| `code-simplifier` | opus | Refactoring for clarity and maintainability |
-| `docker-specialist` | sonnet | Dockerfile optimization, multi-stage builds, security hardening |
-| `general-purpose` | sonnet | Default agent for complex multi-step tasks |
-| `language-expert` | sonnet | Multi-language: Bash, Python, JS, TS, Rust |
-| `maintenance` | sonnet | Cleanup, tech debt, DX improvements |
-| `merge-supervisor` | opus | Git merge conflict resolution |
-| `optimizer` | opus | Context engineering, token optimization, multi-agent workflows |
-| `prd` | opus | Product Requirements Documents with GitHub issue creation |
-| `reverse-engineer` | opus | Binary analysis (authorized use, CTF, malware defense only) |
-| `skill-auditor` | sonnet | SKILL.md compliance audits and fixes |
-
----
-
-## Skills Reference (32 Total)
-
-All skills live in `claude/skills/`. Invoke with `/skill <name>`.
-
-| Skill | Purpose |
-|---|---|
-| `ast-grep-search` | AST-based structural code search and refactoring |
-| `bash-optimizer` | Optimize bash scripts for performance and correctness |
-| `code-antipatterns-analysis` | Detect and report code antipatterns |
-| `code-execution` | Safe code execution patterns |
-| `data-formats` | Format conversion: JSON, TOON, YAML, CSV |
-| `git-cli-agentic` | Advanced git operations and workflows |
-| `github` | GitHub CLI operations (issues, PRs, releases) |
-| `hooks-configuration` | Configure and manage Claude Code hooks |
-| `javascript` | JavaScript idiomatic patterns and best practices |
-| `json-repair` | JSON validation, repair, and normalization |
-| `linter-autofix` | Auto-fix linting errors across languages |
-| `llm-boost` | LLM performance tuning and prompt optimization |
-| `lsp-enable` | LSP-first code intelligence setup |
-| `mcp-builder` | Build Model Context Protocol servers |
-| `moai` | Claude Code authoring kit for SKILL.md files |
-| `modern-tool-substitution` | Replace legacy tools with modern equivalents |
-| `prd` | Product Requirements Document generation |
-| `python-project-development` | Python project patterns and structure |
-| `ralph-planner` | Structured planning and task breakdown |
-| `render-output` | Output formatting and rendering |
-| `repomix` | Repository bundling for LLM context |
-| `ruff` | Python linting and formatting with ruff |
-| `rust` | Rust development patterns |
-| `self-reflection` | Agent self-evaluation and improvement |
-| `sequential-thinking` | Step-by-step structured reasoning |
-| `strategic-compact` | Context compaction strategies |
-| `svg` | SVG creation and optimization |
-| `toon-formatter` | TOON v2 format conversion (31% token savings vs JSON) |
-| `typescript` | TypeScript best practices and patterns |
-| `using-tmux-for-interactive-commands` | Tmux for interactive CLI workflows |
-| `uv` | Python uv package manager workflows |
-| `vulture-dead-code` | Dead code detection with vulture |
-
----
-
-## Plugins Reference (13 Total)
-
-All plugins live in `plugins/`. Install via `/plugin install <name>@claude-config-marketplace`.
-
-| Plugin | Purpose |
-|---|---|
-| `coding-assistant` | Code review, debugging, refactoring with auto-format hooks |
-| `conserve` | Context/token optimization, bloat scanning |
-| `config-wizard` | Plugin creation wizard |
-| `dependency-blocker` | Block `node_modules`, `dist`, `build`, `.venv` from context |
-| `dynamic-mcp-router` | Dynamic MCP server routing |
-| `moderntools` | Modern tool substitution enforcement |
-| `plugin-validator` | Plugin structure and compliance validation |
-| `prompt-improver` | Prompt clarity and effectiveness enhancement |
-| `skill-authoring` | Skill creation framework and templates |
-| `skills-eval` | Skill evaluation and benchmarking |
-| `skills_performance-optimization` | Skill performance tuning |
-| `claude-code-lsps` | LSP integrations for Claude Code |
-| `claude-praetorian` | Security guardrails and policy enforcement |
-
----
-
-## Hooks System
-
-Hooks auto-run at key events. Configuration in `claude/hooks/hooks.json`.
-
-| Event | Hook | Behavior |
-|---|---|---|
-| `SessionStart` | `load-mcp-skills.sh` | Load MCP skills at session start |
-| `PreToolUse[Bash]` | `quality_gate.py` | Validate bash commands before execution |
-| `PostToolUse[Edit/Write]` | `post-edit-format.py` | Auto-format edited files |
-| `PostToolUse[Edit/Write]` | *(inline)* | Strip trailing whitespace |
-
-**Hook Scripts:**
-- `context_protector.py` - Guard sensitive context from leaking
-- `enforce_rg_over_grep.py` - Block `grep`, enforce `rg`
-- `precompact_context.py` - Pre-process before context compaction
-- `json-to-toon.mjs` - Convert JSON to TOON format
-
----
-
-## Dependencies
-
-### Python (`pyproject.toml`)
-
-```toml
-requires-python = ">=3.13"
-dependencies = ["claudelint"]
-
-[dependency-groups]
-dev = ["ruff"]
-```
-
-### System Tools Required
-
-| Tool | Purpose |
-|---|---|
-| `git` | Version control |
-| `gh` | GitHub CLI |
-| `rg` (ripgrep) | Text search (mandatory) |
-| `fd` | File search |
-| `jq` | JSON processing |
-| `bun` | JavaScript runtime |
-| `uv` | Python package manager |
-
-**Optional:**
-- `eza` - Better ls
-- `ast-grep` - AST-based search
-- `shellcheck` - Bash linting
-- `yamllint` - YAML validation
-- `sd` - Fast sed replacement
-- `aria2` - Fast downloads
-
----
-
-## Security
-
-**Policy Enforcement:**
-- `grep` blocked; must use `rg` (enforced by PreToolUse hook)
-- No emojis in code, comments, commits, or docs
-- Dotfiles (`.ssh`, `.aws`, `.env`) protected by `claude-praetorian` plugin
-- Dependency directories (`node_modules`, `dist`, etc.) blocked from context by `dependency-blocker`
-
-**Bash Standards:**
-- `set -euo pipefail` in all shell scripts
-- Quote all variables: `"${var}"`
-- Use `[[ ]]` not `[ ]`
-- No `eval`, no backticks
-
----
-
-## Token Optimization
-
-### TOON Format (Token-Optimized Object Notation)
-
-31% token reduction vs JSON for tabular data:
-
-```toon
-user:1|John Doe|john@example.com|active
-user:2|Jane Smith|jane@example.com|active
-```
-
-Use `/skill toon-formatter` to convert data.
-
-### Maximum Effective Context Window (MECW)
-
-**Principles:**
-- Progressive disclosure - Load only what's needed
-- Skill-based architecture - Reference, don't duplicate
-- Context protection - Guard against bloat
-- Strategic caching - Reuse expensive computations
-
-**Model Configuration:**
-- Main Model: `opusplan` (Claude Opus with extended thinking)
-- Thinking Tokens: 16,000 max
-- Output Tokens: 63,999 max
-- Subagent Model: `haiku`
-- MCP Output: 25,000 tokens max
-
----
-
-## Testing and Quality Assurance
+### Targeted checks
 
 ```bash
-# Python tests
-uv run pytest plugins/conserve/tests/ --cov=.
-
-# All-in-one quality check
-ruff check . && biome check . && claudelint --check AGENTS.md
-
-# Shell scripts
-shellcheck claude/hooks/*.sh
-
-# YAML
-yamllint .github/workflows/*.yml
+uv run ruff check claude/hooks plugins
+bunx @biomejs/biome check claude plugins
+uv tool run "claudelint@0.3.3" --strict AGENTS.md
 ```
 
-### CI/CD Workflows
+### Python tests
 
-| Workflow | Trigger | Purpose |
-|---|---|---|
-| `claudelint.yml` | push/PR | Validate AGENTS.md |
-| `ruff.yml` | push/PR | Python code quality |
-| `claude.yml` | push/PR | Claude Code analysis |
-| `claude-code-review.yml` | PR | Automated code review |
-| `claude-pr-review.yml` | PR | PR review automation |
-| `droid.yml` | schedule | Automated improvements |
-| `jules-*.yml` | schedule | Cleanup, performance, bug fixes |
+Primary Python-heavy surface is `plugins/conserve/`.
 
----
+```bash
+uv run pytest plugins/conserve/tests/
+uv run pytest plugins/conserve/tests/unit/ -v
+uv run pytest plugins/conserve/tests/integration/ -v
+uv run pytest plugins/conserve/tests/unit/scripts/test_cli_smoke.py -v
+uv run pytest plugins/conserve/tests/unit/scripts/test_cli_smoke.py::test_name -v
+uv run pytest plugins/conserve/tests/ -k "token_conservation" -v
+```
 
-## Environment Variables
+`plugins/prompt-improver/` also uses pytest:
 
-| Variable | Purpose |
-|---|---|
-| `CLAUDE_ENV_FILE` | Persistent environment variables |
-| `CLAUDE_PLUGIN_ROOT` | Hook script resolution path |
-| `CONSERVATION_MODE` | Resource optimization (`normal`/`quick`/`deep`) |
-| `CLAUDE_DEBUG` | Enable debug logging |
-| `CLAUDE_LOG_LEVEL` | Logging verbosity |
+```bash
+uv run pytest plugins/prompt-improver/tests/
+uv run pytest plugins/prompt-improver/tests/test_hook.py -v
+uv run pytest plugins/prompt-improver/tests/test_integration.py -v
+```
 
----
+### Make-based helpers
 
-## Additional Resources
+```bash
+make -C plugins/conserve test
+make -C plugins/conserve lint
+make -C plugins/conserve validate-all
 
-| Resource | Path |
-|---|---|
-| Prompt best practices | `claude/docs/prompt-best-practices.md` |
-| LSP integration | `claude/docs/lsp-tools-integration.md` |
-| CLAUDE.md authoring | `claude/docs/claude-md-guide.md` |
-| Skills index | `claude/docs/skills-index.md` |
-| TOON format spec | `claude/docs/toon.md` |
-| Hooks reference | `claude/docs/hooks.md` |
-| Progressive disclosure | `claude/docs/progressive-disclosure.md` |
-| Repository | https://github.com/Ven0m0/claude-config |
-| Issues | https://github.com/Ven0m0/claude-config/issues |
+make -C plugins/conserve/tests test
+make -C plugins/conserve/tests test-unit
+make -C plugins/conserve/tests test-integration
+make -C plugins/conserve/tests test-pattern PATTERN=context
+make -C plugins/conserve/tests test-marker MARKER=unit
 
----
+make -C plugins/dependency-blocker test
+make -C plugins/dependency-blocker lint
+```
 
-## Session Completion
+### Other test commands
 
-<session_completion>
-When ending a work session, complete all steps below. Work is not complete until `git push` succeeds.
+```bash
+bats plugins/dependency-blocker/tests/test-bash-validate.bats
+bats plugins/dependency-blocker/tests/test-bash-validate.bats --filter "node_modules"
+node plugins/plugin-validator/test.js
+```
 
-1. File issues for remaining work
-2. Run quality gates (if code changed): tests, linters, builds
-3. Update issue status
-4. Push to remote:
-   ```bash
-   git pull --rebase
-   git push
-   git status
-   ```
-5. Clean up: clear stashes, prune remote branches
-6. Verify all changes committed and pushed
-7. Hand off: provide context for next session
+## Single-Test Guidance
 
-If push fails, resolve and retry until it succeeds. Do not stop before pushing - that leaves work stranded locally.
-</session_completion>
+- Pytest single file: `uv run pytest path/to/test_file.py -v`
+- Pytest single test: `uv run pytest path/to/test_file.py::test_name -v`
+- Pytest pattern: `uv run pytest plugins/conserve/tests/ -k "pattern" -v`
+- Bats single file: `bats plugins/dependency-blocker/tests/test-read-validate.bats`
+- Bats filtered case: `bats path/to/file.bats --filter "case name"`
+- Node suite: `node plugins/plugin-validator/test.js`
 
----
+## Style And Formatting
 
-**Last Updated:** 2026-02-22
-**Repository:** https://github.com/Ven0m0/claude-config
-**Active Development:** Yes
+Rules come from `.editorconfig`, root `pyproject.toml`, `tsconfig.json`, Cursor rules, and Copilot instructions.
+
+- Encoding: UTF-8, LF, final newline.
+- Indentation: 2 spaces for JS/TS/JSON/YAML/Markdown, 4 spaces for Python, tabs for `Makefile` and `*.mk`.
+- Whitespace: trim trailing whitespace unless the file type intentionally preserves it.
+- Quotes: prefer double quotes where the formatter or local style allows choice.
+- Keep files focused; prefer roughly 200-400 lines and avoid pushing past 800 without a strong reason.
+
+## Imports
+
+- Keep imports minimal and used.
+- Prefer absolute imports in Python when structure supports them.
+- Group imports as standard library, third-party, then local modules.
+- Let Ruff or Biome handle normalization when configured.
+- Avoid wildcard imports.
+
+## Types
+
+- Python: add type hints for new or changed public functions and non-trivial helpers.
+- TypeScript: keep code compatible with `strict`, `noUncheckedIndexedAccess`, and `noFallthroughCasesInSwitch`.
+- Prefer precise types over `Any` or `unknown` escape hatches.
+- Model nullability explicitly instead of relying on truthiness.
+
+## Naming
+
+- Python: `snake_case` functions and variables, `PascalCase` classes, `UPPER_SNAKE_CASE` constants.
+- JS/TS: `camelCase` functions and variables, `PascalCase` classes and components.
+- Files:
+  - agents: `hyphenated-name.md`
+  - skills: `hyphenated-dir/SKILL.md`
+  - Python modules: `snake_case.py`
+  - docs/config: `kebab-case.md`
+- Prefer descriptive names over abbreviations and magic numbers.
+
+## Error Handling And Security
+
+- Fail fast at boundaries; validate external input and configuration early.
+- Keep errors actionable and specific.
+- Do not add defensive code for impossible states without evidence.
+- Never hardcode credentials or secrets.
+- Avoid `eval` in any language.
+- Sanitize external input and avoid string-built commands when structured alternatives exist.
+- Shell scripts should use `#!/usr/bin/env bash`, `set -euo pipefail`, quoted variables, and `[[ ... ]]`.
+
+## Language-Specific Notes
+
+- Python: root tooling targets Python 3.14; Ruff uses line length 88 and aggressive linting.
+- JS/TS: use Bun-oriented commands and preserve strict TypeScript behavior.
+- Shell: validate changed scripts with `shellcheck`.
+- Markdown/docs: keep prose direct and use real file paths.
+
+## Cursor And Copilot Rules To Preserve
+
+- Verify facts before presenting them; do not invent behavior or changes.
+- Preserve existing structures and unrelated code.
+- Avoid whitespace-only churn.
+- Use meaningful names, named constants, and comments that explain why rather than what.
+- Keep functions focused; refactor when a block needs excessive explanation.
+- Keep responses and docs concise, blunt, and result-first.
+- Run tests after changes and use parallel operations for independent work.
+- XML-style structure is acceptable for complex prompts when it improves clarity.
+- Do not commit directly to protected branches like `main` or `develop`.
+
+## Validation Expectations Before Finishing
+
+- Run the narrowest relevant tests for touched code.
+- If you changed Python, run Ruff and the relevant pytest target.
+- If you changed JS/TS, run Biome and `bun run tsc --noEmit` when types may be affected.
+- If you changed shell hooks, run `shellcheck`.
+- If you changed agent or plugin docs, run `uv tool run "claudelint@0.3.3" --strict .` or at least the touched file.
+
+## Commit Style
+
+- Commit format: `type(scope): description`
+- Common types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+- Keep subject lines under 72 characters.
+- Explain why in the body when a body is needed.
+
+# context-mode — MANDATORY routing rules
+
+You have context-mode MCP tools available. These rules are NOT optional — they protect your context window from flooding. A single unrouted command can dump 56 KB into context and waste the entire session.
+
+## BLOCKED commands — do NOT attempt these
+
+### curl / wget — BLOCKED
+Any Bash command containing `curl` or `wget` is intercepted and replaced with an error message. Do NOT retry.
+Instead use:
+- `ctx_fetch_and_index(url, source)` to fetch and index web pages
+- `ctx_execute(language: "javascript", code: "const r = await fetch(...)")` to run HTTP calls in sandbox
+
+### Inline HTTP — BLOCKED
+Any Bash command containing `fetch('http`, `requests.get(`, `requests.post(`, `http.get(`, or `http.request(` is intercepted and replaced with an error message. Do NOT retry with Bash.
+Instead use:
+- `ctx_execute(language, code)` to run HTTP calls in sandbox — only stdout enters context
+
+### WebFetch — BLOCKED
+WebFetch calls are denied entirely. The URL is extracted and you are told to use `ctx_fetch_and_index` instead.
+Instead use:
+- `ctx_fetch_and_index(url, source)` then `ctx_search(queries)` to query the indexed content
+
+## REDIRECTED tools — use sandbox equivalents
+
+### Bash (>20 lines output)
+Bash is ONLY for: `git`, `mkdir`, `rm`, `mv`, `cd`, `ls`, `npm install`, `pip install`, and other short-output commands.
+For everything else, use:
+- `ctx_batch_execute(commands, queries)` — run multiple commands + search in ONE call
+- `ctx_execute(language: "shell", code: "...")` — run in sandbox, only stdout enters context
+
+### Read (for analysis)
+If you are reading a file to **Edit** it → Read is correct (Edit needs content in context).
+If you are reading to **analyze, explore, or summarize** → use `ctx_execute_file(path, language, code)` instead. Only your printed summary enters context. The raw file content stays in the sandbox.
+
+### Grep (large results)
+Grep results can flood context. Use `ctx_execute(language: "shell", code: "grep ...")` to run searches in sandbox. Only your printed summary enters context.
+
+## Tool selection hierarchy
+
+1. **GATHER**: `ctx_batch_execute(commands, queries)` — Primary tool. Runs all commands, auto-indexes output, returns search results. ONE call replaces 30+ individual calls.
+2. **FOLLOW-UP**: `ctx_search(queries: ["q1", "q2", ...])` — Query indexed content. Pass ALL questions as array in ONE call.
+3. **PROCESSING**: `ctx_execute(language, code)` | `ctx_execute_file(path, language, code)` — Sandbox execution. Only stdout enters context.
+4. **WEB**: `ctx_fetch_and_index(url, source)` then `ctx_search(queries)` — Fetch, chunk, index, query. Raw HTML never enters context.
+5. **INDEX**: `ctx_index(content, source)` — Store content in FTS5 knowledge base for later search.
+
+## Subagent routing
+
+When spawning subagents (Agent/Task tool), the routing block is automatically injected into their prompt. Bash-type subagents are upgraded to general-purpose so they have access to MCP tools. You do NOT need to manually instruct subagents about context-mode.
+
+## Output constraints
+
+- Keep responses under 500 words.
+- Write artifacts (code, configs, PRDs) to FILES — never return them as inline text. Return only: file path + 1-line description.
+- When indexing content, use descriptive source labels so others can `ctx_search(source: "label")` later.
+
+## ctx commands
+
+| Command | Action |
+|---------|--------|
+| `ctx stats` | Call the `ctx_stats` MCP tool and display the full output verbatim |
+| `ctx doctor` | Call the `ctx_doctor` MCP tool, run the returned shell command, display as checklist |
+| `ctx upgrade` | Call the `ctx_upgrade` MCP tool, run the returned shell command, display as checklist |

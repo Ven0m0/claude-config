@@ -1,6 +1,5 @@
 ---
 description: Generate daily standup from recent git activity
-model: zai-coding-plan/glm-4.5-air
 agent: scribe
 ---
 

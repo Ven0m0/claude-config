@@ -1,6 +1,83 @@
-# https://github.com/lgladysz/opencode-ignore
+# OpenCode / LLM ignore patterns
 
+# Dependencies and package manager caches
 **/node_modules/**
+**/.pnpm-store/**
+**/.yarn/**
+**/.npm/**
+**/vendor/**
+
+# Build artifacts and caches
 **/dist/**
 **/build/**
+**/out/**
+**/.next/**
+**/.nuxt/**
+**/.turbo/**
 **/.cache/**
+**/.tmp/**
+**/tmp/**
+**/temp/**
+**/.parcel-cache/**
+**/.eslintcache
+**/*.tsbuildinfo
+
+# Python artifacts
+**/__pycache__/**
+**/.pytest_cache/**
+**/.mypy_cache/**
+**/.ruff_cache/**
+**/.venv/**
+**/venv/**
+**/env/**
+**/.tox/**
+**/htmlcov/**
+
+# Coverage, logs, and runtime junk
+**/coverage/**
+**/*.log
+**/*.log.*
+**/*.pid
+**/*.pid.lock
+
+# Binary and generated media
+**/*.min.js
+**/*.min.css
+**/*.map
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.webp
+**/*.avif
+**/*.pdf
+**/*.zip
+**/*.tar
+**/*.gz
+**/*.bz2
+**/*.xz
+**/*.7z
+**/*.jar
+**/*.class
+**/*.so
+**/*.dylib
+**/*.dll
+
+# Repo/tooling local state
+.git/
+.claude/
+.omc/
+.opencode/
+**/.opencode/cache/**
+**/.opencode/sessions/**
+
+# Secrets and environment files
+**/.env
+**/.env.*
+!**/.env.example
+**/secrets/**
+**/credentials/**
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx

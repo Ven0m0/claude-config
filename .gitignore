@@ -72,6 +72,7 @@ logs/
 tmp/
 temp/
 .cache/
+.cachebro/
 pids
 *.pid
 *.seed
@@ -152,4 +153,5 @@ lib64/
 
 # Miscellaneous
 .playwright-mcp
+.tmp-context-mode/
 theme.config.tsx

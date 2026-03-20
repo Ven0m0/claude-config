@@ -1,74 +1,124 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["AGENTS.md", "CLAUDE.md", "copilot-instructions.md", "~/.config/opencode/node_modules/opencode-morph-fast-apply/instructions/morph-tools.md"],
+  "instructions": [
+    "AGENTS.md",
+    "../.github/copilot-instructions.md",
+    "MORPH_INSTRUCTIONS.md"
+  ],
+  // Lean plugin set: one Morph path, one orchestration layer, trimmed auth,
+  // and no broken Bun-only context plugin until upstream compatibility lands.
   "plugin": [
-    "github:JRedeker/opencode-morph-fast-apply",
-    "@spoons-and-mirrors/subtask2@latest",
-    "@ramarivera/opencode-model-announcer@latest",
+    // Editing and terminal UX
+    "@morphllm/opencode-morph-plugin@2.0.7",
     "opencode-pty@latest",
+
+    // Auth and session continuity
     "opencode-antigravity-auth@latest",
     "opencode-gemini-auth@latest",
-    "opencode-anthropic-auth@latest",
-    "opencode-copilot-auth@latest",
-    "opencode-cursor-auth@latest",
-    "opencode-kilo-auth@latest",
-    "@mathew-cf/opencode-mcp-auto-reauth@latest",
-    "opencode-ignore@latest",
-    "opencode-agent-skills@latest",
-    "opencode-agent-memory@latest",
-    "@zenobius/opencode-background@latest",
-    "@tarquinen/opencode-dcp@latest",
-    "opencode-morphllm@latest",
-    "opencode-plugin-preload-skills@latest",
-    "opencode-gitbutler@latest",
-    "opencode-blocker-diverter@latest",
     "opencode-session-handoff@latest",
+
+    // Safety and quality-of-life
     "opencode-image-compress@latest",
-    "opentmux@latest",
-    "opencode-repos@latest",
-    "opencode-plugin-auto-update@latest",
     "opencode-websearch@latest",
-    "opencode-ralph-loop@latest",
-    "openslimedit@latest",
-    "better-opencode-async-agents@latest",
-    "everything-opencode@latest",
-    "@bastiangx/opencode-unmoji@latest",
-    "opencode-lazy-loader@latest",
-    "@old-mikser/occontext-thinking-trim@latest",
-    "@tuanhung303/opencode-acp@latest",
-    "opencode-codebase-index@latest",
-    "context-mode@latest",
-    "opencode-cachebro@latest",
-    "opencode-dir@latest",
-    "opencode-fastedit@latest",
-    "opencode-fast-apply@latest",
-    "oh-my-opencode-slim@latest",
-    "opencode-plugin-search",
-    "superpowers@git+https://github.com/obra/superpowers.git"
+    "opencode-ignore@latest",
+    "oh-my-opencode@latest",
+    // Added intentionally for Flow-based planning/review workflows.
+    "github:gmickel/flow-next-opencode#276713a0d61b01d6356f79ec937d97cd8d39a039"
   ],
+  "lsp": {
+    "typescript": {
+      "command": ["typescript-language-server", "--stdio"],
+      "extensions": [
+        ".js",
+        ".jsx",
+        ".ts",
+        ".tsx",
+        ".mjs",
+        ".cjs",
+        ".mts",
+        ".cts"
+      ],
+      "initialization": {
+        "preferences": {
+          "importModuleSpecifierPreference": "relative"
+        }
+      }
+    },
+    "pyright": {
+      "command": ["pyright-langserver", "--stdio"],
+      "extensions": [".py", ".pyw", ".pyi"]
+    },
+    "rust": {
+      "command": [
+        "/home/ven0m0/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer"
+      ],
+      "extensions": [".rs"]
+    },
+    "bash": {
+      "command": ["bash-language-server", "start"],
+      "extensions": [".sh", ".bash", ".zsh"]
+    },
+    "yaml-ls": {
+      "command": ["yaml-language-server", "--stdio"],
+      "extensions": [".yaml", ".yml"]
+    }
+  },
+  "formatter": {
+    "prettier": {
+      "command": ["prettier", "--write", "$FILE"],
+      "extensions": [
+        ".js",
+        ".jsx",
+        ".ts",
+        ".tsx",
+        ".json",
+        ".jsonc",
+        ".md",
+        ".css",
+        ".scss",
+        ".html",
+        ".yml",
+        ".yaml"
+      ]
+    },
+    "ruff": {
+      "command": ["uv", "tool", "run", "ruff", "format", "$FILE"],
+      "extensions": [".py", ".pyw", ".pyi"]
+    },
+    "rustfmt": {
+      "command": [
+        "/home/ven0m0/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rustfmt",
+        "$FILE"
+      ],
+      "extensions": [".rs"]
+    },
+    "shfmt": {
+      "command": ["shfmt", "-w", "$FILE"],
+      "extensions": [".sh", ".bash", ".zsh"]
+    }
+  },
   "agent": {
     "explore": {
-      "model": "zai-coding-plan/glm-4.5-air",
+      "model": "minimax/MiniMax-M2.5",
       "permission": {
         "edit": "deny",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
         "write": "deny",
         "bash": {
           "*": "deny",
           "ls *": "allow",
           "eza *": "allow",
           "tree *": "allow",
-          "cat *": "allow",
-          "head *": "allow",
-          "tail *": "allow",
-          "grep *": "allow",
           "rg *": "allow",
-          "find *": "allow",
+          "fd *": "allow",
           "git *": "allow"
         }
       }
     },
     "executor": {
-      "model": "zai-coding-plan/glm-4.5-air",
+      "model": "minimax/MiniMax-M2.7",
       "permission": {
         "context7_*": "deny",
         "exa_*": "deny",
@@ -86,12 +136,15 @@
       "disable": false
     },
     "researcher": {
-      "model": "google/gemini-3-flash",
+      "model": "google/gemini-3.1-pro-preview",
       "permission": {
         "context7_*": "allow",
         "exa_*": "allow",
         "gh_grep_*": "allow",
         "webfetch": "allow",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
         "write": "deny",
         "edit": "deny",
         "bash": {
@@ -101,13 +154,13 @@
           "pip show*": "allow",
           "man *": "allow",
           "jq *": "allow",
-          "grep *": "allow",
-          "rg *": "allow"
+          "rg *": "allow",
+          "fd *": "allow"
         }
       }
     },
     "scribe": {
-      "model": "zai-coding-plan/glm-4.5-air",
+      "model": "minimax/MiniMax-M2.5",
       "permission": {
         "bash": {
           "*": "deny"
@@ -120,6 +173,7 @@
     },
     "coder": {
       "temperature": 0.1,
+      "model": "minimax/MiniMax-M2.7",
       "permission": {
         "context7_*": "deny",
         "exa_*": "deny",
@@ -134,8 +188,12 @@
     },
     "reviewer": {
       "temperature": 0.2,
+      "model": "google/antigravity-claude-opus-4-6",
       "permission": {
         "edit": "deny",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
         "write": "deny",
         "bash": {
           "*": "deny",
@@ -152,6 +210,7 @@
     },
     "plan": {
       "temperature": 0.3,
+      "model": "zai-coding-plan/glm-5",
       "permission": {
         "edit": "deny",
         "write": "deny",
@@ -164,6 +223,7 @@
     },
     "build": {
       "temperature": 0.2,
+      "model": "google/antigravity-claude-sonnet-4-6",
       "permission": {
         "edit": "deny",
         "write": "deny",
@@ -195,101 +255,18 @@
         "apiKey": "<MINIMAX_API_KEY> (Optional)"
       },
       "models": {
-        "MiniMax-M2.7": {
-          "name": "MiniMax-M2.7"
-        },
         "MiniMax-M2.5": {
-          "name": "MiniMax-M2.5"
-        }
-      }
-    },
-    "cursor": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "Cursor Agent",
-      "options": {
-        "baseURL": "http://127.0.0.1:32123/v1"
-      },
-      "models": {
-        "auto": {
-          "name": "Cursor Auto"
+          "name": "MiniMax M2.5"
         },
-        "gpt-5": {
-          "name": "GPT-5 (-> gpt-5.2)"
-        },
-        "gpt-5.2": {
-          "name": "GPT-5.2"
-        },
-        "gpt-5.1": {
-          "name": "GPT-5.1"
-        },
-        "gpt-5.1-codex": {
-          "name": "GPT-5.1 Codex"
-        },
-        "opus-4.6": {
-          "name": "Claude Opus 4.6"
-        },
-        "opus-4.5": {
-          "name": "Claude Opus 4.5"
-        },
-        "sonnet-4": {
-          "name": "Claude Sonnet 4 (-> 4.5)"
-        },
-        "sonnet-4.5": {
-          "name": "Claude Sonnet 4.5"
-        },
-        "sonnet-4.5-thinking": {
-          "name": "Claude Sonnet 4.5 Thinking"
+        "MiniMax-M2.7": {
+          "name": "MiniMax M2.7"
         }
       }
     },
     "google": {
       "models": {
-        "antigravity-gemini-3-pro": {
-          "name": "Gemini 3 Pro (Antigravity)",
-          "limit": {
-            "context": 1048576,
-            "output": 65535
-          },
-          "modalities": {
-            "input": ["text", "image", "pdf"],
-            "output": ["text"]
-          },
-          "variants": {
-            "low": {
-              "thinkingLevel": "low"
-            },
-            "high": {
-              "thinkingLevel": "high"
-            }
-          }
-        },
-        "antigravity-gemini-3-flash": {
-          "name": "Gemini 3 Flash (Antigravity)",
-          "limit": {
-            "context": 1048576,
-            "output": 65536
-          },
-          "modalities": {
-            "input": ["text", "image", "pdf"],
-            "output": ["text"]
-          },
-          "variants": {
-            "minimal": {
-              "thinkingLevel": "minimal"
-            },
-            "low": {
-              "thinkingLevel": "low"
-            },
-            "medium": {
-              "thinkingLevel": "medium"
-            },
-            "high": {
-              "thinkingLevel": "high"
-            }
-          }
-        },
-        "antigravity-claude-sonnet-4-5": {
-          "name": "Claude Sonnet 4.5 (Antigravity)",
+        "antigravity-claude-sonnet-4-6": {
+          "name": "Claude Sonnet 4.6 (Antigravity)",
           "limit": {
             "context": 200000,
             "output": 64000
@@ -299,8 +276,8 @@
             "output": ["text"]
           }
         },
-        "antigravity-claude-sonnet-4-5-thinking": {
-          "name": "Claude Sonnet 4.5 Thinking (Antigravity)",
+        "antigravity-claude-opus-4-6": {
+          "name": "Claude Opus 4.6 (Antigravity)",
           "limit": {
             "context": 200000,
             "output": 64000
@@ -308,45 +285,10 @@
           "modalities": {
             "input": ["text", "image", "pdf"],
             "output": ["text"]
-          },
-          "variants": {
-            "low": {
-              "thinkingConfig": {
-                "thinkingBudget": 8192
-              }
-            },
-            "max": {
-              "thinkingConfig": {
-                "thinkingBudget": 32768
-              }
-            }
           }
         },
-        "antigravity-claude-opus-4-5-thinking": {
-          "name": "Claude Opus 4.5 Thinking (Antigravity)",
-          "limit": {
-            "context": 200000,
-            "output": 64000
-          },
-          "modalities": {
-            "input": ["text", "image", "pdf"],
-            "output": ["text"]
-          },
-          "variants": {
-            "low": {
-              "thinkingConfig": {
-                "thinkingBudget": 8192
-              }
-            },
-            "max": {
-              "thinkingConfig": {
-                "thinkingBudget": 32768
-              }
-            }
-          }
-        },
-        "gemini-2.5-flash": {
-          "name": "Gemini 2.5 Flash (Gemini CLI)",
+        "gemini-3.1-flash-lite-preview": {
+          "name": "Gemini 3.1 Flash Lite Preview",
           "limit": {
             "context": 1048576,
             "output": 65536
@@ -356,30 +298,8 @@
             "output": ["text"]
           }
         },
-        "gemini-2.5-pro": {
-          "name": "Gemini 2.5 Pro (Gemini CLI)",
-          "limit": {
-            "context": 1048576,
-            "output": 65536
-          },
-          "modalities": {
-            "input": ["text", "image", "pdf"],
-            "output": ["text"]
-          }
-        },
-        "gemini-3-flash-preview": {
-          "name": "Gemini 3 Flash Preview (Gemini CLI)",
-          "limit": {
-            "context": 1048576,
-            "output": 65536
-          },
-          "modalities": {
-            "input": ["text", "image", "pdf"],
-            "output": ["text"]
-          }
-        },
-        "gemini-3-pro-preview": {
-          "name": "Gemini 3 Pro Preview (Gemini CLI)",
+        "gemini-3.1-pro-preview": {
+          "name": "Gemini 3.1 Pro Preview",
           "limit": {
             "context": 1048576,
             "output": 65535
@@ -390,10 +310,30 @@
           }
         }
       }
+    },
+    // Edgee adds prompt/token compression for supported upstream models.
+    "edgee": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "edgee",
+      "options": {
+        "baseURL": "https://api.edgee.ai/v1",
+        "apiKey": "$EDGEE_API_KEY"
+      },
+      "models": {
+        "mistral-small": {
+          "name": "mistral small (edgee)"
+        },
+        "gpt-4": {
+          "name": "gpt-4 (edgee)"
+        },
+        "claude-3-haiku": {
+          "name": "claude 3 haiku (edgee)"
+        }
+      }
     }
   },
-  "model": "zai-coding-plan/glm-4.7",
-  "small_model": "zai-coding-plan/glm-4.5-air",
+  "model": "zai-coding-plan/glm-5",
+  "small_model": "minimax/MiniMax-M2.5",
   "permission": {
     "bash": "allow",
     "task": "deny",

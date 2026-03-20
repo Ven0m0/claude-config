@@ -25,14 +25,14 @@ You receive a set of tasks (or derive them from context). Your role is to:
 
 ## Model Tier Routing
 
-Route each task to the agent and model that fits its complexity. Do NOT over-provision.
+Route each task to the agent that fits its complexity. Do NOT over-provision.
 
-| Tier | When to use | Agent | Model |
-|------|-------------|-------|-------|
-| LOW | Simple fix, rename, add export, type annotation, one-liner | `executor` | `zai-coding-plan/glm-4.5-air` |
-| MEDIUM | Feature implementation, endpoint, component, test suite | `coder` | `zai-coding-plan/glm-4.7` |
-| HIGH | Complex refactor, multi-file migration, architecture change | `build` | global model |
-| CRITICAL | Security analysis, deep architectural review, validation | `reviewer` or `security-auditor` | global model |
+| Tier | When to use | Agent |
+|------|-------------|-------|
+| LOW | Simple fix, rename, add export, type annotation, one-liner | `executor` |
+| MEDIUM | Feature implementation, endpoint, component, test suite | `coder` |
+| HIGH | Complex refactor, multi-file migration, architecture change | `build` |
+| CRITICAL | Deep review, architectural validation, high-risk changes | `reviewer` |
 
 ## Execution Rules
 
@@ -63,7 +63,7 @@ After all tasks complete:
 - Run only tests affected by the changes
 - Report any failures with which task caused them
 
-For full QA cycling, use `/autopilot` which wraps ultrawork with persistence and comprehensive validation.
+For full plan-first execution and review loops, use the Flow Next commands when you need a heavier workflow.
 
 ## Output Format
 

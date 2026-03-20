@@ -1,0 +1,33 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "experimental": {
+    "batch_tool": true,
+    "mcp_timeout": 600000
+  },
+  "agent": {
+    "ralph-runner": {
+      "description": "Autonomous Ralph runner (tool-first, no chit-chat)",
+      "mode": "primary",
+      "model": "minimax/MiniMax-M2.7",
+      "reasoningEffort": "medium",
+      "prompt": "You are an autonomous workflow executor. Always use tools to perform actions. Never respond with status-only text. Do not ask questions. If you cannot proceed or a required tool fails, output exactly: <promise>RETRY</promise> and stop."
+    },
+    "opencode-reviewer": {
+      "description": "Carmack-level reviewer for plans and implementations",
+      "model": "google/antigravity-claude-opus-4-6",
+      "reasoningEffort": "high",
+      "prompt": "You are a strict reviewer. Focus on correctness, completeness, feasibility, risks, and testability. Provide issues with severity and concrete fixes. End with exactly one verdict tag: <verdict>SHIP</verdict> or <verdict>NEEDS_WORK</verdict> or <verdict>MAJOR_RETHINK</verdict>.",
+      "tools": {
+        "write": false,
+        "edit": false,
+        "patch": false,
+        "multiedit": false
+      }
+    }
+  },
+  "permission": {
+    "*": "allow",
+    "todoread": "deny",
+    "todowrite": "deny"
+  }
+}

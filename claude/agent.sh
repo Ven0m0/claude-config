@@ -21,4 +21,7 @@ export ANTHROPIC_API_KEY="" CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1 API_TIMEO
 unset CLAUDE_CODE_MAX_OUTPUT_TOKENS
 exec "$@"
 
-# vim: set ft=sh
+# TODO:
+# add https://www.edgee.ai/docs/integrations/claude-code
+# export ANTHROPIC_BASE_URL="https://api.edgee.ai" ANTHROPIC_CUSTOM_HEADERS="x-edgee-api-key:<EDGEE_API_KEY>"
+# or: "edgee launch claude""
