@@ -1,12 +1,6 @@
 # TODO
 
-- Add Copilot CLI config when local settings format is stable.
-- Add MCP servers:
-  - `bunx @modelcontextprotocol/server-github`
-  - `bunx @modelcontextprotocol/server-memory`
-  - `bunx @modelcontextprotocol/server-sequential-thinking`
-  - `bunx @context7/mcp-server`
-  - `bunx @modelcontextprotocol/server-filesystem`
+- [x] Add Copilot CLI config - `copilot-cli/config.json` (user-level `~/.copilot/config.json` template with `model` and `reasoning_effort`).
 
 [Claude tool usage](https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool)
 
@@ -23,9 +17,9 @@ def truncate_output(output, max_lines=100):
 
 ### Phase 1: Inventory and classify candidates
 
-- [ ] Confirm the target surface for each candidate (`claude/agents`, `claude/skills`, `claude/hooks`, `plugins`, `opencode`, or docs only).
-- [ ] Record license, maintenance status, install method, and overlap with existing marketplace entries before adding anything user-facing.
-- [ ] Split candidates into three buckets: direct integration, reference-only inspiration, and deferred follow-up.
+- [x] Confirm the target surface for each candidate (`claude/agents`, `claude/skills`, `claude/hooks`, `plugins`, `opencode`, or docs only) — see [external-integration-triage.md](./docs/external-integration-triage.md).
+- [x] Record license, maintenance status, install method, and overlap with existing marketplace entries before adding anything user-facing — see triage table.
+- [x] Split candidates into three buckets: direct integration, reference-only inspiration, and deferred follow-up — see triage table.
 
 ### Phase 2: Prioritize by repo area
 
@@ -87,10 +81,15 @@ def truncate_output(output, max_lines=100):
 
 ### Phase 3: Turn references into tracked work
 
-- [ ] Promote validated candidates into `plugins/`, `claude/skills/`, or `claude/hooks/` only after a narrow proof-of-fit and minimal implementation plan exists for each item.
-- [ ] Update `.claude-plugin/marketplace.json` only for integrations that are actually shipped in this repo.
-- [ ] Mirror opencode-specific results into `opencode/TODO.md` once the package-level triage is complete.
-- [ ] Keep this file as the source of truth for inbound references until each item is either integrated, documented elsewhere, or explicitly deferred.
+- [x] Promote validated candidates into `plugins/`, `claude/skills/`, or `claude/hooks/` only after a narrow proof-of-fit and minimal implementation plan exists for each item.
+  - `johnzfitch/claude-warden` implemented at `claude/hooks/claude-warden.sh` and `claude/hooks/warden/`
+  - `pchalasani/claude-code-tools` implemented at `plugins/claude-code-tools/`
+  - `daymade/claude-code-skills` deferred - external marketplace reference only, no local skill implementation
+- [x] Update `.claude-plugin/marketplace.json` only for integrations that are actually shipped in this repo.
+  - Added `claude-code-tools` plugin entry (lines 125-139)
+  - Note: `claude-warden` hooks shipped at `claude/hooks/warden/` but hooks are not in marketplace.json schema
+- [x] Mirror opencode-specific results into [`opencode/TODO.md`](./opencode/TODO.md) — see T009.
+- [x] Keep this file as the source of truth for inbound references until each item is either integrated, documented elsewhere, or explicitly deferred.
 
 <details><summary><b>Resources</b></summary>
 

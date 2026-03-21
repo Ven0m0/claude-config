@@ -1,0 +1,9 @@
+{
+  "name": "claude-code-tools",
+  "description": "Rich toolset plugin for Claude Code: tmux bridge, session search, Google Docs/Sheets, and hooks",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "pchalasani",
+  "repository": "https://github.com/pchalasani/claude-code-tools",
+  "tags": ["tmux", "session", "google", "hooks", "tools"]
+}
