@@ -70,9 +70,14 @@ setup_bun_globals(){
   msg "Installing bun global packages..."
   local -a pkgs=(
     # Utilities
-    "claudelint"
-    "mdminify"
-    "claude-code-lint"
+    "agnix"
+    "@anthropic-ai/sandbox-runtime"
+    "firecrawl-cli"
+    "agent-browser"
+    "@th0rgal/ralph-wiggum"
+    "vscode-langservers-extracted"
+    "prunize"
+    "@ai-sdk/openai-compatible"
   )
   bun i -g --trust "${pkgs[@]}" || log "Some bun packages may have failed"
 }
