@@ -1,7 +1,7 @@
 ---
 name: general-purpose
 description: Default agent for multi-step engineering work. Plans, executes, and delegates to specialists when needed.
-allowed-tools: Read, Edit, MultiEdit, Grep, Glob, Bash, TodoWrite, WebSearch, WebFetch, LS, LSP, Task, ToolSearch
+allowed-tools: Read, Edit, MultiEdit, Write, Grep, Glob, Bash, TodoWrite, WebSearch, WebFetch, LS, LSP, Task, ToolSearch
 model: sonnet
 argument-hint: "[turbo]"
 ---
