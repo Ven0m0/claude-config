@@ -1,24 +1,18 @@
 {
   "$schema": "https://code.claude.com/schemas/lsp.json",
   "_comment": "Language Server Protocol Configuration",
-  "bash": {
-    "command": "bash-language-server",
-    "args": ["start"],
-    "extensionToLanguage": {
-      ".sh": "shellscript", ".bash": "shellscript",
-    },
-    "transport": "stdio",
-    "maxRestarts": 3
+"bash": {
+  "command": "bash-language-server",
+  "args": ["start"],
+  "extensionToLanguage": {
+    ".sh": "shellscript",
+    ".bash": "shellscript",
+    ".zsh": "shellscript",
+    ".ksh": "shellscript"
   },
-  "zsh": {
-    "command": "zsh-language-server",
-    "args": ["--stdio"],
-    "extensionToLanguage": {
-      ".zsh": "zsh"
-    },
-    "transport": "stdio",
-    "maxRestarts": 3
-  },
+  "transport": "stdio",
+  "maxRestarts": 3
+}
   "fish": {
     "command": "fish-lsp",
     "args": ["start"],
