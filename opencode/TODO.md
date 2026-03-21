@@ -2,6 +2,15 @@
 
 Sourced from [external-integration-triage.md](../docs/external-integration-triage.md).
 
+## Status
+
+| Category | Count | Status |
+|----------|-------|--------|
+| Defer | 8 | Pending |
+| Reference | 8 | Implemented |
+
+---
+
 ## Resources
 
 - https://opencode.ai/docs/ecosystem
@@ -25,15 +34,15 @@ Sourced from [external-integration-triage.md](../docs/external-integration-triag
 
 ---
 
-## Reference
+## Reference (Implemented)
 
-| Candidate | Notes |
-|-----------|-------|
-| [`@dallay/agentsync`](https://www.npmjs.com/package/@dallay/agentsync) | Config syncer across Claude/Copilot/Cursor/OpenCode; useful reference for cross-agent tooling. |
-| [`@tuanhung303/opencode-acp`](https://www.npmjs.com/package/@tuanhung303/opencode-acp) | Context pruning plugin for OpenCode; addresses real token waste problem; could inspire Claude Code context management. |
-| [`opencode-websearch`](https://www.npmjs.com/package/opencode-websearch) | Web search plugin for OpenCode; reference for search integration patterns. |
-| [`@kitlangton/tailcode`](https://www.npmjs.com/package/@kitlangton/tailcode) | Publishes OpenCode to Tailscale tailnet; creative networking pattern for remote access. |
-| [`opencode-image-compress`](https://www.npmjs.com/package/opencode-image-compress) | Image compression for OpenCode; useful reference for media handling. |
-| [`opencode-codebase-index`](https://www.npmjs.com/package/opencode-codebase-index) | Codebase indexer for OpenCode; reference for indexing patterns. |
-| [`opencode-fast-apply`](https://www.npmjs.com/package/opencode-fast-apply) | Fast apply editing via LM Studio/Ollama; interesting editing optimization pattern. |
-| [`opencode-cachebro`](https://www.npmjs.com/package/opencode-cachebro) | Wrapper of `glommer/cachebro` for OpenCode; cache optimization for OpenCode. |
+| Candidate | Implementation | Notes |
+|-----------|----------------|-------|
+| [`@dallay/agentsync`](https://www.npmjs.com/package/@dallay/agentsync) | [`command/agentsync.md`](command/agentsync.md) | Config syncer across Claude/Copilot/Cursor/OpenCode. |
+| [`@tuanhung303/opencode-acp`](https://www.npmjs.com/package/@tuanhung303/opencode-acp) | [`skill/context-prune/SKILL.md`](skill/context-prune/SKILL.md) | Context pruning skill for token reduction. |
+| [`opencode-websearch`](https://www.npmjs.com/package/opencode-websearch) | [`skill/websearch/SKILL.md`](skill/websearch/SKILL.md) | Web search using existing MCP/exa tools. |
+| [`@kitlangton/tailcode`](https://www.npmjs.com/package/@kitlangton/tailcode) | [`skill/tailnet-publish/SKILL.md`](skill/tailnet-publish/SKILL.md) | Tailscale tailnet publishing pattern. |
+| [`opencode-image-compress`](https://www.npmjs.com/package/opencode-image-compress) | [`skill/image-compress/SKILL.md`](skill/image-compress/SKILL.md) | Image compression using existing tools. |
+| [`opencode-codebase-index`](https://www.npmjs.com/package/opencode-codebase-index) | [`skill/codebase-index/SKILL.md`](skill/codebase-index/SKILL.md) | Codebase indexing using rg/ast-grep. |
+| [`opencode-fast-apply`](https://www.npmjs.com/package/opencode-fast-apply) | [`skill/fast-apply/SKILL.md`](skill/fast-apply/SKILL.md) | Fast apply editing patterns. |
+| [`opencode-cachebro`](https://www.npmjs.com/package/opencode-cachebro) | [`skill/cachebro/SKILL.md`](skill/cachebro/SKILL.md) | Cache optimization reference. |
