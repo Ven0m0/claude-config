@@ -44,8 +44,7 @@ EOF
 truncate_output(){
   local output="$1"
   local max_lines="${2:-100}"
-  local IFS=$'\n'
-  local lines=($output)
+  mapfile -t lines <<< "$output"
   if [[ ${#lines[@]} -gt $max_lines ]]; then
     printf '%s\n' "${lines[@]:0:$max_lines}"
     printf '\n... Output truncated (%d total lines) ...\n' "${#lines[@]}"
