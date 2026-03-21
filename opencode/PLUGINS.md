@@ -1,0 +1,1 @@
+- https://github.com/EmanuelNog/opencode-trim-toolname-plugin
