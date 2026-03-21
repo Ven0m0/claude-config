@@ -146,7 +146,7 @@ setup_tweakcc(){
 # --- Optional: Cowork ---
 setup_cowork(){
   msg "Enabling claude-cowork service..."
-  systemctl --user enable --now claude-cowork || warn "cowork unit not found; skipping"
+  systemctl --user enable --now claude-cowork || log "cowork unit not found; skipping"
 }
 
 # --- Optional: Cursor ---
