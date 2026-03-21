@@ -113,10 +113,22 @@ Example real scripts from other skills:
 - pdf/scripts/convert_pdf_to_images.py - Converts PDF pages to images
 """
 
-def main():
-    print("This is an example script for {skill_name}")
-    # TODO: Add actual script logic here
-    # This could be data processing, file conversion, API calls, etc.
+import argparse
+import pathlib
+import sys
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="TODO: describe {skill_name}")
+    parser.add_argument("input", type=pathlib.Path, help="Input file path")
+    parser.add_argument("-o", "--output", type=pathlib.Path, default=None, help="Output file path")
+    args = parser.parse_args()
+
+    # TODO: implement transform logic
+    data = args.input.read_text()
+    result = data  # replace with real transform
+
+    out = args.output or pathlib.Path("/dev/stdout")
+    out.write_text(result)
 
 if __name__ == "__main__":
     main()

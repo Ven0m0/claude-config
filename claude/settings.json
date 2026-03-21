@@ -249,6 +249,22 @@
       "env": {
         "MCP_SILENT_ERRORS": "true"
       }
+    },
+    "server-github": {
+      "command": "bunx",
+      "args": ["@modelcontextprotocol/server-github"]
+    },
+    "server-memory": {
+      "command": "bunx",
+      "args": ["@modelcontextprotocol/server-memory"]
+    },
+    "context7": {
+      "command": "bunx",
+      "args": ["@context7/mcp-server"]
+    },
+    "server-filesystem": {
+      "command": "bunx",
+      "args": ["@modelcontextprotocol/server-filesystem"]
     }
   }
 }

@@ -1,0 +1,11 @@
+{
+  "name": "cachebro",
+  "version": "0.0.1",
+  "description": "Reference stub for glommer/cachebro - context optimization reference",
+  "keywords": ["reference", "cache", "context", "optimization"],
+  "author": {
+    "name": "Reference only"
+  },
+  "license": "MIT",
+  "reference": "https://github.com/glommer/cachebro"
+}

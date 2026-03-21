@@ -143,6 +143,12 @@ setup_tweakcc(){
   sudo bunx tweakcc --apply || log "tweakcc may require manual setup"
 }
 
+# --- Optional: Cowork ---
+setup_cowork(){
+  msg "Enabling claude-cowork service..."
+  systemctl --user enable --now claude-cowork || log "cowork unit not found; skipping"
+}
+
 # --- Optional: Cursor ---
 setup_cursor(){
   msg "Configuring Cursor..."
@@ -173,6 +179,7 @@ Core (always runs):
 Options:
   --with-prunize     Install prunize (token pruning)
   --with-tweakcc     Apply tweakcc optimizations (requires sudo)
+  --with-cowork      Enable claude-cowork systemd user service
   --with-cursor      Configure Cursor editor
   --with-vscode      Install VS Code extensions
   --skip-git-config  Skip global git configuration
@@ -184,7 +191,7 @@ HELP
 
 # --- Main ---
 main(){
-  local dry_run=0 with_prunize=0 with_tweakcc=0 with_cursor=0 with_vscode=0
+  local dry_run=0 with_prunize=0 with_tweakcc=0 with_cowork=0 with_cursor=0 with_vscode=0
   local skip_git=0 skip_mcp=0
 
   while [[ $# -gt 0 ]]; do
@@ -192,6 +199,7 @@ main(){
       --dry-run)        dry_run=1 ;;
       --with-prunize)   with_prunize=1 ;;
       --with-tweakcc)   with_tweakcc=1 ;;
+      --with-cowork)    with_cowork=1 ;;
       --with-cursor)    with_cursor=1 ;;
       --with-vscode)    with_vscode=1 ;;
       --skip-git-config) skip_git=1 ;;
@@ -220,12 +228,10 @@ main(){
   setup_external_skills
   [[ $with_prunize -eq 1 ]] && setup_prunize
   [[ $with_tweakcc -eq 1 ]] && setup_tweakcc
+  [[ $with_cowork -eq 1 ]]  && setup_cowork
   [[ $with_cursor -eq 1 ]]  && setup_cursor
   [[ $with_vscode -eq 1 ]]  && setup_vscode
   claude plugin marketplace update 2>/dev/null || :
   msg "Setup complete. Restart Claude Code to apply changes."
 }
 main "$@"
-
-# TODO: integrate into main() with opt-in flag before enabling
-# systemctl --user enable --now claude-cowork
