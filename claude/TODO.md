@@ -26,5 +26,4 @@ use these lsp servers:
 - dockerfile-language-server
 - bash-language-server
 - fish-lsp
-- zsh-language-server
 
