@@ -7,24 +7,37 @@
     "extensionToLanguage": {
       ".sh": "shellscript",
       ".bash": "shellscript",
-      ".zsh": "shellscript",
       ".ksh": "shellscript"
     },
     "transport": "stdio",
-    "initializationOptions": {},
-    "settings": {},
+    "maxRestarts": 3
+  },
+  "zsh": {
+    "command": "zsh-language-server",
+    "args": ["--stdio"],
+    "extensionToLanguage": {
+      ".zsh": "zsh"
+    },
+    "transport": "stdio",
+    "maxRestarts": 3
+  },
+  "fish": {
+    "command": "fish-lsp",
+    "args": ["start"],
+    "extensionToLanguage": {
+      ".fish": "fish"
+    },
+    "transport": "stdio",
     "maxRestarts": 3
   },
   "python": {
-    "command": "pyright-langserver",
+    "command": "basedpyright-langserver",
     "args": ["--stdio"],
     "extensionToLanguage": {
       ".py": "python",
       ".pyi": "python"
     },
     "transport": "stdio",
-    "initializationOptions": {},
-    "settings": {},
     "maxRestarts": 3
   },
   "typescript": {
@@ -41,8 +54,6 @@
       ".cjs": "javascript"
     },
     "transport": "stdio",
-    "initializationOptions": {},
-    "settings": {},
     "maxRestarts": 3
   },
   "rust": {
@@ -52,9 +63,15 @@
       ".rs": "rust"
     },
     "transport": "stdio",
-    "initializationOptions": {},
-    "settings": {},
     "maxRestarts": 3
+  },
+  "toml": {
+    "command": "tombi",
+    "args": ["lsp"],
+    "extensionToLanguage": {
+      ".toml": "toml"
+    },
+    "transport": "stdio"
   },
   "json": {
     "command": "vscode-json-language-server",
@@ -64,7 +81,6 @@
       ".jsonc": "jsonc"
     },
     "transport": "stdio",
-    "initializationOptions": {},
     "settings": {
       "json": {
         "validate": {
@@ -83,7 +99,6 @@
       ".yml": "yaml"
     },
     "transport": "stdio",
-    "initializationOptions": {},
     "settings": {
       "yaml": {
         "validate": true,
@@ -102,8 +117,6 @@
       ".htm": "html"
     },
     "transport": "stdio",
-    "initializationOptions": {},
-    "settings": {},
     "maxRestarts": 3
   },
   "css": {
@@ -115,28 +128,16 @@
       ".less": "less"
     },
     "transport": "stdio",
-    "initializationOptions": {},
-    "settings": {},
     "maxRestarts": 3
   },
-  "markdown": {
-    "command": "marksman",
-    "args": ["server"],
-    "extensionToLanguage": {
-      ".md": "markdown"
-    },
-    "transport": "stdio"
-  },
   "dockerfile": {
-    "command": "docker-langserver",
+    "command": "dockerfile-language-server-nodejs",
     "args": ["--stdio"],
     "extensionToLanguage": {
       "Dockerfile": "dockerfile",
       ".dockerfile": "dockerfile"
     },
     "transport": "stdio",
-    "initializationOptions": {},
-    "settings": {},
     "maxRestarts": 3
   },
   "go": {
@@ -144,28 +145,6 @@
     "args": ["serve"],
     "extensionToLanguage": {
       ".go": "go"
-    }
-  },
-  "cpp": {
-    "command": "clangd",
-    "args": ["--background-index"],
-    "extensionToLanguage": {
-      ".c": "c",
-      ".h": "c",
-      ".cpp": "cpp",
-      ".hpp": "cpp",
-      ".cc": "cpp",
-      ".cxx": "cpp",
-      ".hxx": "cpp",
-      ".m": "objective-c",
-      ".mm": "objective-cpp"
-    }
-  },
-  "java": {
-    "command": "jdtls",
-    "args": [],
-    "extensionToLanguage": {
-      ".java": "java"
     }
   },
   "kotlin": {
@@ -176,113 +155,12 @@
       ".kts": "kotlin"
     }
   },
-  "swift": {
-    "command": "sourcekit-lsp",
+  "java": {
+    "command": "jdtls",
     "args": [],
     "extensionToLanguage": {
-      ".swift": "swift"
+      ".java": "java"
     }
-  },
-  "csharp": {
-    "command": "OmniSharp",
-    "args": ["-lsp"],
-    "extensionToLanguage": {
-      ".cs": "csharp"
-    }
-  },
-  "ruby": {
-    "command": "solargraph",
-    "args": ["stdio"],
-    "extensionToLanguage": {
-      ".rb": "ruby",
-      ".rake": "ruby",
-      ".gemspec": "ruby"
-    }
-  },
-  "php": {
-    "command": "intelephense",
-    "args": ["--stdio"],
-    "extensionToLanguage": {
-      ".php": "php"
-    }
-  },
-  "elixir": {
-    "command": "elixir-ls",
-    "args": [],
-    "extensionToLanguage": {
-      ".ex": "elixir",
-      ".exs": "elixir"
-    }
-  },
-  "scala": {
-    "command": "metals",
-    "args": [],
-    "extensionToLanguage": {
-      ".scala": "scala",
-      ".sc": "scala"
-    }
-  },
-  "r": {
-    "command": "R",
-    "args": ["--slave", "-e", "languageserver::run()"],
-    "extensionToLanguage": {
-      ".r": "r",
-      ".R": "r",
-      ".Rmd": "rmarkdown"
-    }
-  },
-  "dart": {
-    "command": "dart",
-    "args": ["language-server", "--protocol=lsp"],
-    "extensionToLanguage": {
-      ".dart": "dart"
-    }
-  },
-  "fish": {
-    "command": "fish-lsp",
-    "args": ["start"],
-    "extensionToLanguage": {
-      ".fish": "fish"
-    },
-    "transport": "stdio"
-  },
-  "biome": {
-    "command": "biome",
-    "args": ["lsp-proxy"],
-    "extensionToLanguage": {
-      ".js": "javascript",
-      ".jsx": "javascriptreact",
-      ".ts": "typescript",
-      ".tsx": "typescriptreact",
-      ".json": "json",
-      ".jsonc": "jsonc"
-    },
-    "transport": "stdio"
-  },
-  "ruff": {
-    "command": "ruff",
-    "args": ["server"],
-    "extensionToLanguage": {
-      ".py": "python",
-      ".pyi": "python"
-    },
-    "transport": "stdio"
-  },
-  "toml": {
-    "command": "tombi",
-    "args": ["lsp"],
-    "extensionToLanguage": {
-      ".toml": "toml"
-    },
-    "transport": "stdio"
-  },
-  "typos": {
-    "command": "typos-lsp",
-    "args": [],
-    "extensionToLanguage": {
-      "*": "all"
-    },
-    "transport": "stdio"
   },
   "markdown-oxide": {
     "command": "markdown-oxide",
