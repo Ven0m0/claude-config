@@ -51,6 +51,18 @@
       ".cjs": "javascript"
     },
     "transport": "stdio",
+    "initializationOptions": {
+      "maxTsServerMemory": 4096,
+      "disableAutomaticTypeAcquisition": true,
+      "preferences": {
+        "disableSuggestions": false
+      },
+      "typescript": {
+        "tsserver": {
+          "logVerbosity": "normal"
+        }
+      }
+    },
     "maxRestarts": 3
   },
   "rust": {
