@@ -8,7 +8,7 @@ paths:
 Scripts in this project follow strict conventions for Claude Code hook compatibility.
 
 ## Required Structure
-1. `#!/bin/bash` shebang + `set -euo pipefail`
+1. `#!/usr/bin/env bash` shebang + `set -euo pipefail`
 2. `trap cleanup EXIT` with at minimum `:` placeholder
 3. Use `${CLAUDE_PROJECT_DIR:-$(pwd)}` for project root
 4. Parse stdin JSON with jq first, grep/sed fallback for jq-less environments
