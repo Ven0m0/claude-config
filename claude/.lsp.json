@@ -5,9 +5,7 @@
     "command": "bash-language-server",
     "args": ["start"],
     "extensionToLanguage": {
-      ".sh": "shellscript",
-      ".bash": "shellscript",
-      ".ksh": "shellscript"
+      ".sh": "shellscript", ".bash": "shellscript",
     },
     "transport": "stdio",
     "maxRestarts": 3
@@ -34,8 +32,7 @@
     "command": "basedpyright-langserver",
     "args": ["--stdio"],
     "extensionToLanguage": {
-      ".py": "python",
-      ".pyi": "python"
+      ".py": "python", ".pyi": "python"
     },
     "transport": "stdio",
     "maxRestarts": 3
@@ -77,8 +74,7 @@
     "command": "vscode-json-language-server",
     "args": ["--stdio"],
     "extensionToLanguage": {
-      ".json": "json",
-      ".jsonc": "jsonc"
+      ".json": "json", ".jsonc": "jsonc"
     },
     "transport": "stdio",
     "settings": {
@@ -95,8 +91,7 @@
     "command": "yaml-language-server",
     "args": ["--stdio"],
     "extensionToLanguage": {
-      ".yaml": "yaml",
-      ".yml": "yaml"
+      ".yaml": "yaml", ".yml": "yaml"
     },
     "transport": "stdio",
     "settings": {
@@ -109,59 +104,37 @@
     },
     "maxRestarts": 3
   },
+
   "html": {
     "command": "vscode-html-language-server",
     "args": ["--stdio"],
     "extensionToLanguage": {
-      ".html": "html",
-      ".htm": "html"
+      ".html": "html", ".htm": "html"
     },
     "transport": "stdio",
     "maxRestarts": 3
   },
+
   "css": {
     "command": "vscode-css-language-server",
     "args": ["--stdio"],
     "extensionToLanguage": {
-      ".css": "css",
-      ".scss": "scss",
-      ".less": "less"
+      ".css": "css", ".scss": "scss", ".less": "less"
     },
     "transport": "stdio",
     "maxRestarts": 3
   },
+
   "dockerfile": {
     "command": "dockerfile-language-server-nodejs",
     "args": ["--stdio"],
     "extensionToLanguage": {
-      "Dockerfile": "dockerfile",
-      ".dockerfile": "dockerfile"
+      "Dockerfile": "dockerfile", ".dockerfile": "dockerfile"
     },
     "transport": "stdio",
     "maxRestarts": 3
   },
-  "go": {
-    "command": "gopls",
-    "args": ["serve"],
-    "extensionToLanguage": {
-      ".go": "go"
-    }
-  },
-  "kotlin": {
-    "command": "kotlin-language-server",
-    "args": [],
-    "extensionToLanguage": {
-      ".kt": "kotlin",
-      ".kts": "kotlin"
-    }
-  },
-  "java": {
-    "command": "jdtls",
-    "args": [],
-    "extensionToLanguage": {
-      ".java": "java"
-    }
-  },
+
   "markdown-oxide": {
     "command": "markdown-oxide",
     "args": [],
