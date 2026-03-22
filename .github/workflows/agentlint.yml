@@ -1,5 +1,4 @@
-name: Lint Claude Plugins
-
+name: Lint LLM config files
 on:
   workflow_dispatch:
 
