@@ -3,6 +3,14 @@
     "context7": {
       "type": "remote",
       "url": "https://mcp.context7.com/mcp"
+    },
+    "icm": {
+      "command": [
+        "/home/ven0m0/.local/share/mise/installs/github-rtk-ai-icm/0.10.0/icm",
+        "serve"
+      ],
+      "enabled": true,
+      "type": "local"
     }
   }
 }
