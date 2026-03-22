@@ -20,12 +20,9 @@ jobs:
  
       - name: Validate agent configs
         uses: agent-sh/agnix@v0
+      - uses: agent-sh/agnix@v0
         with:
           target: 'claude-code'
       - uses: agent-sh/agnix@v0
-      - uses: agent-sh/agnix@v0
         with:
           target: 'cursor'
-       - uses: agent-sh/agnix@v0
-        with:
-          target: 'codex'
