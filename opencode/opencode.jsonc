@@ -347,6 +347,7 @@
     "worktree_*": "allow",
     "lsp": "allow",
     "skill": "allow",
-    "question": "allow"
+    "question": "allow".
+    "doom_loop": "deny"
   }
 }
