@@ -1,5 +1,6 @@
 # OpenCode Base Rules
-
+> @opencode.jsonc -> @opencode.json
+> 
 This is the canonical base instruction file for OpenCode in this repo.
 OpenCode should read this file directly instead of inheriting the root `AGENTS.md`.
 
