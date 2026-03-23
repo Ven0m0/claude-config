@@ -13,6 +13,7 @@
     "opencode-pty@latest",
 
     // Auth and session continuity
+    "opencode-anthropic-oauth",
     "opencode-antigravity-auth@latest",
     "opencode-gemini-auth@latest",
     "opencode-session-handoff@latest",
@@ -21,7 +22,8 @@
     "opencode-image-compress@latest",
     "opencode-websearch@latest",
     "opencode-ignore@latest",
-    "oh-my-opencode@latest",
+    # TODO: replace with better alternative
+    # "oh-my-opencode@latest",
     // Added intentionally for Flow-based planning/review workflows.
     "github:gmickel/flow-next-opencode#276713a0d61b01d6356f79ec937d97cd8d39a039"
   ],
