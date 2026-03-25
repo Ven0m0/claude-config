@@ -1329,9 +1329,10 @@ def build_rereview_preamble(changed_files: list[str], review_type: str) -> str:
     When resuming a Codex session, file contents may be cached from the original review.
     This preamble explicitly instructs Codex to re-read the files that may have changed.
     """
-    files_list = "\n".join(f"- {f}" for f in changed_files[:30])  # Cap at 30 files
+    parts = [f"- {f}" for f in changed_files[:30]]  # Cap at 30 files
     if len(changed_files) > 30:
-        files_list += f"\n- ... and {len(changed_files) - 30} more files"
+        parts.append(f"- ... and {len(changed_files) - 30} more files")
+    files_list = "\n".join(parts)
 
     task_sync_note = ""
     if review_type == "plan":
