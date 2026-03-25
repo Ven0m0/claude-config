@@ -162,7 +162,7 @@ def output_system_message(message: str) -> None:
     try:
         sys.stdout.write(json.dumps({"systemMessage": message}) + "\n")
         sys.stdout.flush()
-    except Exception as e:
+    except OSError as e:
         log_debug(f"failed to output system message: {e}")
 
 
