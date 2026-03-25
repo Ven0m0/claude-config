@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-flowctl - CLI for managing .flow/ task tracking system.
+"""flowctl - CLI for managing .flow/ task tracking system.
 
 All task/epic state lives in JSON files. Markdown specs hold narrative content.
 Agents must use flowctl for all writes - never edit .flow/* directly.
@@ -11,10 +10,10 @@ import json
 import os
 import re
 import secrets
-import string
-import subprocess
 import shlex
 import shutil
+import string
+import subprocess
 import sys
 import tempfile
 from abc import ABC, abstractmethod
@@ -139,7 +138,7 @@ class StateStore(ABC):
     """Abstract interface for runtime task state storage."""
 
     @abstractmethod
-    def load_runtime(self, task_id: str) -> Optional[dict]:
+    def load_runtime(self, task_id: str) -> dict | None:
         """Load runtime state for a task. Returns None if no state file."""
         ...
 
@@ -173,14 +172,14 @@ class LocalFileStateStore(StateStore):
     def _lock_path(self, task_id: str) -> Path:
         return self.locks_dir / f"{task_id}.lock"
 
-    def load_runtime(self, task_id: str) -> Optional[dict]:
+    def load_runtime(self, task_id: str) -> dict | None:
         state_path = self._state_path(task_id)
         if not state_path.exists():
             return None
         try:
-            with open(state_path, encoding="utf-8") as f:
+            with Path(state_path).open(encoding="utf-8") as f:
                 return json.load(f)
-        except (json.JSONDecodeError, IOError):
+        except (OSError, json.JSONDecodeError):
             return None
 
     def save_runtime(self, task_id: str, data: dict) -> None:
@@ -194,7 +193,7 @@ class LocalFileStateStore(StateStore):
         """Acquire exclusive lock for task operations."""
         self.locks_dir.mkdir(parents=True, exist_ok=True)
         lock_path = self._lock_path(task_id)
-        with open(lock_path, "w") as f:
+        with Path(lock_path).open("w") as f:
             try:
                 _flock(f, LOCK_EX)
                 yield
@@ -392,13 +391,14 @@ def require_rp_cli() -> str:
 
 
 def run_rp_cli(
-    args: list[str], timeout: Optional[int] = None
+    args: list[str], timeout: int | None = None,
 ) -> subprocess.CompletedProcess:
     """Run rp-cli with safe error handling and timeout.
 
     Args:
         args: Command arguments to pass to rp-cli
         timeout: Max seconds to wait. Default from FLOW_RP_TIMEOUT env or 1200s (20min).
+
     """
     if timeout is None:
         timeout = int(os.environ.get("FLOW_RP_TIMEOUT", "1200"))
@@ -406,7 +406,7 @@ def run_rp_cli(
     cmd = [rp] + args
     try:
         return subprocess.run(
-            cmd, capture_output=True, text=True, check=True, timeout=timeout
+            cmd, capture_output=True, text=True, check=True, timeout=timeout,
         )
     except subprocess.TimeoutExpired:
         error_exit(f"rp-cli timed out after {timeout}s", use_json=False, code=3)
@@ -445,7 +445,7 @@ def parse_windows(raw: str) -> list[dict[str, Any]]:
     error_exit("windows JSON has unexpected shape", use_json=False, code=2)
 
 
-def extract_window_id(win: dict[str, Any]) -> Optional[int]:
+def extract_window_id(win: dict[str, Any]) -> int | None:
     for key in ("windowID", "windowId", "id"):
         if key in win:
             try:
@@ -473,7 +473,7 @@ def parse_builder_tab(output: str) -> str:
     return match.group(1)
 
 
-def parse_chat_id(output: str) -> Optional[str]:
+def parse_chat_id(output: str) -> str | None:
     match = re.search(r"Chat\s*:\s*`([^`]+)`", output)
     if match:
         return match.group(1)
@@ -487,9 +487,9 @@ def build_chat_payload(
     message: str,
     mode: str,
     new_chat: bool = False,
-    chat_name: Optional[str] = None,
-    chat_id: Optional[str] = None,
-    selected_paths: Optional[list[str]] = None,
+    chat_name: str | None = None,
+    chat_id: str | None = None,
+    selected_paths: list[str] | None = None,
 ) -> str:
     payload: dict[str, Any] = {
         "message": message,
@@ -521,10 +521,10 @@ def atomic_write(path: Path, content: str) -> None:
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as f:
             f.write(content)
-        os.replace(tmp_path, path)
+        Path(tmp_path).replace(path)
     except Exception:
-        if os.path.exists(tmp_path):
-            os.unlink(tmp_path)
+        if Path(tmp_path).exists():
+            Path(tmp_path).unlink()
         raise
 
 
@@ -536,7 +536,7 @@ def atomic_write_json(path: Path, data: dict) -> None:
 
 def load_json(path: Path) -> dict:
     """Load JSON file."""
-    with open(path, encoding="utf-8") as f:
+    with Path(path).open(encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -545,7 +545,7 @@ def load_json_or_exit(path: Path, what: str, use_json: bool = True) -> dict:
     if not path.exists():
         error_exit(f"{what} missing: {path}", use_json=use_json)
     try:
-        with open(path, encoding="utf-8") as f:
+        with Path(path).open(encoding="utf-8") as f:
             return json.load(f)
     except json.JSONDecodeError as e:
         error_exit(f"{what} invalid JSON: {path} ({e})", use_json=use_json)
@@ -582,7 +582,7 @@ def generate_epic_suffix(length: int = 3) -> str:
     return "".join(secrets.choice(alphabet) for _ in range(length))
 
 
-def parse_id(id_str: str) -> tuple[Optional[int], Optional[int]]:
+def parse_id(id_str: str) -> tuple[int | None, int | None]:
     """Parse ID into (epic_num, task_num). Returns (epic, None) for epic IDs.
 
     Supports both legacy (fn-N) and new (fn-N-xxx) formats with optional suffix.
@@ -726,7 +726,7 @@ def extract_symbols_from_file(file_path: Path) -> list[str]:
                 symbols.append(match.group(1))
             # impl blocks: impl Name or impl Trait for Name
             for match in re.finditer(
-                r"^impl(?:<[^>]+>)?\s+(\w+)", content, re.MULTILINE
+                r"^impl(?:<[^>]+>)?\s+(\w+)", content, re.MULTILINE,
             ):
                 symbols.append(match.group(1))
 
@@ -734,7 +734,7 @@ def extract_symbols_from_file(file_path: Path) -> list[str]:
         elif ext in (".c", ".h", ".cpp", ".hpp", ".cc", ".cxx"):
             # Function definitions: type name( at line start (simplified)
             for match in re.finditer(
-                r"^[a-zA-Z_][\w\s\*]+\s+(\w+)\s*\([^;]*$", content, re.MULTILINE
+                r"^[a-zA-Z_][\w\s\*]+\s+(\w+)\s*\([^;]*$", content, re.MULTILINE,
             ):
                 symbols.append(match.group(1))
             # struct/enum/union definitions
@@ -791,7 +791,7 @@ def extract_symbols_from_file(file_path: Path) -> list[str]:
 
 
 def find_references(
-    symbol: str, exclude_files: list[str], max_results: int = 3
+    symbol: str, exclude_files: list[str], max_results: int = 3,
 ) -> list[tuple[str, int]]:
     """Find files referencing a symbol. Returns [(path, line_number), ...]."""
     repo_root = get_repo_root()
@@ -874,25 +874,74 @@ def gather_context_hints(base_branch: str, max_hints: int = 15) -> str:
     repo_root = get_repo_root()
     hints = []
     seen_files = set(changed_files)
+    changed_files_set = set(changed_files)
 
     # Extract symbols from changed files and find references
     for changed_file in changed_files:
-        file_path = repo_root / changed_file
-        symbols = extract_symbols_from_file(file_path)
-
-        # Limit symbols per file
-        for symbol in symbols[:10]:
-            refs = find_references(symbol, changed_files, max_results=2)
-            for ref_path, ref_line in refs:
-                if ref_path not in seen_files:
-                    hints.append(f"- {ref_path}:{ref_line} - references {symbol}")
-                    seen_files.add(ref_path)
-                    if len(hints) >= max_hints:
-                        break
-            if len(hints) >= max_hints:
-                break
         if len(hints) >= max_hints:
             break
+
+        file_path = repo_root / changed_file
+        symbols = extract_symbols_from_file(file_path)[:10]
+
+        if not symbols:
+            continue
+
+        cmd = ["git", "grep", "-n", "-w"]
+        for symbol in symbols:
+            cmd.extend(["-e", symbol])
+
+        cmd.extend([
+            "--",
+            "*.py", "*.js", "*.ts", "*.tsx", "*.jsx", "*.mjs",
+            "*.go", "*.rs", "*.c", "*.h", "*.cpp", "*.hpp", "*.cc", "*.cxx",
+            "*.java", "*.cs",
+        ])
+
+        try:
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                cwd=repo_root,
+                check=True,
+            )
+
+            lines = result.stdout.splitlines()
+
+            # Use regex for all symbols
+            regexes = [(sym, re.compile(r"\b" + re.escape(sym) + r"\b")) for sym in symbols]
+            symbol_results_count = dict.fromkeys(symbols, 0)
+
+            for line in lines:
+                if len(hints) >= max_hints:
+                    break
+
+                parts = line.split(":", 2)
+                if len(parts) >= 3:
+                    ref_path = parts[0]
+                    # Skip excluded files (the changed files themselves)
+                    if ref_path in changed_files_set:
+                        continue
+
+                    if not parts[1].isdigit():
+                        continue
+                    ref_line = int(parts[1])
+
+                    content_str = parts[2]
+
+                    # Find which symbol this matched
+                    for symbol, regex in regexes:
+                        if symbol_results_count[symbol] < 2:  # max_results=2
+                            if regex.search(content_str):
+                                symbol_results_count[symbol] += 1
+                                if ref_path not in seen_files:
+                                    hints.append(f"- {ref_path}:{ref_line} - references {symbol}")
+                                    seen_files.add(ref_path)
+                                break # Only one hint per file line
+
+        except subprocess.CalledProcessError:
+            pass
 
     if not hints:
         return ""
@@ -919,7 +968,7 @@ def require_opencode() -> str:
     return opencode
 
 
-def get_codex_version() -> Optional[str]:
+def get_codex_version() -> str | None:
     """Get codex version, or None if not available."""
     codex = shutil.which("codex")
     if not codex:
@@ -941,10 +990,10 @@ def get_codex_version() -> Optional[str]:
 
 def run_codex_exec(
     prompt: str,
-    session_id: Optional[str] = None,
+    session_id: str | None = None,
     sandbox: str = "read-only",
-    model: Optional[str] = None,
-) -> tuple[str, Optional[str]]:
+    model: str | None = None,
+) -> tuple[str, str | None]:
     """Run codex exec and return (output, thread_id).
 
     If session_id provided, tries to resume. Falls back to new session if resume fails.
@@ -1011,7 +1060,7 @@ def run_codex_exec(
         error_exit(f"codex exec failed: {msg}", use_json=False, code=2)
 
 
-def parse_codex_thread_id(output: str) -> Optional[str]:
+def parse_codex_thread_id(output: str) -> str | None:
     """Extract thread_id from codex --json output.
 
     Looks for: {"type":"thread.started","thread_id":"019baa19-..."}
@@ -1028,7 +1077,7 @@ def parse_codex_thread_id(output: str) -> Optional[str]:
     return None
 
 
-def parse_codex_verdict(output: str) -> Optional[str]:
+def parse_codex_verdict(output: str) -> str | None:
     """Extract verdict from codex output.
 
     Looks for <verdict>SHIP</verdict> or <verdict>NEEDS_WORK</verdict>
@@ -1039,8 +1088,8 @@ def parse_codex_verdict(output: str) -> Optional[str]:
 
 def run_opencode_review(
     prompt_file: str,
-    files: Optional[list[str]] = None,
-    title: Optional[str] = None,
+    files: list[str] | None = None,
+    title: str | None = None,
     timeout: int = 600,
 ) -> str:
     """Run opencode review and return output."""
@@ -1076,7 +1125,7 @@ def build_opencode_impl_prompt(
     commits: str,
     files: str,
     base_branch: str,
-    focus: Optional[str],
+    focus: str | None,
 ) -> str:
     focus_block = f"\nFocus: {focus}\n" if focus else ""
     return f"""Review the attached patch file for implementation changes.
@@ -1115,7 +1164,7 @@ def build_opencode_plan_prompt(
     plan_spec: str,
     task_specs: str,
     epic_id: str,
-    focus: Optional[str],
+    focus: str | None,
 ) -> str:
     focus_block = f"\nFocus: {focus}\n" if focus else ""
     return f"""Review the attached plan for epic {epic_id}.
@@ -1390,7 +1439,7 @@ def get_actor() -> str:
     # 2. git config user.email (preferred)
     try:
         result = subprocess.run(
-            ["git", "config", "user.email"], capture_output=True, text=True, check=True
+            ["git", "config", "user.email"], capture_output=True, text=True, check=True,
         )
         if email := result.stdout.strip():
             return email
@@ -1400,7 +1449,7 @@ def get_actor() -> str:
     # 3. git config user.name
     try:
         result = subprocess.run(
-            ["git", "config", "user.name"], capture_output=True, text=True, check=True
+            ["git", "config", "user.name"], capture_output=True, text=True, check=True,
         )
         if name := result.stdout.strip():
             return name
@@ -1453,7 +1502,7 @@ def require_keys(obj: dict, keys: list[str], what: str, use_json: bool = True) -
     missing = [k for k in keys if k not in obj]
     if missing:
         error_exit(
-            f"{what} missing required keys: {', '.join(missing)}", use_json=use_json
+            f"{what} missing required keys: {', '.join(missing)}", use_json=use_json,
         )
 
 
@@ -1485,7 +1534,7 @@ TBD
 """
 
 
-def create_task_spec(id_str: str, title: str, acceptance: Optional[str] = None) -> str:
+def create_task_spec(id_str: str, title: str, acceptance: str | None = None) -> str:
     """Create task spec markdown content."""
     acceptance_content = acceptance if acceptance else "- [ ] TBD"
     return f"""# {id_str} {title}
@@ -1516,7 +1565,7 @@ def patch_task_section(content: str, section: str, new_content: str) -> str:
     matches = len(re.findall(pattern, content, flags=re.MULTILINE))
     if matches > 1:
         raise ValueError(
-            f"Cannot patch: duplicate heading '{section}' found ({matches} times)"
+            f"Cannot patch: duplicate heading '{section}' found ({matches} times)",
         )
 
     # Strip leading section heading from new_content if present (defensive)
@@ -1539,8 +1588,7 @@ def patch_task_section(content: str, section: str, new_content: str) -> str:
                 # Add new content
                 result.append(new_content.rstrip())
                 continue
-            else:
-                in_target_section = False
+            in_target_section = False
 
         if not in_target_section:
             result.append(line)
@@ -1644,8 +1692,7 @@ def find_dependents(task_id: str, same_epic: bool = False) -> list[str]:
 
 
 def find_active_runs() -> list[dict]:
-    """
-    Find active Ralph runs by scanning scripts/ralph/runs/*/progress.txt.
+    """Find active Ralph runs by scanning scripts/ralph/runs/*/progress.txt.
     A run is active if progress.txt exists AND does NOT contain 'promise=COMPLETE'.
     Returns list of dicts with run info.
     """
@@ -1702,10 +1749,9 @@ def find_active_runs() -> list[dict]:
 
 
 def find_active_run(
-    run_id: Optional[str] = None, use_json: bool = False
+    run_id: str | None = None, use_json: bool = False,
 ) -> tuple[str, Path]:
-    """
-    Find a single active run. Auto-detect if run_id is None.
+    """Find a single active run. Auto-detect if run_id is None.
     Returns (run_id, run_dir) tuple.
     """
     runs = find_active_runs()
@@ -1771,7 +1817,7 @@ def cmd_detect(args: argparse.Namespace) -> None:
                 meta = load_json(meta_path)
                 if not is_supported_schema(meta.get("schema_version")):
                     issues.append(
-                        f"schema_version unsupported (expected {', '.join(map(str, SUPPORTED_SCHEMA_VERSIONS))})"
+                        f"schema_version unsupported (expected {', '.join(map(str, SUPPORTED_SCHEMA_VERSIONS))})",
                     )
             except Exception as e:
                 issues.append(f"meta.json parse error: {e}")
@@ -1792,15 +1838,14 @@ def cmd_detect(args: argparse.Namespace) -> None:
         if issues:
             result["issues"] = issues
         json_output(result)
+    elif exists and valid:
+        print(f".flow/ exists and is valid at {flow_dir}")
+    elif exists:
+        print(f".flow/ exists but has issues at {flow_dir}:")
+        for issue in issues:
+            print(f"  - {issue}")
     else:
-        if exists and valid:
-            print(f".flow/ exists and is valid at {flow_dir}")
-        elif exists:
-            print(f".flow/ exists but has issues at {flow_dir}:")
-            for issue in issues:
-                print(f"  - {issue}")
-        else:
-            print(".flow/ does not exist")
+        print(".flow/ does not exist")
 
 
 def cmd_status(args: argparse.Namespace) -> None:
@@ -1862,7 +1907,7 @@ def cmd_status(args: argparse.Namespace) -> None:
                     }
                     for r in active_runs
                 ],
-            }
+            },
         )
     else:
         if not flow_exists:
@@ -1873,7 +1918,7 @@ def cmd_status(args: argparse.Namespace) -> None:
             print(f"Epics: {epic_counts['open']} open, {epic_counts['done']} done")
             print(
                 f"Tasks: {task_counts['todo']} todo, {task_counts['in_progress']} in_progress, "
-                f"{task_counts['done']} done, {task_counts['blocked']} blocked"
+                f"{task_counts['done']} done, {task_counts['blocked']} blocked",
             )
 
         print()
@@ -1964,7 +2009,7 @@ def cmd_ralph_status(args: argparse.Namespace) -> None:
                 "current_task": current_task,
                 "paused": paused,
                 "stopped": stopped,
-            }
+            },
         )
     else:
         state = []
@@ -1986,26 +2031,25 @@ def cmd_config_get(args: argparse.Namespace) -> None:
     """Get a config value."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     value = get_config(args.key)
     if args.json:
         json_output({"key": args.key, "value": value})
+    elif value is None:
+        print(f"{args.key}: (not set)")
+    elif isinstance(value, bool):
+        print(f"{args.key}: {'true' if value else 'false'}")
     else:
-        if value is None:
-            print(f"{args.key}: (not set)")
-        elif isinstance(value, bool):
-            print(f"{args.key}: {'true' if value else 'false'}")
-        else:
-            print(f"{args.key}: {value}")
+        print(f"{args.key}: {value}")
 
 
 def cmd_config_set(args: argparse.Namespace) -> None:
     """Set a config value."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     set_config(args.key, args.value)
@@ -2068,7 +2112,7 @@ def cmd_memory_init(args: argparse.Namespace) -> None:
     """Initialize memory directory with templates."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     # Check if memory is enabled
@@ -2076,7 +2120,7 @@ def cmd_memory_init(args: argparse.Namespace) -> None:
         if args.json:
             json_output(
                 {
-                    "error": "Memory not enabled. Run: flowctl config set memory.enabled true"
+                    "error": "Memory not enabled. Run: flowctl config set memory.enabled true",
                 },
                 success=False,
             )
@@ -2106,29 +2150,28 @@ def cmd_memory_init(args: argparse.Namespace) -> None:
                 "message": "Memory initialized"
                 if created
                 else "Memory already initialized",
-            }
+            },
         )
+    elif created:
+        print(f"Memory initialized at {memory_dir}")
+        for f in created:
+            print(f"  Created: {f}")
     else:
-        if created:
-            print(f"Memory initialized at {memory_dir}")
-            for f in created:
-                print(f"  Created: {f}")
-        else:
-            print(f"Memory already initialized at {memory_dir}")
+        print(f"Memory already initialized at {memory_dir}")
 
 
 def require_memory_enabled(args) -> Path:
     """Check memory is enabled and return memory dir. Exits on error."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     if not get_config("memory.enabled", False):
         if args.json:
             json_output(
                 {
-                    "error": "Memory not enabled. Run: flowctl config set memory.enabled true"
+                    "error": "Memory not enabled. Run: flowctl config set memory.enabled true",
                 },
                 success=False,
             )
@@ -2201,7 +2244,7 @@ def cmd_memory_add(args: argparse.Namespace) -> None:
 
     if args.json:
         json_output(
-            {"type": type_name, "file": filename, "message": f"Added {type_name} entry"}
+            {"type": type_name, "file": filename, "message": f"Added {type_name} entry"},
         )
     else:
         print(f"Added {type_name} entry to {filename}")
@@ -2305,22 +2348,21 @@ def cmd_memory_search(args: argparse.Namespace) -> None:
 
     if args.json:
         json_output({"pattern": pattern, "matches": matches, "count": len(matches)})
+    elif matches:
+        for m in matches:
+            print(f"=== {m['file']} ===")
+            print(m["entry"])
+            print()
+        print(f"Found {len(matches)} matches")
     else:
-        if matches:
-            for m in matches:
-                print(f"=== {m['file']} ===")
-                print(m["entry"])
-                print()
-            print(f"Found {len(matches)} matches")
-        else:
-            print(f"No matches for '{pattern}'")
+        print(f"No matches for '{pattern}'")
 
 
 def cmd_epic_create(args: argparse.Namespace) -> None:
     """Create a new epic."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     flow_dir = get_flow_dir()
@@ -2374,7 +2416,7 @@ def cmd_epic_create(args: argparse.Namespace) -> None:
                 "title": args.title,
                 "spec_path": epic_data["spec_path"],
                 "message": f"Epic {epic_id} created",
-            }
+            },
         )
     else:
         print(f"Epic {epic_id} created: {args.title}")
@@ -2384,12 +2426,12 @@ def cmd_task_create(args: argparse.Namespace) -> None:
     """Create a new task under an epic."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     if not is_epic_id(args.epic):
         error_exit(
-            f"Invalid epic ID: {args.epic}. Expected format: fn-N or fn-N-xxx", use_json=args.json
+            f"Invalid epic ID: {args.epic}. Expected format: fn-N or fn-N-xxx", use_json=args.json,
         )
 
     flow_dir = get_flow_dir()
@@ -2434,7 +2476,7 @@ def cmd_task_create(args: argparse.Namespace) -> None:
     acceptance = None
     if args.acceptance_file:
         acceptance = read_text_or_exit(
-            Path(args.acceptance_file), "Acceptance file", use_json=args.json
+            Path(args.acceptance_file), "Acceptance file", use_json=args.json,
         )
 
     # Create task JSON (MU-2: includes soft-claim fields)
@@ -2470,7 +2512,7 @@ def cmd_task_create(args: argparse.Namespace) -> None:
                 "depends_on": deps,
                 "spec_path": task_data["spec_path"],
                 "message": f"Task {task_id} created",
-            }
+            },
         )
     else:
         print(f"Task {task_id} created: {args.title}")
@@ -2480,12 +2522,12 @@ def cmd_dep_add(args: argparse.Namespace) -> None:
     """Add a dependency to a task."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     if not is_task_id(args.task):
         error_exit(
-            f"Invalid task ID: {args.task}. Expected format: fn-N.M or fn-N-xxx.M", use_json=args.json
+            f"Invalid task ID: {args.task}. Expected format: fn-N.M or fn-N-xxx.M", use_json=args.json,
         )
 
     if not is_task_id(args.depends_on):
@@ -2523,7 +2565,7 @@ def cmd_dep_add(args: argparse.Namespace) -> None:
                 "task": args.task,
                 "depends_on": task_data["depends_on"],
                 "message": f"Dependency {args.depends_on} added to {args.task}",
-            }
+            },
         )
     else:
         print(f"Dependency {args.depends_on} added to {args.task}")
@@ -2533,7 +2575,7 @@ def cmd_show(args: argparse.Namespace) -> None:
     """Show epic or task details."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     flow_dir = get_flow_dir()
@@ -2541,7 +2583,7 @@ def cmd_show(args: argparse.Namespace) -> None:
     if is_epic_id(args.id):
         epic_path = flow_dir / EPICS_DIR / f"{args.id}.json"
         epic_data = normalize_epic(
-            load_json_or_exit(epic_path, f"Epic {args.id}", use_json=args.json)
+            load_json_or_exit(epic_path, f"Epic {args.id}", use_json=args.json),
         )
 
         # Get tasks for this epic (with merged runtime state)
@@ -2562,9 +2604,9 @@ def cmd_show(args: argparse.Namespace) -> None:
                         "status": task_data["status"],
                         "priority": task_data.get("priority"),
                         "depends_on": task_data.get(
-                            "depends_on", task_data.get("deps", [])
+                            "depends_on", task_data.get("deps", []),
                         ),
-                    }
+                    },
                 )
 
         # Sort tasks by numeric suffix (safe via parse_id)
@@ -2615,7 +2657,7 @@ def cmd_epics(args: argparse.Namespace) -> None:
     """List all epics."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     flow_dir = get_flow_dir()
@@ -2626,8 +2668,8 @@ def cmd_epics(args: argparse.Namespace) -> None:
         for epic_file in sorted(epics_dir.glob("fn-*.json")):
             epic_data = normalize_epic(
                 load_json_or_exit(
-                    epic_file, f"Epic {epic_file.stem}", use_json=args.json
-                )
+                    epic_file, f"Epic {epic_file.stem}", use_json=args.json,
+                ),
             )
             # Count tasks (with merged runtime state)
             tasks_dir = flow_dir / TASKS_DIR
@@ -2650,7 +2692,7 @@ def cmd_epics(args: argparse.Namespace) -> None:
                     "status": epic_data["status"],
                     "tasks": task_count,
                     "done": done_count,
-                }
+                },
             )
 
     # Sort by epic number
@@ -2662,23 +2704,22 @@ def cmd_epics(args: argparse.Namespace) -> None:
 
     if args.json:
         json_output({"success": True, "epics": epics, "count": len(epics)})
+    elif not epics:
+        print("No epics found.")
     else:
-        if not epics:
-            print("No epics found.")
-        else:
-            print(f"Epics ({len(epics)}):\n")
-            for e in epics:
-                progress = f"{e['done']}/{e['tasks']}" if e["tasks"] > 0 else "0/0"
-                print(
-                    f"  [{e['status']}] {e['id']}: {e['title']} ({progress} tasks done)"
-                )
+        print(f"Epics ({len(epics)}):\n")
+        for e in epics:
+            progress = f"{e['done']}/{e['tasks']}" if e["tasks"] > 0 else "0/0"
+            print(
+                f"  [{e['status']}] {e['id']}: {e['title']} ({progress} tasks done)",
+            )
 
 
 def cmd_tasks(args: argparse.Namespace) -> None:
     """List tasks."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     flow_dir = get_flow_dir()
@@ -2706,7 +2747,7 @@ def cmd_tasks(args: argparse.Namespace) -> None:
                     "status": task_data["status"],
                     "priority": task_data.get("priority"),
                     "depends_on": task_data["depends_on"],
-                }
+                },
             )
 
     # Sort tasks by epic number then task number
@@ -2721,26 +2762,25 @@ def cmd_tasks(args: argparse.Namespace) -> None:
 
     if args.json:
         json_output({"success": True, "tasks": tasks, "count": len(tasks)})
+    elif not tasks:
+        scope = f" for epic {args.epic}" if args.epic else ""
+        status_filter = f" with status '{args.status}'" if args.status else ""
+        print(f"No tasks found{scope}{status_filter}.")
     else:
-        if not tasks:
-            scope = f" for epic {args.epic}" if args.epic else ""
-            status_filter = f" with status '{args.status}'" if args.status else ""
-            print(f"No tasks found{scope}{status_filter}.")
-        else:
-            scope = f" for {args.epic}" if args.epic else ""
-            print(f"Tasks{scope} ({len(tasks)}):\n")
-            for t in tasks:
-                deps = (
-                    f" (deps: {', '.join(t['depends_on'])})" if t["depends_on"] else ""
-                )
-                print(f"  [{t['status']}] {t['id']}: {t['title']}{deps}")
+        scope = f" for {args.epic}" if args.epic else ""
+        print(f"Tasks{scope} ({len(tasks)}):\n")
+        for t in tasks:
+            deps = (
+                f" (deps: {', '.join(t['depends_on'])})" if t["depends_on"] else ""
+            )
+            print(f"  [{t['status']}] {t['id']}: {t['title']}{deps}")
 
 
 def cmd_list(args: argparse.Namespace) -> None:
     """List all epics and their tasks."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     flow_dir = get_flow_dir()
@@ -2753,8 +2793,8 @@ def cmd_list(args: argparse.Namespace) -> None:
         for epic_file in sorted(epics_dir.glob("fn-*.json")):
             epic_data = normalize_epic(
                 load_json_or_exit(
-                    epic_file, f"Epic {epic_file.stem}", use_json=args.json
-                )
+                    epic_file, f"Epic {epic_file.stem}", use_json=args.json,
+                ),
             )
             epics.append(epic_data)
 
@@ -2788,7 +2828,7 @@ def cmd_list(args: argparse.Namespace) -> None:
                     "status": task_data["status"],
                     "priority": task_data.get("priority"),
                     "depends_on": task_data["depends_on"],
-                }
+                },
             )
 
     # Sort tasks within each epic
@@ -2807,7 +2847,7 @@ def cmd_list(args: argparse.Namespace) -> None:
                     "status": e["status"],
                     "tasks": len(task_list),
                     "done": done_count,
-                }
+                },
             )
         json_output(
             {
@@ -2816,7 +2856,7 @@ def cmd_list(args: argparse.Namespace) -> None:
                 "tasks": all_tasks,
                 "epic_count": len(epics),
                 "task_count": len(all_tasks),
-            }
+            },
         )
     else:
         if not epics:
@@ -2826,7 +2866,7 @@ def cmd_list(args: argparse.Namespace) -> None:
         total_tasks = len(all_tasks)
         total_done = sum(1 for t in all_tasks if t["status"] == "done")
         print(
-            f"Flow Status: {len(epics)} epics, {total_tasks} tasks ({total_done} done)\n"
+            f"Flow Status: {len(epics)} epics, {total_tasks} tasks ({total_done} done)\n",
         )
 
         for e in epics:
@@ -2869,12 +2909,12 @@ def cmd_epic_set_plan(args: argparse.Namespace) -> None:
     """Set/overwrite entire epic spec from file."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     if not is_epic_id(args.id):
         error_exit(
-            f"Invalid epic ID: {args.id}. Expected format: fn-N or fn-N-xxx", use_json=args.json
+            f"Invalid epic ID: {args.id}. Expected format: fn-N or fn-N-xxx", use_json=args.json,
         )
 
     flow_dir = get_flow_dir()
@@ -2902,7 +2942,7 @@ def cmd_epic_set_plan(args: argparse.Namespace) -> None:
                 "id": args.id,
                 "spec_path": str(spec_path),
                 "message": f"Epic {args.id} spec updated",
-            }
+            },
         )
     else:
         print(f"Epic {args.id} spec updated")
@@ -2912,12 +2952,12 @@ def cmd_epic_set_plan_review_status(args: argparse.Namespace) -> None:
     """Set plan review status for an epic."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     if not is_epic_id(args.id):
         error_exit(
-            f"Invalid epic ID: {args.id}. Expected format: fn-N or fn-N-xxx", use_json=args.json
+            f"Invalid epic ID: {args.id}. Expected format: fn-N or fn-N-xxx", use_json=args.json,
         )
 
     flow_dir = get_flow_dir()
@@ -2927,7 +2967,7 @@ def cmd_epic_set_plan_review_status(args: argparse.Namespace) -> None:
         error_exit(f"Epic {args.id} not found", use_json=args.json)
 
     epic_data = normalize_epic(
-        load_json_or_exit(epic_path, f"Epic {args.id}", use_json=args.json)
+        load_json_or_exit(epic_path, f"Epic {args.id}", use_json=args.json),
     )
     epic_data["plan_review_status"] = args.status
     epic_data["plan_reviewed_at"] = now_iso()
@@ -2941,7 +2981,7 @@ def cmd_epic_set_plan_review_status(args: argparse.Namespace) -> None:
                 "plan_review_status": epic_data["plan_review_status"],
                 "plan_reviewed_at": epic_data["plan_reviewed_at"],
                 "message": f"Epic {args.id} plan review status set to {args.status}",
-            }
+            },
         )
     else:
         print(f"Epic {args.id} plan review status set to {args.status}")
@@ -2951,12 +2991,12 @@ def cmd_epic_set_branch(args: argparse.Namespace) -> None:
     """Set epic branch name."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     if not is_epic_id(args.id):
         error_exit(
-            f"Invalid epic ID: {args.id}. Expected format: fn-N or fn-N-xxx", use_json=args.json
+            f"Invalid epic ID: {args.id}. Expected format: fn-N or fn-N-xxx", use_json=args.json,
         )
 
     flow_dir = get_flow_dir()
@@ -2966,7 +3006,7 @@ def cmd_epic_set_branch(args: argparse.Namespace) -> None:
         error_exit(f"Epic {args.id} not found", use_json=args.json)
 
     epic_data = normalize_epic(
-        load_json_or_exit(epic_path, f"Epic {args.id}", use_json=args.json)
+        load_json_or_exit(epic_path, f"Epic {args.id}", use_json=args.json),
     )
     epic_data["branch_name"] = args.branch
     epic_data["updated_at"] = now_iso()
@@ -2978,7 +3018,7 @@ def cmd_epic_set_branch(args: argparse.Namespace) -> None:
                 "id": args.id,
                 "branch_name": epic_data["branch_name"],
                 "message": f"Epic {args.id} branch_name set to {args.branch}",
-            }
+            },
         )
     else:
         print(f"Epic {args.id} branch_name set to {args.branch}")
@@ -2988,7 +3028,7 @@ def cmd_epic_add_dep(args: argparse.Namespace) -> None:
     """Add epic-level dependency."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     epic_id = args.epic
@@ -3028,7 +3068,7 @@ def cmd_epic_add_dep(args: argparse.Namespace) -> None:
                     "id": epic_id,
                     "depends_on_epics": deps,
                     "message": f"{dep_id} already in dependencies",
-                }
+                },
             )
         else:
             print(f"{dep_id} already in {epic_id} dependencies")
@@ -3046,7 +3086,7 @@ def cmd_epic_add_dep(args: argparse.Namespace) -> None:
                 "id": epic_id,
                 "depends_on_epics": deps,
                 "message": f"Added {dep_id} to {epic_id} dependencies",
-            }
+            },
         )
     else:
         print(f"Added {dep_id} to {epic_id} dependencies")
@@ -3056,7 +3096,7 @@ def cmd_epic_rm_dep(args: argparse.Namespace) -> None:
     """Remove epic-level dependency."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     epic_id = args.epic
@@ -3086,7 +3126,7 @@ def cmd_epic_rm_dep(args: argparse.Namespace) -> None:
                     "id": epic_id,
                     "depends_on_epics": deps,
                     "message": f"{dep_id} not in dependencies",
-                }
+                },
             )
         else:
             print(f"{dep_id} not in {epic_id} dependencies")
@@ -3104,7 +3144,7 @@ def cmd_epic_rm_dep(args: argparse.Namespace) -> None:
                 "id": epic_id,
                 "depends_on_epics": deps,
                 "message": f"Removed {dep_id} from {epic_id} dependencies",
-            }
+            },
         )
     else:
         print(f"Removed {dep_id} from {epic_id} dependencies")
@@ -3128,7 +3168,7 @@ def cmd_task_set_spec(args: argparse.Namespace) -> None:
     """
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     task_id = args.id
@@ -3173,7 +3213,7 @@ def cmd_task_set_spec(args: argparse.Namespace) -> None:
     # Section patch mode (existing behavior)
     # Read current spec
     current_spec = read_text_or_exit(
-        task_spec_path, f"Task {task_id} spec", use_json=args.json
+        task_spec_path, f"Task {task_id} spec", use_json=args.json,
     )
 
     updated_spec = current_spec
@@ -3182,11 +3222,11 @@ def cmd_task_set_spec(args: argparse.Namespace) -> None:
     # Apply description if provided
     if args.description:
         desc_content = read_file_or_stdin(
-            args.description, "Description file", use_json=args.json
+            args.description, "Description file", use_json=args.json,
         )
         try:
             updated_spec = patch_task_section(
-                updated_spec, "## Description", desc_content
+                updated_spec, "## Description", desc_content,
             )
             sections_updated.append("## Description")
         except ValueError as e:
@@ -3195,7 +3235,7 @@ def cmd_task_set_spec(args: argparse.Namespace) -> None:
     # Apply acceptance if provided
     if args.acceptance:
         acc_content = read_file_or_stdin(
-            args.acceptance, "Acceptance file", use_json=args.json
+            args.acceptance, "Acceptance file", use_json=args.json,
         )
         try:
             updated_spec = patch_task_section(updated_spec, "## Acceptance", acc_content)
@@ -3214,7 +3254,7 @@ def cmd_task_set_spec(args: argparse.Namespace) -> None:
                 "id": task_id,
                 "sections": sections_updated,
                 "message": f"Task {task_id} updated: {', '.join(sections_updated)}",
-            }
+            },
         )
     else:
         print(f"Task {task_id} updated: {', '.join(sections_updated)}")
@@ -3224,7 +3264,7 @@ def cmd_task_reset(args: argparse.Namespace) -> None:
     """Reset task status to todo."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     task_id = args.task_id
@@ -3250,7 +3290,7 @@ def cmd_task_reset(args: argparse.Namespace) -> None:
         epic_data = load_json_or_exit(epic_path, f"Epic {epic_id}", use_json=args.json)
         if epic_data.get("status") == "done":
             error_exit(
-                f"Cannot reset task in closed epic {epic_id}", use_json=args.json
+                f"Cannot reset task in closed epic {epic_id}", use_json=args.json,
             )
 
     # Check status validations (use merged state)
@@ -3264,7 +3304,7 @@ def cmd_task_reset(args: argparse.Namespace) -> None:
         # Already todo - no-op success
         if args.json:
             json_output(
-                {"success": True, "reset": [], "message": f"{task_id} already todo"}
+                {"success": True, "reset": [], "message": f"{task_id} already todo"},
             )
         else:
             print(f"{task_id} already todo")
@@ -3329,17 +3369,17 @@ def cmd_task_reset(args: argparse.Namespace) -> None:
 
 
 def _task_set_section(
-    task_id: str, section: str, file_path: str, use_json: bool
+    task_id: str, section: str, file_path: str, use_json: bool,
 ) -> None:
     """Helper to set a task spec section."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=use_json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=use_json,
         )
 
     if not is_task_id(task_id):
         error_exit(
-            f"Invalid task ID: {task_id}. Expected format: fn-N.M or fn-N-xxx.M", use_json=use_json
+            f"Invalid task ID: {task_id}. Expected format: fn-N.M or fn-N-xxx.M", use_json=use_json,
         )
 
     flow_dir = get_flow_dir()
@@ -3358,7 +3398,7 @@ def _task_set_section(
 
     # Read current spec
     current_spec = read_text_or_exit(
-        task_spec_path, f"Task {task_id} spec", use_json=use_json
+        task_spec_path, f"Task {task_id} spec", use_json=use_json,
     )
 
     # Patch section
@@ -3378,7 +3418,7 @@ def _task_set_section(
                 "id": task_id,
                 "section": section,
                 "message": f"Task {task_id} {section} updated",
-            }
+            },
         )
     else:
         print(f"Task {task_id} {section} updated")
@@ -3388,12 +3428,12 @@ def cmd_ready(args: argparse.Namespace) -> None:
     """List ready tasks for an epic."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     if not is_epic_id(args.epic):
         error_exit(
-            f"Invalid epic ID: {args.epic}. Expected format: fn-N or fn-N-xxx", use_json=args.json
+            f"Invalid epic ID: {args.epic}. Expected format: fn-N or fn-N-xxx", use_json=args.json,
         )
 
     flow_dir = get_flow_dir()
@@ -3444,10 +3484,7 @@ def cmd_ready(args: argparse.Namespace) -> None:
         deps_done = True
         blocking_deps = []
         for dep in task["depends_on"]:
-            if dep not in tasks:
-                deps_done = False
-                blocking_deps.append(dep)
-            elif tasks[dep]["status"] != "done":
+            if dep not in tasks or tasks[dep]["status"] != "done":
                 deps_done = False
                 blocking_deps.append(dep)
 
@@ -3490,7 +3527,7 @@ def cmd_ready(args: argparse.Namespace) -> None:
                     }
                     for b in blocked
                 ],
-            }
+            },
         )
     else:
         print(f"Ready tasks for {args.epic} (actor: {current_actor}):")
@@ -3509,7 +3546,7 @@ def cmd_ready(args: argparse.Namespace) -> None:
             print("\nBlocked:")
             for b in blocked:
                 print(
-                    f"  {b['task']['id']}: {b['task']['title']} (by: {', '.join(b['blocked_by'])})"
+                    f"  {b['task']['id']}: {b['task']['title']} (by: {', '.join(b['blocked_by'])})",
                 )
 
 
@@ -3517,7 +3554,7 @@ def cmd_next(args: argparse.Namespace) -> None:
     """Select the next plan/work unit."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     flow_dir = get_flow_dir()
@@ -3526,12 +3563,12 @@ def cmd_next(args: argparse.Namespace) -> None:
     epic_ids: list[str] = []
     if args.epics_file:
         data = load_json_or_exit(
-            Path(args.epics_file), "Epics file", use_json=args.json
+            Path(args.epics_file), "Epics file", use_json=args.json,
         )
         epics_val = data.get("epics")
         if not isinstance(epics_val, list):
             error_exit(
-                "Epics file must be JSON with key 'epics' as a list", use_json=args.json
+                "Epics file must be JSON with key 'epics' as a list", use_json=args.json,
             )
         for e in epics_val:
             if not isinstance(e, str) or not is_epic_id(e):
@@ -3562,7 +3599,7 @@ def cmd_next(args: argparse.Namespace) -> None:
             continue
 
         epic_data = normalize_epic(
-            load_json_or_exit(epic_path, f"Epic {epic_id}", use_json=args.json)
+            load_json_or_exit(epic_path, f"Epic {epic_id}", use_json=args.json),
         )
         if epic_data.get("status") == "done":
             continue
@@ -3577,7 +3614,7 @@ def cmd_next(args: argparse.Namespace) -> None:
                 blocked_by.append(dep)
                 continue
             dep_data = normalize_epic(
-                load_json_or_exit(dep_path, f"Epic {dep}", use_json=args.json)
+                load_json_or_exit(dep_path, f"Epic {dep}", use_json=args.json),
             )
             if dep_data.get("status") != "done":
                 blocked_by.append(dep)
@@ -3593,7 +3630,7 @@ def cmd_next(args: argparse.Namespace) -> None:
                         "epic": epic_id,
                         "task": None,
                         "reason": "needs_plan_review",
-                    }
+                    },
                 )
             else:
                 print(f"plan {epic_id} needs_plan_review")
@@ -3633,7 +3670,7 @@ def cmd_next(args: argparse.Namespace) -> None:
                         "epic": epic_id,
                         "task": task_id,
                         "reason": "resume_in_progress",
-                    }
+                    },
                 )
             else:
                 print(f"work {task_id} resume_in_progress")
@@ -3665,7 +3702,7 @@ def cmd_next(args: argparse.Namespace) -> None:
                         "epic": epic_id,
                         "task": task_id,
                         "reason": "ready_task",
-                    }
+                    },
                 )
             else:
                 print(f"work {task_id} ready_task")
@@ -3677,25 +3714,24 @@ def cmd_next(args: argparse.Namespace) -> None:
             payload["reason"] = "blocked_by_epic_deps"
             payload["blocked_epics"] = blocked_epics
         json_output(payload)
+    elif blocked_epics:
+        print("none blocked_by_epic_deps")
+        for epic_id, deps in blocked_epics.items():
+            print(f"  {epic_id}: {', '.join(deps)}")
     else:
-        if blocked_epics:
-            print("none blocked_by_epic_deps")
-            for epic_id, deps in blocked_epics.items():
-                print(f"  {epic_id}: {', '.join(deps)}")
-        else:
-            print("none")
+        print("none")
 
 
 def cmd_start(args: argparse.Namespace) -> None:
     """Start a task (set status to in_progress)."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     if not is_task_id(args.id):
         error_exit(
-            f"Invalid task ID: {args.id}. Expected format: fn-N.M or fn-N-xxx.M", use_json=args.json
+            f"Invalid task ID: {args.id}. Expected format: fn-N.M or fn-N-xxx.M", use_json=args.json,
         )
 
     # Load task definition for dependency info (outside lock)
@@ -3733,7 +3769,7 @@ def cmd_start(args: argparse.Namespace) -> None:
         # Cannot start done task
         if status == "done":
             error_exit(
-                f"Cannot start task {args.id}: status is 'done'.", use_json=args.json
+                f"Cannot start task {args.id}: status is 'done'.", use_json=args.json,
             )
 
         # Blocked requires --force
@@ -3788,7 +3824,7 @@ def cmd_start(args: argparse.Namespace) -> None:
                 "id": args.id,
                 "status": "in_progress",
                 "message": f"Task {args.id} started",
-            }
+            },
         )
     else:
         print(f"Task {args.id} started")
@@ -3798,12 +3834,12 @@ def cmd_done(args: argparse.Namespace) -> None:
     """Complete a task with summary and evidence."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     if not is_task_id(args.id):
         error_exit(
-            f"Invalid task ID: {args.id}. Expected format: fn-N.M or fn-N-xxx.M", use_json=args.json
+            f"Invalid task ID: {args.id}. Expected format: fn-N.M or fn-N-xxx.M", use_json=args.json,
         )
 
     flow_dir = get_flow_dir()
@@ -3840,7 +3876,7 @@ def cmd_done(args: argparse.Namespace) -> None:
     summary: str
     if args.summary_file:
         summary = read_text_or_exit(
-            Path(args.summary_file), "Summary file", use_json=args.json
+            Path(args.summary_file), "Summary file", use_json=args.json,
         )
     elif args.summary:
         summary = args.summary
@@ -3851,7 +3887,7 @@ def cmd_done(args: argparse.Namespace) -> None:
     evidence: dict
     if args.evidence_json:
         evidence_raw = read_text_or_exit(
-            Path(args.evidence_json), "Evidence file", use_json=args.json
+            Path(args.evidence_json), "Evidence file", use_json=args.json,
         )
         try:
             evidence = json.loads(evidence_raw)
@@ -3890,7 +3926,7 @@ def cmd_done(args: argparse.Namespace) -> None:
 
     # Read current spec
     current_spec = read_text_or_exit(
-        task_spec_path, f"Task {args.id} spec", use_json=args.json
+        task_spec_path, f"Task {args.id} spec", use_json=args.json,
     )
 
     # Patch sections
@@ -3911,7 +3947,7 @@ def cmd_done(args: argparse.Namespace) -> None:
 
     if args.json:
         json_output(
-            {"id": args.id, "status": "done", "message": f"Task {args.id} completed"}
+            {"id": args.id, "status": "done", "message": f"Task {args.id} completed"},
         )
     else:
         print(f"Task {args.id} completed")
@@ -3921,12 +3957,12 @@ def cmd_block(args: argparse.Namespace) -> None:
     """Block a task with a reason."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     if not is_task_id(args.id):
         error_exit(
-            f"Invalid task ID: {args.id}. Expected format: fn-N.M or fn-N-xxx.M", use_json=args.json
+            f"Invalid task ID: {args.id}. Expected format: fn-N.M or fn-N-xxx.M", use_json=args.json,
         )
 
     flow_dir = get_flow_dir()
@@ -3937,17 +3973,17 @@ def cmd_block(args: argparse.Namespace) -> None:
 
     if task_data["status"] == "done":
         error_exit(
-            f"Cannot block task {args.id}: status is 'done'.", use_json=args.json
+            f"Cannot block task {args.id}: status is 'done'.", use_json=args.json,
         )
 
     reason = read_text_or_exit(
-        Path(args.reason_file), "Reason file", use_json=args.json
+        Path(args.reason_file), "Reason file", use_json=args.json,
     ).strip()
     if not reason:
         error_exit("Reason file is empty", use_json=args.json)
 
     current_spec = read_text_or_exit(
-        task_spec_path, f"Task {args.id} spec", use_json=args.json
+        task_spec_path, f"Task {args.id} spec", use_json=args.json,
     )
     summary = get_task_section(current_spec, "## Done summary")
     if summary.strip().lower() in ["tbd", ""]:
@@ -3967,7 +4003,7 @@ def cmd_block(args: argparse.Namespace) -> None:
 
     if args.json:
         json_output(
-            {"id": args.id, "status": "blocked", "message": f"Task {args.id} blocked"}
+            {"id": args.id, "status": "blocked", "message": f"Task {args.id} blocked"},
         )
     else:
         print(f"Task {args.id} blocked")
@@ -3988,18 +4024,17 @@ def cmd_state_path(args: argparse.Namespace) -> None:
             json_output({"state_dir": str(state_dir), "task_state_path": str(state_path)})
         else:
             print(state_path)
+    elif args.json:
+        json_output({"state_dir": str(state_dir)})
     else:
-        if args.json:
-            json_output({"state_dir": str(state_dir)})
-        else:
-            print(state_dir)
+        print(state_dir)
 
 
 def cmd_migrate_state(args: argparse.Namespace) -> None:
     """Migrate runtime state from definition files to state-dir."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     flow_dir = get_flow_dir()
@@ -4068,12 +4103,12 @@ def cmd_epic_close(args: argparse.Namespace) -> None:
     """Close an epic (all tasks must be done)."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     if not is_epic_id(args.id):
         error_exit(
-            f"Invalid epic ID: {args.id}. Expected format: fn-N or fn-N-xxx", use_json=args.json
+            f"Invalid epic ID: {args.id}. Expected format: fn-N or fn-N-xxx", use_json=args.json,
         )
 
     flow_dir = get_flow_dir()
@@ -4111,7 +4146,7 @@ def cmd_epic_close(args: argparse.Namespace) -> None:
 
     if args.json:
         json_output(
-            {"id": args.id, "status": "done", "message": f"Epic {args.id} closed"}
+            {"id": args.id, "status": "done", "message": f"Epic {args.id} closed"},
         )
     else:
         print(f"Epic {args.id} closed")
@@ -4131,7 +4166,7 @@ def validate_flow_root(flow_dir: Path) -> list[str]:
             if not is_supported_schema(meta.get("schema_version")):
                 errors.append(
                     "schema_version unsupported in meta.json "
-                    f"(expected {', '.join(map(str, SUPPORTED_SCHEMA_VERSIONS))}, got {meta.get('schema_version')})"
+                    f"(expected {', '.join(map(str, SUPPORTED_SCHEMA_VERSIONS))}, got {meta.get('schema_version')})",
                 )
         except json.JSONDecodeError as e:
             errors.append(f"meta.json invalid JSON: {e}")
@@ -4147,7 +4182,7 @@ def validate_flow_root(flow_dir: Path) -> list[str]:
 
 
 def validate_epic(
-    flow_dir: Path, epic_id: str, use_json: bool = True
+    flow_dir: Path, epic_id: str, use_json: bool = True,
 ) -> tuple[list[str], list[str], int]:
     """Validate a single epic. Returns (errors, warnings, task_count)."""
     errors = []
@@ -4160,7 +4195,7 @@ def validate_epic(
         return errors, warnings, 0
 
     epic_data = normalize_epic(
-        load_json_or_exit(epic_path, f"Epic {epic_id}", use_json=use_json)
+        load_json_or_exit(epic_path, f"Epic {epic_id}", use_json=use_json),
     )
 
     # Check epic spec exists
@@ -4228,7 +4263,7 @@ def validate_epic(
                 errors.append(f"Task {task_id}: dependency {dep} not found")
             if not dep.startswith(epic_id + "."):
                 errors.append(
-                    f"Task {task_id}: dependency {dep} is outside epic {epic_id}"
+                    f"Task {task_id}: dependency {dep} is outside epic {epic_id}",
                 )
 
     # Cycle detection using DFS
@@ -4260,7 +4295,7 @@ def validate_epic(
         for task_id, task in tasks.items():
             if task["status"] != "done":
                 errors.append(
-                    f"Epic marked done but task {task_id} is {task['status']}"
+                    f"Epic marked done but task {task_id} is {task['status']}",
                 )
 
     return errors, warnings, len(tasks)
@@ -4416,8 +4451,8 @@ def cmd_rp_builder(args: argparse.Namespace) -> None:
                             "review": review_response,
                             "file_count": data.get("file_count", 0),
                             "total_tokens": data.get("total_tokens", 0),
-                        }
-                    )
+                        },
+                    ),
                 )
             else:
                 print(f"T={tab} CHAT_ID={chat_id}")
@@ -4537,7 +4572,7 @@ def cmd_rp_setup_review(args: argparse.Namespace) -> None:
     result = run_rp_cli(["--raw-json", "-e", "windows"])
     windows = parse_windows(result.stdout or "")
 
-    win_id: Optional[int] = None
+    win_id: int | None = None
 
     # Single window with no root paths - use it
     if len(windows) == 1 and not extract_root_paths(windows[0]):
@@ -4618,8 +4653,8 @@ def cmd_rp_setup_review(args: argparse.Namespace) -> None:
                             "repo_root": repo_root,
                             "file_count": data.get("file_count", 0),
                             "total_tokens": data.get("total_tokens", 0),
-                        }
-                    )
+                        },
+                    ),
                 )
             else:
                 print(f"W={win_id} T={tab} CHAT_ID={chat_id}")
@@ -4649,15 +4684,14 @@ def cmd_codex_check(args: argparse.Namespace) -> None:
 
     if args.json:
         json_output({"available": available, "version": version})
+    elif available:
+        print(f"codex available: {version or 'unknown version'}")
     else:
-        if available:
-            print(f"codex available: {version or 'unknown version'}")
-        else:
-            print("codex not available")
+        print("codex not available")
 
 
 def build_standalone_review_prompt(
-    base_branch: str, focus: Optional[str], diff_summary: str
+    base_branch: str, focus: str | None, diff_summary: str,
 ) -> str:
     """Build review prompt for standalone branch review (no task context)."""
     focus_section = ""
@@ -4824,7 +4858,7 @@ def cmd_codex_impl_review(args: argparse.Namespace) -> None:
         if focus:
             receipt_data["focus"] = focus
         Path(receipt_path).write_text(
-            json.dumps(receipt_data, indent=2) + "\n", encoding="utf-8"
+            json.dumps(receipt_data, indent=2) + "\n", encoding="utf-8",
         )
 
     # Output
@@ -4838,7 +4872,7 @@ def cmd_codex_impl_review(args: argparse.Namespace) -> None:
                 "mode": "codex",
                 "standalone": standalone,
                 "review": output,  # Full review feedback for fix loop
-            }
+            },
         )
     else:
         print(output)
@@ -4881,7 +4915,7 @@ def cmd_codex_plan_review(args: argparse.Namespace) -> None:
 
     # Build prompt
     prompt = build_review_prompt(
-        "plan", epic_spec, context_hints, task_specs=task_specs
+        "plan", epic_spec, context_hints, task_specs=task_specs,
     )
 
     # Check for existing session in receipt (indicates re-review)
@@ -4926,7 +4960,7 @@ def cmd_codex_plan_review(args: argparse.Namespace) -> None:
             "review": output,  # Full review feedback for fix loop
         }
         Path(receipt_path).write_text(
-            json.dumps(receipt_data, indent=2) + "\n", encoding="utf-8"
+            json.dumps(receipt_data, indent=2) + "\n", encoding="utf-8",
         )
 
     # Output
@@ -4939,7 +4973,7 @@ def cmd_codex_plan_review(args: argparse.Namespace) -> None:
                 "session_id": thread_id,
                 "mode": "codex",
                 "review": output,  # Full review feedback for fix loop
-            }
+            },
         )
     else:
         print(output)
@@ -5044,7 +5078,7 @@ def cmd_opencode_impl_review(args: argparse.Namespace) -> None:
         if focus:
             receipt_data["focus"] = focus
         Path(receipt_path).write_text(
-            json.dumps(receipt_data, indent=2) + "\n", encoding="utf-8"
+            json.dumps(receipt_data, indent=2) + "\n", encoding="utf-8",
         )
 
     if args.json:
@@ -5056,7 +5090,7 @@ def cmd_opencode_impl_review(args: argparse.Namespace) -> None:
                 "mode": "opencode",
                 "standalone": standalone,
                 "review": output,
-            }
+            },
         )
     else:
         print(output)
@@ -5119,7 +5153,7 @@ def cmd_opencode_plan_review(args: argparse.Namespace) -> None:
         if focus:
             receipt_data["focus"] = focus
         Path(receipt_path).write_text(
-            json.dumps(receipt_data, indent=2) + "\n", encoding="utf-8"
+            json.dumps(receipt_data, indent=2) + "\n", encoding="utf-8",
         )
 
     if args.json:
@@ -5130,7 +5164,7 @@ def cmd_opencode_plan_review(args: argparse.Namespace) -> None:
                 "verdict": verdict,
                 "mode": "opencode",
                 "review": output,
-            }
+            },
         )
     else:
         print(output)
@@ -5149,7 +5183,7 @@ def cmd_checkpoint_save(args: argparse.Namespace) -> None:
     """
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     epic_id = args.epic
@@ -5196,7 +5230,7 @@ def cmd_checkpoint_save(args: argparse.Namespace) -> None:
                     "data": task_data,
                     "spec": task_spec,
                     "runtime": runtime_state,  # May be None if no state file
-                }
+                },
             )
 
     # Build checkpoint
@@ -5234,7 +5268,7 @@ def cmd_checkpoint_restore(args: argparse.Namespace) -> None:
     """
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     epic_id = args.epic
@@ -5252,7 +5286,7 @@ def cmd_checkpoint_restore(args: argparse.Namespace) -> None:
 
     # Load checkpoint
     checkpoint = load_json_or_exit(
-        checkpoint_path, f"Checkpoint {epic_id}", use_json=args.json
+        checkpoint_path, f"Checkpoint {epic_id}", use_json=args.json,
     )
 
     # Validate checkpoint structure
@@ -5314,7 +5348,7 @@ def cmd_checkpoint_delete(args: argparse.Namespace) -> None:
     """Delete checkpoint file for an epic."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     epic_id = args.epic
@@ -5354,7 +5388,7 @@ def cmd_validate(args: argparse.Namespace) -> None:
     """Validate epic structure or all epics."""
     if not ensure_flow_exists():
         error_exit(
-            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json
+            ".flow/ does not exist. Run 'flowctl init' first.", use_json=args.json,
         )
 
     # Require either --epic or --all
@@ -5386,7 +5420,7 @@ def cmd_validate(args: argparse.Namespace) -> None:
 
         for epic_id in epic_ids:
             errors, warnings, task_count = validate_epic(
-                flow_dir, epic_id, use_json=args.json
+                flow_dir, epic_id, use_json=args.json,
             )
             all_errors.extend(errors)
             all_warnings.extend(warnings)
@@ -5398,7 +5432,7 @@ def cmd_validate(args: argparse.Namespace) -> None:
                     "errors": errors,
                     "warnings": warnings,
                     "task_count": task_count,
-                }
+                },
             )
 
         valid = len(all_errors) == 0
@@ -5438,11 +5472,11 @@ def cmd_validate(args: argparse.Namespace) -> None:
     # Single epic validation
     if not is_epic_id(args.epic):
         error_exit(
-            f"Invalid epic ID: {args.epic}. Expected format: fn-N or fn-N-xxx", use_json=args.json
+            f"Invalid epic ID: {args.epic}. Expected format: fn-N or fn-N-xxx", use_json=args.json,
         )
 
     errors, warnings, task_count = validate_epic(
-        flow_dir, args.epic, use_json=args.json
+        flow_dir, args.epic, use_json=args.json,
     )
     valid = len(errors) == 0
 
@@ -5501,16 +5535,16 @@ def main() -> None:
     p_status.set_defaults(func=cmd_status)
 
     p_state_path = subparsers.add_parser(
-        "state-path", help="Show resolved state directory path"
+        "state-path", help="Show resolved state directory path",
     )
     p_state_path.add_argument(
-        "--task", help="Task ID (fn-N.M) to show state file path"
+        "--task", help="Task ID (fn-N.M) to show state file path",
     )
     p_state_path.add_argument("--json", action="store_true", help="JSON output")
     p_state_path.set_defaults(func=cmd_state_path)
 
     p_migrate_state = subparsers.add_parser(
-        "migrate-state", help="Migrate runtime state from definition files to state-dir"
+        "migrate-state", help="Migrate runtime state from definition files to state-dir",
     )
     p_migrate_state.add_argument(
         "--clean",
@@ -5537,7 +5571,7 @@ def main() -> None:
 
     # review-backend (helper for skills)
     p_review_backend = subparsers.add_parser(
-        "review-backend", help="Get review backend (ASK if not configured)"
+        "review-backend", help="Get review backend (ASK if not configured)",
     )
     p_review_backend.add_argument("--json", action="store_true", help="JSON output")
     p_review_backend.set_defaults(func=cmd_review_backend)
@@ -5552,7 +5586,7 @@ def main() -> None:
 
     p_memory_add = memory_sub.add_parser("add", help="Add memory entry")
     p_memory_add.add_argument(
-        "--type", required=True, help="Type: pitfall, convention, or decision"
+        "--type", required=True, help="Type: pitfall, convention, or decision",
     )
     p_memory_add.add_argument("content", help="Entry content")
     p_memory_add.add_argument("--json", action="store_true", help="JSON output")
@@ -5560,7 +5594,7 @@ def main() -> None:
 
     p_memory_read = memory_sub.add_parser("read", help="Read memory entries")
     p_memory_read.add_argument(
-        "--type", help="Filter by type: pitfalls, conventions, or decisions"
+        "--type", help="Filter by type: pitfalls, conventions, or decisions",
     )
     p_memory_read.add_argument("--json", action="store_true", help="JSON output")
     p_memory_read.set_defaults(func=cmd_memory_read)
@@ -5591,7 +5625,7 @@ def main() -> None:
     p_epic_set_plan.set_defaults(func=cmd_epic_set_plan)
 
     p_epic_set_review = epic_sub.add_parser(
-        "set-plan-review-status", help="Set plan review status"
+        "set-plan-review-status", help="Set plan review status",
     )
     p_epic_set_review.add_argument("id", help="Epic ID (fn-N)")
     p_epic_set_review.add_argument(
@@ -5635,10 +5669,10 @@ def main() -> None:
     p_task_create.add_argument("--title", required=True, help="Task title")
     p_task_create.add_argument("--deps", help="Comma-separated dependency IDs")
     p_task_create.add_argument(
-        "--acceptance-file", help="Markdown file with acceptance criteria"
+        "--acceptance-file", help="Markdown file with acceptance criteria",
     )
     p_task_create.add_argument(
-        "--priority", type=int, help="Priority (lower = earlier)"
+        "--priority", type=int, help="Priority (lower = earlier)",
     )
     p_task_create.add_argument("--json", action="store_true", help="JSON output")
     p_task_create.set_defaults(func=cmd_task_create)
@@ -5656,17 +5690,17 @@ def main() -> None:
     p_task_acc.set_defaults(func=cmd_task_set_acceptance)
 
     p_task_set_spec = task_sub.add_parser(
-        "set-spec", help="Set task spec (full file or sections)"
+        "set-spec", help="Set task spec (full file or sections)",
     )
     p_task_set_spec.add_argument("id", help="Task ID (fn-N.M)")
     p_task_set_spec.add_argument(
-        "--file", help="Full spec file (use '-' for stdin)"
+        "--file", help="Full spec file (use '-' for stdin)",
     )
     p_task_set_spec.add_argument(
-        "--description", help="Description file (use '-' for stdin)"
+        "--description", help="Description file (use '-' for stdin)",
     )
     p_task_set_spec.add_argument(
-        "--acceptance", help="Acceptance file (use '-' for stdin)"
+        "--acceptance", help="Acceptance file (use '-' for stdin)",
     )
     p_task_set_spec.add_argument("--json", action="store_true", help="JSON output")
     p_task_set_spec.set_defaults(func=cmd_task_set_spec)
@@ -5674,7 +5708,7 @@ def main() -> None:
     p_task_reset = task_sub.add_parser("reset", help="Reset task to todo")
     p_task_reset.add_argument("task_id", help="Task ID (fn-N.M)")
     p_task_reset.add_argument(
-        "--cascade", action="store_true", help="Also reset dependent tasks (same epic)"
+        "--cascade", action="store_true", help="Also reset dependent tasks (same epic)",
     )
     p_task_reset.add_argument("--json", action="store_true", help="JSON output")
     p_task_reset.set_defaults(func=cmd_task_reset)
@@ -5742,7 +5776,7 @@ def main() -> None:
     p_start = subparsers.add_parser("start", help="Start task")
     p_start.add_argument("id", help="Task ID (fn-N.M)")
     p_start.add_argument(
-        "--force", action="store_true", help="Skip status/dependency/claim checks"
+        "--force", action="store_true", help="Skip status/dependency/claim checks",
     )
     p_start.add_argument("--note", help="Claim note (e.g., reason for taking over)")
     p_start.add_argument("--json", action="store_true", help="JSON output")
@@ -5763,7 +5797,7 @@ def main() -> None:
     p_block = subparsers.add_parser("block", help="Block task with reason")
     p_block.add_argument("id", help="Task ID (fn-N.M)")
     p_block.add_argument(
-        "--reason-file", required=True, help="Markdown file with block reason"
+        "--reason-file", required=True, help="Markdown file with block reason",
     )
     p_block.add_argument("--json", action="store_true", help="JSON output")
     p_block.set_defaults(func=cmd_block)
@@ -5772,7 +5806,7 @@ def main() -> None:
     p_validate = subparsers.add_parser("validate", help="Validate epic or all")
     p_validate.add_argument("--epic", help="Epic ID (fn-N)")
     p_validate.add_argument(
-        "--all", action="store_true", help="Validate all epics and tasks"
+        "--all", action="store_true", help="Validate all epics and tasks",
     )
     p_validate.add_argument("--json", action="store_true", help="JSON output")
     p_validate.set_defaults(func=cmd_validate)
@@ -5782,21 +5816,21 @@ def main() -> None:
     checkpoint_sub = p_checkpoint.add_subparsers(dest="checkpoint_cmd", required=True)
 
     p_checkpoint_save = checkpoint_sub.add_parser(
-        "save", help="Save epic state to checkpoint"
+        "save", help="Save epic state to checkpoint",
     )
     p_checkpoint_save.add_argument("--epic", required=True, help="Epic ID (fn-N)")
     p_checkpoint_save.add_argument("--json", action="store_true", help="JSON output")
     p_checkpoint_save.set_defaults(func=cmd_checkpoint_save)
 
     p_checkpoint_restore = checkpoint_sub.add_parser(
-        "restore", help="Restore epic state from checkpoint"
+        "restore", help="Restore epic state from checkpoint",
     )
     p_checkpoint_restore.add_argument("--epic", required=True, help="Epic ID (fn-N)")
     p_checkpoint_restore.add_argument("--json", action="store_true", help="JSON output")
     p_checkpoint_restore.set_defaults(func=cmd_checkpoint_restore)
 
     p_checkpoint_delete = checkpoint_sub.add_parser(
-        "delete", help="Delete checkpoint for epic"
+        "delete", help="Delete checkpoint for epic",
     )
     p_checkpoint_delete.add_argument("--epic", required=True, help="Epic ID (fn-N)")
     p_checkpoint_delete.add_argument("--json", action="store_true", help="JSON output")
@@ -5804,13 +5838,13 @@ def main() -> None:
 
     # prep-chat (for rp-cli chat_send JSON escaping)
     p_prep = subparsers.add_parser(
-        "prep-chat", help="Prepare JSON for rp-cli chat_send"
+        "prep-chat", help="Prepare JSON for rp-cli chat_send",
     )
     p_prep.add_argument(
-        "id", nargs="?", help="(ignored) Epic/task ID for compatibility"
+        "id", nargs="?", help="(ignored) Epic/task ID for compatibility",
     )
     p_prep.add_argument(
-        "--message-file", required=True, help="File containing message text"
+        "--message-file", required=True, help="File containing message text",
     )
     p_prep.add_argument(
         "--mode",
@@ -5822,7 +5856,7 @@ def main() -> None:
     p_prep.add_argument("--chat-name", help="Name for new chat")
     p_prep.add_argument("--chat-id", help="Chat id (continue existing)")
     p_prep.add_argument(
-        "--selected-paths", nargs="*", help="Files to include in context"
+        "--selected-paths", nargs="*", help="Files to include in context",
     )
     p_prep.add_argument("--output", "-o", help="Output file (default: stdout)")
     p_prep.set_defaults(func=cmd_prep_chat)
@@ -5856,7 +5890,7 @@ def main() -> None:
     rp_sub = p_rp.add_subparsers(dest="rp_cmd", required=True)
 
     p_rp_windows = rp_sub.add_parser(
-        "windows", help="List RepoPrompt windows (raw JSON)"
+        "windows", help="List RepoPrompt windows (raw JSON)",
     )
     p_rp_windows.add_argument("--json", action="store_true", help="JSON output (raw)")
     p_rp_windows.set_defaults(func=cmd_rp_windows)
@@ -5867,7 +5901,7 @@ def main() -> None:
     p_rp_pick.set_defaults(func=cmd_rp_pick_window)
 
     p_rp_ws = rp_sub.add_parser(
-        "ensure-workspace", help="Ensure workspace and switch window"
+        "ensure-workspace", help="Ensure workspace and switch window",
     )
     p_rp_ws.add_argument("--window", type=int, required=True, help="Window id")
     p_rp_ws.add_argument("--repo-root", required=True, help="Repo root path")
@@ -5920,10 +5954,10 @@ def main() -> None:
         help="Chat mode",
     )
     p_rp_chat.add_argument(
-        "--selected-paths", nargs="*", help="Override selected paths"
+        "--selected-paths", nargs="*", help="Override selected paths",
     )
     p_rp_chat.add_argument(
-        "--json", action="store_true", help="JSON output (no review text)"
+        "--json", action="store_true", help="JSON output (no review text)",
     )
     p_rp_chat.set_defaults(func=cmd_rp_chat_send)
 
@@ -5934,7 +5968,7 @@ def main() -> None:
     p_rp_export.set_defaults(func=cmd_rp_prompt_export)
 
     p_rp_setup = rp_sub.add_parser(
-        "setup-review", help="Atomic: pick-window + workspace + builder"
+        "setup-review", help="Atomic: pick-window + workspace + builder",
     )
     p_rp_setup.add_argument("--repo-root", required=True, help="Repo root path")
     p_rp_setup.add_argument("--summary", required=True, help="Builder summary")
@@ -5968,10 +6002,10 @@ def main() -> None:
     )
     p_codex_impl.add_argument("--base", required=True, help="Base branch for diff")
     p_codex_impl.add_argument(
-        "--focus", help="Focus areas for standalone review (comma-separated)"
+        "--focus", help="Focus areas for standalone review (comma-separated)",
     )
     p_codex_impl.add_argument(
-        "--receipt", help="Receipt file path for session continuity"
+        "--receipt", help="Receipt file path for session continuity",
     )
     p_codex_impl.add_argument("--json", action="store_true", help="JSON output")
     p_codex_impl.set_defaults(func=cmd_codex_impl_review)
@@ -5980,7 +6014,7 @@ def main() -> None:
     p_codex_plan.add_argument("epic", help="Epic ID (fn-N)")
     p_codex_plan.add_argument("--base", default="main", help="Base branch for context")
     p_codex_plan.add_argument(
-        "--receipt", help="Receipt file path for session continuity"
+        "--receipt", help="Receipt file path for session continuity",
     )
     p_codex_plan.add_argument("--json", action="store_true", help="JSON output")
     p_codex_plan.set_defaults(func=cmd_codex_plan_review)
@@ -5998,10 +6032,10 @@ def main() -> None:
     )
     p_opencode_impl.add_argument("--base", required=True, help="Base branch for diff")
     p_opencode_impl.add_argument(
-        "--focus", help="Focus areas for standalone review (comma-separated)"
+        "--focus", help="Focus areas for standalone review (comma-separated)",
     )
     p_opencode_impl.add_argument(
-        "--receipt", help="Receipt file path for session continuity"
+        "--receipt", help="Receipt file path for session continuity",
     )
     p_opencode_impl.add_argument("--json", action="store_true", help="JSON output")
     p_opencode_impl.set_defaults(func=cmd_opencode_impl_review)
