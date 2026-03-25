@@ -1,5 +1,6 @@
 # OpenCode
 > [awesome-opencode](https://github.com/awesome-opencode/awesome-opencode)
+
 OpenCode configuration, agent prompts, local package setup, plus lean plugin, LSP, and formatter guidance.
 
 This subtree also keeps a deliberately small custom `command/`, `agents/`, `skill/`, and `plugin/` layer. Heavier workflow orchestration now comes from installed plugins like `oh-my-opencode` and `flow-next-opencode`, so local prompts are trimmed to avoid duplicate behavior.
