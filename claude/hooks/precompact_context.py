@@ -12,6 +12,7 @@ Captures:
 - Recent files modified
 """
 
+import json
 import subprocess
 import sys
 from datetime import UTC, datetime
@@ -41,7 +42,9 @@ def get_git_state(cwd: str | None = None) -> dict:
             cwd=cwd,
             timeout=5,
         )
-        branch = branch_result.stdout.strip() if branch_result.returncode == 0 else "unknown"
+        branch = (
+            branch_result.stdout.strip() if branch_result.returncode == 0 else "unknown"
+        )
 
         # Check for uncommitted changes
         status_result = subprocess.run(
@@ -51,7 +54,11 @@ def get_git_state(cwd: str | None = None) -> dict:
             cwd=cwd,
             timeout=5,
         )
-        has_changes = bool(status_result.stdout.strip()) if status_result.returncode == 0 else False
+        has_changes = (
+            bool(status_result.stdout.strip())
+            if status_result.returncode == 0
+            else False
+        )
 
         # Get staged files
         staged_result = subprocess.run(
@@ -61,7 +68,11 @@ def get_git_state(cwd: str | None = None) -> dict:
             cwd=cwd,
             timeout=5,
         )
-        staged_files = staged_result.stdout.strip().split("\n") if staged_result.stdout.strip() else []
+        staged_files = (
+            staged_result.stdout.strip().split("\n")
+            if staged_result.stdout.strip()
+            else []
+        )
 
         return {
             "branch": branch,
@@ -108,7 +119,9 @@ def format_context(
     timestamp: str,
 ) -> str:
     """Format preserved context for injection."""
-    files_str = "\n".join(f"  - {f}" for f in recent_files) if recent_files else "  (none)"
+    files_str = (
+        "\n".join(f"  - {f}" for f in recent_files) if recent_files else "  (none)"
+    )
 
     todo_str = ""
     if todos:
@@ -146,6 +159,11 @@ def output_system_message(message: str) -> None:
     not hookSpecificOutput (which only supports PreToolUse,
     UserPromptSubmit, and PostToolUse).
     """
+    try:
+        sys.stdout.write(json.dumps({"hookSpecificOutput": {"hookEventName": "PreCompact", "additionalContext": message}}) + "\n")
+        sys.stdout.flush()
+    except OSError as e:
+        log_debug(f"failed to output system message: {e}")
 
 
 @hook_main("PreCompact")
