@@ -20,7 +20,7 @@ def needs_quote(v: Any, delim: str) -> bool:
     s = str(v)
     if not s:
         return True
-    if s in ("true", "false", "null"):
+    if s in {"true", "false", "null"}:
         return True
     if s[0] == " " or s[-1] == " ":
         return True
