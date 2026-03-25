@@ -6,8 +6,11 @@ Implements https://github.com/toon-format/spec.
 import argparse
 import json
 import pathlib
+import re
 import sys
 from typing import Any
+
+INVALID_CHARS_RE = re.compile(r'[:"\\\[\]{}\n\r\t]')
 
 
 def needs_quote(v: Any, delim: str) -> bool:
@@ -23,7 +26,7 @@ def needs_quote(v: Any, delim: str) -> bool:
         return True
     if s == "-" or (s.startswith("-") and len(s) > 1):
         return True
-    if any(c in s for c in (":", '"', "\\", "[", "]", "{", "}", "\n", "\r", "\t")):
+    if INVALID_CHARS_RE.search(s):
         return True
     if delim in s:
         return True
@@ -37,7 +40,14 @@ def needs_quote(v: Any, delim: str) -> bool:
 
 def esc(s: str) -> str:
     """Escape string per TOON spec §7 - only 5 valid escapes."""
-    return s.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
+    return (
+        s
+        .replace("\\", "\\\\")
+        .replace('"', '\\"')
+        .replace("\n", "\\n")
+        .replace("\r", "\\r")
+        .replace("\t", "\\t")
+    )
 
 
 def fmt(v: Any, delim: str) -> str:
@@ -84,7 +94,9 @@ def arr(a: list, d: int, s: int, delim: str) -> str:
     if ok:
         dm = "" if delim == "," else delim
         lines = [f"[{n}{dm}]{{{delim.join(keys)}}}:"]
-        lines.extend(" " * d + delim.join(fmt(item[k], delim) for k in keys) for item in a)
+        lines.extend(
+            " " * d + delim.join(fmt(item[k], delim) for k in keys) for item in a
+        )
         return "\n".join(lines)
     # Mixed/list array
     lines = [f"[{n}]:"]
@@ -158,8 +170,12 @@ def main() -> None:
     p = argparse.ArgumentParser(description="TOON v2.0 Encoder (spec-compliant)")
     p.add_argument("input", nargs="?", help="JSON file (stdin if omitted)")
     p.add_argument("-o", "--output", help="Output file (stdout if omitted)")
-    p.add_argument("-d", "--delimiter", choices=["comma", "tab", "pipe"], default="comma")
-    p.add_argument("-i", "--indent", type=int, default=2, help="Spaces per indent (default: 2)")
+    p.add_argument(
+        "-d", "--delimiter", choices=["comma", "tab", "pipe"], default="comma"
+    )
+    p.add_argument(
+        "-i", "--indent", type=int, default=2, help="Spaces per indent (default: 2)"
+    )
     a = p.parse_args()
     delim = {"comma": ",", "tab": "\t", "pipe": "|"}[a.delimiter]
     if a.input:
