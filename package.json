@@ -1,7 +1,7 @@
 {
   "dependencies": {},
   "devDependencies": {
-    "claude-code-lint": "^0.2.3"
+    "claude-code-lint": "^0.3.0"
   },
   "scripts": {
     "lint:claude": "claudelint check-all",
