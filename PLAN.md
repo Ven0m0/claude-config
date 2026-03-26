@@ -1,26 +1,26 @@
 # Implementation Plan
-_Generated: 2026-03-21 · 9 tasks · Est. 500–1000 LOC_
+_Generated: 2026-03-26 · 9 tasks · Est. 500–1000 LOC_
 
 ## Legend
-<!-- severity: 🔴 critical 🟠 high 🟡 medium 🔵 low -->
+<!-- severity:  critical  high  medium  low -->
 <!-- category: bug perf refactor feature security debt docs -->
 
 ## Summary
-Two inline code markers exist in source files: an unfinished `systemctl` cowork integration in `setup.sh` and a stub script body in the skill-scaffolding generator. The remainder of the work is structured backlog from `TODO.md` covering external-integration triage across skills, hooks, and plugins. All items are additive features or research gates with no crash paths or data-loss risk.
+No inline TODO/FIXME/HACK/XXX/WARN/DEPRECATED code markers were found in the repository. All tracked work originates from the structured backlog in `TODO.md`, which captures external integration triage across skills, hooks, and plugins. The remaining work consists of additive features, research gates, and documentation tasks with no crash paths or data-loss risk.
 
 ## Task Index (topological order)
 
 | # | ID | Title | Sev | Cat | Size | Blocks |
 |---|-----|-------|-----|-----|------|--------|
-| 1 | T001 | Wire systemctl cowork service behind opt-in flag | 🟡 | feature | S | — |
-| 2 | T002 | Implement scaffold script template body | 🔵 | feature | S | — |
-| 3 | T003 | Add Copilot CLI config once format stabilizes | 🔵 | feature | S | — |
-| 4 | T004 | Register 5 pending MCP servers in settings | 🔵 | feature | S | — |
-| 5 | T005 | Phase 1 — inventory and classify external candidates | 🟡 | feature | M | — |
-| 6 | T006 | Phase 2a/b — integrate skills, hooks, and prompts | 🟡 | feature | L | T005 |
-| 7 | T007 | Phase 2c — evaluate plugin and ecosystem candidates | 🟡 | feature | L | T005 |
-| 8 | T008 | Phase 3 — ship vetted items and update marketplace.json | 🟡 | feature | XL | T006, T007 |
-| 9 | T009 | Mirror opencode triage results into opencode/TODO.md | 🔵 | docs | S | T008 |
+| 1 | T001 | Wire systemctl cowork service behind opt-in flag |  | feature | S | — |
+| 2 | T002 | Implement scaffold script template body |  | feature | S | — |
+| 3 | T003 | Add Copilot CLI config once format stabilizes |  | feature | S | — |
+| 4 | T004 | Register 5 pending MCP servers in settings |  | feature | S | — |
+| 5 | T005 | Phase 1 — inventory and classify external candidates |  | feature | M | — |
+| 6 | T006 | Phase 2a/b — integrate skills, hooks, and prompts |  | feature | L | T005 |
+| 7 | T007 | Phase 2c — evaluate plugin and ecosystem candidates |  | feature | L | T005 |
+| 8 | T008 | Phase 3 — ship vetted items and update marketplace.json |  | feature | XL | T006, T007 |
+| 9 | T009 | Mirror opencode triage results into opencode/TODO.md |  | docs | S | T008 |
 
 ---
 
@@ -264,5 +264,16 @@ Iterate the triage table from T005. For each "integrate" item: finalize implemen
 
 **Implementation:**
 Create `opencode/TODO.md` with a heading per candidate type (plugins, ecosystem packages). Move opencode-specific rows from the triage table. Update root `TODO.md` line 92 to `[x]` with a link.
+
+---
+
+## Inline Markers Scan Result
+
+**Scan date:** 2026-03-26
+**Pattern:** `TODO|FIXME|HACK|XXX|WARN|DEPRECATED|NOTE\(|TODO:`
+**Scopes:** All source files, configs, docs (excluding vendor, node_modules, .venv, dist, generated, lock files)
+**Result:** 0 matches
+
+No inline code markers exist in this repository. All tracked work originates from structured backlog items in `TODO.md`.
 
 ---
