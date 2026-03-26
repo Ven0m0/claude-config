@@ -1,5 +1,8 @@
 name: Ruff Code Formatter
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [main]
