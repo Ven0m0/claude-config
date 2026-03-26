@@ -101,5 +101,10 @@
       "type": "remote",
       "url": "https://mcp.grep.app"
     }
+  },
+  "experimental": {
+    "continue_loop_on_deny": false,
+    "mcp_timeout": 10000,
+    "openTelemetry": false
   }
 }
