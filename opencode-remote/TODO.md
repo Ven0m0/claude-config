@@ -11,3 +11,5 @@ docker pull ghcr.io/spiermar/opencode-container-oh-my-opencode:latest
 docker pull ghcr.io/spiermar/opencode-container-get-shit-done:latest
 ```
   
+- https://github.com/miantiao-me/cloud-code
+- https://github.com/qaml-ai/pi-worker
