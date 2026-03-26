@@ -18,6 +18,7 @@
     "opencode-ignore",
     "github:JRedeker/opencode-morph-fast-apply",
     "opencode-fastedit",
+    "openslimedit@latest",
     "@spoons-and-mirrors/subtask2@latest",
     "@azumag/opencode-rate-limit-fallback",
     "opencode-plugin-auto-update",
