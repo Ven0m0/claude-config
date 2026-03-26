@@ -117,7 +117,7 @@ def validate_file(filepath: Path) -> ValidationResult:
     if not filepath.exists():
         return ValidationResult(False, [f"File not found: {filepath}"], [])
 
-    if not filepath.suffix == ".toon":
+    if filepath.suffix != ".toon":
         return ValidationResult(
             False, [], [f"Expected .toon extension, got: {filepath.suffix}"]
         )
