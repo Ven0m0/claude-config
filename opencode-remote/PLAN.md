@@ -15,7 +15,7 @@ OpenCode (an AI coding assistant) requires local access but needs to be accessib
 
 Traditional solutions (VPN, port forwarding, self-signed certs) have security, reliability, or usability issues.
 
-@TODO.md
+[@TODO.md](TODO.md)
 
 ## Solution
 
