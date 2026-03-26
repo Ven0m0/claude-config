@@ -19,7 +19,6 @@
     "openslimedit@1.0.4",
     "opencode-ignore@1.1.0",
     "@gotgenes/opencode-agent-identity@3.0.1",
-    "@azumag/opencode-rate-limit-fallback@1.70.0",
     "@spoons-and-mirrors/subtask2@0.3.5",
     "opencode-pty@0.2.3",
     "openfundus@0.1.6",
