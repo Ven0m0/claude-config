@@ -10,6 +10,10 @@
     "opencode-kilo-auth@latest",
     "@gotgenes/opencode-agent-identity"
   ],
+  "tools": {
+    "write": true,
+    "bash": true
+  },
   "model": "kilo/kilo-auto/frontier",
   "small_model": "kilo/minimax/minimax-m2.5:free",
   "agent": {
@@ -54,6 +58,15 @@
       "temperature": 0.1,
       "reasoningEffort": "high",
       "textVerbosity": "medium"
+    }
+  },
+  "provider": {
+    "anthropic": {
+      "options": {
+        "timeout": 600000,
+        "chunkTimeout": 30000,
+        "setCacheKey": true
+      }
     }
   },
   "mcp": {
