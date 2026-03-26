@@ -1,0 +1,46 @@
+# Alternative backend: opencode-container instead of openchamber
+# Runs opencode serve (HTTP API) on port 9898 behind Cloudflare Tunnel.
+# Usage:
+#   make setup                   # provision Cloudflare tunnel + DNS (run once)
+#   make up-opencode             # start opencode-container + cloudflared
+#   make logs-opencode           # follow logs
+#   make down-opencode           # stop
+#
+# Requires in .env:
+#   TUNNEL_TOKEN      (written by setup.sh)
+#   TUNNEL_HOSTNAME
+#   ANTHROPIC_API_KEY (or other LLM provider key)
+#   GITHUB_TOKEN      (optional, for GitHub MCP access)
+#
+# Cloudflare tunnel ingress must route to http://opencode:9898
+# Set this in Zero Trust > Tunnels > <tunnel> > Public Hostname, or
+# reconfigure via the Cloudflare API after running setup.sh.
+
+services:
+  opencode:
+    image: ghcr.io/spiermar/opencode-container-base:latest
+    restart: unless-stopped
+    environment:
+      CLI_HOST: "0.0.0.0"
+      CLI_PORT: "9898"
+      CORS: "https://${TUNNEL_HOSTNAME}"
+      MODE: "server"
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
+      GITHUB_TOKEN: "${GITHUB_TOKEN:-}"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -o /dev/null http://localhost:9898/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    volumes:
+      - ${HOME}/.config/opencode:/root/.config/opencode
+      - ./data/opencode:/root/data
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
+    depends_on:
+      opencode:
+        condition: service_healthy

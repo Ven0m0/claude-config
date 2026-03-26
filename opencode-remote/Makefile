@@ -1,5 +1,6 @@
 .PHONY: help setup setup-local setup-docker up down logs restart status pull \
-        start stop enable disable
+        start stop enable disable \
+        up-opencode down-opencode logs-opencode pull-opencode
 
 help:
 	@echo "Usage:"
@@ -11,13 +12,20 @@ help:
 	@echo "    make enable         - Enable services at boot"
 	@echo "    make disable        - Disable services at boot"
 	@echo ""
-	@echo "  Docker install:"
+	@echo "  Docker install (openchamber web UI):"
 	@echo "    make setup          - Provision Cloudflare tunnel + DNS"
 	@echo "    make setup-docker   - Provision tunnel + start Docker services"
 	@echo "    make up             - Start Docker services"
 	@echo "    make down           - Stop Docker services"
 	@echo "    make logs           - Follow Docker logs"
 	@echo "    make pull           - Pull latest images"
+	@echo ""
+	@echo "  Docker install (opencode-container HTTP API on port 9898):"
+	@echo "    make setup          - Provision Cloudflare tunnel + DNS (run once)"
+	@echo "    make up-opencode    - Start opencode-container + cloudflared"
+	@echo "    make down-opencode  - Stop opencode-container services"
+	@echo "    make logs-opencode  - Follow opencode-container logs"
+	@echo "    make pull-opencode  - Pull latest opencode-container image"
 	@echo ""
 	@echo "  Shared:"
 	@echo "    make status         - Show service status (all modes)"
@@ -47,6 +55,20 @@ logs:
 
 pull:
 	docker compose pull
+
+# ── opencode-container targets ────────────────────────────────────────────────
+
+up-opencode:
+	docker compose -f docker-compose.opencode-container.yml up -d
+
+down-opencode:
+	docker compose -f docker-compose.opencode-container.yml down
+
+logs-opencode:
+	docker compose -f docker-compose.opencode-container.yml logs -f
+
+pull-opencode:
+	docker compose -f docker-compose.opencode-container.yml pull
 
 status:
 	@docker compose ps 2>/dev/null || echo "(Docker services not running)"
