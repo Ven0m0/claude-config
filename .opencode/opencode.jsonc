@@ -8,7 +8,8 @@
     "opencode-gemini-auth",
     "opencode-google-antigravity-auth",
     "opencode-kilo-auth@latest",
-    "@gotgenes/opencode-agent-identity"
+    "@gotgenes/opencode-agent-identity",
+    "opencode-ignore"
   ],
   "tools": {
     "write": true,
