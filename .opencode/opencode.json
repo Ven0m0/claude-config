@@ -20,7 +20,8 @@
     "opencode-fastedit",
     "@spoons-and-mirrors/subtask2@latest",
     "@azumag/opencode-rate-limit-fallback",
-    "opencode-plugin-auto-update"
+    "opencode-plugin-auto-update",
+    "@hueyexe/opencode-ensemble"
   ],
   "tools": {
     "edit": true,
