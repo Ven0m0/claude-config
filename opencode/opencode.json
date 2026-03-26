@@ -106,7 +106,7 @@
     "@spoons-and-mirrors/subtask2@0.3.5",
     "@azumag/opencode-rate-limit-fallback@1.70.0",
     "openfundus@0.1.6",
-    "openrtk@0.1.0",
+    "opencode-rtk-rewrite",
     "context-mode@latest",
     "opencode-cachebro@latest",
     "opencode-snip@latest",
