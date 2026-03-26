@@ -10,6 +10,7 @@
     "@bastiangx/opencode-unmoji",
     "@old-mikser/occontext-thinking-trim",
     "@franlol/opencode-md-table-formatter@latest",
+    "opencode-anthropic-oauth",
     "opencode-gemini-auth",
     "opencode-google-antigravity-auth",
     "opencode-kilo-auth@latest",
