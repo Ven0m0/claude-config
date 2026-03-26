@@ -53,20 +53,21 @@ class Log:
     def info(self, msg: str) -> None:
         """Log informational message (cyan)."""
         if not self.quiet:
-            pass
+            print(self._c(C_CYAN, f"info: {msg}"), file=sys.stdout)
 
     def ok(self, msg: str) -> None:
         """Log success message (green) with checkmark."""
         if not self.quiet:
-            pass
+            print(self._c(C_GREEN, f"ok: {msg}"), file=sys.stdout)
 
     def warn(self, msg: str) -> None:
         """Log warning message (yellow) to stderr."""
         if not self.silent:
-            pass
+            print(self._c(C_YELLOW, f"warning: {msg}"), file=sys.stderr)
 
     def err(self, msg: str) -> None:
         """Log error message (red) to stderr."""
+        print(self._c(C_RED, f"error: {msg}"), file=sys.stderr)
 
     def prog(self, cur: int, tot: int, fname: str) -> None:
         """Display progress bar.
@@ -78,14 +79,20 @@ class Log:
 
         """
         if not self.quiet:
-            (cur / tot) * 100 if tot else 0
+            pct = (cur / tot) * 100 if tot else 0
+            pct = max(0, min(100, pct))
             bar_len = int(20 * cur / tot) if tot else 0
-            "█" * bar_len + "░" * (20 - bar_len)
+            bar_len = max(0, min(20, bar_len))
+            bar = "█" * bar_len + "░" * (20 - bar_len)
+            fname_trunc = (fname[:37] + "...") if len(fname) > 40 else fname
+            sys.stderr.write(f"\r{bar} {pct:3.0f}% {fname_trunc:40}")
+            sys.stderr.flush()
 
     def prog_done(self) -> None:
         """Clear progress bar (print newline)."""
         if not self.quiet:
-            pass
+            sys.stderr.write("\n")
+            sys.stderr.flush()
 
 
 # Convenience functions for one-off usage
