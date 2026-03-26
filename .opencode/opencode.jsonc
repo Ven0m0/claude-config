@@ -24,11 +24,11 @@
   },
   "watcher": {
     "ignore": ["node_modules/**", "dist/**", ".git/**"]
-  }
+  },
   "share": "auto"
   "model": "kilo/kilo-auto/frontier",
   "small_model": "kilo/minimax/minimax-m2.5:free",
-  "default_agent": "plan"
+  "default_agent": "plan",
   "agent": {
     "plan": {
       "model": "kilo/kilo-auto/frontier",
