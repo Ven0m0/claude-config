@@ -172,11 +172,5 @@
   },
   "share": "auto",
   "small_model": "kilo/minimax/minimax-m2.5:free",
-  "watcher": {
-    "ignore": [
-      "node_modules/**",
-      "dist/**",
-      ".git/**"
-    ]
-  }
+  "watcher": { "ignore": ["node_modules/**", "dist/**", ".git/**"] }
 }
