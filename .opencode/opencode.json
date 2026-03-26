@@ -11,6 +11,10 @@
     ":(){:|:&};:": "deny",
     "doom_loop": "deny"
   },
+  "share": "auto",
+  "model": "opencode/glm-5",
+  "small_model": "opencode/minimax-m2.5-free",
+  "disabled_providers": ["openai"],
   "plugin": [
     "openslimedit@1.0.4",
     "opencode-ignore@1.1.0",
@@ -21,9 +25,56 @@
     "openfundus@0.1.6",
     "opencode-toolbox@0.10.4"
   ],
-  "watcher": {
-    "ignore": ["node_modules/**", "dist/**", ".git/**"]
+  "lsp": {
+    "typescript": {
+      "command": ["vtsls", "--stdio"],
+      "extensions": [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".mts", ".cts"],
+      "initialization": {
+        "preferences": { "importModuleSpecifierPreference": "relative" }
+      }
+    },
+    "pyright": {
+      "command": ["basedpyright-langserver", "--stdio"],
+      "extensions": [".py", ".pyw", ".pyi"]
+    },
+    "rust": {
+      "command": ["rust-analyzer"],
+      "extensions": [".rs"]
+    },
+    "bash": {
+      "command": ["bash-language-server", "start"],
+      "extensions": [".sh", ".bash", ".zsh"]
+    },
+    "yaml-ls": {
+      "command": ["yaml-language-server", "--stdio"],
+      "extensions": [".yaml", ".yml"]
+    },
+    "markdown-oxide": {
+      "command": ["markdown-oxide"],
+      "extensions": [".md", ".mdx"]
+    },
+    "json-ls": {
+      "command": ["vscode-json-language-server", "--stdio"],
+      "extensions": [".json", ".jsonc"]
+    },
+    "dockerfile-ls": {
+      "command": ["docker-langserver", "--stdio"],
+      "extensions": [".dockerfile"]
+    },
+    "html-ls": {
+      "command": ["vscode-html-language-server", "--stdio"],
+      "extensions": [".html", ".htm"]
+    },
+    "css-ls": {
+      "command": ["vscode-css-language-server", "--stdio"],
+      "extensions": [".css", ".scss", ".less"]
+    },
+    "tombi": {
+      "command": ["tombi", "lsp"],
+      "extensions": [".toml"]
+    }
   },
+  "watcher": { "ignore": ["node_modules/**", "dist/**", ".git/**"] },
   "mcp": {
     "ref-tools": {
       "type": "remote",
