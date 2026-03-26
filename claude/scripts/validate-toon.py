@@ -29,13 +29,20 @@ def validate_toon(content: str, filename: str) -> ValidationResult:
     warnings = []
     lines = content.split("\n")
 
+    # Pre-compile regex patterns
+    type_pattern = re.compile(r"^@type:\s*\S+")
+    id_pattern = re.compile(r"^@id:\s*\S+")
+    array_decl_pattern = re.compile(r"\[(?:\d+|\w+),?\]")
+    csv_row_pattern = re.compile(r"^\s+\S+,\S+")
+    yaml_item_pattern = re.compile(r"^\s+-\s+")
+
     # Check for @type marker (required)
-    has_type = any(re.match(r"^@type:\s*\S+", line) for line in lines)
+    has_type = any(type_pattern.match(line) for line in lines)
     if not has_type:
         errors.append("Missing required @type marker")
 
     # Check for @id marker (required)
-    has_id = any(re.match(r"^@id:\s*\S+", line) for line in lines)
+    has_id = any(id_pattern.match(line) for line in lines)
     if not has_id:
         errors.append("Missing required @id marker")
 
@@ -47,7 +54,7 @@ def validate_toon(content: str, filename: str) -> ValidationResult:
             continue
 
         # Track array declarations like "phases[3]:" or "tasks[N,]{"
-        array_match = re.search(r"\[(\d+|\w+),?\]", line)
+        array_match = array_decl_pattern.search(line)
         if array_match and "{" in line:
             bracket_stack.append((i, "array-object"))
 
@@ -80,23 +87,25 @@ def validate_toon(content: str, filename: str) -> ValidationResult:
             continue
 
         # Skip lines that are just values (in multi-line arrays)
-        if re.match(r"^\s+\S+,\S+", line):  # CSV-style array row
+        if csv_row_pattern.match(line):  # CSV-style array row
             continue
-        if re.match(r"^\s+-\s+", line):  # YAML-style list item
+        if yaml_item_pattern.match(line):  # YAML-style list item
             continue
 
         # Check if line looks like a property
         if ":" in stripped and not property_pattern.match(line):
             # Could be a value containing colons (like URLs) - just warn
             if not stripped.startswith("http") and "://" not in stripped:
-                warnings.append(f"Line {i}: Unusual property format: {stripped[:50]}...")
+                warnings.append(
+                    f"Line {i}: Unusual property format: {stripped[:50]}..."
+                )
 
     # Validate specific execution-plan structure if this looks like one
     if "execution-plan" in content.lower():
         required_sections = ["phases", "executionOrder"]
         for section in required_sections:
-            pattern = rf"^{section}\[.*?\]:"
-            if not any(re.match(pattern, line) for line in lines):
+            pattern = re.compile(rf"^{section}\[.*?\]:")
+            if not any(pattern.match(line) for line in lines):
                 warnings.append(f"Execution plan missing expected section: {section}")
 
     return ValidationResult(valid=len(errors) == 0, errors=errors, warnings=warnings)
@@ -108,7 +117,9 @@ def validate_file(filepath: Path) -> ValidationResult:
         return ValidationResult(False, [f"File not found: {filepath}"], [])
 
     if filepath.suffix != ".toon":
-        return ValidationResult(False, [], [f"Expected .toon extension, got: {filepath.suffix}"])
+        return ValidationResult(
+            False, [], [f"Expected .toon extension, got: {filepath.suffix}"]
+        )
 
     try:
         content = filepath.read_text(encoding="utf-8")
@@ -133,8 +144,12 @@ Examples:
         """,
     )
     parser.add_argument("files", nargs="+", type=Path, help="TOON file(s) to validate")
-    parser.add_argument("--strict", action="store_true", help="Treat warnings as errors")
-    parser.add_argument("--quiet", "-q", action="store_true", help="Only output on error")
+    parser.add_argument(
+        "--strict", action="store_true", help="Treat warnings as errors"
+    )
+    parser.add_argument(
+        "--quiet", "-q", action="store_true", help="Only output on error"
+    )
 
     args = parser.parse_args()
 
