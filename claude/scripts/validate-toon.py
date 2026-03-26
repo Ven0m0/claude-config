@@ -33,7 +33,7 @@ def validate_toon(content: str, filename: str) -> ValidationResult:
     # Pre-compile regex patterns
     type_pattern = re.compile(r"^@type:\s*\S+")
     id_pattern = re.compile(r"^@id:\s*\S+")
-    array_decl_pattern = re.compile(r"\[(\d+|\w+),?\]")
+    array_decl_pattern = re.compile(r"\[(?:\d+|\w+),?\]")
     csv_row_pattern = re.compile(r"^\s+\S+,\S+")
     yaml_item_pattern = re.compile(r"^\s+-\s+")
 
