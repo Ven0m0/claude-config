@@ -1,5 +1,0 @@
-{
-  "_comment": "Copilot CLI user config - place at ~/.copilot/config.json",
-  "model": "claude-sonnet-4-5",
-  "reasoning_effort": "medium"
-}
