@@ -7,5 +7,65 @@
     "@franlol/opencode-md-table-formatter@latest",
     "opencode-gemini-auth",
     "opencode-google-antigravity-auth"
-  ]
+  ],
+  "model": "kilo/kilo-auto/frontier",
+  "small_model": "kilo/minimax/minimax-m2.5:free",
+  "agent": {
+    "plan": {
+      "model": "kilo/kilo-auto/frontier",
+      "temperature": 0.3,
+      "reasoningEffort": "high",
+      "textVerbosity": "low"
+    },
+    "build": {
+      "model": "kilo/kilo-auto/frontier",
+      "temperature": 0.3,
+      "reasoningEffort": "high",
+      "textVerbosity": "low"
+    },
+    "coder": {
+      "model": "openrouter/minimax/minimax-m2.7",
+      "temperature": 0.2,
+      "reasoningEffort": "medium",
+      "textVerbosity": "low"
+    },
+    "explore": {
+      "model": "kilo/minimax/minimax-m2.5:free",
+      "temperature": 0.2,
+      "reasoningEffort": "low",
+      "textVerbosity": "low"
+    },
+    "researcher": {
+      "model": "kilo/kilo-auto/frontier",
+      "temperature": 0.4,
+      "reasoningEffort": "high",
+      "textVerbosity": "medium"
+    },
+    "scribe": {
+      "model": "kilo/minimax/minimax-m2.5:free",
+      "temperature": 1,
+      "reasoningEffort": "low",
+      "textVerbosity": "high"
+    },
+    "reviewer": {
+      "model": "kilo/z-ai/glm-5",
+      "temperature": 0.1,
+      "reasoningEffort": "high",
+      "textVerbosity": "medium"
+    }
+  },
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "exa": {
+      "type": "remote",
+      "url": "https://mcp.exa.ai/mcp"
+    },
+    "gh_grep": {
+      "type": "remote",
+      "url": "https://mcp.grep.app"
+    }
+  }
 }
