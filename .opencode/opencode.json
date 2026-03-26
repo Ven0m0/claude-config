@@ -3,6 +3,7 @@
   "plugin": [
     "@nick-vi/opencode-type-inject",
     "@tarquinen/opencode-dcp@latest",
+    "@bastiangx/opencode-unmoji",
     "opencode-gemini-auth",
     "opencode-google-antigravity-auth"
   ]
