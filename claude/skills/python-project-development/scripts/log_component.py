@@ -80,7 +80,9 @@ class Log:
         """
         if not self.quiet:
             pct = (cur / tot) * 100 if tot else 0
+            pct = max(0, min(100, pct))
             bar_len = int(20 * cur / tot) if tot else 0
+            bar_len = max(0, min(20, bar_len))
             bar = "█" * bar_len + "░" * (20 - bar_len)
             fname_trunc = (fname[:37] + "...") if len(fname) > 40 else fname
             sys.stderr.write(f"\r{bar} {pct:3.0f}% {fname_trunc:40}")
