@@ -1,5 +1,9 @@
 {
   "$schema":"https://opencode.ai/config.json",
+  "instructions": [
+    "https://raw.githubusercontent.com/JRedeker/opencode-morph-fast-apply/refs/heads/trunk/instructions/morph-tools.md",
+    "AGENTS.md"
+  ]
   "plugin": [
     "@nick-vi/opencode-type-inject",
     "@tarquinen/opencode-dcp@latest",
@@ -9,11 +13,14 @@
     "opencode-google-antigravity-auth",
     "opencode-kilo-auth@latest",
     "@gotgenes/opencode-agent-identity",
-    "opencode-ignore"
+    "opencode-ignore",
+    "github:JRedeker/opencode-morph-fast-apply"
   ],
   "tools": {
+    "edit": true,
     "write": true,
-    "bash": true
+    "bash": true,
+    "webfetch": "allow"
   },
   "watcher": {
     "ignore": ["node_modules/**", "dist/**", ".git/**"]
