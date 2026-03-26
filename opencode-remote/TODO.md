@@ -1,3 +1,2 @@
-add https://github.com/Th0rgal/sandboxed.sh
-
-- https://github.com/spiermar/opencode-container
+- [x] sandboxed.sh: documented in README as advanced multi-mission alternative (https://github.com/Th0rgal/sandboxed.sh)
+- [x] opencode-container: integrated as docker-compose.opencode-container.yml with make targets (https://github.com/spiermar/opencode-container)
