@@ -15,6 +15,7 @@
     "@gotgenes/opencode-agent-identity",
     "opencode-ignore",
     "github:JRedeker/opencode-morph-fast-apply",
+    "opencode-fastedit",
     "@spoons-and-mirrors/subtask2@latest",
     "@azumag/opencode-rate-limit-fallback"
   ],
