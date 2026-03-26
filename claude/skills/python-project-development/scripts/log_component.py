@@ -58,7 +58,7 @@ class Log:
     def ok(self, msg: str) -> None:
         """Log success message (green) with checkmark."""
         if not self.quiet:
-            print(self._c(C_GREEN, f"✓ {msg}"), file=sys.stdout)
+            print(self._c(C_GREEN, f"ok: {msg}"), file=sys.stdout)
 
     def warn(self, msg: str) -> None:
         """Log warning message (yellow) to stderr."""
