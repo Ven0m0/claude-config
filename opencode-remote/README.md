@@ -107,5 +107,6 @@ via its own `docker-compose.yml`.
 - Cloudflare manages TLS - no self-signed cert warnings
 - Secrets for local mode are stored in `/etc/openchamber/env` (chmod 600, root-owned)
 - The `.env` file is protected with `chmod 600` immediately on first read
-- opencode-container mode does not use `UI_PASSWORD`; authentication is handled by Cloudflare
-  Access or application-level API keys
+- opencode-container mode does not use `UI_PASSWORD` for HTTP API authentication at runtime; it is
+  still required by `setup.sh` provisioning. Authentication to opencode itself is handled by
+  Cloudflare Access or application-level API keys
