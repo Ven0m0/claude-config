@@ -99,7 +99,7 @@ for i in "${!DETECTED_LINTERS[@]}"; do
   echo "--- ${linter} ---"
 
   {
-    if [ "$CHECK_ONLY" = true ]; then
+    if [[ "$CHECK_ONLY" = true ]]; then
       case "$linter" in
         biome)
           echo "CMD: npx @biomejs/biome check --reporter=github --max-diagnostics=20 ."
