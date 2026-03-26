@@ -1,4 +1,6 @@
+import importlib.util
 import sys
+from pathlib import Path
 from unittest.mock import MagicMock
 
 # Mock external dependencies before they are imported
@@ -11,9 +13,6 @@ sys.modules["mcp.client.streamable_http"] = MagicMock()
 
 # Also mock connections.py which is in the same directory as evaluation.py
 sys.modules["connections"] = MagicMock()
-
-import importlib.util
-from pathlib import Path
 
 # Load evaluation.py dynamically
 EVAL_PATH = Path(__file__).parent.parent / "scripts" / "evaluation.py"
