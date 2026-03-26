@@ -1,4 +1,17 @@
 # Add patterns to ignore here, one per line
 # Example:
-*.log
 tmp/
+.agent/**
+node_modules/**
+.next/**
+.git/**
+.vercel/**
+dist/**
+build/**
+*.log
+*.png
+*.jpg
+repomix-output.xml
+index-*.json
+.repomixignore
+.venv/**

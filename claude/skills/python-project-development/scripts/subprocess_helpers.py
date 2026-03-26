@@ -3,8 +3,10 @@
 
 import subprocess as sp
 import time
-from pathlib import Path
-from typing import Final
+from typing import TYPE_CHECKING, Final
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 # Default timeout for subprocess calls
 DEFAULT_TIMEOUT: Final = 30
@@ -30,6 +32,7 @@ def run_cmd(
     Raises:
       subprocess.CalledProcessError: If check=True and command fails
       subprocess.TimeoutExpired: If timeout exceeded
+
     """
     try:
         result = sp.run(
@@ -63,10 +66,11 @@ def run_cmd_safe(
 
     Returns:
       stdout as string, or empty string on error
+
     """
     try:
         return run_cmd(cmd, cwd=cwd, timeout=timeout, check=True)
-    except (sp.CalledProcessError, sp.TimeoutExpired, FileNotFoundError):
+    except sp.CalledProcessError, sp.TimeoutExpired, FileNotFoundError:
         return ""
 
 
@@ -88,6 +92,7 @@ def run_with_retry(
 
     Returns:
       (success: bool, output: str)
+
     """
     for attempt in range(1, retries + 1):
         try:
@@ -111,6 +116,7 @@ def run_git(cmd: list[str], cwd: Path, timeout: int = 10) -> str:
 
     Returns:
       stdout as string, or empty string on error
+
     """
     return run_cmd_safe(["git", *cmd], cwd=cwd, timeout=timeout)
 
@@ -124,6 +130,7 @@ def run_with_live_output(cmd: list[str], cwd: Path | None = None) -> int:
 
     Returns:
       Exit code
+
     """
     try:
         result = sp.run(cmd, cwd=cwd, check=False)
@@ -142,6 +149,7 @@ def has(cmd: str) -> bool:
 
     Returns:
       True if command exists
+
     """
     import shutil
 

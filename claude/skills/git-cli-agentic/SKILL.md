@@ -2,9 +2,10 @@
 model: haiku
 name: git-cli-agentic
 description: Git commands optimized for AI agent workflows with porcelain output and deterministic execution patterns.
-allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(git branch:*), Bash(git remote:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), Bash(git restore:*), Read
+allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(git branch:*), Bash(git remote:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), Bash(git restore:*), Read, Bash(gh;*), Bash(git;*)
 user-invocable: true
 disable-model-invocation: false
+context: fork
 ---
 
 # Git CLI Agentic Patterns
@@ -13,7 +14,7 @@ Optimized git commands for AI agent consumption using porcelain output and stabl
 
 ## Core Principle
 
-Use `--porcelain` for machine-readable output that remains stable across Git versions and user configurations.
+Use `--porcelain` for machine-readable output that remains stable across Git versions and user configurations. Prefer compact formats when the goal is context window efficiency.
 
 ## Status Operations
 
@@ -28,6 +29,9 @@ git status --porcelain
 
 # Short format (human-readable but stable)
 git status --short --branch
+
+# Very short format (branch info and status)
+git status -sb
 ```
 
 **Porcelain v2 Format**:
@@ -123,6 +127,9 @@ git log --format='%H %s' -n 10
 
 # Oneline (built-in)
 git log --oneline -n 10
+
+# Compact oneline (hash and subject only)
+git log --format='%h %s' -n 10
 
 # With stats
 git log --oneline --stat -n 5
@@ -221,22 +228,50 @@ git restore path/to/file
 
 ## Commit Operations
 
+### Prompt Tracking
+
+Always include the user request in the commit message or as a note to provide context for the change.
+
 ```bash
-# Simple commit
-git commit -m "message"
+# Commit with prompt context
+git commit -m "feat: add user login" -m "Prompt: Add a logout button to the header"
 
-# With body (heredoc)
-git commit -m "$(cat <<'EOF'
-Subject line
+# Using git notes for metadata (agent name, session ID, prompt)
+git notes --ref agent add -m "claude"
+git notes --ref prompt add -m "Add a logout button to the header"
+```
 
-Body paragraph.
+### AI Attribution
 
-Co-Authored-By: Name <email>
-EOF
-)"
+Ensure commits are attributed to the AI agent.
 
-# Amend last commit (use carefully)
-git commit --amend -m "new message"
+```bash
+# Using Co-Authored-By in the body
+git commit -m "fix: resolve memory leak" \
+  -m "Co-Authored-By: Claude <claude@anthropic.com>"
+```
+
+### Safety and Guardrails
+
+Avoid destructive commands that can lead to data loss in an automated environment.
+
+- **Prefer `git restore`** over `git checkout .` to discard changes.
+- **Avoid `--force`** unless absolutely necessary and scoped to a specific branch.
+- **Use `git stash`** to temporarily set aside changes instead of hard resets.
+
+## Forks and Worktrees
+
+Use `git worktree` to create parallel "forks" for exploring different implementation paths.
+
+```bash
+# Create a new exploration "fork"
+git worktree add ../explorations/bun-implementation -b explore/bun
+
+# List all active worktrees (forks)
+git worktree list
+
+# Remove exploration once done
+git worktree remove ../explorations/bun-implementation
 ```
 
 ## Push Operations

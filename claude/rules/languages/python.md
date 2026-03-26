@@ -2,7 +2,7 @@
 paths:
   - "**/*.py"
   - "**/pyproject.toml"
-  - "**/requirements*.txt"
+  - "**/requirements.txt"
 ---
 
 # Python Rules

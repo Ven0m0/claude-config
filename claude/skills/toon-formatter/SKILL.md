@@ -1,5 +1,5 @@
 ---
-name: formatting-with-toon
+name: toon-formatter
 description: Formats structured data using TOON v2.0 to minimize tokens while preserving readability. Use when outputs include tables, logs, events, or repeated records and token budgets matter. Triggers include "format table", "structured data", "TOON", "minimize tokens", or "large list".
 disable-model-invocation: true
 user-invocable: true

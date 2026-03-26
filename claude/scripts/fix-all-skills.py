@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Comprehensive SKILL.md fixer for nixtla strict compliance.
+"""Comprehensive SKILL.md fixer for nixtla strict compliance.
 
 Fixes:
 1. Missing "Use when" / "Trigger with" in description
@@ -15,9 +14,8 @@ Author: Jeremy Longshore <jeremy@intentsolutions.io>
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
-import yaml
 
+import yaml
 
 REQUIRED_SECTIONS = [
     "## Overview",
@@ -61,7 +59,7 @@ Example usage patterns will be demonstrated in context.""",
 }
 
 
-def parse_frontmatter(content: str) -> Tuple[dict, str, str]:
+def parse_frontmatter(content: str) -> tuple[dict, str, str]:
     """Parse YAML frontmatter. Returns (fm_dict, fm_raw, body)."""
     match = re.match(r"^(---\s*\n)(.*?)\n(---\s*\n)(.*)$", content, re.DOTALL)
     if not match:
@@ -79,10 +77,9 @@ def parse_frontmatter(content: str) -> Tuple[dict, str, str]:
         return None, fm_raw, body
 
 
-def fix_description(desc: str, skill_name: str) -> Tuple[str, List[str]]:
+def fix_description(desc: str, skill_name: str) -> tuple[str, list[str]]:
     """Fix description to include Use when / Trigger with and remove reserved words."""
     changes = []
-    original = desc
 
     # Remove reserved words
     if "claude" in desc.lower():
@@ -99,7 +96,7 @@ def fix_description(desc: str, skill_name: str) -> Tuple[str, List[str]]:
 
     if not has_use_when or not has_trigger:
         # Generate trigger phrases based on skill name
-        name_words = skill_name.replace("-", " ").replace("_", " ")
+        skill_name.replace("-", " ").replace("_", " ")
 
         # Build contextual trigger phrases
         if "api" in skill_name.lower():
@@ -113,9 +110,7 @@ def fix_description(desc: str, skill_name: str) -> Tuple[str, List[str]]:
             trigger = "Trigger with phrases like 'deploy', 'infrastructure', or 'CI/CD'"
         elif "security" in skill_name.lower() or "audit" in skill_name.lower():
             use_when = "Use when assessing security or running audits"
-            trigger = (
-                "Trigger with phrases like 'security scan', 'audit', or 'vulnerability'"
-            )
+            trigger = "Trigger with phrases like 'security scan', 'audit', or 'vulnerability'"
         elif "database" in skill_name.lower() or "sql" in skill_name.lower():
             use_when = "Use when working with databases or data models"
             trigger = "Trigger with phrases like 'database', 'query', or 'schema'"
@@ -139,9 +134,7 @@ def fix_description(desc: str, skill_name: str) -> Tuple[str, List[str]]:
             trigger = "Trigger with phrases like 'generate', 'create', or 'scaffold'"
         elif "optimi" in skill_name.lower() or "perf" in skill_name.lower():
             use_when = "Use when optimizing performance"
-            trigger = (
-                "Trigger with phrases like 'optimize', 'performance', or 'speed up'"
-            )
+            trigger = "Trigger with phrases like 'optimize', 'performance', or 'speed up'"
         elif "valid" in skill_name.lower():
             use_when = "Use when validating configurations or code"
             trigger = "Trigger with phrases like 'validate', 'check', or 'verify'"
@@ -168,7 +161,7 @@ def fix_description(desc: str, skill_name: str) -> Tuple[str, List[str]]:
     return desc, changes
 
 
-def fix_allowed_tools(fm: dict) -> Tuple[dict, List[str]]:
+def fix_allowed_tools(fm: dict) -> tuple[dict, list[str]]:
     """Fix unscoped Bash in allowed-tools."""
     changes = []
 
@@ -198,15 +191,12 @@ def fix_allowed_tools(fm: dict) -> Tuple[dict, List[str]]:
     return fm, changes
 
 
-def fix_body_sections(body: str, skill_name: str) -> Tuple[str, List[str]]:
+def fix_body_sections(body: str, skill_name: str) -> tuple[str, list[str]]:
     """Add missing required sections to body."""
     changes = []
 
     # Check which sections are missing
-    missing_sections = []
-    for section in REQUIRED_SECTIONS:
-        if section not in body:
-            missing_sections.append(section)
+    missing_sections = [section for section in REQUIRED_SECTIONS if section not in body]
 
     if not missing_sections:
         return body, changes
@@ -283,8 +273,7 @@ def rebuild_frontmatter(fm: dict) -> str:
         if key == "description":
             # Multi-line description
             lines.append(f"{key}: |")
-            for line in val.split("\n"):
-                lines.append(f"  {line}")
+            lines.extend(f"  {line}" for line in val.split("\n"))
         elif key == "allowed-tools":
             if isinstance(val, list):
                 lines.append(f"{key}: {', '.join(val)}")
@@ -292,8 +281,7 @@ def rebuild_frontmatter(fm: dict) -> str:
                 lines.append(f"{key}: {val}")
         elif isinstance(val, list):
             lines.append(f"{key}:")
-            for item in val:
-                lines.append(f"  - {item}")
+            lines.extend(f"  - {item}" for item in val)
         elif isinstance(val, bool):
             lines.append(f"{key}: {str(val).lower()}")
         else:
@@ -305,15 +293,14 @@ def rebuild_frontmatter(fm: dict) -> str:
             continue
         if isinstance(val, list):
             lines.append(f"{key}:")
-            for item in val:
-                lines.append(f"  - {item}")
+            lines.extend(f"  - {item}" for item in val)
         else:
             lines.append(f"{key}: {val}")
 
     return "\n".join(lines)
 
 
-def process_skill(filepath: Path, dry_run: bool = False) -> Dict:
+def process_skill(filepath: Path, dry_run: bool = False) -> dict:
     """Process a single SKILL.md file."""
     result = {"file": str(filepath), "changes": [], "errors": []}
 
@@ -323,7 +310,7 @@ def process_skill(filepath: Path, dry_run: bool = False) -> Dict:
         result["errors"].append(f"Read error: {e}")
         return result
 
-    fm, fm_raw, body = parse_frontmatter(content)
+    fm, _fm_raw, body = parse_frontmatter(content)
     if fm is None:
         result["errors"].append("No valid frontmatter")
         return result
@@ -355,24 +342,20 @@ def process_skill(filepath: Path, dry_run: bool = False) -> Dict:
     return result
 
 
-def main():
+def main() -> None:
     import argparse
 
     parser = argparse.ArgumentParser(description="Fix all SKILL.md files")
-    parser.add_argument(
-        "--dry-run", action="store_true", help="Show changes without applying"
-    )
+    parser.add_argument("--dry-run", action="store_true", help="Show changes without applying")
     parser.add_argument("--path", default="plugins", help="Path to scan")
     args = parser.parse_args()
 
     root = Path(args.path)
     if not root.exists():
-        print(f"Error: {root} does not exist")
         sys.exit(1)
 
     # Find all SKILL.md files
     skill_files = list(root.rglob("skills/*/SKILL.md"))
-    print(f"Found {len(skill_files)} SKILL.md files")
 
     total_changes = 0
     files_fixed = 0
@@ -383,20 +366,16 @@ def main():
         if result["changes"]:
             files_fixed += 1
             total_changes += len(result["changes"])
-            print(f"\n{filepath.relative_to(root)}:")
-            for change in result["changes"]:
-                print(f"  + {change}")
+            for _change in result["changes"]:
+                pass
 
         if result["errors"]:
-            for error in result["errors"]:
-                print(f"  ERROR: {error}")
+            for _error in result["errors"]:
+                pass
 
-    print(
-        f"\n{'[DRY RUN] ' if args.dry_run else ''}Summary: {files_fixed} files, {total_changes} changes"
-    )
 
     if args.dry_run:
-        print("\nRun without --dry-run to apply changes")
+        pass
 
 
 if __name__ == "__main__":

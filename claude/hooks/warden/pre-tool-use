@@ -1,0 +1,299 @@
+#!/usr/bin/env bash
+# Pre-tool-use hook: Token dump prevention, command safety, subagent enforcement
+# Consolidated: pre-tool-use + ffmpeg-silent + subagent-guard (3 hooks -> 1)
+
+set -o pipefail
+
+# Source shared library
+source "${BASH_SOURCE[0]%/*}/lib/common.sh"
+
+_warden_read_input || exit 0
+
+# === SINGLE JQ CALL ===
+TOOL_NAME=$(_warden_parse_tool_name)
+TRANSCRIPT_PATH=$(_warden_parse_transcript_path)
+SESSION_ID=$(_warden_parse_session_id)
+IFS=$'\t' read -r COMMAND < <(_warden_parse_tool_input command)
+
+# Export for shared library functions
+export WARDEN_TOOL_NAME="$TOOL_NAME"
+export WARDEN_COMMAND="$COMMAND"
+export WARDEN_SESSION_ID="$SESSION_ID"
+
+# Record tool start for latency tracking (read by post-tool-use)
+_warden_record_tool_start "$TOOL_NAME"
+
+# === SUBAGENT DETECTION (applies to ALL tools) ===
+IS_SUBAGENT=false
+AGENT_TYPE=""
+AGENT_ID=""
+
+if _warden_is_subagent "$TRANSCRIPT_PATH"; then
+    IS_SUBAGENT=true
+    AGENT_ID=$(_warden_get_agent_id "$TRANSCRIPT_PATH")
+    if [[ -n "$AGENT_ID" ]]; then
+        AGENT_TYPE=$(_warden_get_agent_type "$AGENT_ID")
+    fi
+fi
+
+# === SUBAGENT BUDGET ENFORCEMENT (applies to ALL tools) ===
+if [[ "$IS_SUBAGENT" == true && -n "$AGENT_ID" ]]; then
+    # Call/byte limits per agent type (Bash 3.2 compatible via indirect expansion)
+    CALL_BUDGET=$(_warden_call_limit "$AGENT_TYPE")
+    BYTE_BUDGET=$(_warden_byte_limit "$AGENT_TYPE")
+
+    WARN_CALL_AT=$((CALL_BUDGET * 80 / 100))
+    WARN_BYTE_AT=$((BYTE_BUDGET * 80 / 100))
+
+    mkdir -p "$WARDEN_SUBAGENT_STATE_DIR"
+    CALL_FILE="$WARDEN_SUBAGENT_STATE_DIR/$AGENT_ID.calls"
+    BYTE_FILE="$WARDEN_SUBAGENT_STATE_DIR/$AGENT_ID.bytes"
+
+    # Read + increment call count
+    CURRENT_CALLS=0
+    if [[ -f "$CALL_FILE" ]]; then
+        RAW=$(cat "$CALL_FILE" 2>/dev/null || echo "0")
+        if [[ "$RAW" == *"|"* ]]; then
+            CURRENT_CALLS=$(echo "$RAW" | cut -d'|' -f2)
+        else
+            CURRENT_CALLS="$RAW"
+        fi
+        [[ ! "$CURRENT_CALLS" =~ ^[0-9]+$ ]] && CURRENT_CALLS=0
+    fi
+    NEW_CALLS=$((CURRENT_CALLS + 1))
+    printf '%s|%s|%s\n' "$AGENT_ID" "$NEW_CALLS" "$(date +%s)" > "$CALL_FILE"
+
+    # Read cumulative output bytes (written by post-tool-use)
+    CURRENT_BYTES=0
+    if [[ -f "$BYTE_FILE" ]]; then
+        RAW=$(cat "$BYTE_FILE" 2>/dev/null || echo "0")
+        if [[ "$RAW" == *"|"* ]]; then
+            CURRENT_BYTES=$(echo "$RAW" | cut -d'|' -f1)
+        else
+            CURRENT_BYTES="$RAW"
+        fi
+        [[ ! "$CURRENT_BYTES" =~ ^[0-9]+$ ]] && CURRENT_BYTES=0
+    fi
+
+    # Enforce call count budget
+    if (( NEW_CALLS >= CALL_BUDGET )); then
+        _warden_emit_block "budget_calls_exceeded" 2000
+        _warden_deny "Budget exceeded: $AGENT_TYPE calls $NEW_CALLS/$CALL_BUDGET. Stop and report findings."
+    elif (( NEW_CALLS >= WARN_CALL_AT )); then
+        echo "WARNING: Tool call #$NEW_CALLS/$CALL_BUDGET for $AGENT_TYPE agent." >&2
+    fi
+
+    # Enforce cumulative output bytes budget
+    if (( CURRENT_BYTES >= BYTE_BUDGET )); then
+        _warden_emit_block "budget_bytes_exceeded" $((CURRENT_BYTES / 4))
+        _warden_deny "Budget exceeded: $AGENT_TYPE output ${CURRENT_BYTES}B/${BYTE_BUDGET}B. Stop and report findings."
+    elif (( CURRENT_BYTES >= WARN_BYTE_AT )); then
+        echo "WARNING: ${CURRENT_BYTES}B/$((BYTE_BUDGET/1024))KB cumulative output for $AGENT_TYPE agent." >&2
+    fi
+fi
+
+# === NON-BASH TOOLS: fast path ===
+case "$TOOL_NAME" in
+    Write)
+        CONTENT=$(printf '%s' "$WARDEN_INPUT" | jq -r '.tool_input.content // ""' 2>/dev/null)
+        FILE_PATH=$(printf '%s' "$WARDEN_INPUT" | jq -r '.tool_input.file_path // ""' 2>/dev/null)
+        (( ${#CONTENT} > WARDEN_WRITE_MAX_BYTES )) && { _warden_emit_block "write_oversize" 25000 "Write ${#CONTENT}B → $FILE_PATH"; _warden_deny "Write >${#CONTENT}B (>$((WARDEN_WRITE_MAX_BYTES/1024))KB)"; }
+        _warden_suppress_ok ;;
+    Edit)
+        NEW=$(printf '%s' "$WARDEN_INPUT" | jq -r '.tool_input.new_string // ""' 2>/dev/null)
+        FILE_PATH=$(printf '%s' "$WARDEN_INPUT" | jq -r '.tool_input.file_path // ""' 2>/dev/null)
+        (( ${#NEW} > WARDEN_EDIT_MAX_BYTES )) && { _warden_emit_block "edit_oversize" 12500 "Edit ${#NEW}B → $FILE_PATH"; _warden_deny "Edit >${#NEW}B (>$((WARDEN_EDIT_MAX_BYTES/1024))KB)"; }
+        _warden_suppress_ok ;;
+    NotebookEdit)
+        NEW_SOURCE=$(printf '%s' "$WARDEN_INPUT" | jq -r '.tool_input.new_source // ""' 2>/dev/null)
+        (( ${#NEW_SOURCE} > WARDEN_NOTEBOOK_MAX_BYTES )) && { _warden_emit_block "notebook_oversize" 12500 "NotebookEdit ${#NEW_SOURCE}B"; _warden_deny "NotebookEdit >${#NEW_SOURCE}B (>$((WARDEN_NOTEBOOK_MAX_BYTES/1024))KB)"; }
+        _warden_suppress_ok ;;
+    Glob)
+        read -r PATTERN GLOB_PATH < <(printf '%s' "$WARDEN_INPUT" | jq -r '[.tool_input.pattern // "", .tool_input.path // ""] | @tsv' 2>/dev/null)
+        HOME_DIR_RE='^(/home/[^/]+|~|/Users/[^/]+|/root)/?$'
+        if [[ "$PATTERN" =~ \*\* ]]; then
+            if [[ "$GLOB_PATH" =~ $HOME_DIR_RE ]] || [[ -z "$GLOB_PATH" && "$PWD" =~ $HOME_DIR_RE ]]; then
+                _warden_emit_block "glob_home_recursive" 5000 "Glob $PATTERN in $GLOB_PATH"; _warden_deny "Glob ** in home dir; narrow path or use fd"
+            fi
+            if [[ "$PATTERN" =~ ^(/home/[^/]+|~|/Users/[^/]+|/root)/\*\* ]]; then
+                _warden_emit_block "glob_home_recursive" 5000 "Glob $PATTERN"; _warden_deny "Glob ** in home dir; narrow path or use fd"
+            fi
+        fi
+        _warden_suppress_ok ;;
+    Bash) ;;  # Continue to Bash checks below
+    *) _warden_suppress_ok ;;
+esac
+
+[[ -z "$COMMAND" ]] && _warden_suppress_ok
+
+# ==========================================================================
+# BASH TOOL CHECKS (all Bash-specific logic consolidated here)
+# ==========================================================================
+
+# === CRITICAL DENY RULES (must enforce even in non-interactive -p mode) ===
+# Destructive: rm (root/home/cwd/glob), mkfs, dd, chmod/chown recursive
+NORM_CMD=$(echo "$COMMAND" | tr -s '[:space:]' ' ')
+case "$NORM_CMD" in
+    *"rm -rf /"*|*"rm -fr /"*|*"rm -rf ~"*|*"rm -fr ~"*|\
+    *"rm -rf ."*|*"rm -fr ."*|*"rm -rf *"*|*"rm -fr *"*|\
+    *"rm --recursive --force"*|*"rm --force --recursive"*|\
+    *"rm -rf --no-preserve-root"*|\
+    *"mkfs"*|*"dd if="*|*"dd of=/dev/"*|\
+    *"> /dev/sd"*|*"> /dev/nvme"*|\
+    *"chmod -R 777 /"*|*"chown -R"*|*"chown --recursive"*)
+        _warden_emit_block "destructive_cmd" 0; _warden_deny "Blocked destructive command" ;;
+esac
+
+# Fork bomb detection (regex for spacing variants)
+if [[ "$NORM_CMD" =~ :\(\)[[:space:]]*\{[[:space:]]*:\|:[[:space:]]*\&[[:space:]]*\} ]]; then
+    _warden_emit_block "fork_bomb" 0; _warden_deny "Blocked fork bomb"
+fi
+
+# RCE pipe detection: curl/wget piped to any interpreter
+case "$NORM_CMD" in
+    *"curl"*"|"*"bash"*|*"curl"*"|"*"sh"*|*"curl"*"|"*"zsh"*|\
+    *"curl"*"|"*"python"*|*"curl"*"|"*"perl"*|*"curl"*"|"*"ruby"*|*"curl"*"|"*"node"*|\
+    *"wget"*"|"*"bash"*|*"wget"*"|"*"sh"*|*"wget"*"|"*"zsh"*|\
+    *"wget"*"|"*"python"*|*"wget"*"|"*"perl"*|*"wget"*"|"*"ruby"*|*"wget"*"|"*"node"*|\
+    *"bash <(curl"*|*"sh <(curl"*|*"zsh <(curl"*|\
+    *"bash <(wget"*|*"sh <(wget"*|*"zsh <(wget"*|\
+    *"python"*" <(curl"*|*"python"*" <(wget"*)
+        _warden_emit_block "rce_pipe" 0; _warden_deny "Blocked remote code execution" ;;
+esac
+
+# === SUBAGENT BASH-SPECIFIC BLOCKS ===
+if [[ "$IS_SUBAGENT" == true ]]; then
+    [[ "$COMMAND" =~ (^|[[:space:]]|[;&|])[[:space:]]*find[[:space:]] ]] && { _warden_emit_block "subagent_find" 3000; _warden_deny "Use Glob tool instead of find"; }
+    [[ "$COMMAND" =~ xargs[[:space:]]+(grep|rg) ]] && { _warden_emit_block "subagent_xargs_grep" 5000; _warden_deny "Use Grep tool instead of xargs grep"; }
+    [[ "$COMMAND" =~ (^|[;&]|&&|\|\|)[[:space:]]*grep[[:space:]] ]] && { _warden_emit_block "subagent_grep" 5000; _warden_deny "Use Grep tool or rg instead of grep"; }
+    [[ "$COMMAND" =~ ^[[:space:]]*ls[[:space:]].*(-la|-al|-lah|-lha) ]] && { _warden_emit_block "subagent_ls_verbose" 2000; _warden_deny "Use tree -L 2 or Glob tool instead of ls -la"; }
+    [[ "$COMMAND" =~ ^[[:space:]]*cat[[:space:]].*\* ]] && { _warden_emit_block "subagent_cat_glob" 10000; _warden_deny "Use Glob then Read for pattern-matched files"; }
+    if [[ "$COMMAND" =~ ^[[:space:]]*cat[[:space:]].*[[:space:]] ]] && [[ ! "$COMMAND" =~ \| ]]; then
+        # BUG FIX #3: rg || grep consumes stdin on rg failure - use rg only
+        ARGS=$(echo "$COMMAND" | sed 's/^[[:space:]]*cat[[:space:]]*//' | tr ' ' '\n' | rg -v '^-' | awk 'END{print NR}')
+        (( ARGS > 2 )) && { _warden_emit_block "subagent_cat_multi" 5000; _warden_deny "Use Read tool for multiple files (parallel)"; }
+    fi
+fi
+
+# === FFMPEG CHECK (from ffmpeg-silent) ===
+if [[ "$COMMAND" =~ ffmpeg ]] && [[ ! "$COMMAND" =~ -nostats ]]; then
+    _warden_emit_block "ffmpeg_verbose" 5000; _warden_deny "ffmpeg commands must include -nostats -loglevel error"
+fi
+
+# === FORCE OVERRIDE ===
+[[ "$COMMAND" =~ '#'[[:space:]]*'FORCE_READ' ]] && _warden_suppress_ok
+
+# === BUILD ARTIFACTS CHECK ===
+BUILD_ARTIFACT='(\.vite/build|/dist/[^/]+\.(js|css)|\.min\.(js|css)|bundle\.(js|css))'
+IS_BUILD_ARTIFACT=false
+[[ "$COMMAND" =~ $BUILD_ARTIFACT ]] && IS_BUILD_ARTIFACT=true
+
+# === QUICK ALLOW: metadata commands ===
+[[ "$COMMAND" =~ ^[[:space:]]*(wc|stat|file|du|md5sum|sha256sum|sha1sum|cksum)[[:space:]] ]] && _warden_suppress_ok
+
+# === QUICK ALLOW: piped output (NOT for build artifacts) ===
+if [[ "$IS_BUILD_ARTIFACT" == false ]] && [[ "$COMMAND" =~ \|[[:space:]]*(head|tail|wc|grep|awk|sed)[[:space:]] ]]; then
+    _warden_suppress_ok
+fi
+
+# === GIT COMMIT ===
+if [[ "$COMMAND" =~ git[[:space:]]+commit ]] && [[ ! "$COMMAND" =~ (-q|--quiet) ]]; then
+    _warden_emit_block "git_commit_verbose" 3000; _warden_deny "Use git commit -q"
+fi
+
+# === GIT LOG (unbounded dumps entire history) ===
+if [[ "$COMMAND" =~ ^[[:space:]]*git[[:space:]]+log ]] && [[ ! "$COMMAND" =~ (-n[[:space:]]*[0-9]+|-[0-9]+|--oneline|--format|--pretty|--since|--after|\|[[:space:]]*(head|tail)) ]]; then
+    _warden_emit_block "git_log_unbounded" 10000; _warden_deny "git log needs -n, --oneline, or pipe"
+fi
+
+# === VERBOSE COMMANDS ===
+# npm install/ci (match with or without trailing args)
+if [[ "$COMMAND" =~ ^npm[[:space:]]+(install|i|ci)([[:space:]]|$) ]] && [[ ! "$COMMAND" =~ (--silent|--quiet|\||'>'|'&') ]]; then
+    _warden_emit_block "npm_verbose" 5000; _warden_deny "npm install/ci needs --silent or pipe"
+fi
+if [[ "$COMMAND" =~ ^cargo[[:space:]]+build ]] && [[ ! "$COMMAND" =~ (-q|--quiet|\||'>'|'&') ]]; then
+    _warden_emit_block "cargo_verbose" 5000; _warden_deny "cargo build needs -q or pipe"
+fi
+# make (match with or without trailing args)
+if [[ "$COMMAND" =~ ^make([[:space:]]|$) ]] && [[ ! "$COMMAND" =~ (-s|--silent|\||'>'|'&') ]]; then
+    _warden_emit_block "make_verbose" 5000; _warden_deny "make needs -s or pipe"
+fi
+# pip/poetry
+if [[ "$COMMAND" =~ ^pip[[:space:]]+(install|download) ]] && [[ ! "$COMMAND" =~ (-q|--quiet) ]]; then
+    _warden_emit_block "pip_verbose" 3000; _warden_deny "pip needs -q"
+fi
+# curl: only block if verbose (-v) without output redirection
+# Allow: -s, -o, -O, --output, --remote-name, pipes, redirects
+if [[ "$COMMAND" =~ ^curl[[:space:]] ]]; then
+    if [[ "$COMMAND" =~ (-v|--verbose) ]] && [[ ! "$COMMAND" =~ (\||>>?|-o|-O|--output|--remote-name) ]]; then
+        _warden_emit_block "curl_verbose" 2000; _warden_deny "curl -v needs output redirection"
+    fi
+fi
+# wget without -q
+if [[ "$COMMAND" =~ ^wget[[:space:]] ]] && [[ ! "$COMMAND" =~ (-q|--quiet|-O) ]]; then
+    _warden_emit_block "wget_verbose" 2000; _warden_deny "wget needs -q"
+fi
+# docker build/pull (very verbose)
+if [[ "$COMMAND" =~ ^docker[[:space:]]+(build|pull) ]] && [[ ! "$COMMAND" =~ (-q|--quiet|\|) ]]; then
+    _warden_emit_block "docker_verbose" 8000; _warden_deny "docker build/pull needs -q or pipe"
+fi
+
+# === BUILD ARTIFACTS (minified files) ===
+if [[ "$IS_BUILD_ARTIFACT" == true ]]; then
+    if [[ "$COMMAND" =~ grep ]] && [[ ! "$COMMAND" =~ (head[[:space:]]+-c.*\|[[:space:]]*grep|-l[[:space:]]|--files-with-matches|\|[[:space:]]*(wc|head|tail)) ]]; then
+        _warden_emit_block "grep_minified" 25000; _warden_deny "grep on minified file; use Grep tool or pipe head -c first"
+    fi
+    if [[ "$COMMAND" =~ (cat|head|tail)[[:space:]].*$BUILD_ARTIFACT ]] && [[ ! "$COMMAND" =~ (-c[[:space:]]*[0-9]+) ]]; then
+        _warden_emit_block "cat_minified" 25000; _warden_deny "Minified file; use head -c 4000"
+    fi
+fi
+
+# === RECURSIVE GREP (main agent only - subagent already blocked above) ===
+if [[ "$IS_SUBAGENT" == false ]]; then
+    if [[ "$COMMAND" =~ grep.*([[:space:]]-[a-zA-Z]*[rR][a-zA-Z]*|--recursive) ]] && [[ ! "$COMMAND" =~ (-l[[:space:]]|--files-with-matches) ]]; then
+        [[ ! "$COMMAND" =~ \|[[:space:]]*(head|tail|wc) ]] && {
+            _warden_emit_block "grep_recursive" 10000; _warden_deny "grep -r scans all - use rg or grep -l"
+        }
+    fi
+fi
+
+# === RECURSIVE FIND ===
+for pat in '\.claude' '\.git' 'node_modules'; do
+    if [[ "$COMMAND" =~ find.*$pat ]] && [[ ! "$COMMAND" =~ (-maxdepth[[:space:]]+[1-3]|\|[[:space:]]*(head|tail|wc)|-name[[:space:]]) ]]; then
+        _warden_emit_block "find_recursive" 5000; _warden_deny "find in $pat needs -maxdepth or pipe"
+    fi
+done
+
+# === BOUNDED HEAD/TAIL ===
+if [[ "$COMMAND" =~ ^[[:space:]]*(head|tail) ]]; then
+    if [[ "$COMMAND" =~ -n[[:space:]]*([0-9]+) ]] || [[ "$COMMAND" =~ -([0-9]+) ]] || [[ "$COMMAND" =~ --lines=([0-9]+) ]]; then
+        limit="${BASH_REMATCH[1]}"
+        (( limit <= 500 )) && _warden_suppress_ok
+    fi
+fi
+
+# === LARGE FILE CHECK ===
+[[ "$COMMAND" =~ -c[[:space:]]*[0-9]+ ]] && _warden_suppress_ok
+
+if [[ "$COMMAND" =~ ^[[:space:]]*(cat|head|tail|less|more|bat|batcat)[[:space:]]+ ]]; then
+    REST="${COMMAND#*"${BASH_REMATCH[0]}"}"
+    set -f  # disable globbing for word splitting
+    for arg in $REST; do
+        case "$arg" in '|'|'&&'|';'|'||'|'>'|'>>'|'<'|'&') break ;; esac
+        [[ "$arg" =~ ^- ]] && continue
+        expanded="${arg/#\~/$HOME}"
+        if [[ -f "$expanded" ]]; then
+            filetype=$(file -b "$expanded" 2>/dev/null | head -c 50)
+            if [[ "$filetype" =~ ^(ELF|PE32|Mach-O|data|image|audio|video|gzip|Zip|PDF|SQLite|compiled) ]]; then
+                _warden_emit_block "binary_file" 10000; _warden_deny "$expanded is binary ($filetype). Use file, xxd, or hexdump"
+            fi
+            size=$(stat -c%s "$expanded" 2>/dev/null || stat -f%z "$expanded" 2>/dev/null || echo 0)
+            if (( size > 1048576 )); then
+                _warden_emit_block "large_file" $((size/4)); _warden_deny "$expanded is $((size/1024))KB (>1MB). Use head -c 4000"
+            fi
+        fi
+    done
+    set +f  # restore globbing
+fi
+
+_warden_suppress_ok

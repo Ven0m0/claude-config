@@ -127,7 +127,7 @@ Machine-readable registry of LSP servers with verification and installation comm
 **Manual Installation:**
 ```bash
 # Download latest snapshot
-curl -LO http://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz
+curl -LO https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz
 
 # Extract to home directory
 mkdir -p ~/jdtls

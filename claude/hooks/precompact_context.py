@@ -3,8 +3,7 @@
 # requires-python = ">=3.11"
 # dependencies = []
 # ///
-"""
-precompact_context.py
+"""precompact_context.py
 PreCompact hook: Preserves critical context before compaction.
 
 Captures:
@@ -13,15 +12,14 @@ Captures:
 - Recent files modified
 """
 
-import os
+import json
 import subprocess
-from datetime import datetime, timezone
-from pathlib import Path
 import sys
+from datetime import UTC, datetime
+from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-import json
 
 from hook_utils import (
     get_nested,
@@ -155,15 +153,17 @@ IMPORTANT: This context was preserved before compaction. Resume work from this s
 
 
 def output_system_message(message: str) -> None:
-    """
-    Output a system message for PreCompact hook.
+    """Output a system message for PreCompact hook.
 
     PreCompact hooks should use systemMessage at the top level,
     not hookSpecificOutput (which only supports PreToolUse,
     UserPromptSubmit, and PostToolUse).
     """
-    response = {"systemMessage": message}
-    print(json.dumps(response))
+    try:
+        sys.stdout.write(json.dumps({"hookSpecificOutput": {"hookEventName": "PreCompact", "additionalContext": message}}) + "\n")
+        sys.stdout.flush()
+    except OSError as e:
+        log_debug(f"failed to output system message: {e}")
 
 
 @hook_main("PreCompact")
@@ -176,18 +176,19 @@ def main() -> None:
         log_debug("no valid input data")
         return output_empty()
 
-    cwd = get_nested(data, "cwd", default=os.getcwd())
+    cwd = get_nested(data, "cwd", default=Path.cwd())
 
     mode = detect_mode(data)
     git_state = get_git_state(cwd)
     recent_files = get_recent_files(cwd)
     todos = get_nested(data, "todos", default=[])
 
-    timestamp = datetime.now(timezone.utc).isoformat()
+    timestamp = datetime.now(UTC).isoformat()
 
     context = format_context(mode, git_state, recent_files, todos, timestamp)
     log_debug(f"preserving context: mode={mode}, branch={git_state.get('branch')}")
     output_system_message(context)
+    return None
 
 
 if __name__ == "__main__":

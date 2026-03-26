@@ -1,5 +1,5 @@
 {
-  "preset": "openai",
+  "preset": "antigravity",
   "presets": {
     "antigravity": {
       "orchestrator": {
@@ -65,31 +65,31 @@
     },
     "zen-free": {
       "orchestrator": {
-        "model": "opencode/glm-4.7-free",
+        "model": "zai-coding-plan/glm-4.7",
         "skills": ["*"]
       },
       "oracle": {
-        "model": "opencode/glm-4.7-free",
+        "model": "zai-coding-plan/glm-4.7",
         "variant": "high",
         "skills": ["*"]
       },
       "librarian": {
-        "model": "opencode/grok-code",
+        "model": "zai-coding-plan/glm-4.5-air",
         "variant": "low",
         "skills": ["*"]
       },
       "explorer": {
-        "model": "opencode/grok-code",
+        "model": "zai-coding-plan/glm-4.5-air",
         "variant": "low",
         "skills": ["*"]
       },
       "designer": {
-        "model": "opencode/grok-code",
+        "model": "zai-coding-plan/glm-4.5-air",
         "variant": "medium",
         "skills": ["*"]
       },
       "fixer": {
-        "model": "opencode/grok-code",
+        "model": "zai-coding-plan/glm-4.5-air",
         "variant": "low",
         "skills": ["*"]
       }

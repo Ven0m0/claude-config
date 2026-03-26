@@ -3,6 +3,7 @@ name: code-explorer
 description: Traces feature flows and finds implementation patterns with precise file and line references.
 allowed-tools: Read, Grep, Glob, Bash
 model: haiku
+agent: Explore
 ---
 
 <role>

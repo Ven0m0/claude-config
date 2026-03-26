@@ -6,6 +6,7 @@
 
 """Post-edit hook to auto-format files after Claude edits."""
 
+import contextlib
 import json
 import subprocess
 import sys
@@ -14,38 +15,32 @@ from pathlib import Path
 
 def format_rust(file_path: str, cwd: str) -> None:
     """Format Rust files with cargo fmt."""
-    try:
+    with contextlib.suppress(FileNotFoundError):
         subprocess.run(
             ["cargo", "fmt", "--", file_path],
             cwd=cwd,
             capture_output=True,
         )
-    except FileNotFoundError:
-        pass
 
 
 def format_python(file_path: str, cwd: str) -> None:
     """Format Python files with ruff."""
-    try:
+    with contextlib.suppress(FileNotFoundError):
         subprocess.run(
             ["uvx", "ruff", "format", file_path],
             cwd=cwd,
             capture_output=True,
         )
-    except FileNotFoundError:
-        pass
 
 
 def format_biome(file_path: str, cwd: str) -> None:
     """Format files with biome."""
-    try:
+    with contextlib.suppress(FileNotFoundError):
         subprocess.run(
             ["npx", "@biomejs/biome", "format", "--write", file_path],
             cwd=cwd,
             capture_output=True,
         )
-    except FileNotFoundError:
-        pass
 
 
 def main() -> None:
@@ -64,7 +59,7 @@ def main() -> None:
     if not file_path:
         return
 
-    cwd = os.environ.get("CLAUDE_PROJECT_DIR", os.getcwd())
+    cwd = os.environ.get("CLAUDE_PROJECT_DIR", Path.cwd())
     path = Path(file_path)
     ext = path.suffix
 

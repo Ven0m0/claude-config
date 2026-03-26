@@ -20,6 +20,7 @@ def find_files_fd(
 
     Returns:
       List of matching file paths, or empty list if fd not available
+
     """
     import shutil
 
@@ -62,6 +63,7 @@ def find_files_walk(
 
     Returns:
       List of matching file paths
+
     """
     files: list[Path] = []
     root_depth = len(root.parts)
@@ -99,6 +101,7 @@ def find_files(
 
     Returns:
       List of matching file paths
+
     """
     files = find_files_fd(root, extensions, max_depth)
     if not files:
@@ -115,10 +118,11 @@ def safe_read(path: Path, encoding: str = "utf-8") -> str | None:
 
     Returns:
       File contents or None on error
+
     """
     try:
         return path.read_text(encoding=encoding)
-    except (FileNotFoundError, PermissionError, UnicodeDecodeError):
+    except FileNotFoundError, PermissionError, UnicodeDecodeError:
         return None
 
 
@@ -132,12 +136,13 @@ def safe_write(path: Path, content: str, encoding: str = "utf-8") -> bool:
 
     Returns:
       True on success, False on error
+
     """
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding=encoding)
         return True
-    except (PermissionError, OSError):
+    except PermissionError, OSError:
         return False
 
 
@@ -149,6 +154,7 @@ def human_size(size_bytes: int) -> str:
 
     Returns:
       Human-readable string (e.g., "1.5 MB")
+
     """
     for unit in ["B", "KB", "MB", "GB", "TB"]:
         if size_bytes < 1024.0:
@@ -165,10 +171,11 @@ def get_file_size(path: Path) -> int:
 
     Returns:
       Size in bytes, or 0 on error
+
     """
     try:
         return path.stat().st_size
-    except (FileNotFoundError, PermissionError):
+    except FileNotFoundError, PermissionError:
         return 0
 
 
@@ -181,10 +188,11 @@ def is_binary(path: Path, sample_size: int = 8192) -> bool:
 
     Returns:
       True if likely binary
+
     """
     try:
         with path.open("rb") as f:
             chunk = f.read(sample_size)
         return b"\x00" in chunk
-    except (FileNotFoundError, PermissionError):
+    except FileNotFoundError, PermissionError:
         return False

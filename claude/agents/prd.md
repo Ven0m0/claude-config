@@ -1,8 +1,10 @@
 ---
 name: prd
 description: Produces structured Product Requirements Documents with testable user stories, acceptance criteria, and implementation sequencing.
-allowed-tools: Read, Edit, Grep, Glob, Bash, TodoWrite
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, TodoWrite, WebSearch, WebFetch, AskUserQuestion, Task, EnterPlanMode
 model: opus
+context: fork
+agent: general-purpose
 ---
 
 <role>

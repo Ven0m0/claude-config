@@ -13,7 +13,7 @@
     "CLAUDE_CODE_SKIP_VERTEX_AUTH": "1",
     "CLAUDE_CODE_DISABLE_TERMINAL_TITLE": "1",
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1",
-    "ENABLE_TOOL_SEARCH": "1",
+    "ENABLE_TOOL_SEARCH": "true",
     "ENABLE_LSP_TOOL": "1",
     "USE_BUILTIN_RIPGREP": "0",
     "CLAUDE_CODE_SHELL": "bash",
@@ -31,7 +31,8 @@
     "MAX_THINKING_TOKENS": "16000",
     "PYTHONUNBUFFERED": "1",
     "PYTHONDONTWRITEBYTECODE": "1",
-    "PYTHONOPTIMIZE": "1"
+    "PYTHONOPTIMIZE": "1",
+    "BUN_OPTIONS": "--bun --prefer-offline --prefer-latest --parallel --silent"
   },
   "includeCoAuthoredBy": false,
   "cleanupPeriodDays": 7,
@@ -43,6 +44,7 @@
   "prefersReducedMotion": true,
   "teammateMode": "auto",
   "model": "opusplan",
+  "allowManagedHooksOnly": false,
   "permissions": {
     "allow": [
       "Bash",
@@ -104,75 +106,165 @@
       "Read(./.env)",
       "Read(./.env.*)",
       "Read(./secrets/**)",
-      "NotebookEdit"
+      "NotebookEdit",
+      "mcp__plugin_playwright_playwright__browser_install",
+      "mcp__plugin_playwright_playwright__browser_navigate"
     ],
     "defaultMode": "acceptEdits"
   },
-  "allowManagedHooksOnly": false,
   "hooks": {
     "SessionStart": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/hooks/gsd-intel-session.js\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-init.sh",
+            "timeout": 120
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "Edit|Write",
+        "matcher": "Edit|MultiEdit|Write",
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '.tool_input.file_path' | xargs bunx --bun --silent prettier -w --bracket-same-line --print-width 120 --tab-width 2 --log-level silent"
+            "command": "bash -c 'if [[ \"$CLAUDE_TOOL_INPUT_FILE_PATH\" == *.sh ]]; then shellcheck \"$CLAUDE_TOOL_INPUT_FILE_PATH\" 2>/dev/null && shfmt -d -i 2 -bn -ci -s \"$CLAUDE_TOOL_INPUT_FILE_PATH\" 2>/dev/null; fi'",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if [[ -n \"$CLAUDE_TOOL_INPUT_FILE_PATH\" ]] && LC_ALL=C git rev-parse --git-dir >/dev/null 2>&1; then git add \"$CLAUDE_TOOL_FILE_PATH\" 2>/dev/null || :; fi'",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | xargs bunx --bun --silent prettier -w --bracket-same-line --print-width 120 --tab-width 2 --log-level silent",
+            "timeout": 30
           }
         ]
       }
   },
-  "statusLine": {
-    "type": "command",
-    "command": "node \"$HOME/.claude/hooks/statusline.js\""
+  "extraKnownMarketplaces": {
+    "knowledge-work-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/knowledge-work-plugins"
+      }
+    },
+    "claude-code-lsps": {
+      "source": {
+        "source": "github",
+        "repo": "Piebald-AI/claude-code-lsps"
+      }
+    },
+    "everything-claude-code": {
+      "source": {
+        "source": "github",
+        "repo": "affaan-m/everything-claude-code"
+      }
+    },
+    "oh-my-claudecode": {
+      "source": {
+        "source": "github",
+        "repo": "Yeachan-Heo/oh-my-claudecode"
+      }
+    },
+    "pdugan20-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "pdugan20/claudelint"
+      }
+    }
   },
   "enabledPlugins": {
-    "context7@claude-plugins-official": true,
-    "mgrep@Mixedbread-Grep": true,
-    "serena@claude-plugins-official": true,
-    "prompt-optimizer@daymade-skills": true,
+    "claudelint@pdugan20-plugins": true,
     "claude-md-management@claude-plugins-official": true,
-    "general-dev@claude-settings": true,
-    "ultralytics-dev@claude-settings": true,
-    "docs-cleaner@daymade-skills": true,
-    "conserve@claude-night-market": true,
-    "github@claude-plugins-official": true,
-    "repomix-unmixer@daymade-skills": true,
-    "repomix-safe-mixer@daymade-skills": true,
-    "claude-code-setup@claude-plugins-official": true,
-    "claude-skills-troubleshooting@daymade-skills": true,
-    "vscode-langservers@claude-code-lsps": true,
-    "vtsls@claude-code-lsps": true,
-    "typescript-lsp@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true,
-    "rust-analyzer@claude-code-lsps": true,
-    "fact-checker@daymade-skills": true,
-    "skill-creator@daymade-skills": true,
-    "thinking-partner@lifegenie-marketplace": true,
-    "block-dotfiles@wombat9000-marketplace": true,
-    "config-wizard@wombat9000-marketplace": true,
-    "dependency-blocker@wombat9000-marketplace": true,
-    "superpowers@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
-    "feature-dev@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
-    "ui-designer@daymade-skills": true,
-    "claude-mem@thedotmack": true,
     "code-simplifier@claude-plugins-official": true,
-    "research-coordinator@lifegenie-marketplace": true,
-    "dev@myclaude": true,
-    "plugin-dev@claude-settings": true,
-    "ultralytics-dev@claude-settings": true,
-    "optimize-claude-md@lifegenie-marketplace": true,
-    "claude-tools@claude-settings": true
+    "commit-commands@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "everything-claude-code@everything-claude-code": true,
+    "feature-dev@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "oh-my-claudecode": true,
+    "playwright@claude-plugins-official": true,
+    "pr-review-toolkit@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "ralph-loop@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "serena@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": false,
+    "superpowers@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "oh-my-claudecode@omc": true
+  },
+  "mcpServers": {
+    "playwright": {
+      "command": "bunx",
+      "args": ["--bun", "@playwright/mcp@latest"]
+    },
+    "github-mcp-server": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp",
+      "tools": ["*"],
+      "headers": {
+        "X-MCP-Toolsets": "default,actions,web_search,code_security,copilot,dependabot,git,secret_protection,security_advisories,stargazers,copilot,github_support_docs_search,labels,gists",
+        "X-MCP-Insiders": "true"
+        "Authorization": "Bearer ${input:github_mcp_pat}"
+      }
+    },
+    "exa": {
+      "type": "http",
+      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa,deep_researcher_start,deep_researcher_check",
+      "tools": ["*"],
+      "headers": {
+        "EXA_API_KEY": "${EXA_API_KEY}"
+      }
+    },
+    "sequential-thinking": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": ["--bun", "@modelcontextprotocol/server-sequential-thinking@latest"],
+      "tools": ["*"]
+    },
+    "ref-tools": {
+      "type": "http",
+      "url": "https://api.ref.tools/mcp",
+      "tools": ["*"]
+    },
+    "ast-grep": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": ["@notprolands/ast-grep-mcp@latest"],
+      "tools": ["*"]
+    },
+    "fast-filesystem": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": ["--bun", "fast-filesystem-mcp@latest"],
+      "tools": ["*"]
+      "env": {
+        "MCP_SILENT_ERRORS": "true"
+      }
+    },
+    "server-github": {
+      "command": "bunx",
+      "args": ["@modelcontextprotocol/server-github"]
+    },
+    "server-memory": {
+      "command": "bunx",
+      "args": ["@modelcontextprotocol/server-memory"]
+    },
+    "context7": {
+      "command": "bunx",
+      "args": ["@context7/mcp-server"]
+    },
+    "server-filesystem": {
+      "command": "bunx",
+      "args": ["@modelcontextprotocol/server-filesystem"]
+    }
   }
 }

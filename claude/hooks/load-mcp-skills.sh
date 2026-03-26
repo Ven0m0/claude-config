@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 # SessionStart hook: Load MCP Skills Registry into context
 # This provides 90%+ context savings compared to native MCP loading
 
@@ -10,8 +11,7 @@ if [[ -z "$PLUGIN_DIR" ]]; then
 fi
 
 # Read stdin (hook receives JSON with session info)
-input=$(cat)
-
+input=$(cat -s 2>/dev/null)
 # First, try to find the project's mcp-skills registry
 # This is where converted skills are stored
 PROJECT_SKILLS_REGISTRY=".claude/skills/mcp-skills/SKILL.md"

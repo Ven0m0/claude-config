@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Validate TOON file structure and syntax.
+"""Validate TOON file structure and syntax.
 
 TOON is a structured text format using schema.org-style properties.
 This validator checks for required markers and structural integrity.
@@ -133,7 +132,7 @@ def validate_file(filepath: Path) -> ValidationResult:
     return validate_toon(content, filepath.name)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Validate TOON file structure and syntax",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -164,15 +163,13 @@ Examples:
 
         if not result.valid:
             all_valid = False
-            print(f"INVALID: {filepath}", file=sys.stderr)
-            for error in result.errors:
-                print(f"  ERROR: {error}", file=sys.stderr)
-            for warning in result.warnings:
-                print(f"  WARNING: {warning}", file=sys.stderr)
+            for _error in result.errors:
+                pass
+            for _warning in result.warnings:
+                pass
         elif not args.quiet:
-            print(f"VALID: {filepath}")
-            for warning in result.warnings:
-                print(f"  WARNING: {warning}")
+            for _warning in result.warnings:
+                pass
 
     sys.exit(0 if all_valid else 1)
 

@@ -121,6 +121,21 @@
       "source": "gemini-delegation",
       "keywords": ["gemini", "delegation", "research", "web-search"],
       "category": "utilities"
+    },
+    {
+      "name": "claude-code-tools",
+      "description": "Rich toolset plugin for Claude Code: tmux bridge, session search, Google Docs/Sheets, and hooks",
+      "version": "0.1.0",
+      "author": {
+        "name": "pchalasani",
+        "url": "https://github.com/pchalasani"
+      },
+      "homepage": "https://github.com/pchalasani/claude-code-tools",
+      "repository": "https://github.com/pchalasani/claude-code-tools",
+      "license": "MIT",
+      "source": "claude-code-tools",
+      "keywords": ["tmux", "session", "google", "hooks", "tools", "productivity"],
+      "category": "productivity"
     }
   ]
 }

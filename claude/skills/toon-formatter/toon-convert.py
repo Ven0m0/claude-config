@@ -1,28 +1,32 @@
 #!/usr/bin/env python3
 """TOON v2.0 Encoder - Spec-compliant JSON to TOON converter
-Implements https://github.com/toon-format/spec
+Implements https://github.com/toon-format/spec.
 """
 
-import json
-import sys
 import argparse
+import json
+import pathlib
+import re
+import sys
 from typing import Any
+
+INVALID_CHARS_RE = re.compile(r'[:"\\\[\]{}\n\r\t]')
 
 
 def needs_quote(v: Any, delim: str) -> bool:
-    """Check if value needs quoting per TOON spec §7"""
+    """Check if value needs quoting per TOON spec §7."""
     if v is None or isinstance(v, (bool, int, float)):
         return False
     s = str(v)
     if not s:
         return True
-    if s in ("true", "false", "null"):
+    if s in {"true", "false", "null"}:
         return True
     if s[0] == " " or s[-1] == " ":
         return True
     if s == "-" or (s.startswith("-") and len(s) > 1):
         return True
-    if any(c in s for c in (":", '"', "\\", "[", "]", "{", "}", "\n", "\r", "\t")):
+    if INVALID_CHARS_RE.search(s):
         return True
     if delim in s:
         return True
@@ -35,9 +39,10 @@ def needs_quote(v: Any, delim: str) -> bool:
 
 
 def esc(s: str) -> str:
-    """Escape string per TOON spec §7 - only 5 valid escapes"""
+    """Escape string per TOON spec §7 - only 5 valid escapes."""
     return (
-        s.replace("\\", "\\\\")
+        s
+        .replace("\\", "\\\\")
         .replace('"', '\\"')
         .replace("\n", "\\n")
         .replace("\r", "\\r")
@@ -46,7 +51,7 @@ def esc(s: str) -> str:
 
 
 def fmt(v: Any, delim: str) -> str:
-    """Format value with proper quoting and type handling"""
+    """Format value with proper quoting and type handling."""
     if v is None:
         return "null"
     if isinstance(v, bool):
@@ -67,7 +72,7 @@ def fmt(v: Any, delim: str) -> str:
 
 
 def uniform(arr: list) -> tuple[bool, list]:
-    """Check if array is tabular (uniform objects with primitive values)"""
+    """Check if array is tabular (uniform objects with primitive values)."""
     if not arr or not all(isinstance(x, dict) for x in arr):
         return False, []
     if any(isinstance(v, (dict, list)) for o in arr for v in o.values()):
@@ -77,7 +82,7 @@ def uniform(arr: list) -> tuple[bool, list]:
 
 
 def arr(a: list, d: int, s: int, delim: str) -> str:
-    """Encode array per TOON spec §9"""
+    """Encode array per TOON spec §9."""
     if not a:
         return "[0]:"
     n = len(a)
@@ -89,8 +94,9 @@ def arr(a: list, d: int, s: int, delim: str) -> str:
     if ok:
         dm = "" if delim == "," else delim
         lines = [f"[{n}{dm}]{{{delim.join(keys)}}}:"]
-        for item in a:
-            lines.append(" " * d + delim.join(fmt(item[k], delim) for k in keys))
+        lines.extend(
+            " " * d + delim.join(fmt(item[k], delim) for k in keys) for item in a
+        )
         return "\n".join(lines)
     # Mixed/list array
     lines = [f"[{n}]:"]
@@ -123,7 +129,7 @@ def arr(a: list, d: int, s: int, delim: str) -> str:
 
 
 def kv(k: Any, v: Any, d: int, s: int, delim: str, pref: str = "") -> list:
-    """Encode key-value pair"""
+    """Encode key-value pair."""
     key = fmt(k, delim)
     out = []
     if isinstance(v, dict):
@@ -142,7 +148,7 @@ def kv(k: Any, v: Any, d: int, s: int, delim: str, pref: str = "") -> list:
 
 
 def obj(o: dict, d: int, s: int, delim: str) -> str:
-    """Encode object per TOON spec §8"""
+    """Encode object per TOON spec §8."""
     if not o:
         return ""
     lines = []
@@ -152,7 +158,7 @@ def obj(o: dict, d: int, s: int, delim: str) -> str:
 
 
 def enc(data: Any, spc: int = 2, delim: str = ",") -> str:
-    """Main encoder - handles all root forms"""
+    """Main encoder - handles all root forms."""
     if isinstance(data, dict):
         return obj(data, 0, spc, delim)
     if isinstance(data, list):
@@ -160,7 +166,7 @@ def enc(data: Any, spc: int = 2, delim: str = ",") -> str:
     return fmt(data, delim)
 
 
-def main():
+def main() -> None:
     p = argparse.ArgumentParser(description="TOON v2.0 Encoder (spec-compliant)")
     p.add_argument("input", nargs="?", help="JSON file (stdin if omitted)")
     p.add_argument("-o", "--output", help="Output file (stdout if omitted)")
@@ -173,13 +179,13 @@ def main():
     a = p.parse_args()
     delim = {"comma": ",", "tab": "\t", "pipe": "|"}[a.delimiter]
     if a.input:
-        with open(a.input) as inp:
+        with pathlib.Path(a.input).open() as inp:
             data = json.load(inp)
     else:
         data = json.load(sys.stdin)
     result = enc(data, a.indent, delim)
     if a.output:
-        with open(a.output, "w") as out:
+        with pathlib.Path(a.output).open("w") as out:
             out.write(result)
             if result and not result.endswith("\n"):
                 out.write("\n")

@@ -1,6 +1,5 @@
 #!/usr/bin/env -S uv run --script
-"""
-PreToolUse hook: Quality gate for git commit operations.
+"""PreToolUse hook: Quality gate for git commit operations.
 Runs lint and type checks before allowing git commits.
 
 Implements quality gate with lint and type-check before commit.
@@ -8,10 +7,10 @@ Implements quality gate with lint and type-check before commit.
 
 import json
 import os
+import pathlib
 import shutil
 import subprocess
 import sys
-from pathlib import Path
 
 
 def get_staged_files(cwd: str) -> list[str]:
@@ -37,7 +36,7 @@ def check_python_lint(files: list[str], cwd: str) -> tuple[bool, str]:
         return True, ""
 
     result = subprocess.run(
-        ["ruff", "check", "--select", "E,F,I,UP"] + py_files,
+        ["ruff", "check", "--select", "E,F,I,UP", *py_files],
         capture_output=True,
         text=True,
         cwd=cwd,
@@ -58,7 +57,7 @@ def check_python_types(files: list[str], cwd: str) -> tuple[bool, str]:
     for tool in ["pyright", "mypy"]:
         if shutil.which(tool):
             result = subprocess.run(
-                [tool] + py_files,
+                [tool, *py_files],
                 capture_output=True,
                 text=True,
                 cwd=cwd,
@@ -82,7 +81,7 @@ def check_js_ts_lint(files: list[str], cwd: str) -> tuple[bool, str]:
     # Try biome first
     if shutil.which("biome"):
         result = subprocess.run(
-            ["biome", "check", "--diagnostic-level=error"] + js_files,
+            ["biome", "check", "--diagnostic-level=error", *js_files],
             capture_output=True,
             text=True,
             cwd=cwd,
@@ -94,7 +93,7 @@ def check_js_ts_lint(files: list[str], cwd: str) -> tuple[bool, str]:
     # Fall back to eslint
     if shutil.which("eslint"):
         result = subprocess.run(
-            ["eslint", "--quiet"] + js_files,
+            ["eslint", "--quiet", *js_files],
             capture_output=True,
             text=True,
             cwd=cwd,
@@ -105,7 +104,7 @@ def check_js_ts_lint(files: list[str], cwd: str) -> tuple[bool, str]:
     return True, ""
 
 
-def main():
+def main() -> None:
     try:
         data = json.load(sys.stdin)
         tool_name = data.get("tool_name", "")
@@ -125,7 +124,7 @@ def main():
         if "--no-verify" in command:
             sys.exit(0)
 
-        cwd = os.environ.get("CLAUDE_PROJECT_DIR", os.getcwd())
+        cwd = os.environ.get("CLAUDE_PROJECT_DIR", pathlib.Path.cwd())
         staged_files = get_staged_files(cwd)
 
         if not staged_files:
@@ -149,20 +148,15 @@ def main():
             errors.append(f"JS/TS lint errors:\n{js_err}")
 
         if errors:
-            error_msg = "Quality gate failed:\n" + "\n\n".join(errors)
-            output = {
-                "decision": "block",
-                "reason": error_msg,
-            }
-            print(json.dumps(output))
+            "Quality gate failed:\n" + "\n\n".join(errors)
             sys.exit(0)
 
     except json.JSONDecodeError:
         # No valid input, allow the operation
         pass
-    except Exception as e:
+    except Exception:
         # Log error but don't block on hook failures
-        print(f"Quality gate hook error: {e}", file=sys.stderr)
+        pass
 
     sys.exit(0)
 

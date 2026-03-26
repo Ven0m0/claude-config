@@ -1,127 +1,242 @@
 #!/usr/bin/env bash
+# shellcheck enable=all shell=bash
+# Consolidated Claude Code setup: marketplaces, MCP servers, tools, git config
+# Merged from: setup.sh, setup-2-todo.sh, claude/setup.sh
 set -euo pipefail
+shopt -s nullglob globstar
 
-# Claude Code Setup Script
-# This script installs plugins and configures Claude Code based on your existing setup
+# --- Constants ---
+CLAUDE_DIR="${HOME}/.claude"
+MARKETPLACE_DIR="${CLAUDE_DIR}/plugins/marketplaces"
+EXTERNAL_SKILLS_DIR="${CLAUDE_DIR}/skills/external"
 
-CLAUDE_DIR="$HOME/.claude"
-SETTINGS_FILE="$CLAUDE_DIR/settings.json"
-CLAUDE_JSON="$HOME/.claude.json"
-MARKETPLACE_DIR="$CLAUDE_DIR/plugins/marketplaces"
+# --- Helpers ---
+has(){ command -v -- "$1" &>/dev/null; }
+msg(){ printf '[+] %s\n' "$@"; }
+log(){ printf '[!] %s\n' "$@" >&2; }
+die(){ printf '[x] %s\n' "$1" >&2; exit "${2:-1}"; }
 
-echo "🚀 Setting up Claude Code..."
+# --- Checks ---
+[[ ${EUID:-$(id -u)} -eq 0 ]] && die "Do not run as root."
 
-# Create .claude directory if it doesn't exist
-mkdir -p "$CLAUDE_DIR"
-mkdir -p "$MARKETPLACE_DIR"
+check_deps(){
+  local missing=()
+  for tool in bun uv git; do
+    has "$tool" || missing+=("$tool")
+  done
+  [[ ${#missing[@]} -eq 0 ]] || die "Missing required tools: ${missing[*]}"
+}
 
-# Install marketplaces using Claude CLI
-echo "📚 Installing Claude Code marketplaces..."
+# --- Marketplaces ---
+setup_marketplaces(){
+  msg "Installing Claude Code marketplaces..."
+  local -a marketplaces=(
+    "anthropics/claude-plugins-official"
+    "daymade/claude-code-skills"
+    "cskiro/claudex"
+    "yamadashy/repomix"
+    "fcakyon/claude-codex-settings"
+    "lifegenieai/lifegenie-claude-marketplace"
+    "athola/claude-night-market"
+    "wombat9000/claude-plugins"
+    "Piebald-AI/claude-code-lsps"
+    "SuperClaude-Org/SuperClaude_Plugin"
+    "elb-pr/claudikins-marketplace"
+    "rand/rlm-claude-code"
+    "cexll/myclaude"
+    "edmundmiller/dotfiles"
+    "zircote/lsp-marketplace"
+    "kadykov/mdminify"
+    "stbenjam/claudelint"
+    "mksglu/context-mode"
+  )
+  for mp in "${marketplaces[@]}"; do
+    claude plugin marketplace add "$mp" 2>/dev/null || log "Already exists or failed: $mp"
+  done
+}
 
-MARKETPLACES=(
-  "anthropics/claude-plugins-official"
-  "daymade/claude-code-skills"
-  "cskiro/claudex"
-  "yamadashy/repomix"
-  "fcakyon/claude-codex-settings"
-  "lifegenieai/lifegenie-claude-marketplace"
-  "athola/claude-night-market"
-  "wombat9000/claude-plugins"
-  "Piebald-AI/claude-code-lsps"
-  "SuperClaude-Org/SuperClaude_Plugin"
-  "elb-pr/claudikins-marketplace"
-  "rand/rlm-claude-code"
-  "cexll/myclaude"
-  "edmundmiller/dotfiles"
-  "zircote/lsp-marketplace"
-)
+# --- MCP Servers ---
+setup_mcp(){
+  msg "Configuring MCP servers..."
+  if ! has claude; then
+    log "claude CLI not found, skipping MCP configuration"
+    return
+  fi
+  claude mcp add --transport http github https://api.githubcopilot.com/mcp/ || :
+}
 
-for marketplace in "${MARKETPLACES[@]}"; do
-  echo "  📥 Adding $marketplace..."
-  claude plugin marketplace add "$marketplace" 2>/dev/null || echo "    ⚠️  Failed to add $marketplace (may already exist)"
-done
-echo "  ✅ Marketplaces installation complete"
-# Install MCP servers using bunx (Node.js) and uvx (Python)
-echo "📦 Installing MCP servers..."
-# Node.js-based MCP servers (using bunx)
-NODE_MCP_SERVERS=(
-  "@modelcontextprotocol/server-sequential-thinking"
-  "@morph-llm/morph-fast-apply"
-  "@just-every/mcp-read-website-fast"
-  "gemini-mcp-tool"
-  "@upstash/context7-mcp"
-)
+# --- Bun Global Packages ---
+setup_bun_globals(){
+  msg "Installing bun global packages..."
+  local -a pkgs=(
+    # Utilities
+    "agnix"
+    "@anthropic-ai/sandbox-runtime"
+    "firecrawl-cli"
+    "agent-browser"
+    "@th0rgal/ralph-wiggum"
+    "vscode-langservers-extracted"
+    "prunize"
+    "@ai-sdk/openai-compatible"
+  )
+  bun i -g --trust "${pkgs[@]}" || log "Some bun packages may have failed"
+}
 
-for server in "${NODE_MCP_SERVERS[@]}"; do
-  echo "  Installing $server (bunx)..."
-  bunx "$server" --version 2>/dev/null || echo "    Note: $server will be installed on first use"
-done
+# --- UV Tools ---
+setup_uv_tools(){
+  msg "Installing uv tools..."
+  [[ -d "${HOME}/.venv" || -d .venv ]] || uv venv --seed
+  for tool in basedpyright; do
+    uv tool install "$tool" --force || log "Failed: $tool"
+  done
+}
 
-# Python-based MCP servers (using uvx)
-echo "  Installing serena (uvx)..."
-uvx --from git+https://github.com/oraios/serena serena --help 2>/dev/null || echo "    Note: serena will be installed on first use"
-echo "  ✅ MCP servers configured"
+# --- Git Config (from claude/setup.sh) ---
+setup_git_config(){
+  msg "Optimizing git configuration..."
+  git config --global index.threads 0
+  git config --global diff.suppressBlankEmpty true
+  git config --global diff.ignoreSubmodules true
+  git config --global diff.algorithm histogram
+  git config --global merge.conflictStyle zdiff3
+  git config --global fetch.parallel 0
+  git config --global pack.threads 0
+  git config --global status.short true
+  git config --global commit.verbose false
+}
 
-# Create/update settings.json
-echo "⚙️  Creating settings.json..."
-# TODO: use config file from this repo
+# --- External Skills ---
+setup_external_skills(){
+  msg "Cloning external skill repositories..."
+  mkdir -p "${EXTERNAL_SKILLS_DIR}"
+  local -A sources=(
+    ["context-eng"]="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering"
+    ["agent-toolkit"]="https://github.com/softaworks/agent-toolkit"
+    ["night-market"]="https://github.com/athola/claude-night-market"
+  )
+  for name in "${!sources[@]}"; do
+    if [[ ! -d "${EXTERNAL_SKILLS_DIR}/$name" ]]; then
+      git clone --depth 1 "${sources[$name]}" "${EXTERNAL_SKILLS_DIR}/$name" || log "Failed clone: $name"
+    else
+      git -C "${EXTERNAL_SKILLS_DIR}/$name" pull --rebase || log "Failed pull: $name"
+    fi
+  done
+}
 
-echo "  ✅ settings.json created"
+# --- Optional: Prunize ---
+setup_prunize(){
+  if [[ -d "${HOME}/tools/prunize" ]]; then
+    msg "Prunize already installed"
+    return
+  fi
+  msg "Installing prunize..."
+  mkdir -p "${HOME}/tools"
+  git clone --depth 1 https://github.com/qirkpetrucci/prunize "${HOME}/tools/prunize" || { log "Prunize clone failed"; return; }
+  if [[ -f "${HOME}/tools/prunize/prunize.py" ]]; then
+    chmod +x "${HOME}/tools/prunize/prunize.py"
+    mkdir -p "${HOME}/.local/bin"
+    ln -sf "${HOME}/tools/prunize/prunize.py" "${HOME}/.local/bin/prunize"
+  fi
+}
 
-# Update .claude.json to add MCP servers
-echo "🔧 Configuring MCP servers in .claude.json..."
-if [ -f "$CLAUDE_JSON" ]; then
-  # Backup existing file
-  cp "$CLAUDE_JSON" "$CLAUDE_JSON.backup"
-  echo "  ✅ Backed up existing .claude.json"
-fi
+# --- Optional: Tweakcc ---
+setup_tweakcc(){
+  msg "Setting up tweakcc..."
+  has uv || wget -qO- https://astral.sh/uv/install.sh | sh
+  mkdir -p "${CLAUDE_DIR}/tweakcc"
+  export TWEAKCC_CONFIG_DIR="${CLAUDE_DIR}/tweakcc" TWEAKCC_CC_INSTALLATION_PATH="/opt/claude-code/bin/claude"
+  sudo bunx tweakcc --apply || log "tweakcc may require manual setup"
+}
 
-# Create/update .claude.json with MCP servers
-# TODO: use config file from this repo
+# --- Optional: Cowork ---
+setup_cowork(){
+  msg "Enabling claude-cowork service..."
+  systemctl --user enable --now claude-cowork || log "cowork unit not found; skipping"
+}
 
-echo "  ✅ MCP servers configured in .claude.json"
+# --- Optional: Cursor ---
+setup_cursor(){
+  msg "Configuring Cursor..."
+  mkdir -p "${HOME}/.cursor"
+  if [[ -f "${HOME}/.cursor/argv.json" ]]; then
+    sed -i 's/"enable-crash-reporter":[[:space:]]*true/"enable-crash-reporter": false/' "${HOME}/.cursor/argv.json"
+  fi
+}
 
-# Plugin installation instructions
-echo "📝 Enabled plugins in your config:"
-echo "  • Official: context7, serena, github, superpowers, frontend-design, feature-dev"
-echo "  • Daymade Skills: prompt-optimizer, claude-md-progressive-disclosurer, docs-cleaner, fact-checker"
-echo "  • Claude Settings: general-dev, ultralytics-dev, plugin-dev"
-echo "  • LSPs: vscode-langservers, rust-analyzer, bash-language-server, yaml-language-server"
-echo "  • Repomix: repomix-explorer, repomix-mcp"
-echo "  • Others: claude-code-tools@claudex, conserve@claude-night-market, thinking-partner, block-dotfiles, config-wizard, dependency-blocker"
-echo ""
+# --- Optional: VS Code Extensions ---
+setup_vscode(){
+  if ! has code; then
+    log "VS Code not found, skipping extensions"
+    return
+  fi
+  msg "Installing VS Code extensions..."
+  code --install-extension NicholasPiesco.toonify --force || log "Failed: toonify extension"
+}
 
-echo "✨ Setup complete!"
-echo ""
-echo "⚠️  Important notes:"
-echo "  • GitHub token was NOT included (add manually if needed)"
-echo "  • Hooks were not copied (create ~/.claude/hooks/ if you had custom hooks)"
-echo "  • Language servers need to be installed separately (rust-analyzer, bash-language-server, yaml-language-server)"
-echo "  • Node.js MCP servers use bunx (not npx) for faster execution"
-echo "  • Python MCP servers use uvx (not pipx) - make sure 'uv' is installed"
-echo "  • MCP servers will be downloaded on first use"
-echo ""
-echo "🔄 Restart Claude Code to apply changes"
+# --- Help ---
+show_help(){
+  cat <<'HELP'
+Usage: ./setup.sh [OPTIONS]
 
+Core (always runs):
+  Marketplaces, MCP servers, bun globals, uv tools, git config, external skills
 
-echo "Setup cursor"
+Options:
+  --with-prunize     Install prunize (token pruning)
+  --with-tweakcc     Apply tweakcc optimizations (requires sudo)
+  --with-cowork      Enable claude-cowork systemd user service
+  --with-cursor      Configure Cursor editor
+  --with-vscode      Install VS Code extensions
+  --skip-git-config  Skip global git configuration
+  --skip-mcp         Skip MCP server configuration
+  --dry-run          Preview actions without executing
+  --help             Show this message
+HELP
+}
 
-if [[ -d ~/.cursor ]]; then
-  [[ -f ~/.cursor/argv.json ]] && sed -i 's/"enable-crash-reporter":[[:space:]]*true/"enable-crash-reporter": false/' ~/.cursor/argv.jsona
-else
-  mkdir -p ~/.cursor
-fi
+# --- Main ---
+main(){
+  local dry_run=0 with_prunize=0 with_tweakcc=0 with_cowork=0 with_cursor=0 with_vscode=0
+  local skip_git=0 skip_mcp=0
 
-# Bun
-bun install -g --trust pm2 @github/copilot @ai-sdk/openai-compatible @blowmage/cursor-agent-acp @openchamber/web @th0rgal/ralph-wiggum @toon-format/cli \
-  fish-lsp openclaw zon-format @zed-industries/claude-code-acp fast-filesystem-mcp code-mode-toon happy-coder @twsxtd/hapi
-
-# UV
-source ~/.venv/bin/activate
-uv pip install -U --compile-bytecode zon-format superclaude mdminify mcp gemini-bridge claudelint
-uv tool install basedpyright
-# Pacman & Paru
-paru -S docker-language-server vtsls basedpyright
-
-# Copilot
-copilot plugin install context-engineering@awesome-copilot
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --dry-run)        dry_run=1 ;;
+      --with-prunize)   with_prunize=1 ;;
+      --with-tweakcc)   with_tweakcc=1 ;;
+      --with-cowork)    with_cowork=1 ;;
+      --with-cursor)    with_cursor=1 ;;
+      --with-vscode)    with_vscode=1 ;;
+      --skip-git-config) skip_git=1 ;;
+      --skip-mcp)       skip_mcp=1 ;;
+      --help)           show_help; exit 0 ;;
+      *)                log "Unknown option: $1"; show_help; exit 1 ;;
+    esac
+    shift
+  done
+  if [[ $dry_run -eq 1 ]]; then
+    msg "DRY-RUN: would run setup_marketplaces, setup_mcp, setup_bun_globals,"
+    msg "  setup_uv_tools, setup_git_config, setup_external_skills"
+    [[ $with_prunize -eq 1 ]] && msg "  + setup_prunize"
+    [[ $with_tweakcc -eq 1 ]] && msg "  + setup_tweakcc"
+    [[ $with_cursor -eq 1 ]]  && msg "  + setup_cursor"
+    [[ $with_vscode -eq 1 ]]  && msg "  + setup_vscode"
+    return
+  fi
+  check_deps
+  mkdir -p "${CLAUDE_DIR}" "${MARKETPLACE_DIR}"
+  setup_marketplaces
+  [[ $skip_mcp -eq 0 ]]  && setup_mcp
+  setup_bun_globals
+  setup_uv_tools
+  [[ $skip_git -eq 0 ]]  && setup_git_config
+  setup_external_skills
+  [[ $with_prunize -eq 1 ]] && setup_prunize
+  [[ $with_tweakcc -eq 1 ]] && setup_tweakcc
+  [[ $with_cowork -eq 1 ]]  && setup_cowork
+  [[ $with_cursor -eq 1 ]]  && setup_cursor
+  [[ $with_vscode -eq 1 ]]  && setup_vscode
+  claude plugin marketplace update 2>/dev/null || :
+  msg "Setup complete. Restart Claude Code to apply changes."
+}
+main "$@"

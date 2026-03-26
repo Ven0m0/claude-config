@@ -55,7 +55,7 @@ uv run python -m build
 
 ## References
 
-- `references/reference.md`
-- `references/examples.md`
-- `references/patterns.md`
-- `references/stdlib_perf.md`
+- [references/reference.md](./references/reference.md)
+- [references/examples.md](./references/examples.md)
+- [references/patterns.md](./references/patterns.md)
+- [references/stdlib_perf.md](./references/stdlib_perf.md)

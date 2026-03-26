@@ -2,12 +2,9 @@
   "mcpServers": {
     "github-mcp-server": {
       "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/insiders",
+      "url": "https://api.githubcopilot.com/mcp/x/all/insiders",
       "tools": ["*"],
-      "headers": {
-        "X-MCP-Toolsets": "repos,issues,users,pull_requests,actions,web_search"
-        "Authorization": "Bearer ${GITHUB_TOKEN}"
-      }
+      "headers": { "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}" }
     },
     "sequential-thinking": {
       "type": "stdio",
@@ -15,48 +12,35 @@
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
       "tools": ["*"]
     },
-    "coding-thinker": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "mcp-coding-thinker"],
-      "tools": ["*"]
-    },
     "exa": {
       "type": "http",
       "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
       "tools": ["*"],
-      "headers": {
-        "EXA_API_KEY": "${EXA_API_KEY}"
-      }
+      "headers": {"EXA_API_KEY": "${EXA_API_KEY}"}
     },
-    "context7": {
+    "ref-tools": {
       "type": "http",
-      "url": "https://mcp.context7.com/mcp",
+      "url": "https://api.ref.tools/mcp",
       "tools": ["*"],
-      "headers": {
-        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
-      }
+      "headers": { "x-ref-api-key": "${REF_API_KEY" }
     },
-    "grepika": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@agentika/grepika", "--mcp"],
+    "grep-app": {
+      "type": "http",
+      "url": "https://mcp.grep.app",
       "tools": ["*"]
     },
-    "ast-grep": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@notprolands/ast-grep-mcp"],
-      "tools": ["*"]
+    "serena": {
+      "type": "local",
+      "tools": ["*"],
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--project-from-cwd"]
     },
-    "octocode": {
-      "type": "stdio",
+    "morph-mcp": {
+      "type": "local",
+      "tools": ["*"],
       "command": "npx",
-      "args": ["-y", "octocode-mcp@latest"],
-      "tools": ["*"]
-      "env": {
-        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
-      }
+      "args": ["-y", "@morphllm/morphmcp"],
+      "env": { "MORPH_API_KEY": "${MORPH_API_KEY}" }
     }
   }
 }

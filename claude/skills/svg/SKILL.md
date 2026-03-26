@@ -1,5 +1,5 @@
 ---
-name: moai-tool-svg
+name: svg
 description: >
   SVG creation, optimization, and transformation specialist. Use when creating vector
   graphics, optimizing SVG files with SVGO, implementing icon systems, building data

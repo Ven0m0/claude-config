@@ -57,9 +57,10 @@
         },
         "context": {
             "discoveryMaxDirs": 100,
+            "includeDirectories": ["~/.gemini/extensions/ralph"]
             "fileName": [
                 "AGENTS.md",
-                "CONTEXT.md",
+                "CLAUDE.md",
                 "GEMINI.md"
             ]
         },
@@ -77,7 +78,8 @@
             }
         },
         "hooksConfig": {
-            "notifications": false
+            "notifications": false,
+            "enabled": true
         },
         "experimental": {
             "plan": true,

@@ -3,8 +3,7 @@
 # requires-python = ">=3.11"
 # dependencies = []
 # ///
-"""
-context_protector.py - Enforce context protection at tool level.
+"""context_protector.py - Enforce context protection at tool level.
 
 PreToolUse hook that blocks large file reads, forcing delegation to librarian.
 This prevents context bloat BEFORE it happens, not after.
@@ -58,14 +57,14 @@ def is_blocking_disabled() -> bool:
 
 
 def get_line_count(file_path: str) -> int | None:
-    """
-    Get line count of a file using wc -l.
+    """Get line count of a file using wc -l.
 
     Args:
         file_path: Path to the file.
 
     Returns:
         Line count, or None if file doesn't exist or can't be read.
+
     """
     try:
         # Check if file exists first
@@ -109,10 +108,6 @@ def get_line_count(file_path: str) -> int | None:
 
 def output_deny(reason: str) -> None:
     """Output denial response for PreToolUse hook."""
-    import json
-
-    response = {"decision": "deny", "reason": reason}
-    print(json.dumps(response))
     sys.exit(0)
 
 

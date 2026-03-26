@@ -213,7 +213,7 @@ rustup component add rust-analyzer
 brew install jdtls
 
 # Manual
-curl -LO http://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz
+curl -LO https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz
 mkdir -p ~/jdtls && tar -xzf jdt-language-server-latest.tar.gz -C ~/jdtls
 ```
 

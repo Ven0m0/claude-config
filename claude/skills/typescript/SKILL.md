@@ -1,5 +1,5 @@
 ---
-name: moai-lang-typescript
+name: typescript
 description: TypeScript specialist for strict typing, React/Next.js patterns, schema validation, and type-safe API workflows. Use when implementing or refactoring TypeScript codebases.
 license: Apache-2.0
 compatibility: Designed for Claude Code

@@ -1,0 +1,10 @@
+{
+  "dependencies": {},
+  "devDependencies": {
+    "claude-code-lint": "^0.3.0"
+  },
+  "scripts": {
+    "lint:claude": "claudelint check-all",
+    "lint:claude:fix": "claudelint format --fix"
+  }
+}

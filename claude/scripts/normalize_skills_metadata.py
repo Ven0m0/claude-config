@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""
-GREEN PHASE: Metadata Normalization Implementation
-Adds missing metadata fields to all skills
+"""GREEN PHASE: Metadata Normalization Implementation
+Adds missing metadata fields to all skills.
 """
 
 from datetime import datetime
@@ -34,8 +33,7 @@ def load_skill_md(skill_path: Path) -> tuple[dict, str]:
         metadata = yaml.safe_load(frontmatter_str) or {}
         body = content[end + 3 :].strip()
         return metadata, body
-    except Exception as e:
-        print(f"Error parsing {skill_path.name}: {e}")
+    except Exception:
         return {}, content
 
 
@@ -57,12 +55,8 @@ def calculate_compliance_score(metadata: dict, description: str) -> int:
         "agent_coverage",
     }
 
-    present_required = sum(
-        1 for field in required_fields if field in metadata and metadata[field]
-    )
-    present_optional = sum(
-        1 for field in optional_fields if field in metadata and metadata[field]
-    )
+    present_required = sum(1 for field in required_fields if metadata.get(field))
+    present_optional = sum(1 for field in optional_fields if metadata.get(field))
 
     # Check description quality
     desc_len = len(description or "")
@@ -107,8 +101,20 @@ def normalize_skill_metadata(skill_path: Path) -> bool:
     if description:
         if len(description) < 100:
             # Try to expand from body if available
-            pass  # Will be handled by developer
-        elif len(description) > 200:
+            paragraphs = [p.strip() for p in body.split("\n\n") if p.strip()]
+            for p in paragraphs:
+                if not p.startswith(("#", "```", "<", "|", ">", "-", "*")):
+                    clean_p = " ".join(p.split())
+                    if len(clean_p) > 20 and clean_p.lower() not in description.lower():
+                        desc_stripped = description.strip()
+                        if desc_stripped and not desc_stripped.endswith((".", "!", "?")):
+                            desc_stripped += "."
+                        description = f"{desc_stripped} {clean_p}".strip()
+                        metadata["description"] = description
+                        modified = True
+                        break
+
+        if len(description) > 200:
             # Truncate gracefully
             if len(description) > 300:
                 metadata["description"] = description[:200].rsplit(" ", 1)[0] + "..."
@@ -116,10 +122,7 @@ def normalize_skill_metadata(skill_path: Path) -> bool:
 
     # Calculate and add compliance score (required)
     compliance_score = calculate_compliance_score(metadata, description)
-    if (
-        "compliance_score" not in metadata
-        or metadata.get("compliance_score") != compliance_score
-    ):
+    if "compliance_score" not in metadata or metadata.get("compliance_score") != compliance_score:
         metadata["compliance_score"] = compliance_score
         modified = True
 
@@ -150,8 +153,7 @@ def normalize_skill_metadata(skill_path: Path) -> bool:
                     frontmatter_lines.append(f"{key}: {metadata[key]}")
                 elif isinstance(metadata[key], list):
                     frontmatter_lines.append(f"{key}:")
-                    for item in metadata[key]:
-                        frontmatter_lines.append(f"  - {item}")
+                    frontmatter_lines.extend(f"  - {item}" for item in metadata[key])
                 elif isinstance(metadata[key], bool):
                     frontmatter_lines.append(f"{key}: {str(metadata[key]).lower()}")
                 else:
@@ -199,10 +201,9 @@ def extract_keywords_from_name(skill_name: str, description: str) -> list:
     return sorted(keywords) if keywords else []
 
 
-def main():
+def main() -> None:
     """Main function."""
     if not SKILLS_DIR.exists():
-        print(f"Error: Skills directory not found: {SKILLS_DIR}")
         return
 
     modified_count = 0
@@ -215,10 +216,7 @@ def main():
         total_count += 1
         if normalize_skill_metadata(skill_dir):
             modified_count += 1
-            print(f"✓ Normalized: {skill_dir.name}")
 
-    print("\nMetadata normalization complete!")
-    print(f"Modified: {modified_count}/{total_count} skills")
 
 
 if __name__ == "__main__":

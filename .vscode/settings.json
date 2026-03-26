@@ -2,6 +2,7 @@
   "editor.defaultFormatter": "biomejs.biome",
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
+  "editor.tabSize": 2,
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit",
     "source.organizeImports.biome": "explicit",
@@ -92,5 +93,7 @@
   "git.ignoreLegacyWarning": true,
   "npm.packageManager": "bun",
   "npm.runSilent": true,
-  "npm.scriptRunner": "bun"
+  "npm.scriptRunner": "bun",
+  "vitest.disableWorkspaceWarning": true
+  "kilocode.useAgentRules": true,
 }

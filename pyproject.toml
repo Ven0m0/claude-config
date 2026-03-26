@@ -2,12 +2,69 @@
 name = "LLM-configs"
 version = "1.0.0"
 description = "highly optimized llm config files."
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
-  "claudelint",
 ]
 
 [dependency-groups]
 dev = [
   "ruff",
+  "claudelint",
 ]
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+  ".bzr",
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".git-rewrite",
+  ".hg",
+  ".ipynb_checkpoints",
+  ".mypy_cache",
+  ".nox",
+  ".pants.d",
+  ".pyenv",
+  ".pytest_cache",
+  ".pytype",
+  ".ruff_cache",
+  ".svn",
+  ".tox",
+  ".venv",
+  ".vscode",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "node_modules",
+  "site-packages",
+  "venv",
+]
+line-length = 88
+indent-width = 4
+target-version = "py314"
+fix-only = true
+force-exclude = true
+
+[tool.ruff.lint]
+preview = true
+explicit-preview-rules = true
+select = ["ALL"]
+ignore = []
+fixable = ["ALL"]
+unfixable = []
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+extend-fixable = ["B"]
+extend-safe-fixes = ["E", "F401"]
+extend-select = ["B", "Q"]
+extend-unsafe-fixes = ["E", "F401"]
+
+[tool.ruff.format]
+preview = true
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
+exclude = ["*.pyi"]

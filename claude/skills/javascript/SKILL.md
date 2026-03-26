@@ -1,5 +1,5 @@
 ---
-name: moai-lang-javascript
+name: javascript
 description: JavaScript specialist for Node.js, Bun, and Deno with modern async patterns, API development, testing, and lint/format workflows. Use when building or refactoring JavaScript applications.
 license: Apache-2.0
 compatibility: Designed for Claude Code

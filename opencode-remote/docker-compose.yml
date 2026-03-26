@@ -1,0 +1,27 @@
+services:
+  openchamber:
+    image: ghcr.io/btriapitsyn/openchamber:latest
+    restart: unless-stopped
+    environment:
+      UI_PASSWORD: "${UI_PASSWORD}"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - ${HOME}/.config/opencode:/home/openchamber/.config/opencode
+      - ./data/openchamber:/home/openchamber/data
+    # Port NOT published to host - only cloudflared and tailscale reach it
+    # Uncomment the next two lines to enable Tailscale access on port 3000:
+    # ports:
+    #   - "127.0.0.1:3000:3000"
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
+    depends_on:
+      openchamber:
+        condition: service_healthy

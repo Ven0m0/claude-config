@@ -1,5 +1,5 @@
 ---
-name: compacting-context-strategically
+name: strategic-compact
 description: |
   Suggests manual /compact at strategic workflow points to preserve context through
   task phases. Use when approaching context limits, completing major milestones,
