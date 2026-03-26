@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@opencode-ai/plugin": "1.2.24",
+    "opencode-rtk-rewrite": "github:itertea/opencode-rtk-rewrite"
+  }
+}
