@@ -22,7 +22,8 @@
     "@spoons-and-mirrors/subtask2@latest",
     "@azumag/opencode-rate-limit-fallback",
     "opencode-plugin-auto-update",
-    "@hueyexe/opencode-ensemble"
+    "@hueyexe/opencode-ensemble",
+    "openfundus@latest"
   ],
   "permission": {
     "*": "allow",
