@@ -6,8 +6,8 @@
   "enableSubagentFallback": true,
   "fallbackModels": [
     { "providerID": "opencode", "modelID": "opencode/minimax-m2.5-free" },
-    { "providerID": "google", "modelID": "gemini-2.5-pro" },
-    { "providerID": "google", "modelID": "gemini-2.5-flash" }
+    { "providerID": "kilo", "modelID": "kilo/kilo-auto/free" },
+    { "providerID": "openrouter", "modelID": "openrouter/openrouter/free" }
   ],
   "retryPolicy": {
     "maxRetries": 3,
