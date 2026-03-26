@@ -7,6 +7,7 @@
     "@franlol/opencode-md-table-formatter@latest",
     "opencode-gemini-auth",
     "opencode-google-antigravity-auth",
+    "opencode-kilo-auth@latest",
     "@gotgenes/opencode-agent-identity"
   ],
   "model": "kilo/kilo-auto/frontier",
