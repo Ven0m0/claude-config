@@ -17,7 +17,8 @@
     "github:JRedeker/opencode-morph-fast-apply",
     "opencode-fastedit",
     "@spoons-and-mirrors/subtask2@latest",
-    "@azumag/opencode-rate-limit-fallback"
+    "@azumag/opencode-rate-limit-fallback",
+    "opencode-plugin-auto-update"
   ],
   "tools": {
     "edit": true,
