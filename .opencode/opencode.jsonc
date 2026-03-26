@@ -6,7 +6,8 @@
     "@bastiangx/opencode-unmoji",
     "@franlol/opencode-md-table-formatter@latest",
     "opencode-gemini-auth",
-    "opencode-google-antigravity-auth"
+    "opencode-google-antigravity-auth",
+    "@gotgenes/opencode-agent-identity"
   ],
   "model": "kilo/kilo-auto/frontier",
   "small_model": "kilo/minimax/minimax-m2.5:free",
