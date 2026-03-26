@@ -2,7 +2,7 @@
   "$schema": "https://opencode.ai/config.json",
   "agent": {
     "build": {
-      "model": "kilo/kilo-auto/frontier",
+      "model": "openrouter/minimax/minimax-m2.7",
       "reasoningEffort": "high",
       "temperature": 0.3,
       "textVerbosity": "low"
@@ -14,31 +14,31 @@
       "textVerbosity": "low"
     },
     "explore": {
-      "model": "kilo/minimax/minimax-m2.5:free",
+      "model": "opencode/minimax-m2.5-free",
       "reasoningEffort": "low",
       "temperature": 0.2,
       "textVerbosity": "low"
     },
     "plan": {
-      "model": "kilo/kilo-auto/frontier",
+      "model": "opencode/glm-5",
       "reasoningEffort": "high",
       "temperature": 0.3,
       "textVerbosity": "low"
     },
     "researcher": {
-      "model": "kilo/kilo-auto/frontier",
+      "model": "opencode/glm-5",
       "reasoningEffort": "high",
       "temperature": 0.4,
       "textVerbosity": "medium"
     },
     "reviewer": {
-      "model": "kilo/z-ai/glm-5",
+      "model": "opencode/glm-5",
       "reasoningEffort": "high",
       "temperature": 0.1,
       "textVerbosity": "medium"
     },
     "scribe": {
-      "model": "kilo/minimax/minimax-m2.5:free",
+      "model": "opencode/minimax-m2.5-free",
       "reasoningEffort": "low",
       "temperature": 1,
       "textVerbosity": "high"
@@ -78,7 +78,7 @@
     },
     "cachebro": {
       "type": "local",
-      "command": ["bunx", "cachebro", "serve"]
+      "command": ["bunx", "--bun", "cachebro", "serve"]
     }
   },
   "model": "openrouter/minimax/minimax-m2.7",
@@ -93,7 +93,7 @@
     "doom_loop": "deny"
   },
   "plugin": [
-    "@nick-vi/opencode-type-inject@1.5.1",
+    "opencode-session-handoff@latest",
     "opencode-anthropic-oauth@0.4.1",
     "opencode-gemini-auth@1.4.9",
     "opencode-kilo-auth@1.1.4",
@@ -112,65 +112,51 @@
   ],
   "lsp": {
     "typescript": {
-      "command": [
-        "typescript-language-server",
-        "--stdio"
-      ],
-      "extensions": [
-        ".js",
-        ".jsx",
-        ".ts",
-        ".tsx",
-        ".mjs",
-        ".cjs",
-        ".mts",
-        ".cts"
-      ],
+      "command": ["vtsls", "--stdio"],
+      "extensions": [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".mts", ".cts"],
       "initialization": {
-        "preferences": {
-          "importModuleSpecifierPreference": "relative"
-        }
+        "preferences": { "importModuleSpecifierPreference": "relative" }
       }
     },
     "pyright": {
-      "command": [
-        "pyright-langserver",
-        "--stdio"
-      ],
-      "extensions": [
-        ".py",
-        ".pyw",
-        ".pyi"
-      ]
+      "command": ["basedpyright-langserver", "--stdio"],
+      "extensions": [".py", ".pyw", ".pyi"]
     },
     "rust": {
-      "command": [
-        "rust-analyzer"
-      ],
-      "extensions": [
-        ".rs"
-      ]
+      "command": ["rust-analyzer"],
+      "extensions": [".rs"]
     },
     "bash": {
-      "command": [
-        "bash-language-server",
-        "start"
-      ],
-      "extensions": [
-        ".sh",
-        ".bash",
-        ".zsh"
-      ]
+      "command": ["bash-language-server", "start"],
+      "extensions": [".sh", ".bash", ".zsh"]
     },
     "yaml-ls": {
-      "command": [
-        "yaml-language-server",
-        "--stdio"
-      ],
-      "extensions": [
-        ".yaml",
-        ".yml"
-      ]
+      "command": ["yaml-language-server", "--stdio"],
+      "extensions": [".yaml", ".yml"]
+    },
+    "markdown-oxide": {
+      "command": ["markdown-oxide"],
+      "extensions": [".md", ".mdx"]
+    },
+    "json-ls": {
+      "command": ["vscode-json-language-server", "--stdio"],
+      "extensions": [".json", ".jsonc"]
+    },
+    "dockerfile-ls": {
+      "command": ["docker-langserver", "--stdio"],
+      "extensions": [".dockerfile"]
+    },
+    "html-ls": {
+      "command": ["vscode-html-language-server", "--stdio"],
+      "extensions": [".html", ".htm"]
+    },
+    "css-ls": {
+      "command": ["vscode-css-language-server", "--stdio"],
+      "extensions": [".css", ".scss", ".less"]
+    },
+    "tombi": {
+      "command": ["tombi", "lsp"],
+      "extensions": [".toml"]
     }
   },
   "disabled_providers": ["openai"],
