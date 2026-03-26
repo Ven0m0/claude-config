@@ -19,6 +19,8 @@ Sourced from [external-integration-triage.md](../docs/external-integration-triag
 
 ---
 
+extract plugin based on changes of this fork: https://github.com/aggreggator/opencode
+
 ## Defer
 
 | Candidate | Notes |
