@@ -3,7 +3,7 @@
   "instructions": [
     "https://raw.githubusercontent.com/JRedeker/opencode-morph-fast-apply/refs/heads/trunk/instructions/morph-tools.md",
     "AGENTS.md"
-  ]
+  ],
   "plugin": [
     "@nick-vi/opencode-type-inject",
     "@tarquinen/opencode-dcp@latest",
