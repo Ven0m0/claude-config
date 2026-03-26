@@ -14,7 +14,8 @@
     "opencode-kilo-auth@latest",
     "@gotgenes/opencode-agent-identity",
     "opencode-ignore",
-    "github:JRedeker/opencode-morph-fast-apply"
+    "github:JRedeker/opencode-morph-fast-apply",
+    "@spoons-and-mirrors/subtask2@latest"
   ],
   "tools": {
     "edit": true,
