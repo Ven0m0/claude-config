@@ -23,16 +23,10 @@
     "opencode-plugin-auto-update",
     "@hueyexe/opencode-ensemble"
   ],
-  "tools": {
-    "edit": true,
-    "write": true,
-    "bash": true,
-    "webfetch": "allow"
-  },
   "permission": {
     "*": "allow",
     "doom_loop": "deny"
-  }
+  },
   "watcher": {
     "ignore": ["node_modules/**", "dist/**", ".git/**"]
   },
