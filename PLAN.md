@@ -26,6 +26,9 @@ Two inline code markers exist in source files: an unfinished `systemctl` cowork 
 
 ## Tasks
 
+[@opencode-remote/PLAN.md](opencode-remote/PLAN.md)
+[@opencode-remote/TODO.md](opencode-remote/TODO.md)
+
 ### T001 · Wire systemctl cowork service behind opt-in flag
 **File:** `setup.sh:230`
 **Severity:** medium · **Category:** feature · **Size:** S
