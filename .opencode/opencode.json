@@ -27,6 +27,10 @@
     "bash": true,
     "webfetch": "allow"
   },
+  "permission": {
+    "*": "allow",
+    "doom_loop": "deny"
+  }
   "watcher": {
     "ignore": ["node_modules/**", "dist/**", ".git/**"]
   },
