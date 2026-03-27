@@ -1,155 +1,158 @@
 /**
- * opencode custom tool — JSON Repair
+ * json_repair — opencode custom tool
  *
  * Place at: .opencode/tools/json_repair.ts  (project)
  *       or: ~/.config/opencode/tools/json_repair.ts  (global)
  *
- * Primary engine  : jsonrepair (npm/josdejong) — runs natively in Bun, zero install friction
- * Fallback engine : json_repair (PyPI/mangiucugna) — activated when JS engine fails
+ * Engine: repair-json-stream (prxtenses) — O(n) single-pass, zero deps, 5.5 KB.
+ * Runs via `bun run` on a temp script; Bun auto-installs the package on first use.
  *
- * Handles: trailing commas, missing/mismatched quotes, single quotes, unescaped chars,
- * markdown code-block wrappers, comments mixed in, incomplete key-value pairs, missing
- * closing brackets/braces, broken boolean/null literals, extra non-JSON text surrounding
- * a valid object, and truncated LLM output.
+ * Modes
+ *   repair      — structural repair only (default)
+ *   extract     — extract first JSON object/array from surrounding prose/markdown
+ *   extract_all — extract every JSON block from the input into a JSON array
+ *   strip       — full LLM output cleanup: thinking blocks, markdown fences, prose, then repair
+ *
+ * Handles: truncated strings/structures, missing/mismatched quotes, single quotes,
+ * unquoted keys, trailing commas, inline comments, fenced code blocks, JSONP wrappers,
+ * Python literals (None/True/False), MongoDB types, string concatenation, NDJSON.
  */
+
 import { tool } from "@opencode-ai/plugin"
 import { writeFileSync, readFileSync, unlinkSync, existsSync } from "fs"
 import { join } from "path"
 import { tmpdir } from "os"
+import { randomBytes } from "crypto"
+
+const MODES = ["repair", "extract", "extract_all", "strip"] as const
+type Mode = (typeof MODES)[number]
 
 export default tool({
   description:
-    "Repair malformed or invalid JSON. Handles trailing commas, missing quotes, " +
-    "single quotes, unescaped characters, markdown code-block wrappers, inline comments, " +
-    "truncated structures, and extraneous surrounding text. " +
-    "Accepts a raw string or a file path. Returns valid, optionally pretty-printed JSON. " +
-    "Uses jsonrepair (JS) as primary engine with json_repair (Python) as automatic fallback.",
+    "Repair malformed or invalid JSON from LLM output or corrupted files. " +
+    "Handles truncated structures, missing/mismatched quotes, single quotes, unquoted keys, " +
+    "trailing commas, inline comments, fenced code blocks, JSONP, Python literals " +
+    "(None/True/False), MongoDB types, NDJSON, and string concatenation. " +
+    "Accepts a raw string or an absolute/project-relative file path. " +
+    "Modes: 'repair' (structural fix), 'extract' (first JSON from prose/markdown), " +
+    "'extract_all' (all JSON blocks as array), 'strip' (full LLM output cleanup + repair).",
+
   args: {
-    json: tool.schema
+    input: tool.schema
       .string()
-      .optional()
-      .describe("Malformed JSON string to repair. Mutually exclusive with `file`."),
-    file: tool.schema
-      .string()
+      .describe("Malformed JSON string or an absolute/project-relative file path to repair."),
+
+    mode: tool.schema
+      .enum(["repair", "extract", "extract_all", "strip"])
       .optional()
       .describe(
-        "Absolute or project-relative path to a JSON file to repair. " +
-          "Mutually exclusive with `json`."
+        "'repair' (default) — structural fix. " +
+        "'extract' — pull first JSON block from surrounding prose/markdown/thinking tags. " +
+        "'extract_all' — return all JSON blocks as a JSON array. " +
+        "'strip' — full LLM wrapper removal (thinking blocks, markdown, prose) then repair."
       ),
+
     pretty: tool.schema
       .boolean()
       .optional()
-      .describe("Pretty-print repaired output with 2-space indent (default: false)."),
-    strict: tool.schema
+      .describe("Pretty-print with 2-space indent. Default: false."),
+
+    verbose: tool.schema
       .boolean()
       .optional()
       .describe(
-        "Strict mode: return an error instead of guessing when the input has " +
-          "structural ambiguities that require heuristic repair (Python engine only, default: false)."
+        "Append a repair log listing every fix applied (action, index, reason). " +
+        "Only applies to 'repair' and 'strip' modes. Default: false."
       ),
   },
 
   async execute(args, context) {
-    const { json, file, pretty = false, strict = false } = args
+    const mode: Mode = (args.mode as Mode) ?? "repair"
+    const pretty = args.pretty ?? false
+    const verbose = args.verbose ?? false
 
-    // ── validation ────────────────────────────────────────────────────────────
-    if (!json && !file) {
-      return "Error: provide either `json` (string) or `file` (path), not neither."
-    }
-    if (json && file) {
-      return "Error: provide either `json` or `file`, not both."
-    }
-
-    // ── resolve input ─────────────────────────────────────────────────────────
+    // ── resolve input: path or raw string ───────────────────────────────────
     let inputText: string
-    let inputPath: string | null = null
+    const looksLikePath =
+      args.input.startsWith("/") ||
+      args.input.startsWith("./") ||
+      args.input.startsWith("../") ||
+      (!args.input.trim().startsWith("{") &&
+        !args.input.trim().startsWith("[") &&
+        !args.input.trim().startsWith('"') &&
+        args.input.length < 512 &&
+        /\.(json|jsonl|ndjson|txt)$/.test(args.input))
 
-    if (file) {
-      const resolved = file.startsWith("/") ? file : join(context.worktree, file)
+    if (looksLikePath) {
+      const resolved = args.input.startsWith("/") ? args.input : join(context.worktree, args.input)
       if (!existsSync(resolved)) return `Error: file not found: ${resolved}`
       inputText = readFileSync(resolved, "utf8")
-      inputPath = resolved
     } else {
-      inputText = json!
+      inputText = args.input
     }
 
-    // ── tmp file helper (used by both engines) ────────────────────────────────
-    const tmp = join(tmpdir(), `opencode_jr_${Date.now()}.json`)
-    let tmpCreated = false
+    // ── write runner script + input to tmp ──────────────────────────────────
+    const id = randomBytes(6).toString("hex")
+    const scriptPath = join(tmpdir(), `jr_runner_${id}.mjs`)
+    const inputPath  = join(tmpdir(), `jr_input_${id}.txt`)
 
-    const ensureTmp = () => {
-      if (!tmpCreated) {
-        writeFileSync(tmp, inputText, "utf8")
-        tmpCreated = true
-      }
-      return tmp
-    }
+    writeFileSync(inputPath, inputText, "utf8")
 
-    const cleanup = () => {
-      if (tmpCreated && existsSync(tmp)) {
-        try { unlinkSync(tmp) } catch { /* ignore */ }
-      }
-    }
+    const formatExpr = pretty
+      ? `JSON.stringify(JSON.parse(out), null, 2)`
+      : `JSON.stringify(JSON.parse(out))`
 
-    // ── format helper ─────────────────────────────────────────────────────────
-    const format = (raw: string): string => {
-      const trimmed = raw.trim()
-      if (!pretty) {
-        // compact — parse + re-serialize strips any whitespace jsonrepair may have added
-        try { return JSON.stringify(JSON.parse(trimmed)) } catch { return trimmed }
-      }
-      try { return JSON.stringify(JSON.parse(trimmed), null, 2) } catch { return trimmed }
-    }
+    // Safe format: if already valid JSON, reformat; otherwise return raw string
+    const fmt = `(() => { try { return ${formatExpr} } catch { return out } })()`
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // PRIMARY ENGINE: jsonrepair (npm — josdejong)
-    // CLI: bunx --yes jsonrepair <file>
-    // bunx auto-installs on first use; subsequent runs are cached by Bun.
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const repairBlock = (outVar = "out") =>
+      verbose
+        ? `const log = []\nconst ${outVar} = repairJson(raw, (action, idx, ctx) => log.push({ action, idx, ctx }))\nconst formatted = ${fmt.replace(/\bout\b/g, outVar)}\nconsole.log(JSON.stringify({ result: formatted, repairs: log }))`
+        : `const ${outVar} = repairJson(raw)\nconst formatted = ${fmt.replace(/\bout\b/g, outVar)}\nconsole.log(formatted)`
+
+    const script = `
+import { readFileSync } from "fs"
+const raw = readFileSync(${JSON.stringify(inputPath)}, "utf8")
+${
+  mode === "repair"
+    ? `import { repairJson } from "repair-json-stream"\n${repairBlock()}`
+
+    : mode === "extract"
+    ? `import { extractJson } from "repair-json-stream/extract"
+const out = extractJson(raw)
+if (!out) { console.error("Error: no JSON found in input"); process.exit(1) }
+const formatted = ${fmt}
+console.log(formatted)`
+
+    : mode === "extract_all"
+    ? `import { extractAllJson } from "repair-json-stream/extract"
+const blocks = extractAllJson(raw)
+if (!blocks.length) { console.error("Error: no JSON blocks found in input"); process.exit(1) }
+const parsed = blocks.map(b => { try { return JSON.parse(b) } catch { return b } })
+console.log(${pretty ? `JSON.stringify(parsed, null, 2)` : `JSON.stringify(parsed)`})`
+
+    : /* strip */
+    `import { stripLlmWrapper } from "repair-json-stream/extract"
+import { repairJson } from "repair-json-stream"
+const stripped = stripLlmWrapper(raw)
+${verbose
+  ? `const log = []\nconst out = repairJson(stripped, (action, idx, ctx) => log.push({ action, idx, ctx }))\nconst formatted = ${fmt}\nconsole.log(JSON.stringify({ result: formatted, repairs: log }))`
+  : `const out = repairJson(stripped)\nconst formatted = ${fmt}\nconsole.log(formatted)`
+}`
+}
+`
+
+    writeFileSync(scriptPath, script, "utf8")
+
     try {
-      const src = inputPath ?? ensureTmp()
-      // jsonrepair CLI writes repaired JSON to stdout
-      const repaired = await Bun.$`bunx --yes jsonrepair ${src}`.text()
-      cleanup()
-      return format(repaired)
-    } catch (jsErr) {
-      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      // FALLBACK ENGINE: json_repair (PyPI — mangiucugna)
-      // Requires: pip install json-repair  (available as `json_repair` CLI or
-      // callable via `python3 -c`).
-      //
-      // We prefer the module invocation so we can pass strict= cleanly without
-      // shell-quoting a multi-statement script.
-      // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      try {
-        const strictFlag = strict ? "True" : "False"
-        const separators = pretty ? "" : ", separators=(',', ':')"
-        const indentArg  = pretty ? ", indent=2" : ""
-
-        // Single-expression python3 -c — reads from stdin to avoid any shell escaping issues
-        const pyScript = [
-          "import json_repair, json, sys",
-          `obj = json_repair.loads(sys.stdin.read(), skip_json_loads=False, strict=${strictFlag})`,
-          `print(json.dumps(obj${indentArg}${separators}))`,
-        ].join("; ")
-
-        const repaired = await Bun.$`python3 -c ${pyScript}`
-          .stdin(Buffer.from(inputText, "utf8"))
-          .text()
-
-        cleanup()
-        return format(repaired)
-      } catch (pyErr) {
-        cleanup()
-        return [
-          "Error: both repair engines failed.",
-          `  JS  (jsonrepair)  : ${jsErr}`,
-          `  Py  (json_repair) : ${pyErr}`,
-          "",
-          "Ensure one of the following is available:",
-          "  • bunx (ships with Bun) — jsonrepair is auto-downloaded",
-          "  • python3 + json_repair: pip install json-repair",
-        ].join("\n")
+      const result = await Bun.$`bun run ${scriptPath}`.text()
+      return result.trim()
+    } catch (err: any) {
+      const stderr = err?.stderr ? String(err.stderr).trim() : String(err)
+      return `Error: ${stderr}`
+    } finally {
+      for (const p of [scriptPath, inputPath]) {
+        try { if (existsSync(p)) unlinkSync(p) } catch { /* ignore */ }
       }
     }
   },
