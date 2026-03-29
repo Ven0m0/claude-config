@@ -12,10 +12,12 @@ kilo/kilo-auto/frontier
 kilo/moonshotai/kimi-k2.5
 kilo/minimax/minimax-m2.5:free
 kilo/z-ai/glm-5
+kilo/x-ai/grok-code-fast-1:optimized:free
+kilo/morph/morph-v3-fast
 ```
 
 opencode:
 ```text
 opencode/minimax-m2.5-free
-
+opencode/glm-5
 ```
