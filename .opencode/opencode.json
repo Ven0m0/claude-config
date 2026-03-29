@@ -13,9 +13,46 @@
   },
   "share": "manual",
   "default_agent": "build",
-  "model": "opencode/minimax-m2.5-free",
-  "small_model": "opencode/minimax-m2.5-free",
+  "model": "kilo-auto/balanced",
+  "small_model": "kilo-auto/free",
   "disabled_providers": ["openai"],
+  "agent": {
+    "build": {
+      "model": "opencode/minimax-m2.5-free",
+      "reasoningEffort": "high",
+      "temperature": 0.2
+    },
+    "coder": {
+      "model": "opencode/minimax-m2.5-free",
+      "reasoningEffort": "medium",
+      "temperature": 0.2
+    },
+    "explore": {
+      "model": "kilo/morph-warp-grep-v2",
+      "reasoningEffort": "low",
+      "temperature": 0.1
+    },
+    "plan": {
+      "model": "kilo/xiaomi/mimo-v2-pro:free",
+      "reasoningEffort": "high",
+      "temperature": 0.3
+    },
+    "researcher": {
+      "model": "kilo/z-ai/glm-5",
+      "reasoningEffort": "high",
+      "temperature": 0.4
+    },
+    "reviewer": {
+      "model": "opencode/minimax-m2.5-free",
+      "reasoningEffort": "high",
+      "temperature": 0.1
+    },
+    "scribe": {
+      "model": "kilo/arcee-ai/trinity-large-preview:free",
+      "reasoningEffort": "low",
+      "temperature": 0.7
+    }
+  },
   "plugin": [
     "openslimedit@1.0.4",
     "opencode-ignore@1.1.0",
