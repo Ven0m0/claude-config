@@ -44,6 +44,8 @@ openrouter/minimax/minimax-m2.7:nitro
 z-ai/glm-5
 openrouter/openrouter/free
 openrouter/openrouter/free:nitro
+openrouter/auto:online
+openrouter/openrouter/auto:exacto:online
 ```
 
 kilo:
