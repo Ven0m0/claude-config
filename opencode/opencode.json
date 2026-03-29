@@ -19,7 +19,7 @@
       "temperature": 0.1
     },
     "plan": {
-      "model": "kilo/xiaomi/mimo-v2-pro:free",
+      "model": "opencode/mimo-v2-pro-free",
       "reasoningEffort": "high",
       "temperature": 0.3
     },
