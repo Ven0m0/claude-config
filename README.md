@@ -155,7 +155,7 @@ The `claude/` directory is a standalone config pack with:
 **32 Skills** (`claude/skills/`):
 
 `ast-grep-search`, `bash-optimizer`, `code-antipatterns-analysis`, `code-execution`,
-`data-formats`, `git-cli-agentic`, `github`, `hooks-configuration`, `javascript`,
+`data-formats`, `github`, `hooks-configuration`, `javascript`,
 `json-repair`, `linter-autofix`, `llm-boost`, `lsp-enable`, `mcp-builder`, `moai`,
 `modern-tool-substitution`, `prd`, `python-project-development`, `ralph-planner`,
 `render-output`, `repomix`, `ruff`, `rust`, `self-reflection`, `sequential-thinking`,

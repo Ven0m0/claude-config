@@ -1,7 +1,7 @@
 ---
 name: repomix
-description: Packages entire repositories into single AI-friendly files using Repomix with multiple output formats. Use when packaging codebases for LLM analysis, creating repository snapshots, or preparing security audits. Triggers include "repomix", "package codebase", "AI-friendly", or "LLM context".
-allowed-tools: Bash, Read, Glob
+description: Packages repositories into AI-friendly bundles with Repomix and can reconstruct files from existing Repomix outputs. Use when packaging codebases for LLM analysis, creating repository snapshots, reversing bundles, or preparing security audits. Triggers include "repomix", "package codebase", "repomix-unmix", "extract-bundle", "AI-friendly", or "LLM context".
+allowed-tools: Bash, Read, Write, Edit, Glob
 user-invocable: true
 ---
 
@@ -15,6 +15,7 @@ Use when:
 
 - Packaging codebases for AI analysis
 - Creating repository snapshots for LLM context
+- Reconstructing files from Repomix XML, Markdown, or JSON bundles
 - Analyzing third-party libraries
 - Preparing for security audits
 - Generating documentation context
@@ -89,6 +90,23 @@ Strip comments from supported languages (HTML, CSS, JavaScript, TypeScript, Vue,
 repomix --remove-comments
 ```
 
+### Bundle Reconstruction
+
+Reverse a Repomix bundle back into files when the user gives you packed XML, Markdown, or JSON output.
+
+Workflow:
+
+1. **Identify the format**: detect whether the bundle is XML, Markdown, or JSON.
+2. **Scan file paths**: locate the paths encoded in the bundle.
+3. **Extract and write**: recreate each file with `Write` or `Edit`.
+4. **Validate structure**: confirm the extracted files match the snippets in the bundle.
+
+Features:
+
+- Handles XML, Markdown, and JSON Repomix outputs
+- Restores full directory hierarchy
+- Verifies extracted content against the bundle
+
 ## Common Use Cases
 
 ### Code Review Preparation
@@ -118,6 +136,15 @@ repomix --include "src/**,docs/**,*.md" --style markdown -o context.md
 # Package specific modules
 repomix --include "src/auth/**,src/api/**" -o debug-context.xml
 ```
+
+### Restore a Packed Repository
+
+When the user provides a Repomix bundle instead of a live repository:
+
+1. Detect the bundle format.
+2. Extract file paths and file contents.
+3. Recreate the original directory tree.
+4. Spot-check key files to verify the output.
 
 ### Implementation Planning
 
