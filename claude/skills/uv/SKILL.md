@@ -242,3 +242,6 @@ virtualenv .venv         → uv venv
 ## Documentation
 
 - https://docs.astral.sh/uv/llms.txt
+- https://docs.astral.sh/uv/
+- https://docs.astral.sh/uv/guides/projects/
+- https://docs.astral.sh/uv/reference/cli/
