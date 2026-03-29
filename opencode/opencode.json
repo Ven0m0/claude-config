@@ -76,7 +76,6 @@
     "doom_loop": "deny"
   },
   "plugin": [
-    "opencode-session-handoff@latest",
     "opencode-anthropic-oauth@0.4.1",
     "opencode-gemini-auth@1.4.9",
     "opencode-kilo-auth@1.1.4",
