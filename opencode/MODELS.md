@@ -1,3 +1,23 @@
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "openrouter": {
+      "models": {
+        "moonshotai/kimi-k2": {
+          "options": {
+            "provider": {
+              "order": ["baseten"],
+              "allow_fallbacks": false
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 openrouter: 
 - https://openrouter.ai/docs/guides/routing/provider-selection
 
