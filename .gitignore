@@ -155,3 +155,5 @@ lib64/
 .playwright-mcp
 .tmp-context-mode/
 theme.config.tsx
+.omc/
+.cachebro/

@@ -4,9 +4,24 @@
     "context7": {
       "type": "streamable-http",
       "url": "https://mcp.context7.com/mcp",
-      "headers": { "Authorization": "Bearer $CONTEXT7_API_KEY" },
-      "alwaysAllow": [],
-      "disabled": false
+      "headers": { "Authorization": "Bearer $CONTEXT7_API_KEY" }
+    },
+    "ref-tools": {
+      "type": "sse",
+      "url": "https://api.ref.tools/mcp"
+    },
+    "gh_grep": {
+      "type": "sse",
+      "url": "https://mcp.grep.app"
+    },
+    "icm": {
+      "type": "stdio",
+      "command": "icm",
+      "args": ["serve"]
+    },
+    "context-mode": {
+      "type": "stdio",
+      "command": "context-mode"
     }
   }
 }

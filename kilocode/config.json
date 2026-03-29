@@ -2,14 +2,28 @@
   "project": {
     "managedIndexingEnabled": true
   },
-  "mcp": {
+  "mcpServers": {
+    "context7": {
+      "type": "streamable-http",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": { "Authorization": "Bearer $CONTEXT7_API_KEY" }
+    },
+    "ref-tools": {
+      "type": "sse",
+      "url": "https://api.ref.tools/mcp"
+    },
+    "gh_grep": {
+      "type": "sse",
+      "url": "https://mcp.grep.app"
+    },
     "icm": {
-      "command": [
-        "/home/ven0m0/.local/share/mise/installs/github-rtk-ai-icm/0.10.0/icm",
-        "serve"
-      ],
-      "enabled": true,
-      "type": "local"
+      "type": "stdio",
+      "command": "icm",
+      "args": ["serve"]
+    },
+    "context-mode": {
+      "type": "stdio",
+      "command": "context-mode"
     }
   }
 }

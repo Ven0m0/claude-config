@@ -14,6 +14,7 @@
   "default_agent": "build",
   "instructions": ["AGENTS.md", "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"],
   "mcpServers": {
+    "context7": { "type": "sse", "url": "https://mcp.context7.com/mcp" },
     "ref-tools": { "type": "sse", "url": "https://api.ref.tools/mcp" },
     "gh_grep": { "type": "sse", "url": "https://mcp.grep.app" },
     "icm": { "type": "stdio", "command": "icm", "args": ["serve"] },
@@ -58,13 +59,13 @@
     "tombi": { "command": "tombi", "args": ["lsp"] }
   },
   "disabled_providers": ["openai"],
-  "watcher": { "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**"] },
+  "watcher": { "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**", ".omc/**", ".kilo/**", ".kilocode/**", ".opencode/**"] },
   "providers": {
     "anthropic": { "apiKey": "{env:ANTHROPIC_API_KEY}", "chunkTimeout": 30000, "setCacheKey": true, "timeout": 600000 }
   },
   "experimental": {
     "continue_loop_on_deny": false,
-    "mcp_timeout": 10000,
+    "mcp_timeout": 30000,
     "openTelemetry": false,
     "batch_tool": true
   }
