@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["AGENTS.md", "https://raw.githubusercontent.com/Ven0m0/claude-config/main/opencode/AGENTS.md"],
+  "instructions": ["AGENTS.md", "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"],
   "permission": {
     "*": "allow",
     "sudo *": "deny",
@@ -27,7 +27,8 @@
     "opencode-pty@0.2.3",
     "openfundus@0.1.6",
     "opencode-toolbox@0.10.4",
-    "@nick-vi/opencode-type-inject@1.1.1"
+    "@nick-vi/opencode-type-inject@1.1.1",
+    "@tarquinen/opencode-dcp@3.1.5"
   ],
   "lsp": {
     "typescript": {
