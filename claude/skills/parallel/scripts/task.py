@@ -8,7 +8,7 @@ Usage:
   python3 task.py --report "Market analysis of HVAC industry"
 
   # Authenticated page access (requires browser-use.com API key)
-  export BROWSERUSE_API_KEY="your-key"
+  export BROWSERUSE_API_KEY="YOUR_API_KEY_HERE"
   python3 task.py "Extract migration docs from https://nxp.com/products/K66_180"
 """
 
@@ -20,10 +20,14 @@ import time
 
 from parallel import Parallel
 
-API_KEY = os.environ.get("PARALLEL_API_KEY")
-if not API_KEY:
-    print("Error: PARALLEL_API_KEY environment variable is required", file=sys.stderr)
-    sys.exit(1)
+
+def get_api_key() -> str:
+    """Return the configured Parallel API key."""
+    api_key = os.environ.get("PARALLEL_API_KEY")
+    if not api_key:
+        print("Error: PARALLEL_API_KEY environment variable is required", file=sys.stderr)
+        sys.exit(1)
+    return api_key
 
 
 def create_task(
@@ -191,7 +195,7 @@ def main():
 
     args = parser.parse_args()
 
-    client = Parallel(api_key=API_KEY)
+    client = Parallel(api_key=get_api_key())
 
     # Determine input and task spec
     input_data = None
@@ -228,7 +232,7 @@ def main():
 
     # Build MCP servers for authenticated browsing
     mcp_servers = None
-    browseruse_key = args.browseruse_key or os.environ.get("BROWSERUSE_API_KEY")
+    browseruse_key = (args.browseruse_key or os.environ.get("BROWSERUSE_API_KEY") or "").strip()
     if browseruse_key:
         mcp_servers = [{
             "type": "url",

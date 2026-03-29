@@ -3,6 +3,8 @@
 
 # Usage: ./restart-gateway.sh [--dry-run]
 
+CLAWDIS_HOME="${CLAWDIS_HOME:-$HOME/clawdis}"
+
 if [ "$1" = "--dry-run" ]; then
   echo "🔍 DRY RUN MODE - Gateway would restart but won't"
   echo "===================================================="
@@ -15,8 +17,8 @@ if [ "$1" = "--dry-run" ]; then
 
   echo ""
   echo "Would start Gateway on port 18789:"
-  echo "  cd /home/srose/clawdis"
-  echo "  pnpm clawdis gateway --port 18790"
+  echo "  cd $CLAWDIS_HOME"
+  echo "  pnpm clawdis gateway --port 18789"
   echo ""
   echo "To actually restart, run without --dry-run"
   exit 0
@@ -44,7 +46,7 @@ echo ""
 
 # Start new gateway
 echo "Starting Gateway on port 18789..."
-cd /home/srose/clawdis || exit
+cd "$CLAWDIS_HOME" || exit
 
 # Start in background
 pnpm clawdis gateway --port 18789 > /dev/null 2>&1 &
@@ -62,18 +64,17 @@ if ps -p $GATEWAY_PID > /dev/null 2>&1; then
 
   # Check if port is listening
   if ss -tuln | grep -q ":18789"; then
-    echo "✅ Port 18790 is listening"
-    echo "   Local:  http://127.0.0.1:18790"
-    echo "   Network: http://192.168.1.163:18790"
-    echo "   Tailscale: http://100.73.174.80:18790"
+    echo "✅ Port 18789 is listening"
+    echo "   Local: http://127.0.0.1:18789"
+    echo "   Network: use this host's IP address with port 18789"
   else
-    echo "⚠️  Port 18790 not yet listening (may still be starting)"
+    echo "⚠️  Port 18789 not yet listening (may still be starting)"
   fi
 else
   echo "❌ Failed to start Gateway"
   echo ""
   echo "Check logs:"
-  echo "  cd /home/srose/clawdis && pnpm clawdis gateway --port 18789"
+  echo "  cd $CLAWDIS_HOME && pnpm clawdis gateway --port 18789"
   exit 1
 fi
 

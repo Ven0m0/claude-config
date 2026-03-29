@@ -4,7 +4,11 @@
 
 set -e
 
-API_KEY="${PARALLEL_API_KEY:?Error: PARALLEL_API_KEY environment variable is required}"
+API_KEY="${PARALLEL_API_KEY:-}"
+if [ -z "$API_KEY" ]; then
+  echo "Error: PARALLEL_API_KEY environment variable is required" >&2
+  exit 1
+fi
 BASE_URL="https://api.parallel.ai/v1"
 MAX_WAIT="${PARALLEL_MAX_WAIT:-120}"
 
