@@ -1,5 +1,4 @@
 // json_repair — opencode custom tool
-// .opencode/tools/json_repair.ts | ~/.config/opencode/tools/json_repair.ts
 
 import { tool } from "@opencode-ai/plugin"
 import { writeFileSync, readFileSync, unlinkSync, existsSync } from "fs"
@@ -85,12 +84,10 @@ export default tool({
       return `Error: ${e.message}`
     }
 
-    const parallel = texts.length > 1
-
     // ── build runner script ──────────────────────────────────────────────────
     const id         = randomBytes(6).toString("hex")
     const scriptPath = join(tmpdir(), `jr_runner_${id}.mjs`)
-    const inputPath  = join(tmpdir(), `jr_input_${id}.json`)   // serialized string[]
+    const inputPath  = join(tmpdir(), `jr_input_${id}.json`)
 
     writeFileSync(inputPath, JSON.stringify(texts), "utf8")
 
@@ -98,7 +95,6 @@ export default tool({
       ? `(s) => { try { return JSON.stringify(JSON.parse(s), null, 2) } catch { return s } }`
       : `(s) => { try { return JSON.stringify(JSON.parse(s)) } catch { return s } }`
 
-    // Core streaming repair for one text using IncrementalJsonRepair
     const repairFn = verbose
       ? `
 function streamRepair(text) {
@@ -169,7 +165,6 @@ if (results.length === 1) {
     process.stderr.write("Error: " + r.error + "\\n")
     process.exit(1)
   }
-  // verbose returns object, print as-is; otherwise print string
   console.log(typeof r === "string" ? r : JSON.stringify(r, null, 2))
 } else {
   console.log(${pretty ? "JSON.stringify(results, null, 2)" : "JSON.stringify(results)"})
