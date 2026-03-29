@@ -22,7 +22,6 @@
   "plugin": [
     "openslimedit@1.0.4",
     "opencode-ignore@1.1.0",
-    "opencode-kilo-auth@1.1.4",
     "@gotgenes/opencode-agent-identity@3.0.1",
     "@spoons-and-mirrors/subtask2@0.3.5",
     "opencode-pty@0.2.3",
@@ -93,5 +92,10 @@
       "type": "remote",
       "url": "https://mcp.grep.app"
     }
+  },
+  "experimental": {
+    "continue_loop_on_deny": false,
+    "mcp_timeout": 10000,
+    "openTelemetry": false
   }
 }
