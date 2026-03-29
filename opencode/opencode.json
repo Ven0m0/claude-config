@@ -77,9 +77,6 @@
       "command": ["bunx", "--bun", "cachebro", "serve"]
     }
   },
-  "autoBash": true,
-  "autoEdit": true,
-  "autoRead": true,
   "share": "manual",
   "permission": {
     "*": "allow",
@@ -107,7 +104,8 @@
     "context-mode@latest",
     "opencode-cachebro@latest",
     "opencode-snip@latest",
-    "opencode-toolbox@0.10.4"
+    "opencode-toolbox@0.10.4",
+    "micode"
   ],
   "lsp": {
     "typescript": {
