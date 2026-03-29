@@ -1,6 +1,9 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["AGENTS.md", "https://raw.githubusercontent.com/Ven0m0/claude-config/main/opencode/AGENTS.md"],
+  "instructions": [
+    "AGENTS.md", "https://raw.githubusercontent.com/Ven0m0/claude-config/main/opencode/AGENTS.md",
+    "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"
+  ],
   "permission": {
     "*": "allow",
     "sudo *": "deny",
