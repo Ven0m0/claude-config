@@ -33,9 +33,10 @@ High-accuracy web search API built for AI agents. Outperforms Perplexity/Exa on 
 
 ```bash
 pip install parallel-web
+export PARALLEL_API_KEY="your-key-here"
 ```
 
-API key is configured. Uses Python SDK.
+Set `PARALLEL_API_KEY` before running the scripts. Uses the Python SDK.
 
 ```python
 from parallel import Parallel

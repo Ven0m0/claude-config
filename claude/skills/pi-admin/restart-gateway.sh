@@ -7,12 +7,12 @@ if [ "$1" = "--dry-run" ]; then
   echo "🔍 DRY RUN MODE - Gateway would restart but won't"
   echo "===================================================="
   echo ""
-  
+
   echo "Would stop these processes:"
   pgrep -f "clawdis gateway" 2>/dev/null | while read pid; do
     echo "  PID $pid: $(ps -p $pid -o command=)"
   done
-  
+
   echo ""
   echo "Would start Gateway on port 18789:"
   echo "  cd /home/srose/clawdis"
@@ -44,7 +44,7 @@ echo ""
 
 # Start new gateway
 echo "Starting Gateway on port 18789..."
-cd /home/srose/clawdis
+cd /home/srose/clawdis || exit
 
 # Start in background
 pnpm clawdis gateway --port 18789 > /dev/null 2>&1 &

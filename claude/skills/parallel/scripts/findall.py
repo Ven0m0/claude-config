@@ -46,10 +46,10 @@ def create_findall(
         "generator": generator,
         "match_limit": match_limit,
     }
-    
+
     if enrichments:
         params["enrichments"] = enrichments
-    
+
     result = client.beta.findall.create(**params)
     return result.findall_id
 
@@ -60,19 +60,19 @@ def poll_findall(client: Parallel, findall_id: str, timeout: int = 600) -> dict:
     while time.time() - start < timeout:
         result = client.beta.findall.retrieve(findall_id)
         status = result.status.status if hasattr(result.status, 'status') else result.status
-        
+
         if status == "completed":
             return result
         elif status == "failed":
             raise Exception(f"FindAll failed: {result}")
-        
+
         # Show progress
         if hasattr(result.status, 'metrics'):
             m = result.status.metrics
             gen = getattr(m, 'generated_candidates_count', 0)
             matched = getattr(m, 'matched_candidates_count', 0)
             print(f"⏳ Progress: {matched} matched / {gen} generated", file=sys.stderr)
-        
+
         time.sleep(5)
     raise TimeoutError(f"FindAll {findall_id} did not complete within {timeout}s")
 
@@ -80,39 +80,39 @@ def poll_findall(client: Parallel, findall_id: str, timeout: int = 600) -> dict:
 def format_result(result) -> str:
     """Format FindAll result for display."""
     output = []
-    
+
     findall_id = result.findall_id
     status = result.status.status if hasattr(result.status, 'status') else result.status
     metrics = result.status.metrics if hasattr(result.status, 'metrics') else None
-    
+
     output.append(f"🔍 FindAll: {findall_id}")
     output.append(f"   Status: {status}")
-    
+
     if metrics:
         gen = getattr(metrics, 'generated_candidates_count', 0)
         matched = getattr(metrics, 'matched_candidates_count', 0)
         output.append(f"   Candidates: {matched} matched / {gen} generated")
     output.append("")
-    
+
     if hasattr(result, 'candidates') and result.candidates:
         output.append("**Matched Entities:**")
         for i, candidate in enumerate(result.candidates, 1):
             name = getattr(candidate, 'name', 'Unknown')
             url = getattr(candidate, 'url', '')
             desc = getattr(candidate, 'description', '')[:150]
-            
+
             output.append(f"\n**{i}. {name}**")
             if url:
                 output.append(f"   URL: {url}")
             if desc:
                 output.append(f"   {desc}")
-            
+
             # Show enrichments if present
             if hasattr(candidate, 'enrichments') and candidate.enrichments:
                 for key, val in candidate.enrichments.items():
                     val_str = str(val)[:100]
                     output.append(f"   • {key}: {val_str}")
-    
+
     return "\n".join(output)
 
 
@@ -134,11 +134,11 @@ def main():
                        help="Output raw JSON")
     parser.add_argument("--no-wait", action="store_true",
                        help="Don't wait for completion, just return findall_id")
-    
+
     args = parser.parse_args()
-    
+
     client = Parallel(api_key=API_KEY)
-    
+
     # Check status of existing job
     if args.status:
         result = client.beta.findall.retrieve(args.status)
@@ -147,27 +147,27 @@ def main():
         else:
             print(format_result(result))
         return
-    
+
     if not args.query:
         parser.print_help()
         sys.exit(1)
-    
+
     query = " ".join(args.query)
-    
+
     try:
         # Step 1: Ingest - convert natural language to schema
         print(f"📝 Analyzing query...", file=sys.stderr)
         schema = ingest_query(client, query)
-        
+
         entity_type = schema.entity_type
         match_conditions = [
             {"name": c.name, "description": c.description}
             for c in schema.match_conditions
         ]
-        
+
         print(f"   Entity type: {entity_type}", file=sys.stderr)
         print(f"   Match conditions: {len(match_conditions)}", file=sys.stderr)
-        
+
         # Parse enrichments
         enrichments = None
         if args.enrich:
@@ -175,7 +175,7 @@ def main():
                 {"name": f.strip(), "description": f"The {f.strip().replace('_', ' ')}"}
                 for f in args.enrich.split(",")
             ]
-        
+
         # Step 2: Create FindAll run
         print(f"🚀 Starting FindAll...", file=sys.stderr)
         findall_id = create_findall(
@@ -187,14 +187,14 @@ def main():
             match_limit=args.limit,
             enrichments=enrichments,
         )
-        
+
         if args.no_wait:
             print(f"FindAll created: {findall_id}")
             return
-        
+
         # Step 3: Poll for completion
         result = poll_findall(client, findall_id, timeout=args.timeout)
-        
+
         if args.json:
             output = {
                 "findall_id": result.findall_id,
@@ -212,7 +212,7 @@ def main():
             print(json.dumps(output, indent=2, default=str))
         else:
             print(format_result(result))
-            
+
     except Exception as e:
         print(f"❌ Error: {e}", file=sys.stderr)
         sys.exit(1)

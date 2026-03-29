@@ -6,7 +6,7 @@ def handle(input_text: str, user_id: str = "default") -> dict:
     url_match = re.search(r'https?://[^\s]+\.(jpg|jpeg|png|webp|gif)', input_text, re.I)
     if not url_match:
         return {"error": "Please provide an image URL", "usage": "Compress image at [URL]"}
-    return {"original_url": url_match.group(0), "status": "Image compression requested", 
+    return {"original_url": url_match.group(0), "status": "Image compression requested",
             "demo": "Integrate with TinyPNG API for actual compression", "payment_status": "paid"}
 
 if __name__ == "__main__":

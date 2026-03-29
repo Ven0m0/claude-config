@@ -58,12 +58,12 @@ case $OUTPUT in
         echo ""
         printf "%-36s | %-25s | %-10s | %s\n" "TUNNEL ID" "NAME" "STATUS" "CREATED"
         printf "%s\n" "--------------------------------------|---------------------------|------------|------------"
-        
+
         echo "$RESPONSE" | jq -r '.result[] | [.id, .name, .status, (.created_at | split("T")[0])] | @tsv' | \
         while IFS=$'\t' read -r id name status created; do
             printf "%-36s | %-25s | %-10s | %s\n" "$id" "$name" "$status" "$created"
         done
-        
+
         COUNT=$(echo "$RESPONSE" | jq '.result | length')
         echo ""
         echo "Total: $COUNT tunnel(s)"

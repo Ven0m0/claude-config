@@ -11,11 +11,18 @@ import argparse
 
 from parallel import Parallel
 
-API_KEY = os.environ.get("PARALLEL_API_KEY", "y2s_m4er5i6-5qCikOLUtmnkvOYRU24eDphq_jg1")
+
+def get_api_key() -> str:
+    """Return the configured Parallel API key."""
+    api_key = os.environ.get("PARALLEL_API_KEY")
+    if not api_key:
+        msg = "PARALLEL_API_KEY must be set"
+        raise RuntimeError(msg)
+    return api_key
 
 def search(objective: str, max_results: int = 10, mode: str = "one-shot"):
     """Search using Parallel SDK."""
-    client = Parallel(api_key=API_KEY)
+    client = Parallel(api_key=get_api_key())
     return client.beta.search(
         mode=mode,
         max_results=max_results,
@@ -26,25 +33,25 @@ def format_results(response) -> str:
     """Format search results for display."""
     output = []
     output.append(f"🔍 Search ID: {response.search_id}\n")
-    
+
     for i, result in enumerate(response.results, 1):
         title = result.title or "No title"
         url = result.url
         excerpts = result.excerpts or []
         date = f" ({result.publish_date})" if result.publish_date else ""
-        
+
         output.append(f"**{i}. [{title}]({url})**{date}")
-        
+
         if excerpts:
             # Clean and truncate excerpt
             excerpt = excerpts[0].replace("\n", " ").strip()[:400]
             output.append(f"   {excerpt}...")
         output.append("")
-    
+
     if response.usage:
         usage = ", ".join(f"{u.name}: {u.count}" for u in response.usage)
         output.append(f"📊 Usage: {usage}")
-    
+
     return "\n".join(output)
 
 def main():
@@ -53,16 +60,16 @@ def main():
     parser.add_argument("--max-results", "-n", type=int, default=10)
     parser.add_argument("--mode", "-m", default="one-shot", choices=["one-shot", "agentic", "fast"])
     parser.add_argument("--json", "-j", action="store_true", help="Output raw JSON")
-    
+
     args = parser.parse_args()
-    
+
     if not args.query:
         parser.print_help()
         sys.exit(1)
-    
+
     query = " ".join(args.query)
     response = search(query, max_results=args.max_results, mode=args.mode)
-    
+
     if args.json:
         # Convert to dict for JSON output
         print(json.dumps({

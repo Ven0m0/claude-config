@@ -6,7 +6,7 @@ Usage:
   python3 task.py "What was France's GDP in 2023?"
   python3 task.py --enrich "company_name=Stripe" --output "founding_year,funding"
   python3 task.py --report "Market analysis of HVAC industry"
-  
+
   # Authenticated page access (requires browser-use.com API key)
   export BROWSERUSE_API_KEY="your-key"
   python3 task.py "Extract migration docs from https://nxp.com/products/K66_180"
@@ -40,10 +40,10 @@ def create_task(
         "input": input_data,
         "processor": processor,
     }
-    
+
     if task_spec:
         params["task_spec"] = task_spec
-    
+
     # Source policy
     if include_domains or exclude_domains:
         source_policy = {}
@@ -52,12 +52,12 @@ def create_task(
         if exclude_domains:
             source_policy["exclude_domains"] = exclude_domains
         params["source_policy"] = source_policy
-    
+
     # MCP servers for authenticated browsing (Jan 2026 feature)
     if mcp_servers:
         params["mcp_servers"] = mcp_servers
         params["betas"] = ["mcp-server-2025-07-17"]
-    
+
     # Create task run
     task_run = client.beta.task_run.create(**params)
     return task_run
@@ -86,7 +86,7 @@ def build_enrichment_spec(input_fields: str, output_fields: str) -> tuple:
             key, val = pair.split("=", 1)
             input_data[key.strip()] = val.strip()
             input_props[key.strip()] = {"type": "string"}
-    
+
     # Parse output: "founding_year,employee_count,funding"
     output_props = {}
     for field in output_fields.split(","):
@@ -96,7 +96,7 @@ def build_enrichment_spec(input_fields: str, output_fields: str) -> tuple:
                 "type": "string",
                 "description": f"The {field.replace('_', ' ')} of the entity"
             }
-    
+
     task_spec = {
         "input_schema": {
             "type": "json",
@@ -117,23 +117,23 @@ def build_enrichment_spec(input_fields: str, output_fields: str) -> tuple:
             }
         }
     }
-    
+
     return input_data, task_spec
 
 
 def format_result(result) -> str:
     """Format task result for display."""
     output = []
-    
+
     run = result.run
     output.append(f"🔬 Task: {run.run_id}")
     output.append(f"   Status: {run.status} | Processor: {run.processor}")
     output.append("")
-    
+
     if hasattr(result, 'output') and result.output:
         content = result.output.content
         output_type = result.output.type
-        
+
         if output_type == "json" and isinstance(content, dict):
             output.append("**Results:**")
             for key, val in content.items():
@@ -148,7 +148,7 @@ def format_result(result) -> str:
         else:
             output.append(f"**Output ({output_type}):**")
             output.append(str(content)[:2000])
-        
+
         # Show basis/citations if available
         if hasattr(result.output, 'basis') and result.output.basis:
             output.append("")
@@ -160,14 +160,14 @@ def format_result(result) -> str:
                 if hasattr(basis, 'citations'):
                     for cite in basis.citations[:2]:
                         output.append(f"    - {cite.title}: {cite.url}")
-    
+
     return "\n".join(output)
 
 
 def main():
     parser = argparse.ArgumentParser(description="Parallel.ai Task API")
     parser.add_argument("query", nargs="*", help="Research query or question")
-    parser.add_argument("--processor", "-p", default="core", 
+    parser.add_argument("--processor", "-p", default="core",
                        choices=["base", "core", "ultra"],
                        help="Processor tier (base=fast, core=standard, ultra=deep)")
     parser.add_argument("--enrich", "-e", metavar="FIELDS",
@@ -188,16 +188,16 @@ def main():
                        help="Output raw JSON")
     parser.add_argument("--no-wait", action="store_true",
                        help="Don't wait for completion, just return run_id")
-    
+
     args = parser.parse_args()
-    
+
     client = Parallel(api_key=API_KEY)
-    
+
     # Determine input and task spec
     input_data = None
     task_spec = None
     processor = args.processor
-    
+
     if args.enrich:
         if not args.output:
             print("Error: --enrich requires --output fields", file=sys.stderr)
@@ -217,7 +217,7 @@ def main():
             parser.print_help()
             sys.exit(1)
         input_data = query
-    
+
     # Parse domain filters
     include_domains = None
     exclude_domains = None
@@ -225,7 +225,7 @@ def main():
         include_domains = [d.strip() for d in args.include_domains.split(",")]
     if args.exclude_domains:
         exclude_domains = [d.strip() for d in args.exclude_domains.split(",")]
-    
+
     # Build MCP servers for authenticated browsing
     mcp_servers = None
     browseruse_key = args.browseruse_key or os.environ.get("BROWSERUSE_API_KEY")
@@ -236,7 +236,7 @@ def main():
             "name": "browseruse",
             "headers": {"Authorization": f"Bearer {browseruse_key}"}
         }]
-    
+
     # Create task
     try:
         task_run = create_task(
@@ -248,17 +248,17 @@ def main():
             exclude_domains=exclude_domains,
             mcp_servers=mcp_servers,
         )
-        
+
         run_id = task_run.run.run_id if hasattr(task_run, 'run') else task_run.run_id
-        
+
         if args.no_wait:
             print(f"Task created: {run_id}")
             return
-        
+
         # Poll for completion
         print(f"⏳ Running task {run_id}...", file=sys.stderr)
         result = poll_task(client, run_id, timeout=args.timeout)
-        
+
         if args.json:
             # Convert to dict for JSON output
             output = {
@@ -286,7 +286,7 @@ def main():
             print(json.dumps(output, indent=2, default=str))
         else:
             print(format_result(result))
-            
+
     except Exception as e:
         print(f"❌ Error: {e}", file=sys.stderr)
         sys.exit(1)

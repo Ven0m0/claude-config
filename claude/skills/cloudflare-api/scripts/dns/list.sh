@@ -63,12 +63,12 @@ else
     echo ""
     printf "%-8s | %-35s | %-40s | %s\n" "TYPE" "NAME" "CONTENT" "PROXIED"
     printf "%s\n" "---------|-------------------------------------|------------------------------------------|--------"
-    
+
     echo "$RESPONSE" | jq -r '.result[] | [.type, .name, (.content | .[0:38]), (if .proxied then "✓" else "✗" end)] | @tsv' | \
     while IFS=$'\t' read -r type name content proxied; do
         printf "%-8s | %-35s | %-40s | %s\n" "$type" "$name" "$content" "$proxied"
     done
-    
+
     COUNT=$(echo "$RESPONSE" | jq '.result | length')
     echo ""
     echo "Total: $COUNT record(s)"

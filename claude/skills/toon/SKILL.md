@@ -13,7 +13,7 @@ Pipe any command output through `toon` to compress JSON and save ~40% tokens.
 # API responses
 curl -s "https://api.example.com/data" | toon
 
-# JSON files  
+# JSON files
 cat data.json | toon
 
 # Any command - safe on non-JSON (passes through unchanged)

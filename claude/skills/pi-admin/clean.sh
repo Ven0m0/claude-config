@@ -80,11 +80,11 @@ if command -v docker &> /dev/null; then
   STOPPED=$(docker ps -a -q | wc -l)
   DANGLING=$(docker images -f "dangling=true" -q | wc -l)
   VOLUMES=$(docker volume ls -qf dangling=true 2>/dev/null | wc -l)
-  
+
   echo "   Stopped containers: $STOPPED"
   echo "   Dangling images: $DANGLING"
   echo "   Unused volumes: $VOLUMES"
-  
+
   if [ "$DRY_RUN" = false ]; then
     read -p "   Clean Docker? [y/N] " -n 1 -r
     echo

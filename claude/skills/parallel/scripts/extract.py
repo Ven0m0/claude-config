@@ -31,13 +31,13 @@ def extract(
     params = {
         "urls": urls,
     }
-    
+
     if objective:
         params["objective"] = objective
-    
+
     if full_content:
         params["full_content"] = {"enabled": True}
-    
+
     result = client.beta.extract(**params)
     return result
 
@@ -45,23 +45,23 @@ def extract(
 def format_result(result) -> str:
     """Format extraction result for display."""
     output = []
-    
+
     output.append(f"📄 Extract ID: {result.extract_id}")
     output.append("")
-    
+
     for i, item in enumerate(result.results, 1):
         url = item.url
         title = getattr(item, 'title', 'No title')
         date = getattr(item, 'publish_date', None)
-        
+
         date_str = f" ({date})" if date else ""
         output.append(f"**{i}. {title}**{date_str}")
         output.append(f"   URL: {url}")
-        
+
         # Show excerpts or content
         excerpts = getattr(item, 'excerpts', None)
         content = getattr(item, 'content', None)
-        
+
         if content:
             # Full content mode
             preview = content[:2000]
@@ -74,9 +74,9 @@ def format_result(result) -> str:
             for excerpt in excerpts[:3]:
                 excerpt_clean = excerpt.replace("\n", " ").strip()[:500]
                 output.append(f"   > {excerpt_clean}")
-        
+
         output.append("")
-    
+
     return "\n".join(output)
 
 
@@ -89,11 +89,11 @@ def main():
                        help="Return full page content instead of excerpts")
     parser.add_argument("--json", "-j", action="store_true",
                        help="Output raw JSON")
-    
+
     args = parser.parse_args()
-    
+
     client = Parallel(api_key=API_KEY)
-    
+
     try:
         result = extract(
             client,
@@ -101,7 +101,7 @@ def main():
             objective=args.objective,
             full_content=args.full,
         )
-        
+
         if args.json:
             output = {
                 "extract_id": result.extract_id,
@@ -119,7 +119,7 @@ def main():
             print(json.dumps(output, indent=2, default=str))
         else:
             print(format_result(result))
-            
+
     except Exception as e:
         print(f"❌ Error: {e}", file=sys.stderr)
         sys.exit(1)

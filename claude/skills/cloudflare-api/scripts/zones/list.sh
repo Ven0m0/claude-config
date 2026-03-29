@@ -42,12 +42,12 @@ case $OUTPUT in
         echo ""
         printf "%-36s | %-30s | %-10s | %s\n" "ZONE ID" "DOMAIN" "STATUS" "PLAN"
         printf "%s\n" "--------------------------------------|--------------------------------|------------|--------"
-        
+
         echo "$RESPONSE" | jq -r '.result[] | [.id, .name, .status, .plan.name] | @tsv' | \
         while IFS=$'\t' read -r id name status plan; do
             printf "%-36s | %-30s | %-10s | %s\n" "$id" "$name" "$status" "$plan"
         done
-        
+
         TOTAL=$(echo "$RESPONSE" | jq -r '.result_info.total_count // 0')
         echo ""
         echo "Total: $TOTAL zone(s)"

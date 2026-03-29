@@ -35,5 +35,5 @@ Compress images to reduce file size while maintaining quality.
 
 ## Integration
 
-- API Key: sk_93c5ff38cc3e6112623d361fffcc5d1eb1b5844eac9c40043b57c0e08f91430e
+- API Key: set via environment variable or local configuration at runtime
 - Price: 0.001 USDT per call
