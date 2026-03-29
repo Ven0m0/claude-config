@@ -57,8 +57,8 @@ kilo/moonshotai/kimi-k2.5
 kilo/minimax/minimax-m2.5:free
 kilo/z-ai/glm-5
 kilo/x-ai/grok-code-fast-1:optimized:free
+kilo/x-ai/grok-4.1-fast
 kilo/morph/morph-v3-fast
-kilo/morph-warp-grep-v2
 ```
 
 opencode:
