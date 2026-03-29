@@ -4,19 +4,19 @@
   "small_model": "opencode/minimax-m2.5-free",
   "agent": {
     "build": {
-      "model": "kilo/moonshotai/kimi-k2.5",
+      "model": "opencode/minimax-m2.5-free",
       "reasoningEffort": "high",
       "temperature": 0.3
     },
     "coder": {
-      "model": "kilo/moonshotai/kimi-k2.5",
+      "model": "opencode/minimax-m2.5-free",
       "reasoningEffort": "medium",
       "temperature": 0.2
     },
     "explore": {
       "model": "kilo/x-ai/grok-code-fast-1:optimized:free",
       "reasoningEffort": "low",
-      "temperature": 0.2
+      "temperature": 0.1
     },
     "plan": {
       "model": "kilo/z-ai/glm-5",
@@ -29,7 +29,7 @@
       "temperature": 0.4
     },
     "reviewer": {
-      "model": "kilo/z-ai/glm-5",
+      "model": "opencode/minimax-m2.5-free",
       "reasoningEffort": "high",
       "temperature": 0.1
     },
