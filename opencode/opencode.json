@@ -1,10 +1,10 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "opencode/glm-5",
+  "model": "opencode/minimax-m2.5-free",
   "small_model": "opencode/minimax-m2.5-free",
   "agent": {
     "build": {
-      "model": "openrouter/minimax/minimax-m2.7",
+      "model": "opencode/kimi-k2.5",
       "reasoningEffort": "high",
       "temperature": 0.3,
       "textVerbosity": "low"
@@ -46,21 +46,12 @@
       "textVerbosity": "high"
     }
   },
-  "default_agent": "plan",
-  "experimental": {
-    "continue_loop_on_deny": false,
-    "mcp_timeout": 10000,
-    "openTelemetry": false
-  },
-  "instructions": ["AGENTS.md"],
+  "default_agent": "build",
+  "instructions": ["AGENTS.md", "https://raw.githubusercontent.com/Ven0m0/claude-config/main/opencode/AGENTS.md"],
   "mcp": {
     "ref-tools": {
       "type": "remote",
       "url": "https://api.ref.tools/mcp"
-    },
-    "exa": {
-      "type": "remote",
-      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
     },
     "gh_grep": {
       "type": "remote",
@@ -83,7 +74,10 @@
       "command": ["bunx", "--bun", "cachebro", "serve"]
     }
   },
-  "model": "openrouter/minimax/minimax-m2.7",
+  "autoBash": true,
+  "autoEdit": true,
+  "autoRead": true,
+  "share": "manual",
   "permission": {
     "*": "allow",
     "sudo *": "deny",
@@ -162,6 +156,7 @@
     }
   },
   "disabled_providers": ["openai"],
+  "watcher": { "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**"] },
   "provider": {
     "anthropic": {
       "options": {
@@ -171,8 +166,5 @@
         "timeout": 600000
       }
     }
-  },
-  "share": "auto",
-  "small_model": "kilo/minimax/minimax-m2.5:free",
-  "watcher": { "ignore": ["node_modules/**", "dist/**", ".git/**"] }
+  }
 }
