@@ -1,0 +1,140 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["AGENTS.md", "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"],
+  "permission": {
+    "*": "allow",
+    "sudo *": "deny",
+    "rm -rf /": "deny",
+    "rm -rf /*": "deny",
+    "rm -rf ~": "deny",
+    "rm -rf ~/*": "deny",
+    ":(){:|:&};:": "deny",
+    "doom_loop": "deny"
+  },
+  "share": "manual",
+  "default_agent": "build",
+  "model": "kilo-auto/balanced",
+  "small_model": "kilo-auto/free",
+  "disabled_providers": ["openai"],
+  "agent": {
+    "build": {
+      "model": "opencode/minimax-m2.5-free",
+      "reasoningEffort": "high",
+      "temperature": 0.2
+    },
+    "coder": {
+      "model": "opencode/minimax-m2.5-free",
+      "reasoningEffort": "medium",
+      "temperature": 0.2
+    },
+    "explore": {
+      "model": "kilo/morph-warp-grep-v2",
+      "reasoningEffort": "low",
+      "temperature": 0.1
+    },
+    "plan": {
+      "model": "kilo/xiaomi/mimo-v2-pro:free",
+      "reasoningEffort": "high",
+      "temperature": 0.3
+    },
+    "researcher": {
+      "model": "kilo/z-ai/glm-5",
+      "reasoningEffort": "high",
+      "temperature": 0.4
+    },
+    "reviewer": {
+      "model": "opencode/minimax-m2.5-free",
+      "reasoningEffort": "high",
+      "temperature": 0.1
+    },
+    "scribe": {
+      "model": "kilo/arcee-ai/trinity-large-preview:free",
+      "reasoningEffort": "low",
+      "temperature": 0.7
+    }
+  },
+  "plugin": [
+    "openslimedit@1.0.4",
+    "opencode-ignore@1.1.0",
+    "@gotgenes/opencode-agent-identity@3.0.1",
+    "opencode-agent-memory@0.2.0",
+    "@spoons-and-mirrors/subtask2@0.3.5",
+    "opencode-pty@0.2.3",
+    "openfundus@0.1.6",
+    "opencode-toolbox@0.10.4",
+    "@nick-vi/opencode-type-inject@1.1.1",
+    "@tarquinen/opencode-dcp@3.1.5",
+    "opencode-cross-repo@0.4.1",
+    "@tuanhung303/opencode-acp@3.0.15"
+  ],
+  "lsp": {
+    "typescript": {
+      "command": ["vtsls", "--stdio"],
+      "extensions": [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".mts", ".cts"],
+      "initialization": {
+        "preferences": { "importModuleSpecifierPreference": "relative" }
+      }
+    },
+    "pyright": {
+      "command": ["basedpyright-langserver", "--stdio"],
+      "extensions": [".py", ".pyw", ".pyi"]
+    },
+    "rust": {
+      "command": ["rust-analyzer"],
+      "extensions": [".rs"]
+    },
+    "bash": {
+      "command": ["bash-language-server", "start"],
+      "extensions": [".sh", ".bash", ".zsh"]
+    },
+    "yaml-ls": {
+      "command": ["yaml-language-server", "--stdio"],
+      "extensions": [".yaml", ".yml"]
+    },
+    "markdown-oxide": {
+      "command": ["markdown-oxide"],
+      "extensions": [".md", ".mdx"]
+    },
+    "json-ls": {
+      "command": ["vscode-json-language-server", "--stdio"],
+      "extensions": [".json", ".jsonc"]
+    },
+    "dockerfile-ls": {
+      "command": ["docker-langserver", "--stdio"],
+      "extensions": [".dockerfile"]
+    },
+    "html-ls": {
+      "command": ["vscode-html-language-server", "--stdio"],
+      "extensions": [".html", ".htm"]
+    },
+    "css-ls": {
+      "command": ["vscode-css-language-server", "--stdio"],
+      "extensions": [".css", ".scss", ".less"]
+    },
+    "tombi": {
+      "command": ["tombi", "lsp"],
+      "extensions": [".toml"]
+    }
+  },
+  "watcher": { "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**"] },
+  "mcp": {
+    "ref-tools": {
+      "type": "remote",
+      "url": "https://api.ref.tools/mcp"
+    },
+    "github-mcp-server": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "gh_grep": {
+      "type": "remote",
+      "url": "https://mcp.grep.app"
+    }
+  },
+  "experimental": {
+    "continue_loop_on_deny": false,
+    "mcp_timeout": 10000,
+    "openTelemetry": false,
+    "batch_tool": true
+  }
+}
