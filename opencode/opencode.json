@@ -3,41 +3,13 @@
   "model": "kilo-auto/balanced",
   "small_model": "kilo-auto/free",
   "agents": {
-    "build": {
-      "model": "opencode/minimax-m2.5-free",
-      "reasoningEffort": "high",
-      "temperature": 0.2
-    },
-    "coder": {
-      "model": "opencode/minimax-m2.5-free",
-      "reasoningEffort": "medium",
-      "temperature": 0.2
-    },
-    "explore": {
-      "model": "kilo/x-ai/grok-4.1-fast",
-      "reasoningEffort": "low",
-      "temperature": 0.1
-    },
-    "plan": {
-      "model": "opencode/mimo-v2-pro-free",
-      "reasoningEffort": "high",
-      "temperature": 0.3
-    },
-    "researcher": {
-      "model": "kilo/z-ai/glm-5",
-      "reasoningEffort": "high",
-      "temperature": 0.4
-    },
-    "reviewer": {
-      "model": "opencode/minimax-m2.5-free",
-      "reasoningEffort": "high",
-      "temperature": 0.1
-    },
-    "scribe": {
-      "model": "kilo/arcee-ai/trinity-large-preview:free",
-      "reasoningEffort": "low",
-      "temperature": 0.7
-    }
+    "build": { "model": "opencode/minimax-m2.5-free", "reasoningEffort": "high", "temperature": 0.2 },
+    "coder": { "model": "opencode/minimax-m2.5-free", "reasoningEffort": "medium", "temperature": 0.2 },
+    "explore": { "model": "kilo/x-ai/grok-4.1-fast", "reasoningEffort": "low", "temperature": 0.1 },
+    "plan": { "model": "opencode/mimo-v2-pro-free", "reasoningEffort": "high", "temperature": 0.3 },
+    "researcher": { "model": "kilo/z-ai/glm-5", "reasoningEffort": "high", "temperature": 0.4 },
+    "reviewer": { "model": "opencode/minimax-m2.5-free", "reasoningEffort": "high", "temperature": 0.1 },
+    "scribe": { "model": "kilo/arcee-ai/trinity-large-preview:free", "reasoningEffort": "low", "temperature": 0.7 }
   },
   "default_agent": "build",
   "instructions": [
@@ -45,28 +17,10 @@
     "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"
   ],
   "mcpServers": {
-    "ref-tools": {
-      "type": "sse",
-      "url": "https://api.ref.tools/mcp"
-    },
-    "gh_grep": {
-      "type": "sse",
-      "url": "https://mcp.grep.app"
-    },
-    "icm": {
-      "type": "stdio",
-      "command": "icm",
-      "args": ["serve"]
-    },
-    "context-mode": {
-      "type": "stdio",
-      "command": "context-mode"
-    },
-    "cachebro": {
-      "type": "stdio",
-      "command": "bunx",
-      "args": ["--bun", "cachebro", "serve"]
-    }
+    "ref-tools": { "type": "sse", "url": "https://api.ref.tools/mcp" },
+    "gh_grep": { "type": "sse", "url": "https://mcp.grep.app" },
+    "icm": { "type": "stdio", "command": "icm", "args": ["serve"] },
+    "context-mode": { "type": "stdio", "command": "context-mode" }
   },
   "share": "manual",
   "permission": {
@@ -89,12 +43,7 @@
     "openslimedit@1.0.4",
     "@spoons-and-mirrors/subtask2@0.3.5",
     "openfundus@0.1.6",
-    "opencode-rtk-rewrite",
-    "context-mode@latest",
-    "opencode-cachebro@latest",
-    "opencode-snip@latest",
     "opencode-toolbox@0.10.4",
-    "micode",
     "opencode-cross-repo@0.4.1",
     "@tuanhung303/opencode-acp@3.0.15"
   ],
@@ -102,60 +51,23 @@
     "typescript": {
       "command": "vtsls",
       "args": ["--stdio"],
-      "options": {
-        "preferences": { "importModuleSpecifierPreference": "relative" }
-      }
+      "options": { "preferences": { "importModuleSpecifierPreference": "relative" } }
     },
-    "pyright": {
-      "command": "basedpyright-langserver",
-      "args": ["--stdio"]
-    },
-    "rust": {
-      "command": "rust-analyzer"
-    },
-    "bash": {
-      "command": "bash-language-server",
-      "args": ["start"]
-    },
-    "yaml-ls": {
-      "command": "yaml-language-server",
-      "args": ["--stdio"]
-    },
-    "markdown-oxide": {
-      "command": "markdown-oxide"
-    },
-    "json-ls": {
-      "command": "vscode-json-language-server",
-      "args": ["--stdio"]
-    },
-    "dockerfile-ls": {
-      "command": "docker-langserver",
-      "args": ["--stdio"]
-    },
-    "html-ls": {
-      "command": "vscode-html-language-server",
-      "args": ["--stdio"]
-    },
-    "css-ls": {
-      "command": "vscode-css-language-server",
-      "args": ["--stdio"]
-    },
-    "tombi": {
-      "command": "tombi",
-      "args": ["lsp"]
-    }
+    "pyright": { "command": "basedpyright-langserver", "args": ["--stdio"] },
+    "rust": { "command": "rust-analyzer" },
+    "bash": { "command": "bash-language-server", "args": ["start"] },
+    "yaml-ls": { "command": "yaml-language-server", "args": ["--stdio"] },
+    "markdown-oxide": { "command": "markdown-oxide" },
+    "json-ls": { "command": "vscode-json-language-server", "args": ["--stdio"] },
+    "dockerfile-ls": { "command": "docker-langserver", "args": ["--stdio"] },
+    "html-ls": { "command": "vscode-html-language-server", "args": ["--stdio"] },
+    "css-ls": { "command": "vscode-css-language-server", "args": ["--stdio"] },
+    "tombi": { "command": "tombi", "args": ["lsp"] }
   },
   "disabled_providers": ["openai"],
-  "watcher": {
-    "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**"]
-  },
+  "watcher": { "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**"] },
   "providers": {
-    "anthropic": {
-      "apiKey": "{env:ANTHROPIC_API_KEY}",
-      "chunkTimeout": 30000,
-      "setCacheKey": true,
-      "timeout": 600000
-    }
+    "anthropic": { "apiKey": "{env:ANTHROPIC_API_KEY}", "chunkTimeout": 30000, "setCacheKey": true, "timeout": 600000 }
   },
   "experimental": {
     "continue_loop_on_deny": false,

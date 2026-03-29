@@ -1,9 +1,25 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": [
-    "AGENTS.md",
-    "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"
-  ],
+  "model": "kilo-auto/balanced",
+  "small_model": "kilo-auto/free",
+  "agents": {
+    "build": { "model": "opencode/minimax-m2.5-free", "reasoningEffort": "high", "temperature": 0.2 },
+    "coder": { "model": "opencode/minimax-m2.5-free", "reasoningEffort": "medium", "temperature": 0.2 },
+    "explore": { "model": "kilo/x-ai/grok-4.1-fast", "reasoningEffort": "low", "temperature": 0.1 },
+    "plan": { "model": "opencode/mimo-v2-pro-free", "reasoningEffort": "high", "temperature": 0.3 },
+    "researcher": { "model": "kilo/z-ai/glm-5", "reasoningEffort": "high", "temperature": 0.4 },
+    "reviewer": { "model": "opencode/minimax-m2.5-free", "reasoningEffort": "high", "temperature": 0.1 },
+    "scribe": { "model": "kilo/arcee-ai/trinity-large-preview:free", "reasoningEffort": "low", "temperature": 0.7 }
+  },
+  "default_agent": "build",
+  "instructions": ["AGENTS.md", "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"],
+  "mcpServers": {
+    "ref-tools": { "type": "sse", "url": "https://api.ref.tools/mcp" },
+    "gh_grep": { "type": "sse", "url": "https://mcp.grep.app" },
+    "icm": { "type": "stdio", "command": "icm", "args": ["serve"] },
+    "context-mode": { "type": "stdio", "command": "context-mode" }
+  },
+  "share": "manual",
   "permission": {
     "*": "allow",
     "sudo *": "deny",
@@ -11,128 +27,40 @@
     "rm -rf /*": "deny",
     "rm -rf ~": "deny",
     "rm -rf ~/*": "deny",
-    ":(){:|:&};:": "deny",
+    ":(){:|:&}:": "deny",
     "doom_loop": "deny"
   },
-  "share": "manual",
-  "default_agent": "build",
-  "model": "kilo-auto/balanced",
-  "small_model": "kilo-auto/free",
-  "disabled_providers": ["openai"],
-  "agent": {
-    "build": {
-      "model": "opencode/minimax-m2.5-free",
-      "reasoningEffort": "high",
-      "temperature": 0.2
-    },
-    "coder": {
-      "model": "opencode/minimax-m2.5-free",
-      "reasoningEffort": "medium",
-      "temperature": 0.2
-    },
-    "explore": {
-      "model": "kilo/x-ai/grok-4.1-fast",
-      "reasoningEffort": "low",
-      "temperature": 0.1
-    },
-    "plan": {
-      "model": "kilo/xiaomi/mimo-v2-pro:free",
-      "reasoningEffort": "high",
-      "temperature": 0.3
-    },
-    "researcher": {
-      "model": "kilo/z-ai/glm-5",
-      "reasoningEffort": "high",
-      "temperature": 0.4
-    },
-    "reviewer": {
-      "model": "opencode/minimax-m2.5-free",
-      "reasoningEffort": "high",
-      "temperature": 0.1
-    },
-    "scribe": {
-      "model": "kilo/arcee-ai/trinity-large-preview:free",
-      "reasoningEffort": "low",
-      "temperature": 0.7
-    }
-  },
   "plugin": [
-    "openslimedit@1.0.4",
-    "opencode-ignore@1.1.0",
+    "opencode-anthropic-oauth@0.4.1",
+    "opencode-gemini-auth@1.4.9",
+    "opencode-kilo-auth@1.1.4",
     "@gotgenes/opencode-agent-identity@3.0.1",
-    "opencode-agent-memory@0.2.0",
-    "@spoons-and-mirrors/subtask2@0.3.5",
+    "opencode-ignore@1.1.0",
     "opencode-pty@0.2.3",
+    "openslimedit@1.0.4",
+    "@spoons-and-mirrors/subtask2@0.3.5",
     "openfundus@0.1.6",
     "opencode-toolbox@0.10.4",
-    "@nick-vi/opencode-type-inject@1.1.1",
-    "@tarquinen/opencode-dcp@3.1.5",
     "opencode-cross-repo@0.4.1",
     "@tuanhung303/opencode-acp@3.0.15"
   ],
   "lsp": {
-    "typescript": {
-      "command": ["vtsls", "--stdio"],
-      "extensions": [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".mts", ".cts"],
-      "initialization": {
-        "preferences": { "importModuleSpecifierPreference": "relative" }
-      }
-    },
-    "pyright": {
-      "command": ["basedpyright-langserver", "--stdio"],
-      "extensions": [".py", ".pyw", ".pyi"]
-    },
-    "rust": {
-      "command": ["rust-analyzer"],
-      "extensions": [".rs"]
-    },
-    "bash": {
-      "command": ["bash-language-server", "start"],
-      "extensions": [".sh", ".bash", ".zsh"]
-    },
-    "yaml-ls": {
-      "command": ["yaml-language-server", "--stdio"],
-      "extensions": [".yaml", ".yml"]
-    },
-    "markdown-oxide": {
-      "command": ["markdown-oxide"],
-      "extensions": [".md", ".mdx"]
-    },
-    "json-ls": {
-      "command": ["vscode-json-language-server", "--stdio"],
-      "extensions": [".json", ".jsonc"]
-    },
-    "dockerfile-ls": {
-      "command": ["docker-langserver", "--stdio"],
-      "extensions": [".dockerfile"]
-    },
-    "html-ls": {
-      "command": ["vscode-html-language-server", "--stdio"],
-      "extensions": [".html", ".htm"]
-    },
-    "css-ls": {
-      "command": ["vscode-css-language-server", "--stdio"],
-      "extensions": [".css", ".scss", ".less"]
-    },
-    "tombi": {
-      "command": ["tombi", "lsp"],
-      "extensions": [".toml"]
-    }
+    "typescript": { "command": "vtsls", "args": ["--stdio"], "options": { "preferences": { "importModuleSpecifierPreference": "relative" } } },
+    "pyright": { "command": "basedpyright-langserver", "args": ["--stdio"] },
+    "rust": { "command": "rust-analyzer" },
+    "bash": { "command": "bash-language-server", "args": ["start"] },
+    "yaml-ls": { "command": "yaml-language-server", "args": ["--stdio"] },
+    "markdown-oxide": { "command": "markdown-oxide" },
+    "json-ls": { "command": "vscode-json-language-server", "args": ["--stdio"] },
+    "dockerfile-ls": { "command": "docker-langserver", "args": ["--stdio"] },
+    "html-ls": { "command": "vscode-html-language-server", "args": ["--stdio"] },
+    "css-ls": { "command": "vscode-css-language-server", "args": ["--stdio"] },
+    "tombi": { "command": "tombi", "args": ["lsp"] }
   },
+  "disabled_providers": ["openai"],
   "watcher": { "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**"] },
-  "mcp": {
-    "ref-tools": {
-      "type": "remote",
-      "url": "https://api.ref.tools/mcp"
-    },
-    "github-mcp-server": {
-      "type": "remote",
-      "url": "https://api.githubcopilot.com/mcp/"
-    },
-    "gh_grep": {
-      "type": "remote",
-      "url": "https://mcp.grep.app"
-    }
+  "providers": {
+    "anthropic": { "apiKey": "{env:ANTHROPIC_API_KEY}", "chunkTimeout": 30000, "setCacheKey": true, "timeout": 600000 }
   },
   "experimental": {
     "continue_loop_on_deny": false,

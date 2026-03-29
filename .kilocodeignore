@@ -1,5 +1,4 @@
-# Kilocode ignore file — paths Kilo Code MUST NOT access via any tool
-# (read_file, write_to_file, apply_diff, delete_file, execute_command, list_files)
+# Kilocode ignore file — paths Kilo Code MUST NOT access
 
 # ── Secrets and credentials ──────────────────────────────────────────────────
 .env
@@ -75,8 +74,6 @@ Thumbs.db
 *.class
 *.jar
 
-# ── execute_command restriction ───────────────────────────────────────────────
-# These shell commands MUST NOT be run against blocked paths above.
-# They bypass read_file restrictions and can expose secret content:
-#   cat, head, tail, less, more, sed, awk, grep, rg, strings, xxd, od
-# Use structured file-reading tools instead.
+# ── Shell command restrictions ───────────────────────────────────────────────
+# Commands that bypass read_file restrictions MUST NOT run against paths above:
+# cat, head, tail, less, more, sed, awk, grep, rg, strings, xxd, od
