@@ -5,7 +5,10 @@
     "opencode-rtk-rewrite": "github:itertea/opencode-rtk-rewrite"
   },
   "devDependencies": {
-    "typescript": "^6.0.0"
+    "typescript": "^6.0.0",
+    "@types/bun": "latest",
+    "oxfmt": "^0.34.0",
+    "@opencode-ai/sdk": "^1.2.10"
   },
   "packageManager": "bun@*"
 }
