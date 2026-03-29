@@ -11,9 +11,6 @@
     ":(){:|:&};:": "deny",
     "doom_loop": "deny"
   },
-  "autoBash": true,
-  "autoEdit": true,
-  "autoRead": true,
   "share": "manual",
   "default_agent": "build",
   "model": "opencode/minimax-m2.5-free",
