@@ -17,6 +17,13 @@
   }
 }
 ```
+```json
+  'provider': {
+    'sort': {
+      'by': 'throughput',
+      'partition': 'none',
+    },
+```
 
 openrouter: 
 - https://openrouter.ai/docs/guides/routing/provider-selection
