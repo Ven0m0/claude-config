@@ -79,7 +79,7 @@ uv run pytest <target>
 
 - `AGENTS.md` is the shared source of truth.
 - `CLAUDE.md` must remain a symlink to `AGENTS.md`.
-- `GEMINI.md` should stay aligned the same way.
+- `GEMINI.md` must remain a symlink to `AGENTS.md`.
 - Do not let this file drift into conflicting guidance.
 
 ## Commit Style

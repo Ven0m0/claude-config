@@ -41,6 +41,7 @@ Primary areas:
 - JavaScript/TypeScript: `bun`, `bunx`, `@biomejs/biome`
 - Shell: `shellcheck`
 - Agent docs: `claudelint`
+- File discovery: `rg --files`
 - Structured search: `rg` before broader filesystem scans
 
 Prefer repository scripts when they exist, such as `bun run lint:claude`.
