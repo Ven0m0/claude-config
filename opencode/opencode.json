@@ -4,46 +4,39 @@
   "small_model": "opencode/minimax-m2.5-free",
   "agent": {
     "build": {
-      "model": "opencode/kimi-k2.5",
+      "model": "kilo/moonshotai/kimi-k2.5",
       "reasoningEffort": "high",
-      "temperature": 0.3,
-      "textVerbosity": "low"
+      "temperature": 0.3
     },
     "coder": {
-      "model": "openrouter/minimax/minimax-m2.7",
+      "model": "kilo/moonshotai/kimi-k2.5",
       "reasoningEffort": "medium",
-      "temperature": 0.2,
-      "textVerbosity": "low"
+      "temperature": 0.2
     },
     "explore": {
-      "model": "opencode/minimax-m2.5-free",
+      "model": "kilo/x-ai/grok-code-fast-1:optimized:free",
       "reasoningEffort": "low",
-      "temperature": 0.2,
-      "textVerbosity": "low"
+      "temperature": 0.2
     },
     "plan": {
-      "model": "opencode/glm-5",
+      "model": "kilo/z-ai/glm-5",
       "reasoningEffort": "high",
-      "temperature": 0.3,
-      "textVerbosity": "low"
+      "temperature": 0.3
     },
     "researcher": {
-      "model": "opencode/glm-5",
+      "model": "kilo/z-ai/glm-5",
       "reasoningEffort": "high",
-      "temperature": 0.4,
-      "textVerbosity": "medium"
+      "temperature": 0.4
     },
     "reviewer": {
-      "model": "opencode/glm-5",
+      "model": "kilo/z-ai/glm-5",
       "reasoningEffort": "high",
-      "temperature": 0.1,
-      "textVerbosity": "medium"
+      "temperature": 0.1
     },
     "scribe": {
       "model": "opencode/minimax-m2.5-free",
       "reasoningEffort": "low",
-      "temperature": 1,
-      "textVerbosity": "high"
+      "temperature": 1
     }
   },
   "default_agent": "build",
