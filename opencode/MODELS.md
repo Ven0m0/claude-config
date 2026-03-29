@@ -18,11 +18,14 @@
 }
 ```
 ```json
-  'provider': {
-    'sort': {
-      'by': 'throughput',
-      'partition': 'none',
-    },
+  "sort": {
+    "by": "exacto",
+    "partition": "none"
+  },
+  "ignore": [
+    "openai"
+  ],
+  "allow_fallbacks": true
 ```
 
 openrouter: 
