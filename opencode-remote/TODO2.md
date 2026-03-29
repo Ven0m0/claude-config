@@ -1,1 +1,2 @@
-add [openportal](https://www.openportal.space/docs/setup/remote) support
+- add [openportal](https://www.openportal.space/docs/setup/remote) support
+- create Dockerfile
