@@ -14,7 +14,7 @@
       "temperature": 0.2
     },
     "explore": {
-      "model": "kilo/x-ai/grok-code-fast-1:optimized:free",
+      "model": "kilo/morph-warp-grep-v2",
       "reasoningEffort": "low",
       "temperature": 0.1
     },
