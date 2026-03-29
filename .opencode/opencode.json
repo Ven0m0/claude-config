@@ -25,7 +25,8 @@
     "openfundus@0.1.6",
     "opencode-toolbox@0.10.4",
     "@nick-vi/opencode-type-inject@1.1.1",
-    "@tarquinen/opencode-dcp@3.1.5"
+    "@tarquinen/opencode-dcp@3.1.5",
+    "opencode-cross-repo"
   ],
   "lsp": {
     "typescript": {
