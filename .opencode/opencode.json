@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["AGENTS.md", "**/AGENTS.md", "../.github/copilot-instructions.md"],
+  "instructions": ["AGENTS.md", ".github/copilot-instructions.md"],
   "permission": {
     "*": "allow",
     "sudo *": "deny",
@@ -22,6 +22,7 @@
   "plugin": [
     "openslimedit@1.0.4",
     "opencode-ignore@1.1.0",
+    "opencode-kilo-auth@1.1.4",
     "@gotgenes/opencode-agent-identity@3.0.1",
     "@spoons-and-mirrors/subtask2@0.3.5",
     "opencode-pty@0.2.3",
