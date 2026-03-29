@@ -5,66 +5,29 @@ description: Prune context to reduce token waste while preserving important info
 
 # Context Pruning
 
-Reduce context size by identifying and removing low-value content while preserving critical information.
+## Priority Tiers
 
-## When to Use
+**Keep:** Current task code, recent changes, active definitions, configs affecting behavior, actionable errors.
 
-- Context approaching token limits
-- Repeated similar errors or warnings
-- Long dependency lists already analyzed
-- Stale imports no longer used
-- Duplicated documentation
+**Review:** Why-comments, tests for modified code, referenced docs, imports (check for stale).
 
-## Pruning Strategy
+**Remove:** Commented-out code blocks, duplicate errors, changelog entries, package-lock contents, node_modules references, empty lines in large blocks.
 
-### High Priority (Keep)
-- Current task-relevant code
-- Recent changes (last 5 commits)
-- Active function/class definitions
-- Configuration affecting behavior
-- Error messages requiring action
+## Analysis Commands
 
-### Medium Priority (Review)
-- Comments explaining why (keep)
-- Test files for modified code
-- Documentation referenced in code
-- Import statements (check for stale)
-
-### Low Priority (Remove)
-- Empty lines and whitespace
-- Fully commented-out code blocks
-- Duplicate error messages
-- Historical changelog entries
-- Package-lock.json contents
-- node_modules references
-
-## Commands
-
-### Analyze Context Size
 ```bash
-# Count lines and estimate tokens
-git diff --cached | wc -l
+# Estimate context size
 git diff HEAD~1 | wc -l
-```
 
-### Find Large Files in Context
-```bash
-# Files over 500 lines that are mostly boilerplate
-find . -name "*.json" -o -name "*.lock" | xargs wc -l 2>/dev/null | sort -rn
-```
+# Find large boilerplate files
+find . -name "*.json" -o -name "*.lock" | xargs wc -l 2>/dev/null | sort -rn | head -10
 
-### Identify Duplicates
-```bash
 # Find repeated error patterns
-git diff | grep -E "^[+-].*error|Exception|FAILED" | sort | uniq -c | sort -rn
+git diff | grep -E "^[+-].*(error|Exception|FAILED)" | sort | uniq -c | sort -rn
 ```
 
-## Implementation Notes
+## Rules
 
-- Use `ctx_batch_execute` to run multiple analysis commands
 - Preserve file paths and line numbers when reporting removals
-- Always confirm before auto-removing from files
-
-## Notes/Inspiration
-
-Inspired by [`@tuanhung303/opencode-acp`](https://www.npmjs.com/package/@tuanhung303/opencode-acp) - Context pruning plugin for OpenCode.
+- Always confirm before removing content from files
+- Prioritize removing output/log noise over source code
