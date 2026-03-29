@@ -2,10 +2,11 @@
 name: github
 description: >
   Comprehensive GitHub operations using the gh CLI tool. Supports pull requests,
-  issues, workflows/actions, releases, repositories, gists, and advanced Git
-  operations with full access to GitHub API through gh. Use when working with GitHub
-  PRs, issues, actions, releases, or repos. Triggers: gh, GitHub, pull request, PR,
-  issue, workflow, actions, release, gist.
+  issues, workflows/actions, releases, repositories, gists, and local git
+  operations with deterministic porcelain output. Use when working with GitHub
+  PRs, issues, actions, releases, repos, or agentic git workflows. Triggers: gh,
+  GitHub, pull request, PR, issue, workflow, actions, release, gist, git status,
+  git diff, git log.
 allowed-tools: Bash Read
 ---
 
@@ -256,6 +257,67 @@ gh auth refresh                      # Refresh auth token
 gh config set editor vim             # Set editor
 gh config set git_protocol ssh       # Use SSH for git operations
 gh config set prompt disabled        # Disable interactive prompts
+```
+
+### Local Git CLI Patterns
+
+Use stable Git output formats when local repository state matters alongside GitHub operations.
+
+```bash
+# Status
+git status --porcelain=v2 --branch
+git status --short --branch
+
+# Diffs
+git diff --numstat
+git diff --cached --numstat
+git diff --name-status
+
+# History
+git log --format='%h %s' -n 10
+git log --format='%H|%an|%ae|%s' -n 10
+
+# Branches and remotes
+git branch -vv
+git branch --show-current
+git remote -v
+
+# Safe staging and restore
+git add path/to/file
+git add -A
+git restore --staged path/to/file
+git restore path/to/file
+```
+
+Prefer:
+
+- `git status --porcelain=v2 --branch` for machine-readable status
+- `git diff --numstat` when counting or summarizing changes
+- `git log --format=...` when extracting specific commit fields
+- `git restore` over checkout-based discard flows
+
+### Git Worktrees and Parallel Exploration
+
+```bash
+# Create an isolated exploration branch
+git worktree add ../explorations/feature-check -b explore/feature-check
+
+# Inspect active worktrees
+git worktree list
+
+# Remove the exploration worktree
+git worktree remove ../explorations/feature-check
+```
+
+### Combining Git and gh
+
+```bash
+# Get owner/repo for the current checkout
+gh repo view --json nameWithOwner --jq '.nameWithOwner'
+
+# Inspect PR head branch, then target it with git
+gh pr view --json headRefName --jq '.headRefName'
+git push origin HEAD:$(gh pr view --json headRefName --jq '.headRefName')
 ```
 
 ### Search & Discovery

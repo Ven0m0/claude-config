@@ -153,7 +153,7 @@ tmux kill-session -t claude
 
 ## Works Well With
 
-**Skills**: bash-optimizer, git-cli-agentic
+**Skills**: bash-optimizer, github
 **Tools**: tmux, vim, git
 
 ---
