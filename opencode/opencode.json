@@ -4,12 +4,12 @@
   "small_model": "kilo-auto/free",
   "agent": {
     "build": {
-      "model": "opencode/minimax-m2.5-free",
+      "model": "kilo/minimax/minimax-m2.7",
       "reasoningEffort": "high",
       "temperature": 0.3
     },
     "coder": {
-      "model": "opencode/minimax-m2.5-free",
+      "model": "kilo/minimax/minimax-m2.7",
       "reasoningEffort": "medium",
       "temperature": 0.2
     },
@@ -29,12 +29,12 @@
       "temperature": 0.4
     },
     "reviewer": {
-      "model": "opencode/minimax-m2.5-free",
+      "model": "kilo/minimax/minimax-m2.7",
       "reasoningEffort": "high",
       "temperature": 0.1
     },
     "scribe": {
-      "model": "opencode/minimax-m2.5-free",
+      "model": "kilo/minimax/minimax-m2.7",
       "reasoningEffort": "low",
       "temperature": 1
     }
