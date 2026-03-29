@@ -40,10 +40,7 @@
     }
   },
   "default_agent": "build",
-  "instructions": [
-    "AGENTS.md", "https://raw.githubusercontent.com/Ven0m0/claude-config/main/opencode/AGENTS.md",
-    "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"
-  ],
+  "instructions": ["AGENTS.md", "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"],
   "mcp": {
     "ref-tools": {
       "type": "remote",
@@ -54,10 +51,7 @@
       "url": "https://mcp.grep.app"
     },
     "icm": {
-      "command": [
-        "/home/ven0m0/.local/share/mise/installs/cargo-https-github-com-rtk-ai-icm/HEAD/bin/icm",
-        "serve"
-      ],
+      "command": ["icm", "serve"],
       "enabled": true,
       "type": "local"
     },
@@ -91,14 +85,15 @@
     "opencode-pty@0.2.3",
     "openslimedit@1.0.4",
     "@spoons-and-mirrors/subtask2@0.3.5",
-    "@azumag/opencode-rate-limit-fallback@1.70.0",
     "openfundus@0.1.6",
     "opencode-rtk-rewrite",
     "context-mode@latest",
     "opencode-cachebro@latest",
     "opencode-snip@latest",
     "opencode-toolbox@0.10.4",
-    "micode"
+    "micode",
+    "opencode-cross-repo@0.4.1",
+    "@tuanhung303/opencode-acp@3.0.15"
   ],
   "lsp": {
     "typescript": {
