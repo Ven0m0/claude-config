@@ -25,7 +25,13 @@
   "ignore": [
     "openai"
   ],
-  "allow_fallbacks": true
+  "allow_fallbacks": true,
+  "reasoning": {
+    "effort": "medium",
+    "enabled": true,
+    "exclude": true
+  },
+  "temperature": 0.3
 ```
 
 openrouter: 
