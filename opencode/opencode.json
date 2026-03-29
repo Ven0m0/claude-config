@@ -166,5 +166,11 @@
         "timeout": 600000
       }
     }
+  },
+  "experimental": {
+    "continue_loop_on_deny": false,
+    "mcp_timeout": 10000,
+    "openTelemetry": false,
+    "batch_tool": true
   }
 }
