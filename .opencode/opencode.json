@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["AGENTS.md"],
+  "instructions": ["AGENTS.md", "**/AGENTS.md", "../.github/copilot-instructions.md"],
   "permission": {
     "*": "allow",
     "sudo *": "deny",
@@ -11,8 +11,12 @@
     ":(){:|:&};:": "deny",
     "doom_loop": "deny"
   },
-  "share": "auto",
-  "model": "opencode/glm-5",
+  "autoBash": true,
+  "autoEdit": true,
+  "autoRead": true,
+  "share": "manual",
+  "default_agent": "general",
+  "model": "opencode/minimax-m2.5-free",
   "small_model": "opencode/minimax-m2.5-free",
   "disabled_providers": ["openai"],
   "plugin": [
@@ -22,7 +26,8 @@
     "@spoons-and-mirrors/subtask2@0.3.5",
     "opencode-pty@0.2.3",
     "openfundus@0.1.6",
-    "opencode-toolbox@0.10.4"
+    "opencode-toolbox@0.10.4",
+    "@nick-vi/opencode-type-inject@1.1.1"
   ],
   "lsp": {
     "typescript": {
@@ -73,15 +78,15 @@
       "extensions": [".toml"]
     }
   },
-  "watcher": { "ignore": ["node_modules/**", "dist/**", ".git/**"] },
+  "watcher": { "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**"] },
   "mcp": {
     "ref-tools": {
       "type": "remote",
       "url": "https://api.ref.tools/mcp"
     },
-    "exa": {
+    "github-mcp-server": {
       "type": "remote",
-      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,crawling_exa"
+      "url": "https://api.githubcopilot.com/mcp/"
     },
     "gh_grep": {
       "type": "remote",
