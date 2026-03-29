@@ -5,7 +5,6 @@
 #   bash install.sh              # docker mode (INSTALL_MODE=docker in .env)
 #
 # Re-running is safe (idempotent).
-
 set -euo pipefail
 
 # ── Constants ──────────────────────────────────────────────────────────────────
@@ -190,9 +189,12 @@ WantedBy=multi-user.target
 EOF
 
   systemctl daemon-reload
-  systemctl enable openchamber.service cloudflared-openchamber.service
+  systemctl enable --now openchamber.service cloudflared-openchamber.service
   systemctl restart openchamber.service cloudflared-openchamber.service
 }
+
+# TODO: add pm2 support
+# install_global pm2
 
 install_local() {
   [[ $EUID -eq 0 ]] || die "Local mode requires root: sudo bash install.sh"
