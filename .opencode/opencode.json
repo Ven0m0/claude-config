@@ -15,7 +15,7 @@
   "autoEdit": true,
   "autoRead": true,
   "share": "manual",
-  "default_agent": "general",
+  "default_agent": "build",
   "model": "opencode/minimax-m2.5-free",
   "small_model": "opencode/minimax-m2.5-free",
   "disabled_providers": ["openai"],
