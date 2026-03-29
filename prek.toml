@@ -8,3 +8,40 @@ hooks = [
   # Run the formatter.
   { id = "ruff-format", types_or = ["python", "pyi"] },
 ]
+
+[[repos]]
+repo = "https://github.com/avifenesh/agnix"
+rev = "v0.17.0"
+hooks = [
+  { id = "agnix" },
+  { id = "agnix-fix" },
+]
+
+[[repos]]
+repo = "local"
+hooks = [
+  {
+    id = "biome-check",
+    name = "biome check",
+    entry = "bunx @biomejs/biome check --write",
+    language = "node",
+    types_or = ["javascript", "typescript", "jsx", "tsx", "json", "jsonc"],
+    pass_filenames = true,
+  },
+  {
+    id = "oxlint",
+    name = "oxlint",
+    entry = "bunx oxlint --fix",
+    language = "node",
+    types_or = ["javascript", "typescript", "jsx", "tsx"],
+    pass_filenames = true,
+  },
+  {
+    id = "oxfmt",
+    name = "oxfmt",
+    entry = "bunx oxfmt",
+    language = "node",
+    types_or = ["javascript", "typescript", "jsx", "tsx"],
+    pass_filenames = true,
+  },
+]
