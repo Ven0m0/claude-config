@@ -1,6 +1,9 @@
 {
   "$schema": "https://app.kilo.ai/config.json",
-  "instructions": ["AGENTS.md", "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"],
+  "instructions": [
+    "AGENTS.md",
+    "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"
+  ],
   "permission": {
     "*": "allow",
     "sudo *": "deny",
@@ -8,7 +11,7 @@
     "rm -rf /*": "deny",
     "rm -rf ~": "deny",
     "rm -rf ~/*": "deny",
-    ":(){:|:&};:": "deny",
+    ":(){:|:&}:": "deny",
     "doom_loop": "deny"
   },
   "share": "manual",
@@ -28,17 +31,17 @@
       "temperature": 0.2
     },
     "explore": {
-      "model": "kilo/morph-warp-grep-v2",
+      "model": "kilo/x-ai/grok-code-fast-1",
       "reasoningEffort": "low",
       "temperature": 0.1
     },
     "plan": {
-      "model": "kilo/xiaomi/mimo-v2-pro:free",
+      "model": "kilo/minimax/minimax-m2.1:free",
       "reasoningEffort": "high",
       "temperature": 0.3
     },
     "researcher": {
-      "model": "kilo/z-ai/glm-5",
+      "model": "kilo/z-ai/glm-5:free",
       "reasoningEffort": "high",
       "temperature": 0.4
     },
@@ -129,7 +132,29 @@
     "gh_grep": {
       "type": "remote",
       "url": "https://mcp.grep.app"
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "browser-tools": {
+      "type": "local",
+      "command": ["npx", "-y", "@agentdeskai/browser-tools-mcp@latest"],
+      "enabled": true
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking@latest"],
+      "enabled": true
+    },
+    "fetch": {
+      "type": "local",
+      "command": ["uvx", "mcp-server-fetch"],
+      "enabled": true
     }
+  },
+  "skills": {
+    "paths": [".kilo/skill"]
   },
   "experimental": {
     "continue_loop_on_deny": false,

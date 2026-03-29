@@ -1,4 +1,5 @@
-{
+// biome-ignore lint/style/useNamingConvention: <explanation>
+export const settings = {
   "editor.defaultFormatter": "biomejs.biome",
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,

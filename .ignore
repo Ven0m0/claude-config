@@ -65,9 +65,7 @@
 
 # Repo/tooling local state
 .git/
-.claude/
 .omc/
-.opencode/
 **/.opencode/cache/**
 **/.opencode/sessions/**
 

@@ -1,9 +1,0 @@
-build/
-dist/
-*.egg-info/
-__pycache__/
-.pytest_cache/
-node_modules/
-*.backup
-*.bak
-.mypy_cache/
