@@ -1,9 +1,13 @@
-openrouter:
+openrouter: 
+- https://openrouter.ai/docs/guides/routing/provider-selection
+
 ```text
 relace/relace-search
 minimax/minimax-m2.7
+openrouter/minimax/minimax-m2.7:nitro
 z-ai/glm-5
 openrouter/openrouter/free
+openrouter/openrouter/free:nitro
 ```
 
 kilo:
