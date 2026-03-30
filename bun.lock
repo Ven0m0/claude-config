@@ -4,7 +4,11 @@
   "workspaces": {
     "": {
       "devDependencies": {
+        "@biomejs/biome": "2.4.9",
+        "agnix": "0.17.0",
         "claude-code-lint": "^0.3.0",
+        "oxfmt": "0.42.0",
+        "oxlint": "1.57.0",
       },
     },
   },
