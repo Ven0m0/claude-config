@@ -36,12 +36,4 @@ hooks = [
     types_or = ["javascript", "typescript", "jsx", "tsx"],
     pass_filenames = true,
   },
-  {
-    id = "oxfmt",
-    name = "oxfmt",
-    entry = "bunx oxfmt",
-    language = "node",
-    types_or = ["javascript", "typescript", "jsx", "tsx"],
-    pass_filenames = true,
-  },
 ]
