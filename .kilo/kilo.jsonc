@@ -14,10 +14,7 @@
     "ask": { "model": "kilo/minimax/minimax-m2.7" }
   },
   "default_agent": "build",
-  "instructions": [
-    "AGENTS.md",
-    "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"
-  ],
+  "instructions": ["AGENTS.md", "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"],
   "permission": {
     "*": "allow",
     "sudo *": "deny",
