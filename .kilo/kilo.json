@@ -1,15 +1,17 @@
 {
   "$schema": "https://app.kilo.ai/config.json",
-  "model": "kilo-auto/balanced",
-  "small_model": "kilo-auto/free",
+  "model": "kilo/kilo-auto/balanced",
+  "small_model": "kilo/kilo-auto/free",
   "agent": {
-    "build": { "model": "opencode/minimax-m2.5-free", "reasoningEffort": "high", "temperature": 0.2 },
-    "coder": { "model": "opencode/minimax-m2.5-free", "reasoningEffort": "medium", "temperature": 0.2 },
+    "build": { "model": "kilo/minimax/minimax-m2.5:free", "reasoningEffort": "high", "temperature": 0.2 },
+    "code": { "model": "kilo/minimax/minimax-m2.5:free", "reasoningEffort": "medium", "temperature": 0.2 },
     "explore": { "model": "kilo/x-ai/grok-code-fast-1", "reasoningEffort": "low", "temperature": 0.1 },
-    "plan": { "model": "kilo/minimax/minimax-m2.5:free", "reasoningEffort": "high", "temperature": 0.3 },
+    "plan": { "model": "kilo/xiaomi/mimo-v2-pro:free", "reasoningEffort": "high", "temperature": 0.3 },
     "researcher": { "model": "kilo/z-ai/glm-5", "reasoningEffort": "high", "temperature": 0.4 },
-    "reviewer": { "model": "opencode/minimax-m2.5-free", "reasoningEffort": "high", "temperature": 0.1 },
-    "scribe": { "model": "kilo/arcee-ai/trinity-large-preview:free", "reasoningEffort": "low", "temperature": 0.7 }
+    "reviewer": { "model": "kilo/minimax/minimax-m2.5:free", "reasoningEffort": "high", "temperature": 0.1 },
+    "scribe": { "model": "kilo/arcee-ai/trinity-large-preview:free", "reasoningEffort": "low", "temperature": 0.7 },
+    "debug": { "model": "kilo/minimax/minimax-m2.5:free" },
+    "ask": { "model": "kilo/minimax/minimax-m2.7" }
   },
   "default_agent": "build",
   "instructions": [
@@ -25,6 +27,10 @@
     "rm -rf ~/*": "deny",
     ":(){:|:&}:": "deny",
     "doom_loop": "deny"
+  },
+  "compaction": {
+    "auto": true,
+    "prune": true
   },
   "share": "manual",
   "plugin": [
@@ -81,6 +87,7 @@
     "continue_loop_on_deny": true,
     "mcp_timeout": 10000,
     "openTelemetry": false,
+    "codebase_search": true,
     "batch_tool": true
   }
 }
