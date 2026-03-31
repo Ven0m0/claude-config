@@ -1,4 +1,6 @@
-# Claude Code Plugin Marketplace
+# LLM CONFIGS
+
+[![Maintainability](https://qlty.sh/gh/Ven0m0/projects/claude-config/maintainability.svg)](https://qlty.sh/gh/Ven0m0/projects/claude-config)
 
 A curated collection of Claude Code plugins, agents, skills, and tools for enhanced productivity.
 This marketplace provides professional-grade components for coding, documentation, and data analysis workflows.
