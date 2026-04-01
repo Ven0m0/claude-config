@@ -60,8 +60,31 @@
   },
   "disabled_providers": ["openai"],
   "watcher": { "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**", ".omc/**", ".kilo/**", ".kilocode/**", ".opencode/**"] },
-  "providers": {
-    "anthropic": { "apiKey": "{env:ANTHROPIC_API_KEY}", "chunkTimeout": 30000, "setCacheKey": true, "timeout": 600000 }
+  "provider": {
+    "anthropic": {
+      "options": {
+        "apiKey": "{env:ANTHROPIC_API_KEY}",
+        "chunkTimeout": 30000,
+        "setCacheKey": true,
+        "timeout": 600000
+      }
+    },
+    "gemini": {
+      "options": {
+        "apiKey": "{env:GEMINI_API_KEY}",
+        "chunkTimeout": 30000,
+        "setCacheKey": true,
+        "timeout": 600000
+      }
+    },
+    "kilo": {
+      "options": {
+        "apiKey": "{env:KILO_API_KEY}",
+        "chunkTimeout": 30000,
+        "setCacheKey": true,
+        "timeout": 600000
+      }
+    }
   },
   "experimental": {
     "continue_loop_on_deny": false,
