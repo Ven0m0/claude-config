@@ -2,16 +2,28 @@
 repos:
   - repo: local
     hooks:
-    - id: uv-lock-upgrade
-      name: Run uv lock --upgrade
-      entry: uv lock --upgrade
-      language: python
-      pass_filenames: false
-    - id: pre-commit autoupdate
-      name: autoupdate pre-commit
-      entry: pre-commit autoupdate
-      language: system
-      pass_filenames: false
+      - id: uv-lock-upgrade
+        name: Run uv lock --upgrade
+        entry: uv lock --upgrade
+        language: python
+        pass_filenames: false
+      - id: pre-commit autoupdate
+        name: autoupdate pre-commit
+        entry: pre-commit autoupdate
+        language: system
+        pass_filenames: false
+      - id: biome-check
+        name: biome check
+        entry: bunx @biomejs/biome check --write
+        language: node
+        types_or: [javascript, typescript, jsx, tsx, json, jsonc]
+        pass_filenames: true
+      - id: oxlint
+        name: oxlint
+        entry: bunx oxlint --fix
+        language: node
+        types_or: [javascript, typescript, jsx, tsx]
+        pass_filenames: true
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
@@ -22,10 +34,18 @@ repos:
       - id: check-toml
       - id: fix-byte-order-marker
       - id: mixed-line-ending
-    - repo: https://github.com/DetachHead/basedpyright-prek-mirror
-      rev: 1.38.0
-      hooks:
-          - id: basedpyright
+  - repo: https://github.com/DetachHead/basedpyright-prek-mirror
+    rev: 1.38.0
+    hooks:
+      - id: basedpyright
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.0
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+        types_or: [python, pyi]
+      - id: ruff-format
+        types_or: [python, pyi]
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.3
     hooks:
@@ -43,7 +63,7 @@ repos:
     hooks:
       - id: detect-secrets
   - repo: https://github.com/avifenesh/agnix
-    rev: v0.8.0
+    rev: v0.17.0
     hooks:
       - id: agnix
       - id: agnix-fix
@@ -57,12 +77,12 @@ repos:
     rev: v0.1
     hooks:
       - id: gha-update
--   repo: https://github.com/koalaman/shellcheck-precommit
+  - repo: https://github.com/koalaman/shellcheck-precommit
     rev: v0.11.0
     hooks:
-    -   id: shellcheck
+      - id: shellcheck
   - repo: https://github.com/rvben/rumdl-pre-commit
     rev: v0.1.57
     hooks:
-      - id: rumdl      # Lint only (fails on issues)
-      - id: rumdl-fmt  # Auto-format and fail if issues remain
+      - id: rumdl
+      - id: rumdl-fmt
