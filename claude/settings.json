@@ -32,7 +32,8 @@
     "PYTHONUNBUFFERED": "1",
     "PYTHONDONTWRITEBYTECODE": "1",
     "PYTHONOPTIMIZE": "1",
-    "BUN_OPTIONS": "--bun --prefer-offline --prefer-latest --parallel --silent"
+    "BUN_OPTIONS": "--bun --prefer-offline --prefer-latest --parallel --silent",
+    "CLAUDE_CODE_USE_POWERSHELL_TOOL": "1"
   },
   "includeCoAuthoredBy": false,
   "cleanupPeriodDays": 7,
