@@ -86,7 +86,7 @@ Use marker as a prior: `FIXME → high`, `HACK → medium`, `TODO → low`, `SEC
 
 ### Phase 5 — Build Dependency Graph
 
-1. Assign each task a stable ID using the format `T\d{3}` (e.g. `T001`, `T002`).
+1. Assign each task a stable ID using the format `T\d{4}` (e.g. `T0001`, `T0002`).
 2. For each task, inspect `blocking_paths`: if a blocking path is itself a task location, record that task's ID in `blocking_ids`.
 3. Topological sort the resulting DAG. Tasks with no `blocking_ids` are in wave 0; tasks whose entire dependency set is in wave N go into wave N+1.
 4. Within the same wave, sort by severity descending (`critical` → `high` → `medium` → `low`).
@@ -99,7 +99,7 @@ Emit one record per task in the sorted order. Use this exact schema:
 
 ```json
 {
-  "id": "T001",
+  "id": "T0001",
   "wave": 0,
   "title": "<imperative verb phrase ≤72 chars>",
   "anchor": "src/auth/session.py:142",
@@ -121,7 +121,7 @@ Field rules:
 
 | Field | Constraint |
 |-------|-----------|
-| `id` | `T\d{3}`, unique, zero-padded, assigned in topo-sort order |
+| `id` | `T\d{4}`, unique, zero-padded, assigned in topo-sort order |
 | `wave` | Integer ≥ 0 |
 | `title` | Imperative, ≤72 chars, no pronouns |
 | `anchor` | `file:line` — the exact location of the original comment |
@@ -131,7 +131,7 @@ Field rules:
 | `acceptance_criteria` | 2–5 bullets, each testable, anchored to `file:line`, no vague language |
 | `implementation_hint` | Exact function/type/pattern to use, with `file:line`; no prose explanations |
 | `loc_delta` | `S` (<20 LOC), `M` (20–100), `L` (100–300), `XL` (300+) |
-| `blocking_ids` | List of `T\d{3}` strings; empty list `[]` if none |
+| `blocking_ids` | List of `T\d{4}` strings; empty list `[]` if none |
 
 ---
 
@@ -160,9 +160,9 @@ Print a summary table to stdout:
 ```
 Wave  ID    Sev       Cat          Title
 ─────────────────────────────────────────────────────────────────────────────
-0     T001  critical  security     Rotate session tokens after privilege escalation
-0     T002  high      bug          Fix null-dereference in UserService.resolve()
-1     T003  medium    refactor     Extract duplicate auth middleware into shared util
+0     T0001  critical  security     Rotate session tokens after privilege escalation
+0     T0002  high      bug          Fix null-dereference in UserService.resolve()
+1     T0003  medium    refactor     Extract duplicate auth middleware into shared util
 ```
 
 ---
@@ -173,7 +173,7 @@ Acceptance criteria and implementation hints are written for autonomous agent ex
 
 - Use imperative language throughout. No "you should", "consider", or "maybe".
 - Anchor every criterion to `file:line`. Never reference a function without its location.
-- Emit only machine-parseable task IDs (`T\d{3}`) in `blocking_ids`. No prose references.
+- Emit only machine-parseable task IDs (`T\d{4}`) in `blocking_ids`. No prose references.
 - Acceptance criteria must be independently verifiable (shell command, test run, or static check).
 
 ---
