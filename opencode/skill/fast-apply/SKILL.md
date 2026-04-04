@@ -14,7 +14,7 @@ Use anchored replacements for narrow edits where the surrounding context is stab
 - you want a fast patch without reopening the whole file
 - you need to verify the target block before writing
 
-## Anchored workflow
+## Anchored Workflow
 
 1. Find a unique anchor with context:
 
