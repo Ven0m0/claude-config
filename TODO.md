@@ -15,6 +15,8 @@ def truncate_output(output, max_lines=100):
 
 ## External integration implementation plan
 
+See [external-integration-triage.md](./docs/external-integration-triage.md) for the current disposition of every Phase 2 candidate.
+
 ### Phase 1: Inventory and classify candidates
 
 - [x] Confirm the target surface for each candidate (`claude/agents`, `claude/skills`, `claude/hooks`, `plugins`, `opencode`, or docs only) — see [external-integration-triage.md](./docs/external-integration-triage.md).
@@ -25,34 +27,45 @@ def truncate_output(output, max_lines=100):
 
 #### Skills, prompts, and local automation
 
-- [ ] Review for reusable skill layout, prompt modules, and workflow conventions that fit `claude/skills/`:
+- [x] Review for reusable skill layout, prompt modules, and workflow conventions that fit `claude/skills/`:
   - [`modu-ai/moai-adk`](https://github.com/modu-ai/moai-adk)
   - [`daymade/claude-code-skills`](https://github.com/daymade/claude-code-skills)
   - [`Piebald-AI/tweakcc`](https://github.com/Piebald-AI/tweakcc)
-- [ ] Review for standalone utilities or wrappers that can become new skills or references in existing skill docs:
+  - Integrated `moai-adk` patterns into `claude/skills/moai/SKILL.md`.
+  - Kept `daymade/claude-code-skills` as a marketplace/reference-only source; no local mirror.
+  - Kept `tweakcc` as a tracked config/bootstrap integration via `claude/tweakcc/config.json`, `setup.sh`, and `update.sh`.
+- [x] Review for standalone utilities or wrappers that can become new skills or references in existing skill docs:
   - [`DanielNappa/tweakgc-cli`](https://github.com/DanielNappa/tweakgc-cli)
   - [`mangiucugna/json_repair`](https://github.com/mangiucugna/json_repair)
   - [`ziad-hsn/code-mode-toon`](https://github.com/ziad-hsn/code-mode-toon)
   - [`Sharper-Flow/lgrep`](https://github.com/Sharper-Flow/lgrep)
-- [ ] Prototype a maintenance skill that runs the requested autofix commands before validation:
+  - Added or kept local references at `claude/skills/json-repair/SKILL.md`, `claude/skills/toon-formatter/SKILL.md`, and `claude/skills/codebase-indexer/SKILL.md`.
+  - Left `tweakgc-cli` and `lgrep` as reference-only because existing `tweakcc` and `rg` coverage already fit this repo better.
+- [x] Prototype a maintenance skill that runs the requested autofix commands before validation:
   - `claudelint check-all --fix >/dev/null 2>&1`
   - `ruff check --fix-only --unsafe-fixes . >/dev/null 2>&1`
+  - Implemented at `claude/skills/maintenance/SKILL.md`.
 
 #### Hooks, environment management, and session bootstrap
 
-- [ ] Review for hook or bootstrap improvements under `claude/hooks/`:
+- [x] Review for hook or bootstrap improvements under `claude/hooks/`:
   - [`vtemian/claude-env`](https://github.com/vtemian/claude-env)
   - [`add-mcp`](https://www.npmjs.com/package/add-mcp)
   - [`@mathew-cf/opencode-mcp-auto-reauth`](https://www.npmjs.com/package/@mathew-cf/opencode-mcp-auto-reauth)
   - [`opencode-plugin-preload-skills`](https://www.npmjs.com/package/opencode-plugin-preload-skills)
-- [ ] Review for policy, environment, and session guardrails that complement existing hook protections:
+  - Kept environment/bootstrap work in `setup.sh`, `claude/settings.json`, and `claude/hooks/load-mcp-skills.sh`.
+  - Left OpenCode-only reauth automation as reference-only instead of adding Claude-specific placeholders.
+- [x] Review for policy, environment, and session guardrails that complement existing hook protections:
   - [`johnzfitch/claude-warden`](https://github.com/johnzfitch/claude-warden)
   - [`johnzfitch/llmx`](https://github.com/johnzfitch/llmx)
-- [ ] Review [`1rgs/nanocode`](https://github.com/1rgs/nanocode) and preserve the background-run note for validation: `nohup nanobot agent > nanobot.log 2>&1 &`.
+  - `claude-warden` shipped locally at `claude/hooks/claude-warden.sh` and `claude/hooks/warden/`.
+  - `llmx` remains reference-only because current hook and settings guardrails already cover the needed policy surface.
+- [x] Review [`1rgs/nanocode`](https://github.com/1rgs/nanocode) and preserve the background-run note for validation: `nohup nanobot agent > nanobot.log 2>&1 &`.
+  - Preserved as an external reference in [`docs/external-integration-triage.md`](./docs/external-integration-triage.md) only; no local runtime integration.
 
 #### Plugins, ecosystem integrations, and marketplace references
 
-- [ ] Compare against existing plugin coverage before creating new plugin packages:
+- [x] Compare against existing plugin coverage before creating new plugin packages:
   - [`mattzcarey/zagi`](https://github.com/mattzcarey/zagi)
   - [`siteboon/claudecodeui`](https://github.com/siteboon/claudecodeui)
   - [`zeroclaw-labs/zeroclaw`](https://github.com/zeroclaw-labs/zeroclaw)
@@ -61,7 +74,9 @@ def truncate_output(output, max_lines=100):
   - [`tiann/hapi`](https://github.com/tiann/hapi)
   - [`glommer/cachebro`](https://github.com/glommer/cachebro)
   - [`glommer/codemogger`](https://github.com/glommer/codemogger)
-- [ ] Evaluate ecosystem packages for the `opencode/` backlog and shared plugin patterns:
+  - Kept the only fit candidate as a tracked marketplace entry: `pchalasani/claude-code-tools` in `.claude-plugin/marketplace.json`.
+  - Kept overlap-heavy or UI-only candidates as reference/deferred items instead of adding new local plugin directories.
+- [x] Evaluate ecosystem packages for the `opencode/` backlog and shared plugin patterns:
   - [`context-mode`](https://www.npmjs.com/package/context-mode)
   - [`@azumag/opencode-rate-limit-fallback`](https://www.npmjs.com/package/@azumag/opencode-rate-limit-fallback)
   - [`opencode-kilo-auth`](https://www.npmjs.com/package/opencode-kilo-auth)
@@ -78,12 +93,14 @@ def truncate_output(output, max_lines=100):
   - [`opencode-cachebro`](https://www.npmjs.com/package/opencode-cachebro)
   - [`@old-mikser/occontext-thinking-trim`](https://www.npmjs.com/package/@old-mikser/occontext-thinking-trim)
   - [`opencode-image-compress`](https://www.npmjs.com/package/opencode-image-compress)
+  - Recorded final OpenCode dispositions in `opencode/TODO.md` and [`docs/external-integration-triage.md`](./docs/external-integration-triage.md).
+  - Added local reference skills for `opencode-fast-apply` and `opencode-cachebro` without installing extra ecosystem packages.
 
 ### Phase 3: Turn references into tracked work
 
 - [x] Promote validated candidates into `plugins/`, `claude/skills/`, or `claude/hooks/` only after a narrow proof-of-fit and minimal implementation plan exists for each item.
   - `johnzfitch/claude-warden` implemented at `claude/hooks/claude-warden.sh` and `claude/hooks/warden/`
-  - `pchalasani/claude-code-tools` implemented at `plugins/claude-code-tools/`
+  - `pchalasani/claude-code-tools` retained as a marketplace-tracked external plugin; no extra local mirror added
   - `daymade/claude-code-skills` deferred - external marketplace reference only, no local skill implementation
 - [x] Update `.claude-plugin/marketplace.json` only for integrations that are actually shipped in this repo.
   - Added `claude-code-tools` plugin entry (lines 125-139)
