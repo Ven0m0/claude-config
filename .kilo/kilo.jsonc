@@ -70,14 +70,13 @@
     "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**", ".omc/**", ".kilocode/**", ".opencode/**"]
   },
   "mcp": {
-    "ref-tools": { "type": "remote", "url": "https://api.ref.tools/mcp" },
+    "ref-tools": {
+      "type": "remote",
+      "url": "https://api.ref.tools/mcp",
+      "headers": { "x-ref-api-key": "{env:REF_API_KEY}" }
+    },
     "github-mcp-server": { "type": "remote", "url": "https://api.githubcopilot.com/mcp/" },
     "gh_grep": { "type": "remote", "url": "https://mcp.grep.app" },
-    "context7": {
-      "type": "remote",
-      "url": "https://mcp.context7.com/mcp",
-      "headers": { "Authorization": "Bearer $CONTEXT7_API_KEY" }
-    },
     "icm": { "type": "local", "command": ["icm", "serve"], "enabled": true },
     "browser-tools": {
       "type": "local",
