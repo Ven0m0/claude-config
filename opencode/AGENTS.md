@@ -12,12 +12,11 @@ OpenCode reads this directly; do not inherit from the root `AGENTS.md`.
 
 | Artifact | Path |
 |---|---|
-| Config template | `opencode/opencode.jsonc` |
-| Synced JSON snapshot | `opencode/opencode.json` |
+| Shared project config | `opencode/opencode.json` |
 | Runtime overlay | `.opencode/opencode.json` |
-| Custom assets | `opencode/agents/`, `opencode/command/`, `opencode/skill/`, `opencode/plugin/` |
+| Custom assets | `opencode/agents/`, `opencode/command/`, `opencode/skill/`, `opencode/plugins/` |
 
-> Config sync: `opencode/opencode.jsonc` → `opencode/opencode.json` → `.opencode/opencode.json`
+> Config sync: `opencode/opencode.json` → `.opencode/opencode.json`
 
 ## Working Style
 
@@ -42,8 +41,8 @@ OpenCode reads this directly; do not inherit from the root `AGENTS.md`.
 
 ## Validation
 
-- After config edits: `bunx json5 -c opencode/opencode.jsonc`
-- After JSON sync: `python -m json.tool opencode/opencode.json >/dev/null`
+- After config edits: `python -m json.tool opencode/opencode.json >/dev/null`
+- After overlay sync: `python -m json.tool .opencode/opencode.json >/dev/null`
 - After skill/agent changes: grep for stale references before committing
 
 ## External File Loading
