@@ -6,7 +6,7 @@ Sourced from [external-integration-triage.md](../docs/external-integration-triag
 
 | Category | Count | Status |
 |----------|-------|--------|
-| Defer | 8 | Pending |
+| Defer | 9 | Deferred |
 | Reference | 8 | Implemented |
 
 ---
@@ -19,12 +19,11 @@ Sourced from [external-integration-triage.md](../docs/external-integration-triag
 
 ---
 
-extract plugin based on changes of this fork: https://github.com/aggreggator/opencode
-
 ## Defer
 
 | Candidate | Notes |
 |-----------|-------|
+| [`aggreggator/opencode`](https://github.com/aggreggator/opencode) | MIT personal fork of OpenCode with double-buffer compaction and local MLX fixes; relevant to upstream runtime internals, not this config repo, so keep following upstream docs and local repo config. |
 | [`context-mode`](https://www.npmjs.com/package/context-mode) | MCP server for context management; unclear license; needs more research. |
 | [`@azumag/opencode-rate-limit-fallback`](https://www.npmjs.com/package/@azumag/opencode-rate-limit-fallback) | OpenCode-specific rate limit fallback plugin; outside Claude Code scope. |
 | [`opencode-kilo-auth`](https://www.npmjs.com/package/opencode-kilo-auth) | Kilo Gateway auth for OpenCode; outside Claude Code scope. |
