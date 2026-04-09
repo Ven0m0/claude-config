@@ -9,8 +9,8 @@ claude/hooks/      — executable hook scripts (Python, shell, JS)
 plugins/<name>/    — self-contained plugin; must not import from other plugins
 opencode/command/  — opencode slash command templates (.md)
 opencode/skill/    — opencode skill definitions (SKILL.md)
-kilocode/rules/    — kilocode rule files (.md)
-kilocode/skills/   — kilocode skill definitions (SKILL.md)
+.kilo/rules/       — Kilo project rule files (.md)
+.kilo/skill/       — Kilo skill definitions (SKILL.md)
 cursor/rules/      — Cursor rule files (.md or .mdc)
 ```
 

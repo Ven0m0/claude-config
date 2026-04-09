@@ -14,7 +14,11 @@
   "default_agent": "build",
   "instructions": ["AGENTS.md", "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"],
   "mcpServers": {
-    "context7": { "type": "sse", "url": "https://mcp.context7.com/mcp" },
+    "context7": {
+      "type": "sse",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": { "Authorization": "Bearer $CONTEXT7_API_KEY" }
+    },
     "ref-tools": { "type": "sse", "url": "https://api.ref.tools/mcp" },
     "gh_grep": { "type": "sse", "url": "https://mcp.grep.app" },
     "icm": { "type": "stdio", "command": "icm", "args": ["serve"] },
