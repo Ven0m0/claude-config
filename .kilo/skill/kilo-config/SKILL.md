@@ -1,6 +1,6 @@
 ---
 name: kilo-config
-description: Help users configure and troubleshoot Kilo CLI, KiloCode Gateway, and agent settings. Use when discussing kilo.json configuration, model selection, MCP servers, or skills.
+description: Help users configure and troubleshoot Kilo CLI, KiloCode Gateway, and agent settings. Use when discussing kilo.jsonc configuration, model selection, MCP servers, rules, or skills.
 ---
 
 # Kilo Configuration Guide
@@ -9,8 +9,10 @@ description: Help users configure and troubleshoot Kilo CLI, KiloCode Gateway, a
 
 | Scope | Path |
 |-------|------|
-| Project | `./kilo.json`, `./.kilo/kilo.json` |
-| Global | `~/.config/kilo/kilo.json` |
+| Project | `./.kilo/kilo.jsonc` (preferred), `./kilo.jsonc` |
+| Global | `~/.config/kilo/kilo.jsonc` |
+
+`.kilocode/` is kept only as a legacy compatibility path. The shared project config lives in `.kilo/`.
 
 ## Model Format
 
@@ -64,6 +66,12 @@ Remote server:
   }
 }
 ```
+
+## Project Rules and Modes
+
+- Shared project rules live in `.kilo/rules/` and are loaded from `.kilo/kilo.jsonc`
+- Shared skills live in `.kilo/skill/`
+- Project custom modes live in `.kilocodemodes`
 
 ## Agent Configuration
 

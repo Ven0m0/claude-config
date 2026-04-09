@@ -2,6 +2,7 @@
   "$schema": "https://app.kilo.ai/config.json",
   "model": "kilo/kilo-auto/balanced",
   "small_model": "kilo/kilo-auto/free",
+  "project": { "managedIndexingEnabled": true },
   "agent": {
     "build": { "model": "kilo/minimax/minimax-m2.5:free", "reasoningEffort": "high", "temperature": 0.2 },
     "code": { "model": "kilo/minimax/minimax-m2.5:free", "reasoningEffort": "medium", "temperature": 0.2 },
@@ -14,7 +15,11 @@
     "ask": { "model": "kilo/minimax/minimax-m2.7" }
   },
   "default_agent": "build",
-  "instructions": ["AGENTS.md", "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"],
+  "instructions": [
+    "AGENTS.md",
+    ".kilo/rules/*.md",
+    "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"
+  ],
   "permission": {
     "*": "allow",
     "sudo *": "deny",
@@ -61,12 +66,19 @@
     "css-ls": { "command": ["vscode-css-language-server", "--stdio"], "extensions": [".css", ".scss", ".less"] },
     "tombi": { "command": ["tombi", "lsp"], "extensions": [".toml"] }
   },
-  "watcher": { "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**"] },
+  "watcher": {
+    "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**", ".omc/**", ".kilocode/**", ".opencode/**"]
+  },
   "mcp": {
     "ref-tools": { "type": "remote", "url": "https://api.ref.tools/mcp" },
     "github-mcp-server": { "type": "remote", "url": "https://api.githubcopilot.com/mcp/" },
     "gh_grep": { "type": "remote", "url": "https://mcp.grep.app" },
-    "context7": { "type": "remote", "url": "https://mcp.context7.com/mcp" },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": { "Authorization": "Bearer $CONTEXT7_API_KEY" }
+    },
+    "icm": { "type": "local", "command": ["icm", "serve"], "enabled": true },
     "browser-tools": {
       "type": "local",
       "command": ["npx", "-y", "@agentdeskai/browser-tools-mcp@latest"],

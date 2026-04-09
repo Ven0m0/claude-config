@@ -1,6 +1,6 @@
 customModes:
   - slug: docs-writer
-    name: 📝 Documentation Writer
+    name: Documentation Writer
     description: Specialized for writing and editing technical documentation
     roleDefinition: You are a technical writer specializing in clear documentation
     groups:
@@ -10,7 +10,7 @@ customModes:
           description: Markdown files only
     customInstructions: Focus on clear explanations and examples
   - slug: security-review
-    name: 🔒 Security Reviewer
+    name: Security Reviewer
     description: Read-only security analysis and vulnerability assessment
     roleDefinition: You are a security specialist reviewing code for vulnerabilities
     whenToUse: Use for security reviews and vulnerability assessments
