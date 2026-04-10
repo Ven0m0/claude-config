@@ -26,20 +26,18 @@ Kilo Gateway uses `provider/model-name` format:
 
 ## Available Model Categories
 
-**Auto Models** (recommended):
-- `kilo-auto/frontier` - Best capabilities, routes to top models
-- `kilo-auto/balanced` - Cost-effective with good performance
-- `kilo-auto/free` - Free tier models
+**Repo baseline**:
+- `github-copilot/gpt-5` - default and planning
+- `github-copilot/gpt-5-mini` - lightweight path
+- `github-copilot/gpt-5.1-codex` - build, code, and debug
+- `github-copilot/gpt-5.1-codex-mini` - explore
+- `github-copilot/gemini-3.1-pro-preview` - research
+- `github-copilot/claude-sonnet-4.5` - review
 
-**Anthropic**:
-- `anthropic/claude-opus-4.6` - Most capable
-- `anthropic/claude-sonnet-4.6` - Balanced
-- `anthropic/claude-haiku-4.5` - Fast
-
-**Free Models**:
-- `minimax/minimax-m2.1:free`
-- `z-ai/glm-5:free`
-- `arcee-ai/trinity-large-preview:free`
+**Fallback providers kept in config**:
+- `anthropic/*` via `ANTHROPIC_API_KEY`
+- `gemini/*` via `GEMINI_API_KEY`
+- `kilo/*` via `KILO_API_KEY`
 
 ## MCP Server Configuration
 
@@ -61,11 +59,23 @@ Remote server:
   "mcp": {
     "my-server": {
       "type": "remote",
-      "url": "https://example.com/mcp"
+      "url": "https://example.com/mcp",
+      "headers": {
+        "Authorization": "Bearer {env:API_TOKEN}"
+      }
     }
   }
 }
 ```
+
+Repo baseline MCPs:
+
+- `github-mcp-server` with `Authorization: Bearer {env:GITHUB_TOKEN}`
+- `ref-tools` with `x-ref-api-key: {env:REF_API_KEY}`
+- `exa` with `x-api-key: {env:EXA_API_KEY}`
+- `gh_grep` without auth
+
+The repo baseline removes local-only MCP wrappers like `icm` so the shared config stays Linux and Windows 10/11 compatible.
 
 ## Project Rules and Modes
 
@@ -77,11 +87,26 @@ Remote server:
 
 ```json
 {
+  "model": "github-copilot/gpt-5",
+  "small_model": "github-copilot/gpt-5-mini",
+  "provider": {
+    "github-copilot": {
+      "options": {
+        "apiKey": "{env:GITHUB_TOKEN}",
+        "enterpriseUrl": "{env:GITHUB_ENTERPRISE_URL}",
+        "setCacheKey": true
+      }
+    }
+  },
   "agent": {
-    "my-agent": {
-      "model": "kilo-auto/balanced",
-      "reasoningEffort": "high",
-      "temperature": 0.2
+    "code": {
+      "model": "github-copilot/gpt-5.1-codex",
+      "temperature": 0.1,
+      "options": {
+        "reasoningEffort": "medium",
+        "reasoningSummary": "auto",
+        "textVerbosity": "low"
+      }
     }
   }
 }
