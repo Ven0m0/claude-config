@@ -1,14 +1,18 @@
 """Image Compressor"""
-import requests, json
+import json
+
+import requests
+
 
 def handle(input_text: str, user_id: str = "default") -> dict:
     import re
-    url_match = re.search(r'https?://[^\s]+\.(jpg|jpeg|png|webp|gif)', input_text, re.I)
+    url_match = re.search(r"https?://[^\s]+\.(jpg|jpeg|png|webp|gif)", input_text, re.IGNORECASE)
     if not url_match:
         return {"error": "Please provide an image URL", "usage": "Compress image at [URL]"}
     return {"original_url": url_match.group(0), "status": "Image compression requested",
             "demo": "Integrate with TinyPNG API for actual compression", "payment_status": "paid"}
 
 if __name__ == "__main__":
-    import sys, json
+    import json
+    import sys
     print(json.dumps(handle(sys.argv[1] if len(sys.argv) > 1 else ""), indent=2))

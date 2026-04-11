@@ -222,9 +222,8 @@ install_pm2_services() {
 
   # Write pm2 ecosystem config
   local pm2_config_dir="$current_home/.openchamber"
-  install -d -m 700 -o "$current_user" -g "$current_user" "$pm2_config_dir"
+  sudo -u "$current_user" mkdir -p "$pm2_config_dir"
   local pm2_config_file="$pm2_config_dir/ecosystem.config.js"
-  install -m 600 -o "$current_user" -g "$current_user" /dev/null "$pm2_config_file"
 
   cat > "$pm2_config_file" << ECF
 module.exports = {
@@ -254,8 +253,8 @@ ECF
   chown "${current_user}:${current_user}" "$pm2_config_file"
 
   log "  Starting pm2 processes..."
-  sudo -H -u "$current_user" env HOME="$current_home" PATH="$PATH" pm2 start "$pm2_config_file"
-  sudo -H -u "$current_user" env HOME="$current_home" PATH="$PATH" pm2 save
+  sudo -u "$current_user" env PATH="$PATH" pm2 start "$pm2_config_file"
+  sudo -u "$current_user" env PATH="$PATH" pm2 save
 
   log "  Configuring pm2 startup..."
   env PATH="$PATH" pm2 startup -u "$current_user" --hp "$current_home" || true

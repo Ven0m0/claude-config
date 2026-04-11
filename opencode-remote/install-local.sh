@@ -268,14 +268,10 @@ install_pm2_services() {
 
   # Write pm2 ecosystem config
   local pm2_config_dir="$current_home/.openchamber"
-  mkdir -p "$pm2_config_dir"
-  chown "${current_user}:${current_user}" "$pm2_config_dir"
-  chmod 700 "$pm2_config_dir"
+  sudo -u "$current_user" mkdir -p "$pm2_config_dir"
   local pm2_config_file="$pm2_config_dir/ecosystem.config.js"
 
-  (
-    umask 077
-    cat > "$pm2_config_file" << ECF
+  cat > "$pm2_config_file" << ECF
 module.exports = {
   apps : [
     {
