@@ -4,6 +4,7 @@
 import contextlib
 import hashlib
 import json
+import re
 
 PYTHON_BLOCK_PATTERN = (
     r"^(?P<indentation> *)```(?:python|py|\{[ ]*\.py[ ]*\.annotate[ ]*\})\n(?P<code>.*?)\n(?P=indentation)```"
@@ -164,18 +165,37 @@ def update_markdown_file(file_path: Path, markdown_content: str, temp_files: lis
         temp_files (list): Metadata for formatted code blocks.
 
     """
+    lookup = {}
     for num_spaces, original_code_block, temp_file_path, code_type in temp_files:
         try:
             formatted_code = temp_file_path.read_text().rstrip("\n")
         except Exception:
             continue
         formatted_code_with_indentation = add_indentation(formatted_code, num_spaces)
+        lookup[(num_spaces, original_code_block, code_type)] = formatted_code_with_indentation
 
-        for lang in LANGUAGE_TAGS[code_type]:
-            markdown_content = markdown_content.replace(
-                f"{' ' * num_spaces}```{lang}\n{original_code_block}\n{' ' * num_spaces}```",
-                f"{' ' * num_spaces}```{lang}\n{formatted_code_with_indentation}\n{' ' * num_spaces}```",
-            )
+    if not lookup:
+        with contextlib.suppress(Exception):
+            file_path.write_text(markdown_content)
+        return
+
+    python_pattern = re.compile(PYTHON_BLOCK_PATTERN, re.DOTALL | re.MULTILINE)
+    bash_pattern = re.compile(BASH_BLOCK_PATTERN, re.DOTALL | re.MULTILINE)
+
+    def replacer(match: re.Match, code_type: str) -> str:
+        indentation = match.group("indentation")
+        num_spaces = len(indentation)
+        code = match.group("code")
+
+        key = (num_spaces, code, code_type)
+        if key in lookup:
+            formatted_code = lookup[key]
+            first_line = match.group(0).split("\n", 1)[0]
+            return f"{first_line}\n{formatted_code}\n{indentation}```"
+        return match.group(0)
+
+    markdown_content = python_pattern.sub(lambda m: replacer(m, "python"), markdown_content)
+    markdown_content = bash_pattern.sub(lambda m: replacer(m, "bash"), markdown_content)
 
     with contextlib.suppress(Exception):
         file_path.write_text(markdown_content)
