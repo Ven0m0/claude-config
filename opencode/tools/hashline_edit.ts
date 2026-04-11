@@ -231,8 +231,6 @@ function applyEdits(content: string, edits: Edit[]): string {
               }
               if (eq) dup = true;
             }
-          } else {
-            if (edit.lines === b.lines) dup = true;
           }
         }
         if (dup) break;
