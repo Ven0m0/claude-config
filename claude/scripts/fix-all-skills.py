@@ -208,18 +208,19 @@ def fix_body_sections(body: str, skill_name: str) -> tuple[str, list[str]]:
     # Find where to insert sections (after title or at end)
     lines = body.split("\n")
 
-    # Find first # heading (title)
+    # Find first # heading (title) and first ## heading
     title_idx = -1
-    for i, line in enumerate(lines):
-        if line.startswith("# ") and not line.startswith("## "):
-            title_idx = i
-            break
-
-    # Find first ## heading
     first_section_idx = -1
+
     for i, line in enumerate(lines):
-        if line.startswith("## "):
-            first_section_idx = i
+        if line and line[0] == "#":
+            if title_idx == -1 and line.startswith("# ") and not line.startswith("## "):
+                title_idx = i
+            elif first_section_idx == -1 and line.startswith("## "):
+                first_section_idx = i
+
+        # Early exit if both are found
+        if title_idx != -1 and first_section_idx != -1:
             break
 
     # Build sections to add
