@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Parallel.ai Search API
+"""
+Parallel.ai Search API
 Usage: python3 search.py <query> [--max-results N] [--mode one-shot|agentic]
 """
 
-import argparse
-import json
 import os
 import sys
+import json
+import argparse
 
 from parallel import Parallel
 
@@ -25,7 +26,7 @@ def search(objective: str, max_results: int = 10, mode: str = "one-shot"):
     return client.beta.search(
         mode=mode,
         max_results=max_results,
-        objective=objective,
+        objective=objective
     )
 
 def format_results(response) -> str:
@@ -78,10 +79,10 @@ def main():
                     "url": r.url,
                     "title": r.title,
                     "publish_date": r.publish_date,
-                    "excerpts": r.excerpts,
+                    "excerpts": r.excerpts
                 }
                 for r in response.results
-            ],
+            ]
         }, indent=2))
     else:
         print(format_results(response))

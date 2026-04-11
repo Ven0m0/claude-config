@@ -18,6 +18,7 @@ import re
 import sys
 from pathlib import Path
 
+
 MARKERS = ("TODO", "FIXME", "HACK", "NOTE", "OPTIMIZE", "SECURITY", "DEBT")
 
 # Matches a comment marker anywhere in a line, capturing the marker and the rest.
@@ -107,7 +108,7 @@ def _collect_file(path: Path, root: Path) -> list[dict]:
                 "marker": marker,
                 "text": comment_text,
                 "context": context_lines,
-            },
+            }
         )
 
     return results

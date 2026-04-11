@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Parallel.ai Monitor API - Continuous web tracking with alerts.
+"""
+Parallel.ai Monitor API - Continuous web tracking with alerts.
 
 Usage:
   python3 monitor.py create "Track AI funding news" --cadence daily
@@ -9,11 +10,10 @@ Usage:
   python3 monitor.py delete monitor_abc123  # Delete a monitor
 """
 
-import argparse
-import json
 import os
 import sys
-
+import json
+import argparse
 import requests
 
 API_KEY = os.environ.get("PARALLEL_API_KEY")
@@ -60,7 +60,7 @@ def create_monitor(
     if webhook_url:
         data["webhook"] = {
             "url": webhook_url,
-            "event_types": ["monitor.event.detected", "monitor.run.completed"],
+            "event_types": ["monitor.event.detected", "monitor.run.completed"]
         }
 
     if metadata:
@@ -189,7 +189,7 @@ def main():
             if args.json:
                 print(json.dumps(result, indent=2))
             else:
-                print("✅ Monitor created!")
+                print(f"✅ Monitor created!")
                 print(format_monitor(result))
 
         elif args.command == "list":
@@ -198,13 +198,14 @@ def main():
 
             if args.json:
                 print(json.dumps(monitors, indent=2))
-            elif not monitors:
-                print("No monitors found.")
             else:
-                print(f"📡 Monitors ({len(monitors)} total)\n")
-                for monitor in monitors:
-                    print(format_monitor(monitor))
-                    print()
+                if not monitors:
+                    print("No monitors found.")
+                else:
+                    print(f"📡 Monitors ({len(monitors)} total)\n")
+                    for monitor in monitors:
+                        print(format_monitor(monitor))
+                        print()
 
         elif args.command == "events":
             result = get_events(args.monitor_id, lookback=args.lookback)

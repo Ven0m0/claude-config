@@ -73,57 +73,27 @@ pull-opencode:
 status:
 	@docker compose ps 2>/dev/null || echo "(Docker services not running)"
 	@echo ""
-	@if command -v pm2 >/dev/null 2>&1 && pm2 info openchamber >/dev/null 2>&1; then \
-		echo "PM2 services:"; \
-		pm2 status; \
-	else \
-		echo "Systemd services:"; \
-		systemctl is-active openchamber 2>/dev/null && echo "  openchamber: active" || echo "  openchamber: inactive"; \
-		systemctl is-active cloudflared-openchamber 2>/dev/null && echo "  cloudflared-openchamber: active" || echo "  cloudflared-openchamber: inactive"; \
-	fi
-
+	@echo "Systemd services:"
+	@systemctl is-active openchamber 2>/dev/null && echo "  openchamber: active" || echo "  openchamber: inactive"
+	@systemctl is-active cloudflared-openchamber 2>/dev/null && echo "  cloudflared-openchamber: active" || echo "  cloudflared-openchamber: inactive"
 
 restart:
 	@if docker compose ps -q 2>/dev/null | grep -q .; then \
 	  docker compose restart; \
-	elif command -v pm2 >/dev/null 2>&1 && pm2 info openchamber >/dev/null 2>&1; then \
-	  pm2 restart openchamber cloudflared-openchamber; \
 	else \
 	  systemctl restart openchamber cloudflared-openchamber 2>/dev/null || echo "No services running"; \
 	fi
 
-
-
-
 # ── Local / systemd targets ───────────────────────────────────────────────────
 
 start:
-	@if command -v pm2 >/dev/null 2>&1 && pm2 info openchamber >/dev/null 2>&1; then \
-	  pm2 start openchamber cloudflared-openchamber; \
-	else \
-	  systemctl start openchamber cloudflared-openchamber; \
-	fi
-
+	systemctl start openchamber cloudflared-openchamber
 
 stop:
-	@if command -v pm2 >/dev/null 2>&1 && pm2 info openchamber >/dev/null 2>&1; then \
-	  pm2 stop openchamber cloudflared-openchamber; \
-	else \
-	  systemctl stop openchamber cloudflared-openchamber; \
-	fi
-
+	systemctl stop openchamber cloudflared-openchamber
 
 enable:
-	@if command -v pm2 >/dev/null 2>&1 && pm2 info openchamber >/dev/null 2>&1; then \
-	  pm2 save && pm2 startup; \
-	else \
-	  systemctl enable openchamber cloudflared-openchamber; \
-	fi
-
+	systemctl enable openchamber cloudflared-openchamber
 
 disable:
-	@if command -v pm2 >/dev/null 2>&1 && pm2 info openchamber >/dev/null 2>&1; then \
-	  pm2 unstartup; \
-	else \
-	  systemctl disable openchamber cloudflared-openchamber; \
-	fi
+	systemctl disable openchamber cloudflared-openchamber
