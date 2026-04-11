@@ -88,8 +88,8 @@ class EnvLoader:
                     if (value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'")):
                         value = value[1:-1]
                     env_vars[key] = value
-        except Exception:
-            pass
+        except (OSError, UnicodeDecodeError) as exc:
+            print(f"Warning: failed to read env file {path}: {exc}", file=sys.stderr)
 
         return env_vars
 
