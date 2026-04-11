@@ -155,7 +155,7 @@ install_systemd_services() {
 
   local current_user="${SUDO_USER:-$USER}"
   local current_home
-  current_home=$(eval echo "~$current_user")
+  current_home=$(getent passwd "$current_user" | cut -d: -f6)
 
   # Resolve openchamber server script path
   local openchamber_bin openchamber_server node_bin
@@ -234,13 +234,91 @@ EOF
   systemctl start openchamber.service cloudflared-openchamber.service
 }
 
+
+install_pm2_services() {
+  echo "[4/4] Installing pm2 services..."
+
+  install_global pm2
+
+  local current_user="${SUDO_USER:-$USER}"
+  local current_home; current_home=$(getent passwd "$current_user" | cut -d: -f6)
+
+  # Resolve openchamber server script
+  local openchamber_bin openchamber_server node_bin
+  openchamber_bin=$(readlink -f "$(command -v openchamber)")
+  openchamber_server=$(dirname "$(dirname "$openchamber_bin")")/server/index.js
+  node_bin=$(command -v node)
+
+  if [[ ! -f "$openchamber_server" ]]; then
+    echo "ERROR: Could not find openchamber server script at $openchamber_server" >&2
+    return 1
+  fi
+  echo "  Server script: $openchamber_server"
+
+  local cloudflared_bin; cloudflared_bin=$(command -v cloudflared)
+  local port="${OPENCHAMBER_PORT:-3000}"
+  local tunnel_id; tunnel_id=$(jq -r '.TunnelID' "$SCRIPT_DIR/cloudflared/credentials.json")
+
+  # Copy credentials
+  local cloudflared_etc="/etc/cloudflared"
+  mkdir -p "$cloudflared_etc"
+  cp "$SCRIPT_DIR/cloudflared/credentials.json" "$cloudflared_etc/credentials.json"
+  chown "${current_user}:${current_user}" "$cloudflared_etc/credentials.json"
+  chmod 600 "$cloudflared_etc/credentials.json"
+
+  # Write pm2 ecosystem config
+  local pm2_config_dir="$current_home/.openchamber"
+  sudo -u "$current_user" mkdir -p "$pm2_config_dir"
+  local pm2_config_file="$pm2_config_dir/ecosystem.config.js"
+
+  cat > "$pm2_config_file" << ECF
+module.exports = {
+  apps : [
+    {
+      name   : "openchamber",
+      script : "$openchamber_server",
+      interpreter: "$node_bin",
+      args   : "--port $port",
+      cwd    : "$current_home",
+      env: {
+        OPENCHAMBER_UI_PASSWORD: "${UI_PASSWORD}",
+        TUNNEL_TOKEN: "${TUNNEL_TOKEN}"
+      }
+    },
+    {
+      name   : "cloudflared-openchamber",
+      script : "$cloudflared_bin",
+      args   : "tunnel --no-autoupdate run --credentials-file=$cloudflared_etc/credentials.json --url=http://localhost:$port $tunnel_id",
+      env: {
+        TUNNEL_TOKEN: "${TUNNEL_TOKEN}"
+      }
+    }
+  ]
+}
+ECF
+  chown "${current_user}:${current_user}" "$pm2_config_file"
+
+  echo "  Starting pm2 processes..."
+  sudo -u "$current_user" env PATH="$PATH" pm2 start "$pm2_config_file"
+  sudo -u "$current_user" env PATH="$PATH" pm2 save
+
+  echo "  Configuring pm2 startup..."
+  env PATH="$PATH" pm2 startup -u "$current_user" --hp "$current_home" || true
+}
+
 print_summary() {
   echo ""
   echo "=== Local installation complete ==="
   echo ""
-  echo "Services enabled and started:"
-  echo "  systemctl status openchamber"
-  echo "  systemctl status cloudflared-openchamber"
+  if [[ "${USE_PM2:-false}" == "true" ]] || [[ ! -d "$SYSTEMD_DIR" ]]; then
+    echo "Services enabled and started via pm2:"
+    echo "  sudo -u \${SUDO_USER:-\$USER} pm2 status"
+    echo "  sudo -u \${SUDO_USER:-\$USER} pm2 logs"
+  else
+    echo "Services enabled and started via systemd:"
+    echo "  systemctl status openchamber"
+    echo "  systemctl status cloudflared-openchamber"
+  fi
   echo ""
   echo "Open: https://${TUNNEL_HOSTNAME}"
   echo "(UI Password is in .env as UI_PASSWORD)"
@@ -257,7 +335,11 @@ main() {
   install_openchamber
   install_cloudflared
   provision_tunnel
-  install_systemd_services
+  if [[ "${USE_PM2:-false}" == "true" ]] || [[ ! -d "$SYSTEMD_DIR" ]]; then
+    install_pm2_services
+  else
+    install_systemd_services
+  fi
   print_summary
 }
 
