@@ -115,7 +115,17 @@ stop:
 
 enable:
 	@if command -v pm2 >/dev/null 2>&1 && pm2 info openchamber >/dev/null 2>&1; then \
-	  pm2 save && pm2 startup; \
+	  pm2_user="$${SUDO_USER:-$${USER:-}}"; \
+	  if [ -n "$${SUDO_USER:-}" ]; then \
+	    pm2_home="$$(getent passwd "$$SUDO_USER" | cut -d: -f6)"; \
+	  else \
+	    pm2_home="$${HOME:-}"; \
+	  fi; \
+	  if [ -z "$$pm2_user" ] || [ -z "$$pm2_home" ]; then \
+	    echo "Unable to determine PM2 startup user/home" >&2; \
+	    exit 1; \
+	  fi; \
+	  pm2 save && pm2 startup -u "$$pm2_user" --hp "$$pm2_home"; \
 	else \
 	  systemctl enable openchamber cloudflared-openchamber; \
 	fi
