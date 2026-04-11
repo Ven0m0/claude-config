@@ -99,7 +99,7 @@ restart:
 
 start:
 	@if command -v pm2 >/dev/null 2>&1 && pm2 info openchamber >/dev/null 2>&1; then \
-	  pm2 start openchamber cloudflared-openchamber; \
+	  pm2 start openchamber && pm2 start cloudflared-openchamber; \
 	else \
 	  systemctl start openchamber cloudflared-openchamber; \
 	fi
