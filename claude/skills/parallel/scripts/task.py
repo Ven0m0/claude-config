@@ -25,7 +25,9 @@ def get_api_key() -> str:
     """Return the configured Parallel API key."""
     api_key = os.environ.get("PARALLEL_API_KEY")
     if not api_key:
-        print("Error: PARALLEL_API_KEY environment variable is required", file=sys.stderr)
+        print(
+            "Error: PARALLEL_API_KEY environment variable is required", file=sys.stderr
+        )
         sys.exit(1)
     return api_key
 
@@ -98,7 +100,7 @@ def build_enrichment_spec(input_fields: str, output_fields: str) -> tuple:
         if field:
             output_props[field] = {
                 "type": "string",
-                "description": f"The {field.replace('_', ' ')} of the entity"
+                "description": f"The {field.replace('_', ' ')} of the entity",
             }
 
     task_spec = {
@@ -108,8 +110,8 @@ def build_enrichment_spec(input_fields: str, output_fields: str) -> tuple:
                 "type": "object",
                 "properties": input_props,
                 "required": list(input_props.keys()),
-                "additionalProperties": False
-            }
+                "additionalProperties": False,
+            },
         },
         "output_schema": {
             "type": "json",
@@ -117,9 +119,9 @@ def build_enrichment_spec(input_fields: str, output_fields: str) -> tuple:
                 "type": "object",
                 "properties": output_props,
                 "required": list(output_props.keys()),
-                "additionalProperties": False
-            }
-        }
+                "additionalProperties": False,
+            },
+        },
     }
 
     return input_data, task_spec
@@ -134,7 +136,7 @@ def format_result(result) -> str:
     output.append(f"   Status: {run.status} | Processor: {run.processor}")
     output.append("")
 
-    if hasattr(result, 'output') and result.output:
+    if hasattr(result, "output") and result.output:
         content = result.output.content
         output_type = result.output.type
 
@@ -154,14 +156,16 @@ def format_result(result) -> str:
             output.append(str(content)[:2000])
 
         # Show basis/citations if available
-        if hasattr(result.output, 'basis') and result.output.basis:
+        if hasattr(result.output, "basis") and result.output.basis:
             output.append("")
             output.append("**Citations:**")
             for basis in result.output.basis[:5]:  # Limit to 5
-                field = basis.field if hasattr(basis, 'field') else 'result'
-                confidence = basis.confidence if hasattr(basis, 'confidence') else 'unknown'
+                field = basis.field if hasattr(basis, "field") else "result"
+                confidence = (
+                    basis.confidence if hasattr(basis, "confidence") else "unknown"
+                )
                 output.append(f"  [{field}] confidence: {confidence}")
-                if hasattr(basis, 'citations'):
+                if hasattr(basis, "citations"):
                     for cite in basis.citations[:2]:
                         output.append(f"    - {cite.title}: {cite.url}")
 
@@ -171,27 +175,59 @@ def format_result(result) -> str:
 def main():
     parser = argparse.ArgumentParser(description="Parallel.ai Task API")
     parser.add_argument("query", nargs="*", help="Research query or question")
-    parser.add_argument("--processor", "-p", default="core",
-                       choices=["base", "core", "ultra"],
-                       help="Processor tier (base=fast, core=standard, ultra=deep)")
-    parser.add_argument("--enrich", "-e", metavar="FIELDS",
-                       help="Enrichment mode: key=value pairs (e.g., 'company_name=Stripe,website=stripe.com')")
-    parser.add_argument("--output", "-o", metavar="FIELDS",
-                       help="Output fields for enrichment (e.g., 'founding_year,employee_count')")
-    parser.add_argument("--report", "-r", action="store_true",
-                       help="Generate markdown report with citations")
-    parser.add_argument("--include-domains", metavar="DOMAINS",
-                       help="Comma-separated domains to include")
-    parser.add_argument("--exclude-domains", metavar="DOMAINS",
-                       help="Comma-separated domains to exclude")
-    parser.add_argument("--browseruse-key", metavar="KEY",
-                       help="browser-use.com API key for authenticated page access")
-    parser.add_argument("--timeout", "-t", type=int, default=300,
-                       help="Timeout in seconds (default: 300)")
-    parser.add_argument("--json", "-j", action="store_true",
-                       help="Output raw JSON")
-    parser.add_argument("--no-wait", action="store_true",
-                       help="Don't wait for completion, just return run_id")
+    parser.add_argument(
+        "--processor",
+        "-p",
+        default="core",
+        choices=["base", "core", "ultra"],
+        help="Processor tier (base=fast, core=standard, ultra=deep)",
+    )
+    parser.add_argument(
+        "--enrich",
+        "-e",
+        metavar="FIELDS",
+        help="Enrichment mode: key=value pairs (e.g., 'company_name=Stripe,website=stripe.com')",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        metavar="FIELDS",
+        help="Output fields for enrichment (e.g., 'founding_year,employee_count')",
+    )
+    parser.add_argument(
+        "--report",
+        "-r",
+        action="store_true",
+        help="Generate markdown report with citations",
+    )
+    parser.add_argument(
+        "--include-domains",
+        metavar="DOMAINS",
+        help="Comma-separated domains to include",
+    )
+    parser.add_argument(
+        "--exclude-domains",
+        metavar="DOMAINS",
+        help="Comma-separated domains to exclude",
+    )
+    parser.add_argument(
+        "--browseruse-key",
+        metavar="KEY",
+        help="browser-use.com API key for authenticated page access",
+    )
+    parser.add_argument(
+        "--timeout",
+        "-t",
+        type=int,
+        default=300,
+        help="Timeout in seconds (default: 300)",
+    )
+    parser.add_argument("--json", "-j", action="store_true", help="Output raw JSON")
+    parser.add_argument(
+        "--no-wait",
+        action="store_true",
+        help="Don't wait for completion, just return run_id",
+    )
 
     args = parser.parse_args()
 
@@ -232,14 +268,18 @@ def main():
 
     # Build MCP servers for authenticated browsing
     mcp_servers = None
-    browseruse_key = (args.browseruse_key or os.environ.get("BROWSERUSE_API_KEY") or "").strip()
+    browseruse_key = (
+        args.browseruse_key or os.environ.get("BROWSERUSE_API_KEY") or ""
+    ).strip()
     if browseruse_key:
-        mcp_servers = [{
-            "type": "url",
-            "url": "https://api.browser-use.com/mcp",
-            "name": "browseruse",
-            "headers": {"Authorization": f"Bearer {browseruse_key}"}
-        }]
+        mcp_servers = [
+            {
+                "type": "url",
+                "url": "https://api.browser-use.com/mcp",
+                "name": "browseruse",
+                "headers": {"Authorization": f"Bearer {browseruse_key}"},
+            }
+        ]
 
     # Create task
     try:
@@ -253,7 +293,7 @@ def main():
             mcp_servers=mcp_servers,
         )
 
-        run_id = task_run.run.run_id if hasattr(task_run, 'run') else task_run.run_id
+        run_id = task_run.run.run_id if hasattr(task_run, "run") else task_run.run_id
 
         if args.no_wait:
             print(f"Task created: {run_id}")
@@ -270,20 +310,24 @@ def main():
                 "status": result.run.status,
                 "processor": result.run.processor,
             }
-            if hasattr(result, 'output') and result.output:
+            if hasattr(result, "output") and result.output:
                 output["output"] = {
                     "type": result.output.type,
                     "content": result.output.content,
                 }
-                if hasattr(result.output, 'basis'):
+                if hasattr(result.output, "basis"):
                     output["basis"] = [
                         {
-                            "field": b.field if hasattr(b, 'field') else None,
-                            "confidence": b.confidence if hasattr(b, 'confidence') else None,
+                            "field": b.field if hasattr(b, "field") else None,
+                            "confidence": b.confidence
+                            if hasattr(b, "confidence")
+                            else None,
                             "citations": [
                                 {"title": c.title, "url": c.url}
-                                for c in (b.citations if hasattr(b, 'citations') else [])
-                            ]
+                                for c in (
+                                    b.citations if hasattr(b, "citations") else []
+                                )
+                            ],
                         }
                         for b in result.output.basis
                     ]

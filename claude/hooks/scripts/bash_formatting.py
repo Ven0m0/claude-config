@@ -29,9 +29,14 @@ def format_bash_with_prettier(temp_dir: Path) -> None:
         npm_root = npm_root_proc.stdout.strip()
         plugin_path = f"{npm_root}/prettier-plugin-sh/lib/index.cjs"
 
-        cmd = ["npx", "prettier", "--write", "--print-width", "120", f"--plugin={plugin_path}"] + [
-            str(f.relative_to(temp_dir)) for f in sh_files
-        ]
+        cmd = [
+            "npx",
+            "prettier",
+            "--write",
+            "--print-width",
+            "120",
+            f"--plugin={plugin_path}",
+        ] + [str(f.relative_to(temp_dir)) for f in sh_files]
 
         result = subprocess.run(
             cmd,

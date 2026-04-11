@@ -5,10 +5,10 @@ import contextlib
 import hashlib
 import json
 
-PYTHON_BLOCK_PATTERN = (
-    r"^(?P<indentation> *)```(?:python|py|\{[ ]*\.py[ ]*\.annotate[ ]*\})\n(?P<code>.*?)\n(?P=indentation)```"
+PYTHON_BLOCK_PATTERN = r"^(?P<indentation> *)```(?:python|py|\{[ ]*\.py[ ]*\.annotate[ ]*\})\n(?P<code>.*?)\n(?P=indentation)```"
+BASH_BLOCK_PATTERN = (
+    r"^(?P<indentation> *)```(?:bash|sh|shell)\n(?P<code>.*?)\n(?P=indentation)```"
 )
-BASH_BLOCK_PATTERN = r"^(?P<indentation> *)```(?:bash|sh|shell)\n(?P<code>.*?)\n(?P=indentation)```"
 
 LANGUAGE_TAGS = {
     "python": ["python", "py", "{ .py .annotate }"],
@@ -26,8 +26,12 @@ def extract_code_blocks(markdown_content: str) -> dict[str, list[tuple[str, str]
         (dict): Mapping of language names to lists of (indentation, block) pairs.
 
     """
-    python_blocks = re.compile(PYTHON_BLOCK_PATTERN, re.DOTALL | re.MULTILINE).findall(markdown_content)
-    bash_blocks = re.compile(BASH_BLOCK_PATTERN, re.DOTALL | re.MULTILINE).findall(markdown_content)
+    python_blocks = re.compile(PYTHON_BLOCK_PATTERN, re.DOTALL | re.MULTILINE).findall(
+        markdown_content
+    )
+    bash_blocks = re.compile(BASH_BLOCK_PATTERN, re.DOTALL | re.MULTILINE).findall(
+        markdown_content
+    )
     return {"python": python_blocks, "bash": bash_blocks}
 
 
@@ -43,7 +47,9 @@ def remove_indentation(code_block: str, num_spaces: int) -> str:
 
     """
     lines = code_block.split("\n")
-    stripped_lines = [line[num_spaces:] if len(line) >= num_spaces else line for line in lines]
+    stripped_lines = [
+        line[num_spaces:] if len(line) >= num_spaces else line for line in lines
+    ]
     return "\n".join(stripped_lines)
 
 
@@ -71,7 +77,9 @@ def format_code_with_ruff(temp_dir: Path) -> None:
 
     """
     with contextlib.suppress(Exception):
-        subprocess.run(["ruff", "format", "--line-length=120", str(temp_dir)], check=True)
+        subprocess.run(
+            ["ruff", "format", "--line-length=120", str(temp_dir)], check=True
+        )
 
     with contextlib.suppress(Exception):
         subprocess.run(
@@ -102,8 +110,12 @@ def generate_temp_filename(file_path: Path, index: int, code_type: str) -> str:
     """
     stem = file_path.stem
     code_letter = code_type[0]
-    path_part = str(file_path.parent).replace("/", "_").replace("\\", "_").replace(" ", "-")
-    hash_val = hashlib.md5(f"{file_path}_{index}".encode(), usedforsecurity=False).hexdigest()[:6]
+    path_part = (
+        str(file_path.parent).replace("/", "_").replace("\\", "_").replace(" ", "-")
+    )
+    hash_val = hashlib.md5(
+        f"{file_path}_{index}".encode(), usedforsecurity=False
+    ).hexdigest()[:6]
     ext = ".py" if code_type == "python" else ".sh"
     filename = f"{stem}_{path_part}_{code_letter}{index}_{hash_val}{ext}"
     return re.sub(r"[^\w\-.]", "_", filename)
@@ -145,7 +157,9 @@ def process_markdown_file(
         for i, (indentation, code_block) in enumerate(code_blocks_by_type[code_type]):
             num_spaces = len(indentation)
             code_without_indentation = remove_indentation(code_block, num_spaces)
-            temp_file_path = temp_dir / generate_temp_filename(file_path, i + offset, code_type)
+            temp_file_path = temp_dir / generate_temp_filename(
+                file_path, i + offset, code_type
+            )
             try:
                 temp_file_path.write_text(code_without_indentation)
             except Exception:
@@ -155,7 +169,9 @@ def process_markdown_file(
     return markdown_content, temp_files
 
 
-def update_markdown_file(file_path: Path, markdown_content: str, temp_files: list[tuple[int, str, Path, str]]) -> None:
+def update_markdown_file(
+    file_path: Path, markdown_content: str, temp_files: list[tuple[int, str, Path, str]]
+) -> None:
     """Replace markdown code blocks with formatted versions.
 
     Args:
@@ -193,7 +209,15 @@ def run_prettier(markdown_file: Path) -> None:
     is_docs = "docs" in markdown_file.parts and "reference" not in markdown_file.parts
     command = ["npx", "prettier", "--write", "--list-different", str(markdown_file)]
     if is_docs:
-        command = ["npx", "prettier", "--tab-width", "4", "--write", "--list-different", str(markdown_file)]
+        command = [
+            "npx",
+            "prettier",
+            "--tab-width",
+            "4",
+            "--write",
+            "--list-different",
+            str(markdown_file),
+        ]
     subprocess.run(command, capture_output=True, check=False, cwd=markdown_file.parent)
 
 
@@ -237,7 +261,10 @@ def read_markdown_path() -> Path | None:
     path = Path(file_path) if file_path else None
     if not path or path.suffix.lower() != ".md" or not path.exists():
         return None
-    if any(p in path.parts for p in [".venv", "venv", "site-packages", "__pycache__", ".claude"]):
+    if any(
+        p in path.parts
+        for p in [".venv", "venv", "site-packages", "__pycache__", ".claude"]
+    ):
         return None
     return path
 
