@@ -54,7 +54,7 @@ Patterns can be mixed and matched as needed. Most skills combine patterns (e.g.,
 
 Delete this entire "Structuring This Skill" section when done - it's just guidance.]
 
-## [TODO: Replace with the first main section based on chosen structure]
+## First Main Section
 
 [TODO: Add content here. See examples in existing skills:
 - Code samples for technical skills
@@ -106,21 +106,73 @@ EXAMPLE_SCRIPT = '''#!/usr/bin/env python3
 """
 Example helper script for {skill_name}
 
-This is a placeholder script that can be executed directly.
+This is a functional template that can be executed directly.
 Replace with actual implementation or delete if not needed.
-
-Example real scripts from other skills:
-- pdf/scripts/fill_fillable_fields.py - Fills PDF form fields
-- pdf/scripts/convert_pdf_to_images.py - Converts PDF pages to images
 """
 
-def main():
-    print("This is an example script for {skill_name}")
-    # TODO: Add actual script logic here
-    # This could be data processing, file conversion, API calls, etc.
+import argparse
+import sys
+from pathlib import Path
+
+
+def process_path(target_path: Path, verbose: bool = False) -> int:
+    """
+    Main logic for processing a path.
+    Replace this with actual logic for {skill_name}.
+    """
+    try:
+        if not target_path.exists():
+            print(f"Error: Path does not exist: {{target_path}}", file=sys.stderr)
+            return 1
+
+        if verbose:
+            print(f"Processing: {{target_path.absolute()}}")
+
+        # EXAMPLE LOGIC: List files in the directory
+        # TODO: Replace with actual script logic for {skill_name}
+        if target_path.is_dir():
+            print(f"Contents of {{target_path}}:")
+            for item in target_path.iterdir():
+                prefix = "DIR " if item.is_dir() else "FILE"
+                print(f"  [{{prefix}}] {{item.name}}")
+        else:
+            print(f"File found: {{target_path.name}} ({{target_path.stat().st_size}} bytes)")
+
+        return 0
+
+    except Exception as e:
+        print(f"Error during processing: {{e}}", file=sys.stderr)
+        return 1
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Example script for {skill_name}",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument(
+        "path",
+        type=Path,
+        nargs="?",
+        default=Path("."),
+        help="Path to process",
+    )
+    parser.add_argument(
+        "-v", "--verbose",
+        action="store_true",
+        help="Enable verbose output",
+    )
+
+    args = parser.parse_args()
+
+    return process_path(args.path, args.verbose)
+
 
 if __name__ == "__main__":
-    main()
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        sys.exit(130)
 '''
 
 EXAMPLE_REFERENCE = """# Reference Documentation for {skill_title}
@@ -188,7 +240,7 @@ Note: This is a text placeholder. Actual assets can be any file type.
 
 def title_case_skill_name(skill_name):
     """Convert hyphenated skill name to Title Case for display."""
-    return ' '.join(word.capitalize() for word in skill_name.split('-'))
+    return " ".join(word.capitalize() for word in skill_name.split("-"))
 
 
 def init_skill(skill_name, path):
@@ -221,11 +273,10 @@ def init_skill(skill_name, path):
     # Create SKILL.md from template
     skill_title = title_case_skill_name(skill_name)
     skill_content = SKILL_TEMPLATE.format(
-        skill_name=skill_name,
-        skill_title=skill_title
+        skill_name=skill_name, skill_title=skill_title
     )
 
-    skill_md_path = skill_dir / 'SKILL.md'
+    skill_md_path = skill_dir / "SKILL.md"
     try:
         skill_md_path.write_text(skill_content)
         print("✅ Created SKILL.md")
@@ -236,24 +287,24 @@ def init_skill(skill_name, path):
     # Create resource directories with example files
     try:
         # Create scripts/ directory with example script
-        scripts_dir = skill_dir / 'scripts'
+        scripts_dir = skill_dir / "scripts"
         scripts_dir.mkdir(exist_ok=True)
-        example_script = scripts_dir / 'example.py'
+        example_script = scripts_dir / "example.py"
         example_script.write_text(EXAMPLE_SCRIPT.format(skill_name=skill_name))
         example_script.chmod(0o755)
         print("✅ Created scripts/example.py")
 
         # Create references/ directory with example reference doc
-        references_dir = skill_dir / 'references'
+        references_dir = skill_dir / "references"
         references_dir.mkdir(exist_ok=True)
-        example_reference = references_dir / 'api_reference.md'
+        example_reference = references_dir / "api_reference.md"
         example_reference.write_text(EXAMPLE_REFERENCE.format(skill_title=skill_title))
         print("✅ Created references/api_reference.md")
 
         # Create assets/ directory with example asset placeholder
-        assets_dir = skill_dir / 'assets'
+        assets_dir = skill_dir / "assets"
         assets_dir.mkdir(exist_ok=True)
-        example_asset = assets_dir / 'example_asset.txt'
+        example_asset = assets_dir / "example_asset.txt"
         example_asset.write_text(EXAMPLE_ASSET)
         print("✅ Created assets/example_asset.txt")
     except Exception as e:
@@ -264,14 +315,16 @@ def init_skill(skill_name, path):
     print(f"\n✅ Skill '{skill_name}' initialized successfully at {skill_dir}")
     print("\nNext steps:")
     print("1. Edit SKILL.md to complete the TODO items and update the description")
-    print("2. Customize or delete the example files in scripts/, references/, and assets/")
+    print(
+        "2. Customize or delete the example files in scripts/, references/, and assets/"
+    )
     print("3. Run the validator when ready to check the skill structure")
 
     return skill_dir
 
 
 def main():
-    if len(sys.argv) < 4 or sys.argv[2] != '--path':
+    if len(sys.argv) < 4 or sys.argv[2] != "--path":
         print("Usage: init_skill.py <skill-name> --path <path>")
         print("\nSkill name requirements:")
         print("  - Hyphen-case identifier (e.g., 'data-analyzer')")

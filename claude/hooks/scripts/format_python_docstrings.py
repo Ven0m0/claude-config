@@ -35,7 +35,9 @@ def is_google_docstring(docstring: str) -> bool:
     return any(f"\n    {section}" in docstring for section in google_sections)
 
 
-def wrap_text(text: str, width: int = 120, initial_indent: str = "", subsequent_indent: str = "") -> str:
+def wrap_text(
+    text: str, width: int = 120, initial_indent: str = "", subsequent_indent: str = ""
+) -> str:
     """Wrap text intelligently, preserving code blocks, tables, and lists."""
     lines = text.split("\n")
     result = []
@@ -103,7 +105,11 @@ def format_docstring(docstring: str) -> str:
     summary = lines[0].strip()
     if summary:
         # Capitalize first word if not URL
-        if summary and not summary[0].isupper() and not summary.startswith(("http", "www", "@")):
+        if (
+            summary
+            and not summary[0].isupper()
+            and not summary.startswith(("http", "www", "@"))
+        ):
             summary = summary[0].upper() + summary[1:]
         # Add period if missing
         if summary and not summary.endswith((".", "!", "?", ":")):
@@ -221,13 +227,18 @@ def format_python_file(content: str) -> str:
             # Find and replace the docstring in the source
             # This is a simplified approach - find the docstring literal in source
             for i in range(line_num, min(line_num + 50, len(lines))):
-                if '"""' in lines[i] or "'''" in lines[i]:
-                    quote = '"""' if '"""' in lines[i] else "'''"
-                    # Simple replacement for single-line docstrings in source
-                    if lines[i].count(quote) == 2:
-                        indent = len(lines[i]) - len(lines[i].lstrip())
-                        lines[i] = " " * indent + quote + formatted + quote
-                    break
+                line = lines[i]
+                if '"""' in line:
+                    quote = '"""'
+                elif "'''" in line:
+                    quote = "'''"
+                else:
+                    continue
+                # Simple replacement for single-line docstrings in source
+                if line.count(quote) == 2:
+                    indent = len(line) - len(line.lstrip())
+                    lines[i] = " " * indent + quote + formatted + quote
+                break
 
     return "\n".join(lines)
 
@@ -247,7 +258,10 @@ def read_python_path() -> Path | None:
     path = Path(file_path) if file_path else None
     if not path or path.suffix != ".py" or not path.exists():
         return None
-    if any(p in path.parts for p in [".venv", "venv", "site-packages", "__pycache__", ".claude"]):
+    if any(
+        p in path.parts
+        for p in [".venv", "venv", "site-packages", "__pycache__", ".claude"]
+    ):
         return None
     return path
 

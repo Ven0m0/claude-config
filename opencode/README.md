@@ -7,7 +7,8 @@ This subtree also keeps a deliberately small custom `command/`, `agents/`, `skil
 
 ## Config Files
 
-- Repo template: `opencode/opencode.jsonc`
+- Repo-tracked shared config: `opencode/opencode.json`
+- Repo runtime overlay: `.opencode/opencode.json`
 - Local runtime config: `~/.config/opencode/opencode.json`
 - Local package install root: `~/.config/opencode/`
 - Subtree rules: `opencode/AGENTS.md`
@@ -25,134 +26,78 @@ The OpenCode config loads these instruction files in order:
 
 ## Lean Plugin Set
 
-After reviewing the official docs, ecosystem pages, `awesome-opencode`, and `opencode.cafe`, the setup now prefers one plugin per concern and avoids packages that are redundant, noisy, or currently unreliable under Bun/OpenCode.
+The tracked config now stays intentionally lean and relies on built-in OpenCode provider support where possible.
 
 - Keep one orchestration layer: `oh-my-opencode`
-- Keep one Morph path: `@morphllm/opencode-morph-plugin@2.0.7`
-- Keep only the auth plugins still useful for this model/provider setup
-- Remove broken `context-mode` from active config because Bun/OpenCode still trips over its runtime path
-- Remove overlapping agent/context/cache/helper plugins that duplicate `oh-my-opencode` or built-in OpenCode features
-- Remove stale Cursor-specific repo config from the active runtime path
+- Keep the PTY, ignore, session handoff, image compression, and web search plugins
+- Prefer built-in provider auth over plugin-based auth shims
+- Remove overlapping helper plugins and broken MCP wrappers from the baseline
 
-## Plugins (10 total)
-
-### Editing and terminal
+## Plugins (6 total)
 
 | Plugin | Purpose |
 |---|---|
-| `@morphllm/opencode-morph-plugin@2.0.7` | Single Morph plugin path |
-| `opencode-pty` | PTY integration |
+| `oh-my-opencode@3.16.0` | Broad OpenCode orchestration bundle |
+| `opencode-image-compress@0.3.2` | Image compression |
+| `opencode-ignore@1.1.0` | Ignore rules |
+| `opencode-pty@0.3.2` | PTY integration |
+| `opencode-session-handoff@1.1.6` | Session handoff |
+| `opencode-websearch@0.5.0` | Web search |
 
-### Auth and session continuity
+## Providers and Model Strategy
 
-| Plugin | Purpose |
-|---|---|
-| `opencode-antigravity-auth` | Antigravity auth |
-| `opencode-gemini-auth` | Gemini auth |
-| `opencode-session-handoff` | Session handoff |
+The current config is centered on GitHub Copilot as the default cached provider, while keeping Anthropic, Gemini, and Kilo available as env-driven fallbacks.
 
-### Safety, search, and orchestration
+- Default/global: `github-copilot/gpt-5`
+- Small/cheap path: `github-copilot/gpt-5-mini`
+- Build and coding agents: `github-copilot/gpt-5.1-codex`
+- Explore: `github-copilot/gpt-5.1-codex-mini`
+- Research: `github-copilot/gemini-3.1-pro-preview`
+- Review: `github-copilot/claude-sonnet-4.5`
 
-| Plugin | Purpose |
-|---|---|
-| `opencode-image-compress` | Image compression |
-| `opencode-websearch` | Web search |
-| `opencode-ignore` | Ignore rules |
-| `oh-my-opencode` | Broad OpenCode orchestration bundle |
-| `flow-next-opencode` | Flow-based planning, work, and review commands |
+Provider auth stays in the config through env variables and cache-friendly provider options:
 
-## Flow Next
+- `GITHUB_TOKEN`
+- `GITHUB_ENTERPRISE_URL` (optional)
+- `ANTHROPIC_API_KEY`
+- `GEMINI_API_KEY`
+- `KILO_API_KEY`
 
-`flow-next-opencode` is installed from GitHub because it is not published on npm. It adds a Flow-centric task system on top of OpenCode, including slash commands like `/flow-next:plan`, `/flow-next:work`, `/flow-next:plan-review`, `/flow-next:impl-review`, and `/flow-next:setup`.
+## MCP Servers
 
-- Plugin spec: `github:gmickel/flow-next-opencode#276713a0d61b01d6356f79ec937d97cd8d39a039`
-- Install source: GitHub pin, not npm
-- Required follow-up: run `/flow-next:setup` inside OpenCode after the plugin is loaded
-- Optional backend knob: `FLOW_REVIEW_BACKEND=opencode|rp|none`
-- Caveat: it overlaps with `oh-my-opencode` in orchestration and planning, so this setup keeps both available intentionally rather than pretending they are fully independent
+The tracked MCP set is now all-remote so the same JSON works on Linux and Windows 10/11 without shell-specific wrappers.
 
-Flow Next project scaffolding now lives in `opencode/` as the source-of-truth tree for agents, commands, skills, and plugin hooks. `.opencode/` is kept as a compatibility layer that symlinks back into `opencode/`. The generated `.opencode/opencode.json` was adjusted to use this config's available models instead of Flow Next's default OpenAI assumptions:
+| MCP | Purpose | Auth |
+|---|---|---|
+| `github-mcp-server` | GitHub tools via Copilot MCP | `Authorization: Bearer {env:GITHUB_TOKEN}` |
+| `ref-tools` | Docs and reference search | `x-ref-api-key: {env:REF_API_KEY}` |
+| `exa` | Web and code search | `x-api-key: {env:EXA_API_KEY}` |
+| `gh_grep` | Public code search | none |
 
-- `ralph-runner` -> `minimax/MiniMax-M2.7`
-- `opencode-reviewer` -> `google/antigravity-claude-opus-4-6`
+Removed from the baseline:
 
-After you run `/flow-next:setup`, Flow Next should create `.flow/` workspace metadata in the repo and copy its `flowctl` helper into `.flow/bin/`.
-
-## Removed As Overlap Or Risk
-
-- `context-mode` - currently not reliable in this OpenCode/Bun environment
-- `opencode-fastedit`, `openslimedit`, `opentmux` - overlap with Morph, PTY, or the lean built-in editing flow
-- `@spoons-and-mirrors/subtask2`, `better-opencode-async-agents`, `opencode-agent-memory`, `@tarquinen/opencode-dcp`, `@old-mikser/occontext-thinking-trim`, `@tuanhung303/opencode-acp`, `opencode-codebase-index` - too much overlap with `oh-my-opencode` and native features
-- `opencode-repos`, `opencode-dir`, `opencode-plugin-auto-update`, `opencode-plugin-search` - useful in niche workflows, but not worth the baseline prompt/tooling weight
-- `@ramarivera/opencode-model-announcer`, `@bastiangx/opencode-unmoji` - cosmetic only
-- `opencode-blocker-diverter`, `opencode-cachebro`, `superpowers` - extra complexity for low practical value here
-- `opencode-anthropic-auth`, `opencode-copilot-auth`, `opencode-kilo-auth` - removed from the lean baseline because Antigravity plus Gemini cover the current provider strategy better
-
-## Model Strategy
-
-The optimized config uses a split-by-cost strategy instead of Cursor models:
-
-- Default/global: `zai-coding-plan/glm-5`
-- Small/cheap path: `minimax/MiniMax-M2.5`
-- Heavy coding agents: `minimax/MiniMax-M2.7`
-- Research: `google/gemini-3.1-pro-preview`
-- Review/build lanes: Antigravity Claude 4.6 variants
-
-Configured latest-leaning variants:
-
-- `zai-coding-plan/glm-5`
-- `minimax/MiniMax-M2.5`
-- `minimax/MiniMax-M2.7`
-- `google/gemini-3.1-pro-preview`
-- `google/antigravity-claude-sonnet-4-6`
-- `google/antigravity-claude-opus-4-6`
-
-## Edgee Token Compression
-
-Edgee is configured as an extra OpenCode provider, not as a plugin. Its OpenCode integration is the documented `@ai-sdk/openai-compatible` provider path pointing at `https://api.edgee.ai/v1`.
-
-- Provider key: `edgee`
-- Package: `@ai-sdk/openai-compatible`
-- Auth: `EDGEE_API_KEY`
-- Purpose: prompt/token compression before requests reach supported upstream models
-- Claimed by Edgee: compression starts on the first request and can reduce token usage significantly
-
-Configured Edgee-backed models:
-
-- `edgee/mistral-small`
-- `edgee/gpt-4`
-- `edgee/claude-3-haiku`
-
-The config keeps Edgee parallel to the existing providers instead of replacing them. Use an `edgee/*` model when you want the compression path.
+- `context7` - replaced by `ref-tools`
+- `icm` - removed to avoid local binary/runtime drift
+- `context-mode` - removed because it was already unreliable in this environment
 
 ## LSP Setup
 
-OpenCode's built-in LSP tool surface is active. The current config adds explicit `lsp` entries for the languages used most often in this repo and local workflow.
+OpenCode's built-in LSP tool surface is active. The tracked config uses the current schema with platform-neutral command arrays and explicit extensions.
 
-- Built-in tools observed in runtime: `lsp_goto_definition`, `lsp_find_references`, `lsp_symbols`, `lsp_diagnostics`, `lsp_prepare_rename`, `lsp_rename`
-- Configured LSP entries follow the official `lsp` schema using `command`, `extensions`, and `initialization`
+- Configured LSP entries follow the official `lsp` schema using `command` arrays and `extensions`
 - The old `cclsp` reference file is still present as a reference, but it is not part of the active runtime setup
 
 Configured language servers:
 
-- TypeScript / JavaScript: `typescript-language-server --stdio`
-- Python: `pyright-langserver --stdio`
-- Rust: `/home/ven0m0/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer`
+- TypeScript / JavaScript: `vtsls --stdio`
+- Python: `basedpyright-langserver --stdio`
+- Rust: `rust-analyzer`
 - Bash: `bash-language-server start`
 - YAML: `yaml-language-server --stdio`
 
-Observed built-in servers available in the resolved runtime also include many OpenCode defaults such as `vue`, `eslint`, `gopls`, `ruby-lsp`, `terraform`, `clangd`, and others when their requirements are present.
-
 ## Formatter Setup
 
-The config now uses the official `formatter` block and routes by extension.
-
-- JS / TS / JSON / JSONC / Markdown / CSS / HTML / YAML: `prettier --write $FILE`
-- Python: `uv tool run ruff format $FILE`
-- Shell: `shfmt -w $FILE`
-- Rust: `/home/ven0m0/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rustfmt $FILE`
-
-This matches the repo's existing tool choices better than adding another formatter stack.
+The tracked JSON no longer pins formatter commands. Use local OpenCode defaults or machine-local formatter overrides in `~/.config/opencode/opencode.json` if needed.
 
 ## Local Sync Workflow
 
@@ -162,27 +107,20 @@ Typical steps:
 
 ```bash
 bun add <plugin-spec>...
-bun add @ai-sdk/openai-compatible
-bun add "github:gmickel/flow-next-opencode#276713a0d61b01d6356f79ec937d97cd8d39a039"
-cp opencode/opencode.jsonc ~/.config/opencode/opencode.jsonc
-cp opencode/cclsp.json ~/.config/opencode/cclsp.json
+cp opencode/opencode.json ~/.config/opencode/opencode.json
 ```
 
-The local runtime config stays as pure JSON and can include extra machine-local entries like `icm`. The `cclsp` file is kept only as a ready-to-use external reference because the active OpenCode setup does not need it.
-
-For Flow Next, the project-local runtime overlay remains in `.opencode/`, but the reusable source files now live in `opencode/agents/`, `opencode/command/flow-next/`, `opencode/skill/`, and `opencode/plugin/`.
+The local runtime config stays as pure JSON. Keep machine-local overrides in `~/.config/opencode/opencode.json` instead of reintroducing repo-tracked local-only MCP wrappers.
 
 ## Validation
 
-- Validate repo JSONC: `bunx json5 -c opencode/opencode.jsonc`
+- Validate repo JSON: `python -m json.tool opencode/opencode.json >/dev/null`
+- Validate runtime overlay JSON: `python -m json.tool .opencode/opencode.json >/dev/null`
 - Validate local JSON: `python -m json.tool ~/.config/opencode/opencode.json >/dev/null`
 - Inspect local packages: `bun pm ls` from `~/.config/opencode`
 - Inspect resolved config: `opencode debug config`
-- Verify Edgee provider package: `bun pm ls | rg '@ai-sdk/openai-compatible'`
-- Verify Flow Next install: `bun pm ls | rg 'flow-next-opencode'`
-- Verify Flow Next source files: `ls opencode/command/flow-next && ls opencode/skill && ls opencode/plugin`
-- Verify `.opencode` compatibility links: `ls -l .opencode/agent .opencode/command .opencode/skill .opencode/plugin`
-- Verify core tooling: `command -v typescript-language-server pyright-langserver bash-language-server yaml-language-server prettier shfmt`
+- Verify the tracked overlay file: `python -m json.tool .opencode/opencode.json >/dev/null`
+- Verify core tooling: `command -v vtsls basedpyright-langserver bash-language-server yaml-language-server`
 - Verify Rust toolchain paths: `rustup which rust-analyzer && rustup which rustfmt`
 
 ## Related Files
@@ -192,7 +130,7 @@ For Flow Next, the project-local runtime overlay remains in `.opencode/`, but th
 - `opencode/cclsp.json`
 - `opencode/command/flow-next`
 - `opencode/skill/flow-next-opencode-plan/SKILL.md`
-- `opencode/plugin/flow-next-ralph-guard.ts`
+- `opencode/plugins/`
 - `.opencode/opencode.json`
 - `opencode/AGENTS.md`
 - `opencode/MORPH_INSTRUCTIONS.md`

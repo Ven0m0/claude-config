@@ -160,7 +160,15 @@ def output_system_message(message: str) -> None:
     UserPromptSubmit, and PostToolUse).
     """
     try:
-        sys.stdout.write(json.dumps({"hookSpecificOutput": {"hookEventName": "PreCompact", "additionalContext": message}}) + "\n")
+        sys.stdout.write(
+            json.dumps({
+                "hookSpecificOutput": {
+                    "hookEventName": "PreCompact",
+                    "additionalContext": message,
+                }
+            })
+            + "\n"
+        )
         sys.stdout.flush()
     except OSError as e:
         log_debug(f"failed to output system message: {e}")

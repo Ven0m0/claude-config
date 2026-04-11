@@ -261,7 +261,8 @@ const MemelordPlugin: Plugin = async ({ worktree, client }) => {
           // Failure pattern detection from in-process failure log
           const toolFailCounts = new Map<string, number>()
           for (const f of state.failedTools) {
-            toolFailCounts.set(f.tool, (toolFailCounts.get(f.tool) ?? 0) + 1)
+            const count = toolFailCounts.get(f.tool)
+            toolFailCounts.set(f.tool, count === undefined ? 1 : count + 1)
           }
           for (const [toolName, count] of toolFailCounts) {
             if (count >= 3) {

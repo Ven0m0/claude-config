@@ -28,23 +28,28 @@ def validate_command(command: str) -> list[str]:
     return issues
 
 
-try:
-    input_data = json.load(sys.stdin)
-except json.JSONDecodeError:
-    sys.exit(1)
+def main() -> None:
+    try:
+        input_data = json.load(sys.stdin)
+    except json.JSONDecodeError:
+        sys.exit(1)
 
-tool_name = input_data.get("tool_name", "")
-tool_input = input_data.get("tool_input", {})
-command = tool_input.get("command", "")
+    tool_name = input_data.get("tool_name", "")
+    tool_input = input_data.get("tool_input", {})
+    command = tool_input.get("command", "")
 
-if tool_name != "Bash" or not command:
-    sys.exit(0)
+    if tool_name != "Bash" or not command:
+        sys.exit(0)
 
-# Validate the command
-issues = validate_command(command)
+    # Validate the command
+    issues = validate_command(command)
 
-if issues:
-    for _message in issues:
-        pass
-    # Exit code 2 blocks tool call and shows stderr to Claude
-    sys.exit(2)
+    if issues:
+        for message in issues:
+            print(message, file=sys.stderr)
+        # Exit code 2 blocks tool call and shows stderr to Claude
+        sys.exit(2)
+
+
+if __name__ == "__main__":
+    main()

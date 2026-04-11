@@ -110,7 +110,9 @@ def fix_description(desc: str, skill_name: str) -> tuple[str, list[str]]:
             trigger = "Trigger with phrases like 'deploy', 'infrastructure', or 'CI/CD'"
         elif "security" in skill_name.lower() or "audit" in skill_name.lower():
             use_when = "Use when assessing security or running audits"
-            trigger = "Trigger with phrases like 'security scan', 'audit', or 'vulnerability'"
+            trigger = (
+                "Trigger with phrases like 'security scan', 'audit', or 'vulnerability'"
+            )
         elif "database" in skill_name.lower() or "sql" in skill_name.lower():
             use_when = "Use when working with databases or data models"
             trigger = "Trigger with phrases like 'database', 'query', or 'schema'"
@@ -134,7 +136,9 @@ def fix_description(desc: str, skill_name: str) -> tuple[str, list[str]]:
             trigger = "Trigger with phrases like 'generate', 'create', or 'scaffold'"
         elif "optimi" in skill_name.lower() or "perf" in skill_name.lower():
             use_when = "Use when optimizing performance"
-            trigger = "Trigger with phrases like 'optimize', 'performance', or 'speed up'"
+            trigger = (
+                "Trigger with phrases like 'optimize', 'performance', or 'speed up'"
+            )
         elif "valid" in skill_name.lower():
             use_when = "Use when validating configurations or code"
             trigger = "Trigger with phrases like 'validate', 'check', or 'verify'"
@@ -204,18 +208,19 @@ def fix_body_sections(body: str, skill_name: str) -> tuple[str, list[str]]:
     # Find where to insert sections (after title or at end)
     lines = body.split("\n")
 
-    # Find first # heading (title)
+    # Find first # heading (title) and first ## heading
     title_idx = -1
-    for i, line in enumerate(lines):
-        if line.startswith("# ") and not line.startswith("## "):
-            title_idx = i
-            break
-
-    # Find first ## heading
     first_section_idx = -1
+
     for i, line in enumerate(lines):
-        if line.startswith("## "):
-            first_section_idx = i
+        if line and line[0] == "#":
+            if title_idx == -1 and line.startswith("# ") and not line.startswith("## "):
+                title_idx = i
+            elif first_section_idx == -1 and line.startswith("## "):
+                first_section_idx = i
+
+        # Early exit if both are found
+        if title_idx != -1 and first_section_idx != -1:
             break
 
     # Build sections to add
@@ -346,7 +351,9 @@ def main() -> None:
     import argparse
 
     parser = argparse.ArgumentParser(description="Fix all SKILL.md files")
-    parser.add_argument("--dry-run", action="store_true", help="Show changes without applying")
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Show changes without applying"
+    )
     parser.add_argument("--path", default="plugins", help="Path to scan")
     args = parser.parse_args()
 
@@ -372,7 +379,6 @@ def main() -> None:
         if result["errors"]:
             for _error in result["errors"]:
                 pass
-
 
     if args.dry_run:
         pass
