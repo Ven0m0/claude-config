@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Parallel.ai Task API - Deep research, enrichment, and authenticated sources.
+"""Parallel.ai Task API - Deep research, enrichment, and authenticated sources.
 
 Usage:
   python3 task.py "What was France's GDP in 2023?"
@@ -12,10 +11,10 @@ Usage:
   python3 task.py "Extract migration docs from https://nxp.com/products/K66_180"
 """
 
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
 import time
 
 from parallel import Parallel
@@ -74,7 +73,7 @@ def poll_task(client: Parallel, run_id: str, timeout: int = 300) -> dict:
         result = client.beta.task_run.retrieve(run_id)
         if result.run.status == "completed":
             return result
-        elif result.run.status == "failed":
+        if result.run.status == "failed":
             raise Exception(f"Task failed: {result.run}")
         time.sleep(2)
     raise TimeoutError(f"Task {run_id} did not complete within {timeout}s")
@@ -98,7 +97,7 @@ def build_enrichment_spec(input_fields: str, output_fields: str) -> tuple:
         if field:
             output_props[field] = {
                 "type": "string",
-                "description": f"The {field.replace('_', ' ')} of the entity"
+                "description": f"The {field.replace('_', ' ')} of the entity",
             }
 
     task_spec = {
@@ -108,8 +107,8 @@ def build_enrichment_spec(input_fields: str, output_fields: str) -> tuple:
                 "type": "object",
                 "properties": input_props,
                 "required": list(input_props.keys()),
-                "additionalProperties": False
-            }
+                "additionalProperties": False,
+            },
         },
         "output_schema": {
             "type": "json",
@@ -117,9 +116,9 @@ def build_enrichment_spec(input_fields: str, output_fields: str) -> tuple:
                 "type": "object",
                 "properties": output_props,
                 "required": list(output_props.keys()),
-                "additionalProperties": False
-            }
-        }
+                "additionalProperties": False,
+            },
+        },
     }
 
     return input_data, task_spec
@@ -134,7 +133,7 @@ def format_result(result) -> str:
     output.append(f"   Status: {run.status} | Processor: {run.processor}")
     output.append("")
 
-    if hasattr(result, 'output') and result.output:
+    if hasattr(result, "output") and result.output:
         content = result.output.content
         output_type = result.output.type
 
@@ -154,14 +153,14 @@ def format_result(result) -> str:
             output.append(str(content)[:2000])
 
         # Show basis/citations if available
-        if hasattr(result.output, 'basis') and result.output.basis:
+        if hasattr(result.output, "basis") and result.output.basis:
             output.append("")
             output.append("**Citations:**")
             for basis in result.output.basis[:5]:  # Limit to 5
-                field = basis.field if hasattr(basis, 'field') else 'result'
-                confidence = basis.confidence if hasattr(basis, 'confidence') else 'unknown'
+                field = basis.field if hasattr(basis, "field") else "result"
+                confidence = basis.confidence if hasattr(basis, "confidence") else "unknown"
                 output.append(f"  [{field}] confidence: {confidence}")
-                if hasattr(basis, 'citations'):
+                if hasattr(basis, "citations"):
                     for cite in basis.citations[:2]:
                         output.append(f"    - {cite.title}: {cite.url}")
 
@@ -238,7 +237,7 @@ def main():
             "type": "url",
             "url": "https://api.browser-use.com/mcp",
             "name": "browseruse",
-            "headers": {"Authorization": f"Bearer {browseruse_key}"}
+            "headers": {"Authorization": f"Bearer {browseruse_key}"},
         }]
 
     # Create task
@@ -253,7 +252,7 @@ def main():
             mcp_servers=mcp_servers,
         )
 
-        run_id = task_run.run.run_id if hasattr(task_run, 'run') else task_run.run_id
+        run_id = task_run.run.run_id if hasattr(task_run, "run") else task_run.run_id
 
         if args.no_wait:
             print(f"Task created: {run_id}")
@@ -270,20 +269,20 @@ def main():
                 "status": result.run.status,
                 "processor": result.run.processor,
             }
-            if hasattr(result, 'output') and result.output:
+            if hasattr(result, "output") and result.output:
                 output["output"] = {
                     "type": result.output.type,
                     "content": result.output.content,
                 }
-                if hasattr(result.output, 'basis'):
+                if hasattr(result.output, "basis"):
                     output["basis"] = [
                         {
-                            "field": b.field if hasattr(b, 'field') else None,
-                            "confidence": b.confidence if hasattr(b, 'confidence') else None,
+                            "field": b.field if hasattr(b, "field") else None,
+                            "confidence": b.confidence if hasattr(b, "confidence") else None,
                             "citations": [
                                 {"title": c.title, "url": c.url}
-                                for c in (b.citations if hasattr(b, 'citations') else [])
-                            ]
+                                for c in (b.citations if hasattr(b, "citations") else [])
+                            ],
                         }
                         for b in result.output.basis
                     ]
