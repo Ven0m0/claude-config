@@ -1,5 +1,5 @@
 import { tool } from '@opencode-ai/plugin';
-import { computeHash, computeLegacyHash, formatHashLines, HASH_REF, parseRef, validateHash } from './hashline_utils.ts';
+import { computeHash, parseRef, validateHash } from './hashline_utils.ts';
 
 // ── Line ref validation ─────────────────────────────────────────────────────
 
@@ -130,7 +130,7 @@ function canonicalize(raw: string) {
 
 function restore(content: string, hadBom: boolean, crlf: boolean): string {
   const s = crlf ? content.replace(/\n/g, '\r\n') : content;
-  return hadBom ? '\uFEFF' + s : s;
+  return hadBom ? `\uFEFF${s}` : s;
 }
 
 // ── Edit application ────────────────────────────────────────────────────────
@@ -209,13 +209,49 @@ function applyEdits(content: string, edits: Edit[]): string {
   }
 
   // Dedup
-  const seen = new Set<string>();
-  const deduped = edits.filter((e) => {
-    const k = JSON.stringify(e);
-    if (seen.has(k)) return false;
-    seen.add(k);
-    return true;
-  });
+  let deduped: Edit[];
+  if (edits.length < 50) {
+    deduped = [];
+    for (let i = 0; i < edits.length; i++) {
+      const edit = edits[i];
+      let dup = false;
+      for (let j = deduped.length - 1; j >= 0; j--) {
+        const b = deduped[j];
+        if (edit.op === b.op && edit.pos === b.pos && edit.end === b.end) {
+          if (typeof edit.lines === 'string') {
+            if (typeof b.lines === 'string' && edit.lines === b.lines) dup = true;
+          } else if (Array.isArray(edit.lines)) {
+            if (Array.isArray(b.lines) && edit.lines.length === b.lines.length) {
+              let eq = true;
+              for (let k = 0; k < edit.lines.length; k++) {
+                if (edit.lines[k] !== b.lines[k]) {
+                  eq = false;
+                  break;
+                }
+              }
+              if (eq) dup = true;
+            }
+          }
+        }
+        if (dup) break;
+      }
+      if (!dup) deduped.push(edit);
+    }
+  } else {
+    const seen = new Set<string>();
+    deduped = [];
+    for (let i = 0; i < edits.length; i++) {
+      const e = edits[i];
+      let k = `${e.op}\0${e.pos || ''}\0${e.end || ''}\0`;
+      if (typeof e.lines === 'string') k += `s\0${e.lines}`;
+      else if (Array.isArray(e.lines)) k += `a\0${e.lines.join('\0')}`;
+
+      if (!seen.has(k)) {
+        seen.add(k);
+        deduped.push(e);
+      }
+    }
+  }
 
   // Sort bottom-up
   const PREC: Record<Op, number> = { replace: 0, append: 1, prepend: 2 };
