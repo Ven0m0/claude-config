@@ -254,8 +254,8 @@ ECF
   chown "${current_user}:${current_user}" "$pm2_config_file"
 
   log "  Starting pm2 processes..."
-  sudo -u "$current_user" env PATH="$PATH" pm2 start "$pm2_config_file"
-  sudo -u "$current_user" env PATH="$PATH" pm2 save
+  sudo -H -u "$current_user" env HOME="$current_home" PATH="$PATH" pm2 start "$pm2_config_file"
+  sudo -H -u "$current_user" env HOME="$current_home" PATH="$PATH" pm2 save
 
   log "  Configuring pm2 startup..."
   env PATH="$PATH" pm2 startup -u "$current_user" --hp "$current_home" || true
