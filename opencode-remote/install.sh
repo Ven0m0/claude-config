@@ -123,7 +123,8 @@ install_systemd_services() {
   fi
 
   local current_user="${SUDO_USER:-$USER}"
-  local current_home; current_home=$(eval echo "~$current_user")
+  local current_home; current_home=$(getent passwd "$current_user" | cut -d: -f6)
+  [[ -n "$current_home" ]] || die "Could not resolve home directory for user $current_user"
 
   # Resolve openchamber server script
   local openchamber_bin openchamber_server node_bin
