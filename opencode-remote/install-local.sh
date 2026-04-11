@@ -146,7 +146,7 @@ install_systemd_services() {
     echo "WARNING: $SYSTEMD_DIR not found. Skipping systemd service installation." >&2
     echo "  To start manually:"
     echo "    OPENCHAMBER_UI_PASSWORD=\"\$UI_PASSWORD\" node \$OPENCHAMBER_SERVER --port ${OPENCHAMBER_PORT:-3000} &"
-    echo "    cloudflared tunnel --no-autoupdate run --token \"\$TUNNEL_TOKEN\" &"
+    echo "    TUNNEL_TOKEN=\"\$TUNNEL_TOKEN\" cloudflared tunnel --no-autoupdate run &"
     echo ""
     echo "=== Installation complete ==="
     echo "Open: https://${TUNNEL_HOSTNAME}"

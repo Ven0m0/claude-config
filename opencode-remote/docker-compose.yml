@@ -21,7 +21,9 @@ services:
   cloudflared:
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
-    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
+    environment:
+      TUNNEL_TOKEN: "${TUNNEL_TOKEN}"
+    command: tunnel --no-autoupdate run
     depends_on:
       openchamber:
         condition: service_healthy
