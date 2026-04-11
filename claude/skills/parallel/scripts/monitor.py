@@ -60,7 +60,7 @@ def create_monitor(
     if webhook_url:
         data["webhook"] = {
             "url": webhook_url,
-            "event_types": ["monitor.event.detected", "monitor.run.completed"]
+            "event_types": ["monitor.event.detected", "monitor.run.completed"],
         }
 
     if metadata:
@@ -146,13 +146,19 @@ def main():
     # Create command
     create_parser = subparsers.add_parser("create", help="Create a new monitor")
     create_parser.add_argument("query", help="What to monitor")
-    create_parser.add_argument("--cadence", "-c", default="daily",
-                              choices=["hourly", "daily", "weekly"],
-                              help="How often to check")
-    create_parser.add_argument("--webhook", "-w", metavar="URL",
-                              help="Webhook URL for notifications")
-    create_parser.add_argument("--metadata", "-m", metavar="JSON",
-                              help="JSON metadata to attach")
+    create_parser.add_argument(
+        "--cadence",
+        "-c",
+        default="daily",
+        choices=["hourly", "daily", "weekly"],
+        help="How often to check",
+    )
+    create_parser.add_argument(
+        "--webhook", "-w", metavar="URL", help="Webhook URL for notifications"
+    )
+    create_parser.add_argument(
+        "--metadata", "-m", metavar="JSON", help="JSON metadata to attach"
+    )
 
     # List command
     subparsers.add_parser("list", help="List all monitors")
@@ -160,16 +166,19 @@ def main():
     # Events command
     events_parser = subparsers.add_parser("events", help="Get events for a monitor")
     events_parser.add_argument("monitor_id", help="Monitor ID")
-    events_parser.add_argument("--lookback", "-l", metavar="DURATION",
-                              help="Lookback duration (e.g., '10d', '1w')")
+    events_parser.add_argument(
+        "--lookback",
+        "-l",
+        metavar="DURATION",
+        help="Lookback duration (e.g., '10d', '1w')",
+    )
 
     # Delete command
     delete_parser = subparsers.add_parser("delete", help="Delete a monitor")
     delete_parser.add_argument("monitor_id", help="Monitor ID to delete")
 
     # Global options
-    parser.add_argument("--json", "-j", action="store_true",
-                       help="Output raw JSON")
+    parser.add_argument("--json", "-j", action="store_true", help="Output raw JSON")
 
     args = parser.parse_args()
 
@@ -194,7 +203,9 @@ def main():
 
         elif args.command == "list":
             result = list_monitors()
-            monitors = result.get("monitors", result) if isinstance(result, dict) else result
+            monitors = (
+                result.get("monitors", result) if isinstance(result, dict) else result
+            )
 
             if args.json:
                 print(json.dumps(monitors, indent=2))
@@ -219,7 +230,10 @@ def main():
             print(f"✅ Monitor {args.monitor_id} deleted.")
 
     except requests.exceptions.HTTPError as e:
-        print(f"❌ API Error: {e.response.status_code} - {e.response.text}", file=sys.stderr)
+        print(
+            f"❌ API Error: {e.response.status_code} - {e.response.text}",
+            file=sys.stderr,
+        )
         sys.exit(1)
     except Exception as e:
         print(f"❌ Error: {e}", file=sys.stderr)

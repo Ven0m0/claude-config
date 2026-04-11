@@ -23,14 +23,14 @@ def main() -> None:
     except subprocess.CalledProcessError, FileNotFoundError:
         return
 
-
     # 1. Startup Overhead
-    npx_version_time = measure_command(["npx", "repomix", "--version"], "npx repomix --version")
+    npx_version_time = measure_command(
+        ["npx", "repomix", "--version"], "npx repomix --version"
+    )
     direct_version_time = measure_command(["repomix", "--version"], "repomix --version")
 
     if npx_version_time and direct_version_time:
         pass
-
 
     # Clean up previous outputs
     output_npx = Path("benchmark_npx.txt")
@@ -42,11 +42,28 @@ def main() -> None:
 
     # Benchmark npx processing
     # Note: repomix_batch.py now constructs cmd as: ["repomix", "--remote", repo_path, ...] without the npx wrapper
-    npx_cmd = ["npx", "repomix", "--remote", "octocat/Hello-World", "--style", "plain", "-o", str(output_npx)]
+    npx_cmd = [
+        "npx",
+        "repomix",
+        "--remote",
+        "octocat/Hello-World",
+        "--style",
+        "plain",
+        "-o",
+        str(output_npx),
+    ]
     npx_process_time = measure_command(npx_cmd, "npx repomix --remote ...")
 
     # Benchmark direct processing
-    direct_cmd = ["repomix", "--remote", "octocat/Hello-World", "--style", "plain", "-o", str(output_direct)]
+    direct_cmd = [
+        "repomix",
+        "--remote",
+        "octocat/Hello-World",
+        "--style",
+        "plain",
+        "-o",
+        str(output_direct),
+    ]
     direct_process_time = measure_command(direct_cmd, "repomix --remote ...")
 
     if npx_process_time and direct_process_time:

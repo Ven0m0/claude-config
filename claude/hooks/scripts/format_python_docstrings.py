@@ -35,7 +35,9 @@ def is_google_docstring(docstring: str) -> bool:
     return any(f"\n    {section}" in docstring for section in google_sections)
 
 
-def wrap_text(text: str, width: int = 120, initial_indent: str = "", subsequent_indent: str = "") -> str:
+def wrap_text(
+    text: str, width: int = 120, initial_indent: str = "", subsequent_indent: str = ""
+) -> str:
     """Wrap text intelligently, preserving code blocks, tables, and lists."""
     lines = text.split("\n")
     result = []
@@ -103,7 +105,11 @@ def format_docstring(docstring: str) -> str:
     summary = lines[0].strip()
     if summary:
         # Capitalize first word if not URL
-        if summary and not summary[0].isupper() and not summary.startswith(("http", "www", "@")):
+        if (
+            summary
+            and not summary[0].isupper()
+            and not summary.startswith(("http", "www", "@"))
+        ):
             summary = summary[0].upper() + summary[1:]
         # Add period if missing
         if summary and not summary.endswith((".", "!", "?", ":")):
@@ -247,7 +253,10 @@ def read_python_path() -> Path | None:
     path = Path(file_path) if file_path else None
     if not path or path.suffix != ".py" or not path.exists():
         return None
-    if any(p in path.parts for p in [".venv", "venv", "site-packages", "__pycache__", ".claude"]):
+    if any(
+        p in path.parts
+        for p in [".venv", "venv", "site-packages", "__pycache__", ".claude"]
+    ):
         return None
     return path
 
