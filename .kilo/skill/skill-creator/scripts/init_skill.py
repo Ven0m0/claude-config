@@ -54,7 +54,7 @@ Patterns can be mixed and matched as needed. Most skills combine patterns (e.g.,
 
 Delete this entire "Structuring This Skill" section when done - it's just guidance.]
 
-## [TODO: Replace with the first main section based on chosen structure]
+## First Main Section
 
 [TODO: Add content here. See examples in existing skills:
 - Code samples for technical skills
