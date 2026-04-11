@@ -5,6 +5,8 @@ from pathlib import Path
 # Load enforce_rg_over_grep.py dynamically
 HOOK_PATH = Path(__file__).parent.parent.parent / "enforce_rg_over_grep.py"
 spec = importlib.util.spec_from_file_location("enforce_rg_over_grep", HOOK_PATH)
+assert spec is not None, f"Failed to create import spec for {HOOK_PATH}"
+assert spec.loader is not None, f"Failed to load module loader for {HOOK_PATH}"
 hook = importlib.util.module_from_spec(spec)
 sys.modules["enforce_rg_over_grep"] = hook
 spec.loader.exec_module(hook)
