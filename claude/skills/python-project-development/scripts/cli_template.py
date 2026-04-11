@@ -48,7 +48,9 @@ def parse_args() -> Config:
         metavar="PATH",
         help="Output file or directory (default: derived from input)",
     )
-    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="Enable verbose output",
+    )
     parser.add_argument(
         "-n",
         "--dry-run",
@@ -83,23 +85,23 @@ def process(cfg: Config) -> int:
     """
     try:
         if cfg.verbose:
-            pass
+            print(f"info: processing {cfg.input_path}", file=sys.stderr)
 
         if cfg.dry_run:
-            pass
+            print("info: dry run enabled, skipping side effects", file=sys.stderr)
 
-        # TODO: Implement core logic here
+        # Example: Perform the core transformation or action here
+        # For a real tool, this is where you'd call your business logic
+        # if not cfg.dry_run:
+        #     do_the_work(cfg.input_path, cfg.output_path)
 
         if cfg.verbose:
-            pass
+            print("info: operation successful", file=sys.stderr)
 
         return 0
 
-    except PermissionError:
-        return 1
-    except FileNotFoundError:
-        return 1
-    except ValueError:
+    except (PermissionError, FileNotFoundError, ValueError) as e:
+        print(f"error: {e}", file=sys.stderr)
         return 1
 
 
