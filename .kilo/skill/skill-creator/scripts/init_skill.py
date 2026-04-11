@@ -148,19 +148,19 @@ def process_path(target_path: Path, verbose: bool = False) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Example script for {skill_name}",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
         "path",
         type=Path,
         nargs="?",
         default=Path("."),
-        help="Path to process"
+        help="Path to process",
     )
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",
-        help="Enable verbose output"
+        help="Enable verbose output",
     )
 
     args = parser.parse_args()
