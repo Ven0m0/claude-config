@@ -73,25 +73,23 @@ class EnvLoader:
         """
         env_vars = {}
         try:
-            with Path(path).open(encoding="utf-8") as f:
-                for line in f:
-                    line = line.strip()
-                    # Skip comments and empty lines
-                    if not line or line.startswith("#"):
-                        continue
-                    # Parse KEY=VALUE
-                    if "=" in line:
-                        key, value = line.split("=", 1)
-                        key = key.strip()
-                        value = value.strip()
-                        # Remove quotes if present
-                        if (value.startswith('"') and value.endswith('"')) or (
-                            value.startswith("'") and value.endswith("'")
-                        ):
-                            value = value[1:-1]
-                        env_vars[key] = value
-        except Exception:
-            pass
+            content = Path(path).read_text(encoding="utf-8")
+            for line in content.splitlines():
+                line = line.strip()
+                # Skip comments and empty lines
+                if not line or line[0] == "#":
+                    continue
+                # Parse KEY=VALUE
+                if "=" in line:
+                    key, value = line.split("=", 1)
+                    key = key.strip()
+                    value = value.strip()
+                    # Remove quotes if present
+                    if (value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'")):
+                        value = value[1:-1]
+                    env_vars[key] = value
+        except (OSError, UnicodeDecodeError) as exc:
+            print(f"Warning: failed to read env file {path}: {exc}", file=sys.stderr)
 
         return env_vars
 
@@ -125,7 +123,7 @@ class RepomixBatchProcessor:
                 env=self.env_vars,
             )
             return result.returncode == 0
-        except subprocess.SubprocessError, FileNotFoundError:
+        except (subprocess.SubprocessError, FileNotFoundError):
             return False
 
     def process_repository(
