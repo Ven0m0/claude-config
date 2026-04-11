@@ -1,9 +1,10 @@
-import pytest
 import os
 import sys
 
+import pytest
+
 # Ensure module is in path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import importlib.util
 
 spec = importlib.util.spec_from_file_location("toon_convert", "claude/skills/toon-formatter/toon-convert.py")
