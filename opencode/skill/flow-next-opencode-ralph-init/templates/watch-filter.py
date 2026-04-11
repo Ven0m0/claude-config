@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Watch filter for Ralph - parses OpenCode run --format json (and Claude stream-json fallback).
+"""
+Watch filter for Ralph - parses OpenCode run --format json (and Claude stream-json fallback).
 
 Reads JSON lines from stdin, outputs formatted tool calls in TUI style.
 
@@ -76,7 +77,7 @@ def truncate(s: str, max_len: int = 60) -> str:
 
 
 def normalize_path(path: str) -> str:
-    return path.rsplit("/", maxsplit=1)[-1] if path else "unknown"
+    return path.split("/")[-1] if path else "unknown"
 
 
 def format_tool_use(tool_name: str, tool_input: dict) -> str:
@@ -90,43 +91,44 @@ def format_tool_use(tool_name: str, tool_input: dict) -> str:
             return f"{icon} Bash: {truncate(desc)}"
         return f"{icon} Bash: {truncate(cmd, 60)}"
 
-    if tool_name == "Edit":
+    elif tool_name == "Edit":
         path = tool_input.get("file_path") or tool_input.get("filePath", "")
         return f"{icon} Edit: {normalize_path(path)}"
 
-    if tool_name == "Write":
+    elif tool_name == "Write":
         path = tool_input.get("file_path") or tool_input.get("filePath", "")
         return f"{icon} Write: {normalize_path(path)}"
 
-    if tool_name == "Read":
+    elif tool_name == "Read":
         path = tool_input.get("file_path") or tool_input.get("filePath", "")
         return f"{icon} Read: {normalize_path(path)}"
 
-    if tool_name == "Grep":
+    elif tool_name == "Grep":
         pattern = tool_input.get("pattern", "")
         return f"{icon} Grep: {truncate(pattern, 40)}"
 
-    if tool_name == "Glob":
+    elif tool_name == "Glob":
         pattern = tool_input.get("pattern", "")
         return f"{icon} Glob: {pattern}"
 
-    if tool_name == "Task":
+    elif tool_name == "Task":
         desc = tool_input.get("description", "")
         agent = tool_input.get("subagent_type", "")
         return f"{icon} Task ({agent}): {truncate(desc, 50)}"
 
-    if tool_name == "Skill":
+    elif tool_name == "Skill":
         skill = tool_input.get("skill", "")
         return f"{icon} Skill: {skill}"
 
-    if tool_name == "TodoWrite":
+    elif tool_name == "TodoWrite":
         todos = tool_input.get("todos", [])
         in_progress = [t for t in todos if t.get("status") == "in_progress"]
         if in_progress:
             return f"{icon} Todo: {truncate(in_progress[0].get('content', ''))}"
         return f"{icon} Todo: {len(todos)} items"
 
-    return f"{icon} {tool_name}"
+    else:
+        return f"{icon} {tool_name}"
 
 
 def format_tool_use_opencode(part: dict) -> str:
@@ -160,12 +162,11 @@ def format_tool_use_opencode(part: dict) -> str:
     return format_tool_use(tool_name, tool_input)
 
 
-def format_tool_result(block: dict) -> str | None:
+def format_tool_result(block: dict) -> Optional[str]:
     """Format a tool_result block (errors only).
 
     Args:
         block: The full tool_result block (not just content)
-
     """
     # Check is_error on the block itself
     if block.get("is_error"):

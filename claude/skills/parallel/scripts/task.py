@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Parallel.ai Task API - Deep research, enrichment, and authenticated sources.
+"""
+Parallel.ai Task API - Deep research, enrichment, and authenticated sources.
 
 Usage:
   python3 task.py "What was France's GDP in 2023?"
@@ -11,10 +12,10 @@ Usage:
   python3 task.py "Extract migration docs from https://nxp.com/products/K66_180"
 """
 
-import argparse
-import json
 import os
 import sys
+import json
+import argparse
 import time
 
 from parallel import Parallel
@@ -24,7 +25,9 @@ def get_api_key() -> str:
     """Return the configured Parallel API key."""
     api_key = os.environ.get("PARALLEL_API_KEY")
     if not api_key:
-        print("Error: PARALLEL_API_KEY environment variable is required", file=sys.stderr)
+        print(
+            "Error: PARALLEL_API_KEY environment variable is required", file=sys.stderr
+        )
         sys.exit(1)
     return api_key
 
@@ -73,7 +76,7 @@ def poll_task(client: Parallel, run_id: str, timeout: int = 300) -> dict:
         result = client.beta.task_run.retrieve(run_id)
         if result.run.status == "completed":
             return result
-        if result.run.status == "failed":
+        elif result.run.status == "failed":
             raise Exception(f"Task failed: {result.run}")
         time.sleep(2)
     raise TimeoutError(f"Task {run_id} did not complete within {timeout}s")
@@ -158,7 +161,9 @@ def format_result(result) -> str:
             output.append("**Citations:**")
             for basis in result.output.basis[:5]:  # Limit to 5
                 field = basis.field if hasattr(basis, "field") else "result"
-                confidence = basis.confidence if hasattr(basis, "confidence") else "unknown"
+                confidence = (
+                    basis.confidence if hasattr(basis, "confidence") else "unknown"
+                )
                 output.append(f"  [{field}] confidence: {confidence}")
                 if hasattr(basis, "citations"):
                     for cite in basis.citations[:2]:
@@ -170,27 +175,59 @@ def format_result(result) -> str:
 def main():
     parser = argparse.ArgumentParser(description="Parallel.ai Task API")
     parser.add_argument("query", nargs="*", help="Research query or question")
-    parser.add_argument("--processor", "-p", default="core",
-                       choices=["base", "core", "ultra"],
-                       help="Processor tier (base=fast, core=standard, ultra=deep)")
-    parser.add_argument("--enrich", "-e", metavar="FIELDS",
-                       help="Enrichment mode: key=value pairs (e.g., 'company_name=Stripe,website=stripe.com')")
-    parser.add_argument("--output", "-o", metavar="FIELDS",
-                       help="Output fields for enrichment (e.g., 'founding_year,employee_count')")
-    parser.add_argument("--report", "-r", action="store_true",
-                       help="Generate markdown report with citations")
-    parser.add_argument("--include-domains", metavar="DOMAINS",
-                       help="Comma-separated domains to include")
-    parser.add_argument("--exclude-domains", metavar="DOMAINS",
-                       help="Comma-separated domains to exclude")
-    parser.add_argument("--browseruse-key", metavar="KEY",
-                       help="browser-use.com API key for authenticated page access")
-    parser.add_argument("--timeout", "-t", type=int, default=300,
-                       help="Timeout in seconds (default: 300)")
-    parser.add_argument("--json", "-j", action="store_true",
-                       help="Output raw JSON")
-    parser.add_argument("--no-wait", action="store_true",
-                       help="Don't wait for completion, just return run_id")
+    parser.add_argument(
+        "--processor",
+        "-p",
+        default="core",
+        choices=["base", "core", "ultra"],
+        help="Processor tier (base=fast, core=standard, ultra=deep)",
+    )
+    parser.add_argument(
+        "--enrich",
+        "-e",
+        metavar="FIELDS",
+        help="Enrichment mode: key=value pairs (e.g., 'company_name=Stripe,website=stripe.com')",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        metavar="FIELDS",
+        help="Output fields for enrichment (e.g., 'founding_year,employee_count')",
+    )
+    parser.add_argument(
+        "--report",
+        "-r",
+        action="store_true",
+        help="Generate markdown report with citations",
+    )
+    parser.add_argument(
+        "--include-domains",
+        metavar="DOMAINS",
+        help="Comma-separated domains to include",
+    )
+    parser.add_argument(
+        "--exclude-domains",
+        metavar="DOMAINS",
+        help="Comma-separated domains to exclude",
+    )
+    parser.add_argument(
+        "--browseruse-key",
+        metavar="KEY",
+        help="browser-use.com API key for authenticated page access",
+    )
+    parser.add_argument(
+        "--timeout",
+        "-t",
+        type=int,
+        default=300,
+        help="Timeout in seconds (default: 300)",
+    )
+    parser.add_argument("--json", "-j", action="store_true", help="Output raw JSON")
+    parser.add_argument(
+        "--no-wait",
+        action="store_true",
+        help="Don't wait for completion, just return run_id",
+    )
 
     args = parser.parse_args()
 
@@ -231,14 +268,18 @@ def main():
 
     # Build MCP servers for authenticated browsing
     mcp_servers = None
-    browseruse_key = (args.browseruse_key or os.environ.get("BROWSERUSE_API_KEY") or "").strip()
+    browseruse_key = (
+        args.browseruse_key or os.environ.get("BROWSERUSE_API_KEY") or ""
+    ).strip()
     if browseruse_key:
-        mcp_servers = [{
-            "type": "url",
-            "url": "https://api.browser-use.com/mcp",
-            "name": "browseruse",
-            "headers": {"Authorization": f"Bearer {browseruse_key}"},
-        }]
+        mcp_servers = [
+            {
+                "type": "url",
+                "url": "https://api.browser-use.com/mcp",
+                "name": "browseruse",
+                "headers": {"Authorization": f"Bearer {browseruse_key}"},
+            }
+        ]
 
     # Create task
     try:
@@ -278,10 +319,14 @@ def main():
                     output["basis"] = [
                         {
                             "field": b.field if hasattr(b, "field") else None,
-                            "confidence": b.confidence if hasattr(b, "confidence") else None,
+                            "confidence": b.confidence
+                            if hasattr(b, "confidence")
+                            else None,
                             "citations": [
                                 {"title": c.title, "url": c.url}
-                                for c in (b.citations if hasattr(b, "citations") else [])
+                                for c in (
+                                    b.citations if hasattr(b, "citations") else []
+                                )
                             ],
                         }
                         for b in result.output.basis

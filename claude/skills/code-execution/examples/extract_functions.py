@@ -13,7 +13,11 @@ functions = find_functions("app.py", pattern=".*_util$", regex=True)
 
 # Extract imports from original file
 content = read_file("app.py")
-imports = [line for line in content.splitlines() if line.strip().startswith(("import ", "from "))]
+imports = [
+    line
+    for line in content.splitlines()
+    if line.strip().startswith(("import ", "from "))
+]
 
 # Create new utils.py with imports
 write_file("utils.py", "\\n".join(set(imports)) + "\\n\\n")
@@ -23,7 +27,10 @@ for func in functions:
     code = copy_lines("app.py", func["start_line"], func["end_line"])
     paste_code("utils.py", -1, code + "\\n\\n")  # -1 = append to end
 
-result = {"functions_extracted": len(functions), "function_names": [f["name"] for f in functions]}
+result = {
+    "functions_extracted": len(functions),
+    "function_names": [f["name"] for f in functions],
+}
 
 # Token usage: ~800 tokens
 # vs ~15,000 tokens reading full file into context

@@ -18,6 +18,7 @@ import re
 import sys
 from pathlib import Path
 
+
 MARKERS = ("TODO", "FIXME", "HACK", "NOTE", "OPTIMIZE", "SECURITY", "DEBT")
 
 # Matches a comment marker anywhere in a line, capturing the marker and the rest.
@@ -95,20 +96,15 @@ def _collect_file(path: Path, root: Path) -> list[dict]:
 
         start = max(0, i - CONTEXT_LINES)
         end = min(len(lines), i + CONTEXT_LINES + 1)
-        context_lines = [
-            {"offset": j - i, "text": lines[j]}
-            for j in range(start, end)
-        ]
+        context_lines = [{"offset": j - i, "text": lines[j]} for j in range(start, end)]
 
-        results.append(
-            {
-                "file": str(path.relative_to(root)),
-                "line": i + 1,
-                "marker": marker,
-                "text": comment_text,
-                "context": context_lines,
-            },
-        )
+        results.append({
+            "file": str(path.relative_to(root)),
+            "line": i + 1,
+            "marker": marker,
+            "text": comment_text,
+            "context": context_lines,
+        })
 
     return results
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Skill Initializer - Creates a new skill from template
+"""
+Skill Initializer - Creates a new skill from template
 
 Usage:
     init_skill.py <skill-name> --path <path>
@@ -8,11 +9,11 @@ Examples:
     init_skill.py my-new-skill --path skills/public
     init_skill.py my-api-helper --path skills/private
     init_skill.py custom-skill --path /custom/location
-
 """
 
 import sys
 from pathlib import Path
+
 
 SKILL_TEMPLATE = """---
 name: {skill_name}
@@ -53,7 +54,7 @@ Patterns can be mixed and matched as needed. Most skills combine patterns (e.g.,
 
 Delete this entire "Structuring This Skill" section when done - it's just guidance.]
 
-## [TODO: Replace with the first main section based on chosen structure]
+## First Main Section
 
 [TODO: Add content here. See examples in existing skills:
 - Code samples for technical skills
@@ -243,7 +244,8 @@ def title_case_skill_name(skill_name):
 
 
 def init_skill(skill_name, path):
-    """Initialize a new skill directory with template SKILL.md.
+    """
+    Initialize a new skill directory with template SKILL.md.
 
     Args:
         skill_name: Name of the skill
@@ -251,7 +253,6 @@ def init_skill(skill_name, path):
 
     Returns:
         Path to created skill directory, or None if error
-
     """
     # Determine skill directory path
     skill_dir = Path(path).resolve() / skill_name
@@ -272,8 +273,7 @@ def init_skill(skill_name, path):
     # Create SKILL.md from template
     skill_title = title_case_skill_name(skill_name)
     skill_content = SKILL_TEMPLATE.format(
-        skill_name=skill_name,
-        skill_title=skill_title,
+        skill_name=skill_name, skill_title=skill_title
     )
 
     skill_md_path = skill_dir / "SKILL.md"
@@ -315,7 +315,9 @@ def init_skill(skill_name, path):
     print(f"\n✅ Skill '{skill_name}' initialized successfully at {skill_dir}")
     print("\nNext steps:")
     print("1. Edit SKILL.md to complete the TODO items and update the description")
-    print("2. Customize or delete the example files in scripts/, references/, and assets/")
+    print(
+        "2. Customize or delete the example files in scripts/, references/, and assets/"
+    )
     print("3. Run the validator when ready to check the skill structure")
 
     return skill_dir

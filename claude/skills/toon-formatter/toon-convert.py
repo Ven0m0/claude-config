@@ -171,10 +171,10 @@ def main() -> None:
     p.add_argument("input", nargs="?", help="JSON file (stdin if omitted)")
     p.add_argument("-o", "--output", help="Output file (stdout if omitted)")
     p.add_argument(
-        "-d", "--delimiter", choices=["comma", "tab", "pipe"], default="comma",
+        "-d", "--delimiter", choices=["comma", "tab", "pipe"], default="comma"
     )
     p.add_argument(
-        "-i", "--indent", type=int, default=2, help="Spaces per indent (default: 2)",
+        "-i", "--indent", type=int, default=2, help="Spaces per indent (default: 2)"
     )
     a = p.parse_args()
     delim = {"comma": ",", "tab": "\t", "pipe": "|"}[a.delimiter]

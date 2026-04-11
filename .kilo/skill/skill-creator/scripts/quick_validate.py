@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Quick validation script for skills - minimal version
+"""
+Quick validation script for skills - minimal version
 """
 
+import sys
 import os
 import re
-import sys
 from pathlib import Path
 
 
@@ -41,9 +42,15 @@ def validate_skill(skill_path):
         name = name_match.group(1).strip()
         # Check naming convention (hyphen-case: lowercase with hyphens)
         if not re.match(r"^[a-z0-9-]+$", name):
-            return False, f"Name '{name}' should be hyphen-case (lowercase letters, digits, and hyphens only)"
+            return (
+                False,
+                f"Name '{name}' should be hyphen-case (lowercase letters, digits, and hyphens only)",
+            )
         if name.startswith("-") or name.endswith("-") or "--" in name:
-            return False, f"Name '{name}' cannot start/end with hyphen or contain consecutive hyphens"
+            return (
+                False,
+                f"Name '{name}' cannot start/end with hyphen or contain consecutive hyphens",
+            )
 
     # Extract and validate description
     desc_match = re.search(r"description:\s*(.+)", frontmatter)
@@ -54,6 +61,7 @@ def validate_skill(skill_path):
             return False, "Description cannot contain angle brackets (< or >)"
 
     return True, "Skill is valid!"
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

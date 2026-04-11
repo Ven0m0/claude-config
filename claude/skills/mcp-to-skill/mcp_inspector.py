@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""mcp_inspector.py - MCP server inspector for mcp-to-skill
+"""
+mcp_inspector.py - MCP server inspector for mcp-to-skill
 
 连接 MCP server，提取 tool schemas，尝试拉取源码。
 输出 inspector.json 供 AI 层分析。
@@ -22,7 +23,7 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 
-def detect_package(command: str) -> str | None:
+def detect_package(command: str) -> Optional[str]:
     """从命令字符串推断 npm 包名。返回包名或 None。"""
     parts = command.split()
     for i, part in enumerate(parts):
@@ -35,8 +36,11 @@ def detect_package(command: str) -> str | None:
     return None
 
 
-def fetch_source(package: str | None, local_path: str | None = None) -> str | None:
-    """拉取 MCP server 源码。失败返回 None，不抛出异常。
+def fetch_source(
+    package: Optional[str], local_path: Optional[str] = None
+) -> Optional[str]:
+    """
+    拉取 MCP server 源码。失败返回 None，不抛出异常。
     优先级：local_path > npm pack > 返回 None
     """
     # 本地路径优先
@@ -60,7 +64,10 @@ def fetch_source(package: str | None, local_path: str | None = None) -> str | No
         # npm pack 下载 tarball
         result = subprocess.run(
             ["npm", "pack", package],
-            capture_output=True, text=True, cwd=str(cache_dir), timeout=60,
+            capture_output=True,
+            text=True,
+            cwd=str(cache_dir),
+            timeout=60,
         )
         if result.returncode != 0:
             return None
@@ -72,7 +79,9 @@ def fetch_source(package: str | None, local_path: str | None = None) -> str | No
         # 解压（--strip-components=1 去掉 package/ 前缀）
         extract_result = subprocess.run(
             ["tar", "xzf", str(tarball), "--strip-components=1"],
-            capture_output=True, cwd=str(cache_dir), timeout=30,
+            capture_output=True,
+            cwd=str(cache_dir),
+            timeout=30,
         )
         if extract_result.returncode != 0:
             return None
@@ -83,7 +92,8 @@ def fetch_source(package: str | None, local_path: str | None = None) -> str | No
 
 
 async def connect_and_list_tools(command: str) -> list[dict]:
-    """通过 MCP JSON-RPC 协议连接 server，返回 tool 列表。
+    """
+    通过 MCP JSON-RPC 协议连接 server，返回 tool 列表。
     command: 完整命令字符串，如 "npx -y @mcp/server-github"
     """
     parts = command.split()
@@ -119,14 +129,20 @@ def main():
         """,
     )
     parser.add_argument("command", nargs="?", help="MCP server 启动命令")
-    parser.add_argument("--schema-json", help="已有 tool schema JSON 文件路径（跳过 MCP 连接）")
+    parser.add_argument(
+        "--schema-json", help="已有 tool schema JSON 文件路径（跳过 MCP 连接）"
+    )
     parser.add_argument("--server-name", help="覆盖 server 名称")
-    parser.add_argument("--output", default="inspector.json", help="输出文件路径（默认：inspector.json）")
+    parser.add_argument(
+        "--output",
+        default="inspector.json",
+        help="输出文件路径（默认：inspector.json）",
+    )
     args = parser.parse_args()
 
     # 模式 1：直接使用 schema JSON
     if args.schema_json:
-        with Path(args.schema_json).open() as f:
+        with open(args.schema_json) as f:
             tools = json.load(f)
         result = {
             "server_name": args.server_name or "unknown",
@@ -164,7 +180,7 @@ def main():
 
 def _write_output(result: dict, output_path: str):
     """写入 inspector.json 并打印摘要。"""
-    with Path(output_path).open("w") as f:
+    with open(output_path, "w") as f:
         json.dump(result, f, indent=2, ensure_ascii=False)
     tool_count = len(result["tools"])
     src = result["source_path"] or "（无源码）"
