@@ -82,7 +82,7 @@ repos:
     hooks:
       - id: shellcheck
   - repo: https://github.com/rvben/rumdl-pre-commit
-    rev: v0.1.68
+    rev: v0.1.69
     hooks:
       - id: rumdl
       - id: rumdl-fmt
