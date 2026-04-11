@@ -106,21 +106,73 @@ EXAMPLE_SCRIPT = '''#!/usr/bin/env python3
 """
 Example helper script for {skill_name}
 
-This is a placeholder script that can be executed directly.
+This is a functional template that can be executed directly.
 Replace with actual implementation or delete if not needed.
-
-Example real scripts from other skills:
-- pdf/scripts/fill_fillable_fields.py - Fills PDF form fields
-- pdf/scripts/convert_pdf_to_images.py - Converts PDF pages to images
 """
 
-def main():
-    print("This is an example script for {skill_name}")
-    # TODO: Add actual script logic here
-    # This could be data processing, file conversion, API calls, etc.
+import argparse
+import sys
+from pathlib import Path
+
+
+def process_path(target_path: Path, verbose: bool = False) -> int:
+    """
+    Main logic for processing a path.
+    Replace this with actual logic for {skill_name}.
+    """
+    try:
+        if not target_path.exists():
+            print(f"Error: Path does not exist: {{target_path}}", file=sys.stderr)
+            return 1
+
+        if verbose:
+            print(f"Processing: {{target_path.absolute()}}")
+
+        # EXAMPLE LOGIC: List files in the directory
+        # TODO: Replace with actual script logic for {skill_name}
+        if target_path.is_dir():
+            print(f"Contents of {{target_path}}:")
+            for item in target_path.iterdir():
+                prefix = "DIR " if item.is_dir() else "FILE"
+                print(f"  [{{prefix}}] {{item.name}}")
+        else:
+            print(f"File found: {{target_path.name}} ({{target_path.stat().st_size}} bytes)")
+
+        return 0
+
+    except Exception as e:
+        print(f"Error during processing: {{e}}", file=sys.stderr)
+        return 1
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Example script for {skill_name}",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument(
+        "path",
+        type=Path,
+        nargs="?",
+        default=Path("."),
+        help="Path to process",
+    )
+    parser.add_argument(
+        "-v", "--verbose",
+        action="store_true",
+        help="Enable verbose output",
+    )
+
+    args = parser.parse_args()
+
+    return process_path(args.path, args.verbose)
+
 
 if __name__ == "__main__":
-    main()
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        sys.exit(130)
 '''
 
 EXAMPLE_REFERENCE = """# Reference Documentation for {skill_title}
