@@ -17,7 +17,7 @@ Enforced by `.editorconfig`, `pyproject.toml [tool.ruff]`, `biome.json`, and `ts
 ## Quotes
 
 - Python: double quotes (Ruff default)
-- JS/TS: double quotes (Biome config)
+- JS/TS: single quotes (Biome config)
 - YAML: double quotes where ambiguous
 
 ## Naming

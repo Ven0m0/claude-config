@@ -1,27 +1,111 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "kilo-auto/balanced",
-  "small_model": "kilo-auto/free",
-  "agents": {
-    "build": { "model": "opencode/minimax-m2.5-free", "reasoningEffort": "high", "temperature": 0.2 },
-    "coder": { "model": "opencode/minimax-m2.5-free", "reasoningEffort": "medium", "temperature": 0.2 },
-    "explore": { "model": "kilo/x-ai/grok-4.1-fast", "reasoningEffort": "low", "temperature": 0.1 },
-    "plan": { "model": "opencode/mimo-v2-pro-free", "reasoningEffort": "high", "temperature": 0.3 },
-    "researcher": { "model": "kilo/z-ai/glm-5", "reasoningEffort": "high", "temperature": 0.4 },
-    "reviewer": { "model": "opencode/minimax-m2.5-free", "reasoningEffort": "high", "temperature": 0.1 },
-    "scribe": { "model": "kilo/arcee-ai/trinity-large-preview:free", "reasoningEffort": "low", "temperature": 0.7 }
+  "model": "github-copilot/gpt-5",
+  "small_model": "github-copilot/gpt-5-mini",
+  "agent": {
+    "build": {
+      "model": "github-copilot/gpt-5.1-codex",
+      "temperature": 0.1,
+      "options": {
+        "reasoningEffort": "high",
+        "reasoningSummary": "auto",
+        "textVerbosity": "low"
+      }
+    },
+    "coder": {
+      "model": "github-copilot/gpt-5.1-codex",
+      "temperature": 0.1,
+      "options": {
+        "reasoningEffort": "medium",
+        "reasoningSummary": "auto",
+        "textVerbosity": "low"
+      }
+    },
+    "explore": {
+      "model": "github-copilot/gpt-5.1-codex-mini",
+      "temperature": 0.1,
+      "options": {
+        "reasoningEffort": "low",
+        "textVerbosity": "low"
+      }
+    },
+    "plan": {
+      "model": "github-copilot/gpt-5",
+      "temperature": 0.2,
+      "options": {
+        "reasoningEffort": "high",
+        "reasoningSummary": "auto",
+        "textVerbosity": "low"
+      }
+    },
+    "researcher": {
+      "model": "github-copilot/gemini-3.1-pro-preview",
+      "temperature": 0.3,
+      "options": {
+        "reasoningEffort": "high"
+      }
+    },
+    "reviewer": {
+      "model": "github-copilot/claude-sonnet-4.5",
+      "temperature": 0.1,
+      "options": {
+        "reasoningEffort": "high",
+        "textVerbosity": "low"
+      }
+    },
+    "scribe": {
+      "model": "github-copilot/gpt-5-mini",
+      "temperature": 0.5,
+      "options": {
+        "reasoningEffort": "low",
+        "textVerbosity": "low"
+      }
+    }
   },
   "default_agent": "build",
   "instructions": [
     "AGENTS.md",
     "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"
   ],
-  "mcpServers": {
-    "context7": { "type": "sse", "url": "https://mcp.context7.com/mcp" },
-    "ref-tools": { "type": "sse", "url": "https://api.ref.tools/mcp" },
-    "gh_grep": { "type": "sse", "url": "https://mcp.grep.app" },
-    "icm": { "type": "stdio", "command": "icm", "args": ["serve"] },
-    "context-mode": { "type": "stdio", "command": "context-mode" }
+  "mcp": {
+    "github-mcp-server": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "enabled": true,
+      "oauth": false,
+      "timeout": 30000,
+      "headers": {
+        "Authorization": "Bearer {env:GITHUB_TOKEN}",
+        "X-MCP-Insiders": "true",
+        "X-MCP-Toolsets": "default,actions,web_search,code_security,copilot,dependabot,git,secret_protection,security_advisories,stargazers,github_support_docs_search,labels,gists"
+      }
+    },
+    "ref-tools": {
+      "type": "remote",
+      "url": "https://api.ref.tools/mcp",
+      "enabled": true,
+      "oauth": false,
+      "timeout": 30000,
+      "headers": {
+        "x-ref-api-key": "{env:REF_API_KEY}"
+      }
+    },
+    "exa": {
+      "type": "remote",
+      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
+      "enabled": true,
+      "oauth": false,
+      "timeout": 30000,
+      "headers": {
+        "x-api-key": "{env:EXA_API_KEY}"
+      }
+    },
+    "gh_grep": {
+      "type": "remote",
+      "url": "https://mcp.grep.app",
+      "enabled": true,
+      "timeout": 30000
+    }
   },
   "share": "manual",
   "permission": {
@@ -35,45 +119,111 @@
     "doom_loop": "deny"
   },
   "plugin": [
-    "opencode-anthropic-oauth@0.4.1",
-    "opencode-gemini-auth@1.4.9",
-    "opencode-kilo-auth@1.1.4",
-    "@gotgenes/opencode-agent-identity@3.0.1",
+    "oh-my-opencode@3.16.0",
+    "opencode-image-compress@0.3.2",
     "opencode-ignore@1.1.0",
-    "opencode-pty@0.2.3",
-    "openslimedit@1.0.4",
-    "@spoons-and-mirrors/subtask2@0.3.5",
-    "openfundus@0.1.6",
-    "opencode-toolbox@0.10.4",
-    "opencode-cross-repo@0.4.1",
-    "@tuanhung303/opencode-acp@3.0.15"
+    "opencode-pty@0.3.2",
+    "opencode-session-handoff@1.1.6",
+    "opencode-websearch@0.5.0"
   ],
   "lsp": {
     "typescript": {
-      "command": "vtsls",
-      "args": ["--stdio"],
-      "options": { "preferences": { "importModuleSpecifierPreference": "relative" } }
+      "command": ["vtsls", "--stdio"],
+      "extensions": [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".mts", ".cts"]
     },
-    "pyright": { "command": "basedpyright-langserver", "args": ["--stdio"] },
-    "rust": { "command": "rust-analyzer" },
-    "bash": { "command": "bash-language-server", "args": ["start"] },
-    "yaml-ls": { "command": "yaml-language-server", "args": ["--stdio"] },
-    "markdown-oxide": { "command": "markdown-oxide" },
-    "json-ls": { "command": "vscode-json-language-server", "args": ["--stdio"] },
-    "dockerfile-ls": { "command": "docker-langserver", "args": ["--stdio"] },
-    "html-ls": { "command": "vscode-html-language-server", "args": ["--stdio"] },
-    "css-ls": { "command": "vscode-css-language-server", "args": ["--stdio"] },
-    "tombi": { "command": "tombi", "args": ["lsp"] }
+    "pyright": {
+      "command": ["basedpyright-langserver", "--stdio"],
+      "extensions": [".py"]
+    },
+    "rust": {
+      "command": ["rust-analyzer"],
+      "extensions": [".rs"]
+    },
+    "bash": {
+      "command": ["bash-language-server", "start"],
+      "extensions": [".sh", ".bash", ".zsh"]
+    },
+    "yaml-ls": {
+      "command": ["yaml-language-server", "--stdio"],
+      "extensions": [".yaml", ".yml"]
+    },
+    "markdown-oxide": {
+      "command": ["markdown-oxide"],
+      "extensions": [".md", ".mdx"]
+    },
+    "json-ls": {
+      "command": ["vscode-json-language-server", "--stdio"],
+      "extensions": [".json", ".jsonc"]
+    },
+    "dockerfile-ls": {
+      "command": ["docker-langserver", "--stdio"],
+      "extensions": [".dockerfile"]
+    },
+    "html-ls": {
+      "command": ["vscode-html-language-server", "--stdio"],
+      "extensions": [".html", ".htm"]
+    },
+    "css-ls": {
+      "command": ["vscode-css-language-server", "--stdio"],
+      "extensions": [".css", ".scss", ".less"]
+    },
+    "tombi": {
+      "command": ["tombi", "lsp"],
+      "extensions": [".toml"]
+    }
   },
   "disabled_providers": ["openai"],
-  "watcher": { "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**", ".omc/**", ".kilo/**", ".kilocode/**", ".opencode/**"] },
-  "providers": {
-    "anthropic": { "apiKey": "{env:ANTHROPIC_API_KEY}", "chunkTimeout": 30000, "setCacheKey": true, "timeout": 600000 }
+  "provider": {
+    "anthropic": {
+      "options": {
+        "apiKey": "{env:ANTHROPIC_API_KEY}",
+        "chunkTimeout": 30000,
+        "setCacheKey": true,
+        "timeout": 600000
+      }
+    },
+    "gemini": {
+      "options": {
+        "apiKey": "{env:GEMINI_API_KEY}",
+        "chunkTimeout": 30000,
+        "setCacheKey": true,
+        "timeout": 600000
+      }
+    },
+    "github-copilot": {
+      "options": {
+        "apiKey": "{env:GITHUB_TOKEN}",
+        "chunkTimeout": 30000,
+        "enterpriseUrl": "{env:GITHUB_ENTERPRISE_URL}",
+        "setCacheKey": true,
+        "timeout": 600000
+      }
+    },
+    "kilo": {
+      "options": {
+        "apiKey": "{env:KILO_API_KEY}",
+        "chunkTimeout": 30000,
+        "setCacheKey": true,
+        "timeout": 600000
+      }
+    }
   },
   "experimental": {
     "continue_loop_on_deny": false,
     "mcp_timeout": 30000,
     "openTelemetry": false,
     "batch_tool": true
+  },
+  "watcher": {
+    "ignore": [
+      "node_modules/**",
+      "dist/**",
+      ".git/**",
+      ".venv/**",
+      ".omc/**",
+      ".kilo/**",
+      ".kilocode/**",
+      ".opencode/**"
+    ]
   }
 }
