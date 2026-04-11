@@ -221,13 +221,18 @@ def format_python_file(content: str) -> str:
             # Find and replace the docstring in the source
             # This is a simplified approach - find the docstring literal in source
             for i in range(line_num, min(line_num + 50, len(lines))):
-                if '"""' in lines[i] or "'''" in lines[i]:
-                    quote = '"""' if '"""' in lines[i] else "'''"
-                    # Simple replacement for single-line docstrings in source
-                    if lines[i].count(quote) == 2:
-                        indent = len(lines[i]) - len(lines[i].lstrip())
-                        lines[i] = " " * indent + quote + formatted + quote
-                    break
+                line = lines[i]
+                if '"""' in line:
+                    quote = '"""'
+                elif "'''" in line:
+                    quote = "'''"
+                else:
+                    continue
+                # Simple replacement for single-line docstrings in source
+                if line.count(quote) == 2:
+                    indent = len(line) - len(line.lstrip())
+                    lines[i] = " " * indent + quote + formatted + quote
+                break
 
     return "\n".join(lines)
 
