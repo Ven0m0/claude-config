@@ -28,7 +28,7 @@ def validate_command(command: str) -> list[str]:
     return issues
 
 
-def main():
+def main() -> None:
     try:
         input_data = json.load(sys.stdin)
     except json.JSONDecodeError:
