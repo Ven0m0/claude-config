@@ -203,8 +203,9 @@ def extract_keywords_from_name(skill_name: str, description: str) -> list:
             if any(v in desc_lower for v in variants):
                 keywords.add(keyword)
 
-    # Sort before limiting to keep output deterministic
-    return sorted(keywords)[:10] if keywords else []
+    # Convert back to list and limit
+    keywords = list(keywords)[:10]
+    return sorted(keywords) if keywords else []
 
 
 def main() -> None:
