@@ -11,11 +11,6 @@ PYTHON_BLOCK_PATTERN = (
 )
 BASH_BLOCK_PATTERN = r"^(?P<indentation> *)```(?:bash|sh|shell)\n(?P<code>.*?)\n(?P=indentation)```"
 
-LANGUAGE_TAGS = {
-    "python": ["python", "py", "{ .py .annotate }"],
-    "bash": ["bash", "sh", "shell"],
-}
-
 
 def extract_code_blocks(markdown_content: str) -> dict[str, list[tuple[str, str]]]:
     """Extract code blocks from markdown content.
