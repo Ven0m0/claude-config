@@ -16,6 +16,11 @@ import sys
 from pathlib import Path
 from typing import NamedTuple
 
+EXECUTION_PLAN_PATTERNS = {
+    section: re.compile(rf"^{section}\[.*?\]:")
+    for section in ["phases", "executionOrder"]
+}
+
 
 class ValidationResult(NamedTuple):
     valid: bool
@@ -102,9 +107,7 @@ def validate_toon(content: str, filename: str) -> ValidationResult:
 
     # Validate specific execution-plan structure if this looks like one
     if "execution-plan" in content.lower():
-        required_sections = ["phases", "executionOrder"]
-        for section in required_sections:
-            pattern = re.compile(rf"^{section}\[.*?\]:")
+        for section, pattern in EXECUTION_PLAN_PATTERNS.items():
             if not any(pattern.match(line) for line in lines):
                 warnings.append(f"Execution plan missing expected section: {section}")
 
