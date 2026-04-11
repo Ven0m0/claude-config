@@ -4,16 +4,12 @@
 import contextlib
 import hashlib
 import json
+import re
 
 PYTHON_BLOCK_PATTERN = r"^(?P<indentation> *)```(?:python|py|\{[ ]*\.py[ ]*\.annotate[ ]*\})\n(?P<code>.*?)\n(?P=indentation)```"
 BASH_BLOCK_PATTERN = (
     r"^(?P<indentation> *)```(?:bash|sh|shell)\n(?P<code>.*?)\n(?P=indentation)```"
 )
-
-LANGUAGE_TAGS = {
-    "python": ["python", "py", "{ .py .annotate }"],
-    "bash": ["bash", "sh", "shell"],
-}
 
 
 def extract_code_blocks(markdown_content: str) -> dict[str, list[tuple[str, str]]]:
@@ -180,18 +176,38 @@ def update_markdown_file(
         temp_files (list): Metadata for formatted code blocks.
 
     """
+    lookup = {}
     for num_spaces, original_code_block, temp_file_path, code_type in temp_files:
         try:
             formatted_code = temp_file_path.read_text().rstrip("\n")
         except Exception:
             continue
         formatted_code_with_indentation = add_indentation(formatted_code, num_spaces)
+        lookup[(num_spaces, original_code_block, code_type)] = formatted_code_with_indentation
 
-        for lang in LANGUAGE_TAGS[code_type]:
-            markdown_content = markdown_content.replace(
-                f"{' ' * num_spaces}```{lang}\n{original_code_block}\n{' ' * num_spaces}```",
-                f"{' ' * num_spaces}```{lang}\n{formatted_code_with_indentation}\n{' ' * num_spaces}```",
-            )
+    if not lookup:
+        with contextlib.suppress(Exception):
+            file_path.write_text(markdown_content)
+        return
+
+    python_pattern = re.compile(PYTHON_BLOCK_PATTERN, re.DOTALL | re.MULTILINE)
+    bash_pattern = re.compile(BASH_BLOCK_PATTERN, re.DOTALL | re.MULTILINE)
+
+    def replacer(match: re.Match, code_type: str) -> str:
+        full_match = match.group(0)
+        indentation = match.group("indentation")
+        num_spaces = len(indentation)
+        code = match.group("code")
+
+        key = (num_spaces, code, code_type)
+        formatted_code = lookup.get(key)
+        if formatted_code is None:
+            return full_match
+        first_line = full_match.split("\n", 1)[0]
+        return f"{first_line}\n{formatted_code}\n{indentation}```"
+
+    markdown_content = python_pattern.sub(lambda m: replacer(m, "python"), markdown_content)
+    markdown_content = bash_pattern.sub(lambda m: replacer(m, "bash"), markdown_content)
 
     with contextlib.suppress(Exception):
         file_path.write_text(markdown_content)
