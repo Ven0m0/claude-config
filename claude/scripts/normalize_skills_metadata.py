@@ -107,7 +107,11 @@ def normalize_skill_metadata(skill_path: Path) -> bool:
                     clean_p = " ".join(p.split())
                     if len(clean_p) > 20 and clean_p.lower() not in description.lower():
                         desc_stripped = description.strip()
-                        if desc_stripped and not desc_stripped.endswith((".", "!", "?")):
+                        if desc_stripped and not desc_stripped.endswith((
+                            ".",
+                            "!",
+                            "?",
+                        )):
                             desc_stripped += "."
                         description = f"{desc_stripped} {clean_p}".strip()
                         metadata["description"] = description
@@ -122,7 +126,10 @@ def normalize_skill_metadata(skill_path: Path) -> bool:
 
     # Calculate and add compliance score (required)
     compliance_score = calculate_compliance_score(metadata, description)
-    if "compliance_score" not in metadata or metadata.get("compliance_score") != compliance_score:
+    if (
+        "compliance_score" not in metadata
+        or metadata.get("compliance_score") != compliance_score
+    ):
         metadata["compliance_score"] = compliance_score
         modified = True
 
@@ -171,11 +178,12 @@ def normalize_skill_metadata(skill_path: Path) -> bool:
 
 def extract_keywords_from_name(skill_name: str, description: str) -> list:
     """Extract auto-trigger keywords from skill name and description."""
-    keywords = []
+    # Use a set for O(1) membership checking and deduplication
+    keywords = set()
 
     # Extract from name
     parts = skill_name.replace("moai-", "").split("-")
-    keywords.extend(parts)
+    keywords.update(parts)
 
     # Add common keywords from description
     if description:
@@ -193,11 +201,10 @@ def extract_keywords_from_name(skill_name: str, description: str) -> list:
 
         for keyword, variants in common_keywords.items():
             if any(v in desc_lower for v in variants):
-                if keyword not in keywords:
-                    keywords.append(keyword)
+                keywords.add(keyword)
 
-    # Deduplicate and limit
-    keywords = list(set(keywords))[:10]
+    # Convert back to list and limit
+    keywords = list(keywords)[:10]
     return sorted(keywords) if keywords else []
 
 
@@ -216,7 +223,6 @@ def main() -> None:
         total_count += 1
         if normalize_skill_metadata(skill_dir):
             modified_count += 1
-
 
 
 if __name__ == "__main__":
