@@ -178,16 +178,17 @@ def update_markdown_file(file_path: Path, markdown_content: str, temp_files: lis
     bash_pattern = re.compile(BASH_BLOCK_PATTERN, re.DOTALL | re.MULTILINE)
 
     def replacer(match: re.Match, code_type: str) -> str:
+        full_match = match.group(0)
         indentation = match.group("indentation")
         num_spaces = len(indentation)
         code = match.group("code")
 
         key = (num_spaces, code, code_type)
-        if key in lookup:
-            formatted_code = lookup[key]
-            first_line = match.group(0).split("\n", 1)[0]
-            return f"{first_line}\n{formatted_code}\n{indentation}```"
-        return match.group(0)
+        formatted_code = lookup.get(key)
+        if formatted_code is None:
+            return full_match
+        first_line = full_match.split("\n", 1)[0]
+        return f"{first_line}\n{formatted_code}\n{indentation}```"
 
     markdown_content = python_pattern.sub(lambda m: replacer(m, "python"), markdown_content)
     markdown_content = bash_pattern.sub(lambda m: replacer(m, "bash"), markdown_content)
