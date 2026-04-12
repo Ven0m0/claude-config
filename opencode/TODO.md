@@ -1,5 +1,7 @@
 # OpenCode Ecosystem Packages
 
+Ven0m0/claude-config#114
+
 Sourced from [external-integration-triage.md](../docs/external-integration-triage.md).
 
 ## Status
