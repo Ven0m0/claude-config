@@ -123,7 +123,11 @@ install_systemd_services() {
   fi
 
   local current_user="${SUDO_USER:-$USER}"
-  local current_home; current_home=$(getent passwd "$current_user" | cut -d: -f6)
+  has getent || die "Required command not found: getent"
+  local current_home
+  if ! current_home=$(getent passwd "$current_user" | cut -d: -f6); then
+    die "Could not resolve home directory for user $current_user"
+  fi
   [[ -n "$current_home" ]] || die "Could not resolve home directory for user $current_user"
 
   # Resolve openchamber server script
