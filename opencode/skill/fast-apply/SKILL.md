@@ -73,7 +73,3 @@ PY
 - Abort if the anchor matches zero or multiple locations.
 - Re-run `rg -n -C 2` after the replacement to verify the final block.
 - Use a broader edit flow if the target is repeated or unstable.
-
-## Notes/Inspiration
-
-Inspired by [`opencode-fast-apply`](https://www.npmjs.com/package/opencode-fast-apply) and adapted to this repo's `rg`-first workflow.
