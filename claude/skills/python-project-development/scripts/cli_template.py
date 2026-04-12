@@ -104,7 +104,7 @@ def process(cfg: Config) -> int:
         return 0
 
     except (PermissionError, FileNotFoundError, ValueError) as e:
-        print(f"error: {e}", file=sys.stderr)
+        print(f"error: {type(e).__name__}: {e}", file=sys.stderr)
         return 1
 
 
