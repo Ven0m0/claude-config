@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Skill Initializer - Creates a new skill from template
+"""Skill Initializer - Creates a new skill from template.
 
 Usage:
     init_skill.py <skill-name> --path <path>
