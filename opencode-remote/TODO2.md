@@ -1,5 +1,0 @@
-- add [openportal](https://www.openportal.space/docs/setup/remote) support
-- create Dockerfile
-- [sandboxed.sh](https://github.com/Th0rgal/sandboxed.sh)
-- https://github.com/miantiao-me/cloud-code
-- https://github.com/qaml-ai/pi-worker
