@@ -34,9 +34,9 @@ jobs:
           uv tool install basedpyright
           uv tool install ty
           uv tool install ruff
-
+          uv tool install tombi
       - name: Install project JS/TS dependencies
         run: bun install --frozen-lockfile
       - name: Preinstall bun global packages
         run: |
-          bun i -g vscode-langservers-extracted yaml-language-server bash-language-server @ast-grep/cli @biomejs/biome typescript @vtsls/language-server
+          bun i -g @zed-industries/vscode-langservers-extracted yaml-language-server bash-language-server @ast-grep/cli @biomejs/biome typescript @vtsls/language-server
