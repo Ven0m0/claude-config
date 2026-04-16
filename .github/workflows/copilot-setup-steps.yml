@@ -1,5 +1,4 @@
 name: Copilot Setup Steps
-
 on:
   workflow_dispatch:
   push:
@@ -8,7 +7,6 @@ on:
   pull_request:
     paths:
       - .github/workflows/copilot-setup-steps.yml
-
 permissions:
   contents: read
 
@@ -24,7 +22,6 @@ jobs:
           cache-dependency-glob: |
             uv.lock
             pyproject.toml
-
       - uses: oven-sh/setup-bun@v2
 
       - name: Install project Python dependencies
