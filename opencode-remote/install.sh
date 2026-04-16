@@ -117,7 +117,7 @@ install_systemd_services() {
     printf '\e[33mWARNING: systemd not found. Start manually:\e[0m\n' >&2
     printf '  OPENCHAMBER_UI_PASSWORD="%s" node <server> --port %s &\n' \
       "${UI_PASSWORD}" "${OPENCHAMBER_PORT:-3000}" >&2
-    printf '  cloudflared tunnel --no-autoupdate run --token "%s" &\n' \
+    printf '  TUNNEL_TOKEN="%s" cloudflared tunnel --no-autoupdate run &\n' \
       "${TUNNEL_TOKEN}" >&2
     return
   fi
