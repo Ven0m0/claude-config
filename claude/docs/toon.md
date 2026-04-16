@@ -1,13 +1,14 @@
 ---
 url: /reference/spec.md
 ---
+
 # Specification
 
 **In this repo:** Use **ref-toon-format** and **use-toon** skills for TOON spec and agent-handoff patterns; **toon-formatter** for encoding/validation. Validate files with `claude/scripts/validate-toon.py`.
 
 The [TOON specification](https://github.com/toon-format/spec) is the authoritative reference for implementing encoders, decoders, and validators. It defines the concrete syntax, normative encoding/decoding behavior, and strict-mode validation rules.
 
-You don't need this page to *use* TOON. It's mainly for implementers and contributors. If you're looking to learn how to use TOON, start with the [Getting Started](/guide/getting-started) guide instead.
+You don't need this page to _use_ TOON. It's mainly for implementers and contributors. If you're looking to learn how to use TOON, start with the [Getting Started](/guide/getting-started) guide instead.
 
 > \[!TIP]
 > The TOON specification is stable, but also an idea in progress. Nothing's set in stone – help shape where it goes by contributing to it or sharing feedback!
@@ -20,8 +21,8 @@ You don't need this page to *use* TOON. It's mainly for implementers and contrib
 
 The spec defines a provisional media type and file extension in [§18.2](https://github.com/toon-format/spec/blob/main/SPEC.md#182-provisional-media-type):
 
-* **Media type:** `text/toon` (provisional, not yet IANA‑registered; UTF‑8 only)
-* **File extension:** `.toon`
+- **Media type:** `text/toon` (provisional, not yet IANA‑registered; UTF‑8 only)
+- **File extension:** `.toon`
 
 TOON documents are always UTF‑8 with LF (`\n`) line endings; the optional `charset` parameter, when present, MUST be `utf-8` per the spec.
 
@@ -103,18 +104,18 @@ Reference test suite at [github.com/toon-format/spec/tree/main/tests](https://gi
 
 ## Spec Sections at a Glance
 
-| Section | Topic | When to Read |
-|---------|-------|--------------|
-| §1-4 | Data model, normalization, decoding | Implementing encoders/decoders |
-| §5-6 | Syntax, headers, root form | Implementing parsers |
-| §7 | Strings, keys, quoting, escaping | Implementing string handling |
-| §8-10 | Objects, arrays, list items | Implementing structure encoding |
-| §11-12 | Delimiters, indentation, whitespace | Implementing formatting and validation |
-| §13 | Conformance, options, key folding/path expansion | Implementing options and features |
-| §14 | Strict-mode errors | Implementing validators |
-| §15-18 | Security, i18n, interoperability, media type | Operational and ecosystem considerations |
-| §19 | Core profile | Minimal implementations |
-| §20-21 | Versioning, extensibility, IP | Long-term stability and licensing |
+| Section | Topic                                            | When to Read                             |
+| ------- | ------------------------------------------------ | ---------------------------------------- |
+| §1-4    | Data model, normalization, decoding              | Implementing encoders/decoders           |
+| §5-6    | Syntax, headers, root form                       | Implementing parsers                     |
+| §7      | Strings, keys, quoting, escaping                 | Implementing string handling             |
+| §8-10   | Objects, arrays, list items                      | Implementing structure encoding          |
+| §11-12  | Delimiters, indentation, whitespace              | Implementing formatting and validation   |
+| §13     | Conformance, options, key folding/path expansion | Implementing options and features        |
+| §14     | Strict-mode errors                               | Implementing validators                  |
+| §15-18  | Security, i18n, interoperability, media type     | Operational and ecosystem considerations |
+| §19     | Core profile                                     | Minimal implementations                  |
+| §20-21  | Versioning, extensibility, IP                    | Long-term stability and licensing        |
 
 ## Conformance Checklists
 
@@ -124,54 +125,54 @@ The spec includes three conformance checklists:
 
 Key requirements:
 
-* Produce UTF-8 with LF line endings
-* Use consistent indentation (default 2 spaces, no tabs)
-* Escape only `\\`, `\"`, `\n`, `\r`, `\t` in quoted strings; any other escape is invalid
-* Quote strings with active delimiter, colon, or structural characters
-* Emit array lengths `[N]` matching actual count
-* Preserve object key order
-* Normalize numbers to non-exponential decimal form
-* Convert `-0` to `0`, `NaN`/±Infinity to `null`
-* No trailing spaces or trailing newline
-* When `keyFolding="safe"` is enabled, folding MUST follow §13.4:
-  * Only fold IdentifierSegment keys (letters/digits/underscores, no dots),
-  * Do not introduce collisions with existing sibling keys,
-  * Do not fold segments that would require quoting.
-* When `flattenDepth` is set, folding MUST stop at the configured number of segments (§13.4).
+- Produce UTF-8 with LF line endings
+- Use consistent indentation (default 2 spaces, no tabs)
+- Escape only `\\`, `\"`, `\n`, `\r`, `\t` in quoted strings; any other escape is invalid
+- Quote strings with active delimiter, colon, or structural characters
+- Emit array lengths `[N]` matching actual count
+- Preserve object key order
+- Normalize numbers to non-exponential decimal form
+- Convert `-0` to `0`, `NaN`/±Infinity to `null`
+- No trailing spaces or trailing newline
+- When `keyFolding="safe"` is enabled, folding MUST follow §13.4:
+  - Only fold IdentifierSegment keys (letters/digits/underscores, no dots),
+  - Do not introduce collisions with existing sibling keys,
+  - Do not fold segments that would require quoting.
+- When `flattenDepth` is set, folding MUST stop at the configured number of segments (§13.4).
 
 ### Decoder Checklist (§13.2) [↗ SPEC.md](https://github.com/toon-format/spec/blob/main/SPEC.md#132-decoder-conformance-checklist)
 
 Key requirements:
 
-* Parse array headers per §6 (length, delimiter, fields)
-* Split inline arrays and tabular rows using active delimiter only
-* Unescape quoted strings with only valid escapes
-* Type unquoted primitives: true/false/null → booleans/null, numeric → number, else → string
-* Enforce strict-mode rules when `strict=true`
-* Preserve array order and object key order
-* When `expandPaths="safe"` is enabled, expand dotted keys into nested objects per §13.4:
-  * Split on `.`, only expand when all segments are IdentifierSegments,
-  * Deep-merge overlapping paths (object + object),
-  * Do not perform element-wise array merges.
-* With `expandPaths="safe"` and `strict=true` (default), MUST error on any expansion conflict (§14.5).
-* With `expandPaths="safe"` and `strict=false`, MUST apply deterministic last-write-wins (LWW) conflict resolution (§13.4).
+- Parse array headers per §6 (length, delimiter, fields)
+- Split inline arrays and tabular rows using active delimiter only
+- Unescape quoted strings with only valid escapes
+- Type unquoted primitives: true/false/null → booleans/null, numeric → number, else → string
+- Enforce strict-mode rules when `strict=true`
+- Preserve array order and object key order
+- When `expandPaths="safe"` is enabled, expand dotted keys into nested objects per §13.4:
+  - Split on `.`, only expand when all segments are IdentifierSegments,
+  - Deep-merge overlapping paths (object + object),
+  - Do not perform element-wise array merges.
+- With `expandPaths="safe"` and `strict=true` (default), MUST error on any expansion conflict (§14.5).
+- With `expandPaths="safe"` and `strict=false`, MUST apply deterministic last-write-wins (LWW) conflict resolution (§13.4).
 
 ### Validator Checklist (§13.3) [↗ SPEC.md](https://github.com/toon-format/spec/blob/main/SPEC.md#133-validator-conformance-checklist)
 
 Validators should verify:
 
-* Structural conformance (headers, indentation, list markers)
-* Whitespace invariants (no trailing spaces/newlines)
-* Delimiter consistency between headers and rows
-* Array length counts match declared `[N]`
-* All strict-mode requirements (including path-expansion conflicts when enabled)
+- Structural conformance (headers, indentation, list markers)
+- Whitespace invariants (no trailing spaces/newlines)
+- Delimiter consistency between headers and rows
+- Array length counts match declared `[N]`
+- All strict-mode requirements (including path-expansion conflicts when enabled)
 
 ## Versioning
 
 The spec uses semantic versioning (major.minor):
 
-* **Major version** (e.g., v{{ $spec.version }}): Breaking changes, incompatible with previous versions
-* **Minor version** (e.g., v1.5 → v1.6): Clarifications, additional requirements, or backward-compatible additions
+- **Major version** (e.g., v{{ $spec.version }}): Breaking changes, incompatible with previous versions
+- **Minor version** (e.g., v1.5 → v1.6): Clarifications, additional requirements, or backward-compatible additions
 
 See [Appendix D: Document Changelog](https://github.com/toon-format/spec/blob/main/SPEC.md#appendix-d-document-changelog-informative) for detailed version history.
 

@@ -13,6 +13,7 @@ Resolve errors, manage TODOs, and automatically recover from common issues.
 ## Usage
 
 `/fix [mode] [issue]` where:
+
 - mode: `error`, `todos`, `self-heal`
 - issue: specific error, file, or problem to address
 
@@ -27,14 +28,14 @@ Resolve errors, manage TODOs, and automatically recover from common issues.
 
 ### Error Categories
 
-| Category | Types | Resolution |
-|----------|-------|------------|
-| Compilation | Syntax, Type, Build | Fix syntax, add types, update deps |
-| Runtime | Null refs, Undefined | Add checks, handle edge cases |
-| Integration | API mismatches, Version conflicts | Update interfaces, pin versions |
-| Environment | Missing deps, Config issues | Install packages, set env vars |
-| Performance | Slow operations, Memory leaks | Optimize algorithms, add caching |
-| Testing | Test failures, Flaky tests | Fix tests, update fixtures |
+| Category    | Types                             | Resolution                         |
+| ----------- | --------------------------------- | ---------------------------------- |
+| Compilation | Syntax, Type, Build               | Fix syntax, add types, update deps |
+| Runtime     | Null refs, Undefined              | Add checks, handle edge cases      |
+| Integration | API mismatches, Version conflicts | Update interfaces, pin versions    |
+| Environment | Missing deps, Config issues       | Install packages, set env vars     |
+| Performance | Slow operations, Memory leaks     | Optimize algorithms, add caching   |
+| Testing     | Test failures, Flaky tests        | Fix tests, update fixtures         |
 
 ## TODO Management
 
@@ -48,13 +49,13 @@ Prioritize by impact: critical (security, data corruption) > high (feature block
 
 ## Self-Healing
 
-| Issue | Auto-Recovery |
-|-------|--------------|
-| Missing imports | Install packages |
-| Syntax errors | Fix based on pattern |
-| Test failures | Re-run with clean state |
-| Build failures | Clean and rebuild |
-| Env issues | Set environment variables |
+| Issue           | Auto-Recovery             |
+| --------------- | ------------------------- |
+| Missing imports | Install packages          |
+| Syntax errors   | Fix based on pattern      |
+| Test failures   | Re-run with clean state   |
+| Build failures  | Clean and rebuild         |
+| Env issues      | Set environment variables |
 
 ## Verification
 
@@ -69,8 +70,9 @@ Prioritize by impact: critical (security, data corruption) > high (feature block
 </instructions>
 
 <output_format>
+
 - Error analysis with root cause
 - Fix recommendations
 - Implementation steps if requested
 - Status tracking for ongoing issues
-</output_format>
+  </output_format>

@@ -23,7 +23,6 @@ jobs:
             uv.lock
             pyproject.toml
       - uses: oven-sh/setup-bun@v2
-
       - name: Install project Python dependencies
         run: uv sync --all-extras --all-packages --all-groups --frozen && source .venv/bin/activate
       - name: Preinstall uv tools

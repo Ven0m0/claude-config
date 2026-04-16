@@ -69,6 +69,7 @@ gh search issues "useEffect cleanup race condition" --repo facebook/react --json
 ### Source Quality Signals
 
 When citing GitHub sources, prefer:
+
 - **Official repos** (org matches package name: `facebook/react`, `vercel/next.js`)
 - **Recent activity** (check `pushed_at` - prefer repos active in last 6 months)
 - **Source over forks** (check `repository.fork` is false)
@@ -85,35 +86,44 @@ When citing GitHub sources, prefer:
 
 ## Output Format
 
-```markdown
+````markdown
 ## Documentation for [Feature]
 
 ### Primary Framework
+
 - **[Framework] [Version]**
   - [Topic](url) - [what it covers]
     > Key excerpt or API signature
 
 ### Libraries
+
 - **[Library]**
   - [Relevant page](url) - [why needed]
 
 ### Source References
+
 - `[repo]/[path]` - [what it reveals that docs don't]
   > Key code snippet
 
 ### Known Issues
+
 - [Issue title](url) - [relevance, workaround if any]
 
 ### Examples
+
 - [Example](url) - [what it demonstrates]
 
 ### API Quick Reference
+
 ```[language]
 // Key API signatures extracted from docs
 ```
+````
 
 ### Version Notes
+
 - [Any version-specific caveats]
+
 ```
 
 ## Rules
@@ -139,3 +149,4 @@ When citing GitHub sources, prefer:
 - Recent releases (2025+) with breaking changes
 - Deprecation warnings or migration guides
 - Anything that surprised you or contradicted expectations
+```

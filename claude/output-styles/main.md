@@ -1,6 +1,6 @@
 ---
 name: main
-description: "A brief description of what this style does, to be displayed to the user"
+description: 'A brief description of what this style does, to be displayed to the user'
 keep-coding-instructions: true
 ---
 

@@ -27,10 +27,10 @@ ruff check --fix-only --unsafe-fixes . >/dev/null 2>&1
 
 ## What Gets Fixed
 
-| Tool | Fixes |
-|------|-------|
-| claudelint | General code quality, style consistency |
-| ruff | Python import sorting, unused imports, common Python issues |
+| Tool       | Fixes                                                       |
+| ---------- | ----------------------------------------------------------- |
+| claudelint | General code quality, style consistency                     |
+| ruff       | Python import sorting, unused imports, common Python issues |
 
 ## Notes
 

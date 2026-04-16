@@ -15,7 +15,8 @@ Analyze the project and manage documentation across all files.
 ### Mode 1: Documentation Overview (default)
 
 When run as `/docs` without arguments:
-1. Glob all markdown files (README, CHANGELOG, docs/*)
+
+1. Glob all markdown files (README, CHANGELOG, docs/\*)
 2. Read each documentation file
 3. Analyze documentation coverage
 4. Present organized summary with status and findings
@@ -30,6 +31,7 @@ When run as `/docs` without arguments:
 ### Mode 3: Session Documentation
 
 After a long coding session:
+
 1. Analyze conversation history
 2. List all changes made
 3. Group by feature/fix/enhancement

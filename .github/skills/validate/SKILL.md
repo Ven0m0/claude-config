@@ -1,7 +1,7 @@
 ---
 name: validate
 description: Run the correct validation checks for changed files in this repository (ruff, biome, shellcheck, claudelint, pytest).
-allowed-tools: "Read, Bash, Grep, Glob"
+allowed-tools: 'Read, Bash, Grep, Glob'
 ---
 
 # Validate
@@ -18,25 +18,29 @@ Use this skill when asked to validate, lint, type-check, or test changes before 
 
 2. Run only the checks relevant to changed files:
 
-   **Python (`**/*.py`)**
+   **Python (`**/\*.py`)\*\*
+
    ```bash
    uv run ruff format --check <paths>
    uv run ruff check <paths>
    uv run pytest <test-target>
    ```
 
-   **JS / TS (`**/*.ts`, `**/*.js`, etc.)**
+   **JS / TS (`**/_.ts`, `\*\*/_.js`, etc.)\*\*
+
    ```bash
    bunx @biomejs/biome check <paths>
    bun run tsc --noEmit
    ```
 
-   **Shell (`**/*.sh`)**
+   **Shell (`**/\*.sh`)\*\*
+
    ```bash
    shellcheck <paths>
    ```
 
-   **Agent / skill docs (`claude/agents/**`, `claude/skills/**`, `.github/skills/**`)**
+   **Agent / skill docs (`claude/agents/**`, `claude/skills/**`, `.github/skills/**`)\*\*
+
    ```bash
    bun run lint:claude
    ```

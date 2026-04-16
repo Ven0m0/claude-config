@@ -1,6 +1,6 @@
 ---
 name: orchestrator
-description: "Strategic orchestrator style for this repo. Delegates to specialized agents and keeps status clear."
+description: 'Strategic orchestrator style for this repo. Delegates to specialized agents and keeps status clear.'
 keep-coding-instructions: true
 ---
 

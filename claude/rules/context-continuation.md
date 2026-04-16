@@ -78,24 +78,29 @@ Write the summary to `/tmp/claude-continuation.md` using the Write tool. Include
 **Active Plan:** [path/to/plan.md or "None"]
 
 ## VERIFIED STATUS (run just before handoff):
+
 - `uv run pytest tests/ -q` → **X passed** or **X failed** (be honest!)
 - `uv run basedpyright src/` → **X errors** or **0 errors**
 - If tests fail or errors exist, document WHAT is broken
 
 ## Completed This Session:
+
 - [x] [What was VERIFIED as finished]
 - [ ] [What was started but NOT verified/complete]
 
 ## IN PROGRESS / INCOMPLETE:
+
 - [Describe exactly what was being worked on]
 - [What command was being run]
 - [What error or issue was being fixed]
 
 ## Next Steps:
+
 1. [IMMEDIATE: First thing to do - be SPECIFIC]
 2. [Include exact file:line if fixing something]
 
 ## Files Changed:
+
 - `path/to/file.py` - [what was changed]
 ```
 

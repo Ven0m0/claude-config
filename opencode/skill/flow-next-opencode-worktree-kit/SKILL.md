@@ -14,6 +14,7 @@ bash "$PLUGIN_ROOT/flow-next-opencode-worktree-kit/scripts/worktree.sh" <command
 ```
 
 Commands:
+
 - `create <name> [base]`
 - `list`
 - `switch <name>` (prints path)
@@ -21,6 +22,7 @@ Commands:
 - `copy-env <name>`
 
 Safety notes:
+
 - `create` does not change the current branch
 - `cleanup` does not force-remove worktrees and does not delete branches
 - `cleanup` deletes the worktree directory (including ignored files); removal fails if the worktree is not clean

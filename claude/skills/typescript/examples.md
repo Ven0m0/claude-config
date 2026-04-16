@@ -3,9 +3,7 @@
 ## Discriminated union
 
 ```ts
-type Result<T> =
-  | { ok: true; data: T }
-  | { ok: false; error: string };
+type Result<T> = { ok: true; data: T } | { ok: false; error: string };
 
 function unwrap<T>(result: Result<T>): T {
   if (!result.ok) {
@@ -18,7 +16,7 @@ function unwrap<T>(result: Result<T>): T {
 ## Zod schema + inferred type
 
 ```ts
-import { z } from "zod";
+import { z } from 'zod';
 
 export const UserSchema = z.object({
   id: z.string().uuid(),

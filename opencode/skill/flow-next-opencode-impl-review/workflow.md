@@ -63,6 +63,7 @@ DIFF_OUTPUT="$(git diff main..HEAD 2>/dev/null || git diff master..HEAD)"
 ### Step 2: Build review prompt
 
 Include:
+
 - Branch + base branch
 - Commit list
 - Changed files
@@ -100,6 +101,7 @@ EOF
 ### Step 5: Handle Verdict
 
 If `VERDICT=NEEDS_WORK`:
+
 1. Parse issues from output
 2. Fix code, commit, run tests
 3. Re-run (use bash timeout 600000): `$FLOWCTL opencode impl-review "$TASK_ID" --base "$BASE_BRANCH" --receipt "$RECEIPT_PATH"`
@@ -159,6 +161,7 @@ EOF
 ### Phase 3: Execute Review (RP)
 
 Use `setup-review` with `--response-type review` (RP 1.6.0+). The builder's discovery agent automatically:
+
 - Selects relevant files and git diffs
 - Analyzes code with full codebase context
 - Returns structured review findings
@@ -234,16 +237,19 @@ If verdict is NEEDS_WORK:
 2. **Fix the code** - Address each issue in order
 3. **Run tests/lints** - Verify fixes don't break anything
 4. **Commit fixes** (MANDATORY before re-review):
+
    ```bash
    git add -A
    git commit -m "fix: address review feedback"
    ```
+
    **If you skip this and re-review without committing changes, reviewer will return NEEDS_WORK again.**
 
 5. **Re-review with fix summary** (only AFTER step 4):
 
    **IMPORTANT**: Do NOT re-add files already in the selection. RepoPrompt auto-refreshes
    file contents on every message. Only use `select-add` for NEW files created during fixes:
+
    ```bash
    # Only if fixes created new files not in original selection
    if [[ -n "$NEW_FILES" ]]; then
@@ -264,6 +270,7 @@ If verdict is NEEDS_WORK:
 
    $FLOWCTL rp chat-send --window "$W" --tab "$T" --message-file /tmp/re-review.md --chat-id "$CHAT_ID" --mode review
    ```
+
 6. **Repeat** until Ship
 
 **Anti-pattern**: Re-adding already-selected files before re-review. RP auto-refreshes; re-adding can cause issues.

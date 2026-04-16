@@ -1,6 +1,6 @@
 ## Tool Preferences
 
-*Preferred CLI tools with specific use cases*
+_Preferred CLI tools with specific use cases_
 
 - **File Search**: Use `fd` over `find` - faster, respects .gitignore, better defaults
 - **Text Search**: Use `rg` over `grep` - faster, respects .gitignore, better output formatting
@@ -13,9 +13,10 @@
 
 ## LSP Enforcement
 
-*Language Server Protocol for safe code operations*
+_Language Server Protocol for safe code operations_
 
 **The Three Iron Laws:**
+
 ```
 1. NO MODIFYING UNFAMILIAR CODE WITHOUT goToDefinition FIRST
 2. NO REFACTORING WITHOUT findReferences IMPACT ANALYSIS FIRST
@@ -23,6 +24,7 @@
 ```
 
 **When to Use LSP vs Grep/Glob:**
+
 - **Symbol navigation**: LSP goToDefinition (not grep)
 - **Find all usages**: LSP findReferences (not grep)
 - **Type info/docs**: LSP hover (not reading multiple files)
@@ -32,18 +34,21 @@
 - **File patterns**: Glob (discovering files by name)
 
 **Pre-Edit Protocol (Mandatory):**
+
 1. LSP goToDefinition → understand implementation
 2. LSP findReferences → assess change impact
 3. LSP hover → verify type signatures
 4. THEN make changes
 
 **Post-Edit Verification (Mandatory):**
+
 1. LSP diagnostics → check for errors
 2. Verify no new type errors
 3. Confirm imports resolve
 4. Validate interface contracts
 
 **Usage:**
+
 - Skill: `/lsp-enable` for enforcement and guidance
 - Setup: `/lsp-setup` for project configuration
 - Docs: `claude/docs/lsp-tools-integration.md`
@@ -53,7 +58,7 @@
 
 ## Code Standards
 
-*Universal principles for writing quality code*
+_Universal principles for writing quality code_
 
 - **KISS**: Keep It Simple. Favor simple, maintainable solutions over clever code
 - **YAGNI**: You Ain't Gonna Need It. Don't implement features or abstractions until actually needed
@@ -72,7 +77,7 @@
 
 ## Communication Style
 
-*Preferences for code, comments, and documentation*
+_Preferences for code, comments, and documentation_
 
 - **No Emojis**: Never use emojis in code, comments, commit messages, or documentation
 - **No Em Dashes**: Avoid em dashes in writing; use hyphens (-) or restructure sentences
@@ -87,21 +92,21 @@
 
 Agents live in `claude/agents/`. Delegate via `Task(subagent_type="agent-name", prompt="...")`.
 
-| Agent | When to use |
-| ----- | ----------- |
-| general-purpose | Default; complex multi-step tasks, delegation |
-| code-simplifier | Simplify/refine code without changing behavior |
-| janitor | Cleanup, tech debt, dead code removal (includes safety rules for framework preservation) |
-| merge-supervisor | Git merge conflict resolution |
-| code-explorer | Trace execution, find patterns, map architecture (has feature-tracing and pattern-discovery modes) |
-| context-manager | Context engineering, token optimization, multi-agent orchestration |
-| bash-pro, python-pro, javascript-pro, typescript-pro, rust-pro | Language-specific implementation |
-| mcp-expert | MCP server config and integration |
-| dx-optimizer | Dev experience, tooling, workflow setup |
-| llm-boost | LLM optimization: CLAUDE.md audit, skill/agent improvement, markdown compression |
-| prd | Product requirements document |
-| reverse-engineer | Binary analysis, RE toolchains, security research |
-| turbo | Maximum speed, parallelize everything |
+| Agent                                                          | When to use                                                                                        |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| general-purpose                                                | Default; complex multi-step tasks, delegation                                                      |
+| code-simplifier                                                | Simplify/refine code without changing behavior                                                     |
+| janitor                                                        | Cleanup, tech debt, dead code removal (includes safety rules for framework preservation)           |
+| merge-supervisor                                               | Git merge conflict resolution                                                                      |
+| code-explorer                                                  | Trace execution, find patterns, map architecture (has feature-tracing and pattern-discovery modes) |
+| context-manager                                                | Context engineering, token optimization, multi-agent orchestration                                 |
+| bash-pro, python-pro, javascript-pro, typescript-pro, rust-pro | Language-specific implementation                                                                   |
+| mcp-expert                                                     | MCP server config and integration                                                                  |
+| dx-optimizer                                                   | Dev experience, tooling, workflow setup                                                            |
+| llm-boost                                                      | LLM optimization: CLAUDE.md audit, skill/agent improvement, markdown compression                   |
+| prd                                                            | Product requirements document                                                                      |
+| reverse-engineer                                               | Binary analysis, RE toolchains, security research                                                  |
+| turbo                                                          | Maximum speed, parallelize everything                                                              |
 
 **Parallel execution**: Use parallel Task() for independent work (e.g. security analysis + performance review + type check in one turn).
 
@@ -122,13 +127,13 @@ Agents live in `claude/agents/`. Delegate via `Task(subagent_type="agent-name", 
 
 ## Session Management
 
-*Keep sessions focused and context clean*
+_Keep sessions focused and context clean_
 
 - For ~ and GitHub work, break sessions into focused tasks of 15-20 turns. Use /clear between subtasks. Start a fresh session for each new feature or bug fix.
 
 ## Prompt Best Practices
 
-*How to request changes effectively*
+_How to request changes effectively_
 
 When requesting changes, specify: (1) the action verb, (2) the target file or component, (3) the expected behavior.
 
@@ -136,7 +141,7 @@ Example: instead of "fix the bug", say "fix the null pointer in src/api/handler.
 
 ## Progressive Disclosure
 
-*Keep context lean and focused*
+_Keep context lean and focused_
 
 - Keep this file short and focused on high-frequency rules
 - Move detailed workflows to SKILL.md files or references

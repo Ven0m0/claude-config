@@ -89,9 +89,9 @@ Skills use a three-level loading system to manage context efficiently:
 
 1. **Metadata (name + description)** - Always in context (~100 words)
 2. **SKILL.md body** - When skill triggers (<5k words)
-3. **Bundled resources** - As needed by the agent (Unlimited*)
+3. **Bundled resources** - As needed by the agent (Unlimited\*)
 
-*Unlimited because scripts can be executed without reading into context window.
+\*Unlimited because scripts can be executed without reading into context window.
 
 ## Skill Creation Process
 
@@ -212,6 +212,7 @@ If validation fails, the script will report the errors and exit without creating
 After testing the skill, users may request improvements. Often this happens right after using the skill, with fresh context of how the skill performed.
 
 **Iteration workflow:**
+
 1. Use the skill on real tasks
 2. Notice struggles or inefficiencies
 3. Identify how SKILL.md or bundled resources should be updated

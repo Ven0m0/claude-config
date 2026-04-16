@@ -3,7 +3,7 @@
 id: sql-injection-python-format
 language: python
 severity: error
-message: "Potential SQL injection: Use parameterized queries instead of string formatting"
+message: 'Potential SQL injection: Use parameterized queries instead of string formatting'
 rule:
   any:
     - pattern: cursor.execute($QUERY % $ARGS)
@@ -15,7 +15,7 @@ rule:
 id: sql-injection-python-fstring
 language: python
 severity: error
-message: "Potential SQL injection: f-strings in SQL queries are dangerous"
+message: 'Potential SQL injection: f-strings in SQL queries are dangerous'
 rule:
   pattern: |
     cursor.execute(f"$$$SQL")
@@ -24,7 +24,7 @@ rule:
 id: sql-injection-js-template
 language: javascript
 severity: error
-message: "Potential SQL injection: Use parameterized queries"
+message: 'Potential SQL injection: Use parameterized queries'
 rule:
   any:
     - pattern: $DB.query(`$$$SQL ${$VAR} $$$REST`)
@@ -36,7 +36,7 @@ rule:
 id: sql-injection-ts-template
 language: typescript
 severity: error
-message: "Potential SQL injection: Use parameterized queries"
+message: 'Potential SQL injection: Use parameterized queries'
 rule:
   any:
     - pattern: $DB.query(`$$$SQL ${$VAR} $$$REST`)

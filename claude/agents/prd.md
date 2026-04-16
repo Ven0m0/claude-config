@@ -26,9 +26,10 @@ You transform product requests into clear, actionable PRDs.
 </constraints>
 
 <output_format>
+
 1. Product overview
 2. Goals/non-goals
 3. Requirements and user stories
 4. Technical and delivery plan
 5. Success metrics
-</output_format>
+   </output_format>

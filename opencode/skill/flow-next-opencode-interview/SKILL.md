@@ -10,6 +10,7 @@ Conduct an extremely thorough interview about a task/spec and write refined deta
 **IMPORTANT**: This plugin uses `.flow/` for ALL task tracking. Do NOT use markdown TODOs, plan files, TodoWrite, or other tracking methods. All task state must be read and written via `flowctl`.
 
 **CRITICAL: flowctl is BUNDLED — NOT installed globally.** `which flowctl` will fail (expected). Always use:
+
 ```bash
 ROOT="$(git rev-parse --show-toplevel)"
 OPENCODE_DIR="$ROOT/.opencode"
@@ -20,6 +21,7 @@ $FLOWCTL <command>
 ## Pre-check: Local setup version
 
 If `.flow/meta.json` exists and has `setup_version`, compare to local OpenCode version:
+
 ```bash
 SETUP_VER=$(jq -r '.setup_version // empty' .flow/meta.json 2>/dev/null)
 OPENCODE_VER=$(cat "$OPENCODE_DIR/version" 2>/dev/null || echo "unknown")
@@ -27,6 +29,7 @@ if [[ -n "$SETUP_VER" && "$OPENCODE_VER" != "unknown" && "$SETUP_VER" != "$OPENC
   echo "Flow-Next updated to v${OPENCODE_VER}. Run /flow-next:setup to refresh local scripts (current: v${SETUP_VER})."
 fi
 ```
+
 Continue regardless (non-blocking).
 
 **Role**: technical interviewer, spec refiner
@@ -37,12 +40,14 @@ Continue regardless (non-blocking).
 Full request: $ARGUMENTS
 
 Accepts:
+
 - **Flow epic ID** `fn-N`: Fetch with `flowctl show`, write back with `flowctl epic set-plan`
 - **Flow task ID** `fn-N.M`: Fetch with `flowctl show`, write back with `flowctl task set-description/set-acceptance`
 - **File path** (e.g., `docs/spec.md`): Read file, interview, rewrite file
 - **Empty**: Prompt for target
 
 Examples:
+
 - `/flow-next:interview fn-1`
 - `/flow-next:interview fn-1.3`
 - `/flow-next:interview docs/oauth-spec.md`
@@ -81,12 +86,14 @@ FLOWCTL="$OPENCODE_DIR/bin/flowctl"
 Ask questions in **plain text** (no question tool). Group 5-8 questions per message. Expect 40+ total for complex specs. Wait for answers before continuing.
 
 Rules:
+
 - Keep questions short and concrete
 - Offer 2-4 options when helpful
 - Include “Not sure” when ambiguous
 - Number questions for easy replies
 
 Example:
+
 ```
 1) Primary user goal?
 2) Platforms: web, iOS, Android, desktop?
@@ -145,6 +152,7 @@ Then suggest: "Run `/flow-next:plan fn-N` to research best practices and create 
 ### For Flow Epic ID
 
 **First check if tasks exist:**
+
 ```bash
 $FLOWCTL tasks --epic <id> --json
 ```
@@ -179,11 +187,13 @@ EOF
 ### For Flow Task ID
 
 **First check if task has existing spec from planning:**
+
 ```bash
 $FLOWCTL cat <id>
 ```
 
 **If task has substantial planning content** (file refs, sizing, approach):
+
 - **Do NOT overwrite** — planning detail would be lost
 - Only add new acceptance criteria discovered in interview:
   ```bash
@@ -192,6 +202,7 @@ $FLOWCTL cat <id>
 - Or suggest interviewing the epic instead: `/flow-next:interview <epic-id>`
 
 **If task is minimal** (just title, empty or stub description):
+
 - Update task with interview findings
 - Focus on **requirements**, not implementation details
 
@@ -201,6 +212,7 @@ $FLOWCTL task set-spec <id> --description /tmp/desc.md --acceptance /tmp/acc.md 
 ```
 
 Description should capture:
+
 - What needs to be accomplished (not how)
 - Edge cases discovered in interview
 - Constraints and requirements
@@ -210,6 +222,7 @@ Do NOT add: file/line refs, sizing, implementation approach — that's plan's jo
 ### For File Path
 
 Rewrite the file with refined spec:
+
 - Preserve any existing structure/format
 - Add sections for areas covered in interview
 - Include edge cases, acceptance criteria
@@ -220,6 +233,7 @@ This is typically a pre-epic doc. After interview, suggest `/flow-next:plan <fil
 ## Completion
 
 Show summary:
+
 - Number of questions asked
 - Key decisions captured
 - What was written (Flow ID updated / file rewritten)

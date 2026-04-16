@@ -10,11 +10,11 @@ OpenCode reads this directly; do not inherit from the root `AGENTS.md`.
 
 ## Source of Truth
 
-| Artifact | Path |
-|---|---|
-| Shared project config | `opencode/opencode.json` |
-| Runtime overlay | `.opencode/opencode.json` |
-| Custom assets | `opencode/agents/`, `opencode/command/`, `opencode/skill/`, `opencode/plugins/` |
+| Artifact              | Path                                                                            |
+| --------------------- | ------------------------------------------------------------------------------- |
+| Shared project config | `opencode/opencode.json`                                                        |
+| Runtime overlay       | `.opencode/opencode.json`                                                       |
+| Custom assets         | `opencode/agents/`, `opencode/command/`, `opencode/skill/`, `opencode/plugins/` |
 
 > Config sync: `opencode/opencode.json` → `.opencode/opencode.json`
 

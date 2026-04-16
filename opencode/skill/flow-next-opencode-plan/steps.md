@@ -3,11 +3,13 @@
 **IMPORTANT**: Steps 1-3 (research, gap analysis, depth) ALWAYS run regardless of input type.
 
 **CRITICAL**: If you are about to create:
+
 - a markdown TODO list,
 - a task list outside `.flow/`,
 - or any plan files outside `.flow/`,
 
 **STOP** and instead:
+
 - create/update tasks in `.flow/` using `flowctl`,
 - record details in the epic/task spec markdown.
 
@@ -24,18 +26,20 @@
 
 Use **T-shirt sizes** based on observable metrics — not token estimates (models can't reliably estimate tokens).
 
-| Size | Files | Acceptance Criteria | Pattern | Action |
-|------|-------|---------------------|---------|--------|
-| **S** | 1-2 | 1-3 | Follows existing | ✅ Good task size |
-| **M** | 3-5 | 3-5 | Adapts existing | ✅ Good task size |
-| **L** | 5+ | 5+ | New/novel | ⚠️ **Split this** |
+| Size  | Files | Acceptance Criteria | Pattern          | Action            |
+| ----- | ----- | ------------------- | ---------------- | ----------------- |
+| **S** | 1-2   | 1-3                 | Follows existing | ✅ Good task size |
+| **M** | 3-5   | 3-5                 | Adapts existing  | ✅ Good task size |
+| **L** | 5+    | 5+                  | New/novel        | ⚠️ **Split this** |
 
 **Anchor examples** (calibrate against these):
+
 - **S**: Fix a bug, add config, simple UI tweak
 - **M**: New API endpoint with tests, new component with state
 - **L**: New subsystem, architectural change → SPLIT INTO S/M TASKS
 
 **If too large, split it:**
+
 - ❌ Bad: "Implement Google OAuth" (L — new subsystem)
 - ✅ Good:
   - "Add Google OAuth env config" (S)
@@ -62,6 +66,7 @@ $FLOWCTL init --json
 **If input is a Flow ID** (fn-N or fn-N.M): First fetch it with `$FLOWCTL show <id> --json` and `$FLOWCTL cat <id>` to get the request context.
 
 **Check if memory is enabled:**
+
 ```bash
 $FLOWCTL config get memory.enabled --json
 ```
@@ -70,6 +75,7 @@ $FLOWCTL config get memory.enabled --json
 
 **If user chose context-scout (RepoPrompt)**:
 Run these subagents in parallel using the Task tool:
+
 - Task flow-next:context-scout(<request>) - uses RepoPrompt builder for AI-powered file discovery
 - Task flow-next:practice-scout(<request>)
 - Task flow-next:docs-scout(<request>)
@@ -80,6 +86,7 @@ Run these subagents in parallel using the Task tool:
 
 **If user chose repo-scout (default/faster)** OR rp-cli unavailable:
 Run these subagents in parallel using the Task tool:
+
 - Task flow-next:repo-scout(<request>) - uses standard Grep/Glob/Read
 - Task flow-next:practice-scout(<request>)
 - Task flow-next:docs-scout(<request>)
@@ -89,18 +96,30 @@ Run these subagents in parallel using the Task tool:
 - Task flow-next:docs-gap-scout(<request>) - identifies docs that may need updates
 
 Example batch payload:
+
 ```json
 {
   "tool_calls": [
-    {"tool": "task", "parameters": {"description": "Context scout", "prompt": "<request>", "subagent_type": "context-scout"}},
-    {"tool": "task", "parameters": {"description": "Practice scout", "prompt": "<request>", "subagent_type": "practice-scout"}},
-    {"tool": "task", "parameters": {"description": "Docs scout", "prompt": "<request>", "subagent_type": "docs-scout"}}
+    {
+      "tool": "task",
+      "parameters": { "description": "Context scout", "prompt": "<request>", "subagent_type": "context-scout" }
+    },
+    {
+      "tool": "task",
+      "parameters": { "description": "Practice scout", "prompt": "<request>", "subagent_type": "practice-scout" }
+    },
+    {
+      "tool": "task",
+      "parameters": { "description": "Docs scout", "prompt": "<request>", "subagent_type": "docs-scout" }
+    }
   ]
 }
 ```
+
 Max 10 tool calls per batch. Split if more. Do not include external/MCP tools in batch.
 
 Must capture:
+
 - File paths + line refs
 - Existing centralized code to reuse
 - Similar patterns / prior work
@@ -113,6 +132,7 @@ Must capture:
 ## Step 2: Stakeholder & scope check
 
 Before diving into gaps, identify who's affected:
+
 - **End users** — What changes for them? New UI, changed behavior?
 - **Developers** — New APIs, changed interfaces, migration needed?
 - **Operations** — New config, monitoring, deployment changes?
@@ -122,6 +142,7 @@ This shapes what the plan needs to cover. A pure backend refactor needs differen
 ## Step 3: Flow gap check
 
 Run the gap analyst subagent:
+
 - Task flow-next:flow-gap-analyst(<request>, research_findings)
 
 Fold gaps + questions into the plan.
@@ -131,11 +152,13 @@ Fold gaps + questions into the plan.
 Default to standard unless complexity demands more or less.
 
 **SHORT** (bugs, small changes)
+
 - Problem or goal
 - Acceptance checks
 - Key context
 
 **STANDARD** (most features)
+
 - Overview + scope
 - Approach
 - Risks / dependencies
@@ -145,6 +168,7 @@ Default to standard unless complexity demands more or less.
 - Mermaid diagram if data model changes
 
 **DEEP** (large/critical)
+
 - Detailed phases
 - Alternatives considered
 - Non-functional targets
@@ -160,12 +184,14 @@ Default to standard unless complexity demands more or less.
 **Route A - Input was an existing Flow ID**:
 
 1. If epic ID (fn-N):
+
    ```bash
    # Use stdin heredoc (no temp file needed)
    $FLOWCTL epic set-plan <id> --file - --json <<'EOF'
    <plan content here>
    EOF
    ```
+
    - Set epic dependencies from epic-scout (if any):
      ```bash
      # For each dependency found by epic-scout:
@@ -189,20 +215,25 @@ Default to standard unless complexity demands more or less.
 **Route B - Input was text (new idea)**:
 
 1. Create epic:
+
    ```bash
    $FLOWCTL epic create --title "<Short title>" --json
    ```
+
    This returns the epic ID (e.g., fn-1).
 
 2. Set epic branch_name (deterministic):
    - Default: `fn-N` (use epic ID)
+
    ```bash
    $FLOWCTL epic set-branch <epic-id> --branch "<epic-id>" --json
    ```
+
    - If user specified a branch, use that instead.
 
 3. Write epic spec (use stdin heredoc):
-   ```bash
+
+   ````bash
    # Include: Overview, Scope, Approach, Quick commands (REQUIRED), Acceptance, References
    # Add mermaid diagram if data model or architecture changes
    $FLOWCTL epic set-plan <epic-id> --file - --json <<'EOF'
@@ -214,26 +245,33 @@ Default to standard unless complexity demands more or less.
    ## Quick commands
    ```bash
    # At least one smoke test command
-   ```
+   ````
 
    ## Acceptance
+
    ...
    EOF
+
+   ```
+
    ```
 
 4. Set epic dependencies (from epic-scout findings):
+
    ```bash
    # For each dependency found by epic-scout:
    $FLOWCTL epic add-dep <epic-id> <dependency-epic-id> --json
    ```
 
 5. Create child tasks:
+
    ```bash
    # For each task:
    $FLOWCTL task create --epic <epic-id> --title "<Task title>" --json
    ```
 
 6. Write task specs (use combined set-spec):
+
    ```bash
    # For each task - single call sets both sections
    # Write description and acceptance to temp files, then:
@@ -241,21 +279,26 @@ Default to standard unless complexity demands more or less.
    ```
 
    **Task spec content** (remember: NO implementation code):
+
    ```markdown
    ## Description
+
    [What to build, not how to build it]
 
    **Size:** S/M (L tasks should be split)
    **Files:** list expected files
 
    ## Approach
+
    - Follow pattern at `src/example.ts:42`
    - Reuse `existingHelper()` from `lib/utils.ts`
 
    ## Key context
+
    [Only for recent API changes, surprising patterns, or non-obvious gotchas]
 
    ## Acceptance
+
    - [ ] Criterion 1
    - [ ] Criterion 2
    ```
@@ -265,6 +308,7 @@ Default to standard unless complexity demands more or less.
    **Doc updates**: If docs-gap-scout flagged updates, add them to task acceptance criteria (e.g., "Update README usage section").
 
 7. Add dependencies:
+
    ```bash
    # If task B depends on task A:
    $FLOWCTL dep add <task-B-id> <task-A-id> --json
@@ -287,6 +331,7 @@ Fix any errors before proceeding.
 ## Step 7: Review (if chosen at start)
 
 If user chose "Yes" to review in SKILL.md setup question:
+
 1. Invoke `/flow-next:plan-review` with the epic ID
 2. If review returns "Needs Work" or "Major Rethink":
    - **Re-anchor EVERY iteration** (do not skip):
@@ -319,6 +364,7 @@ Next steps:
 ```
 
 If user selects 4 or 5:
+
 - **Go deeper**: Ask which task(s), then add more context/research to those specific tasks
 - **Simplify**: Remove non-essential sections, tighten acceptance criteria, merge small tasks
 

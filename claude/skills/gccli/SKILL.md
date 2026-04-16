@@ -29,11 +29,13 @@ npm install -g @mariozechner/gccli
 ### Configure gccli
 
 First check if already configured:
+
 ```bash
 gccli accounts list
 ```
 
 If no accounts, guide the user through setup:
+
 1. Ask if they have a Google Cloud project with Calendar API enabled
 2. If not, walk them through the Google Cloud Console steps above
 3. Have them download the OAuth credentials JSON
@@ -45,6 +47,7 @@ If no accounts, guide the user through setup:
 Run `gccli --help` for full command reference.
 
 Common operations:
+
 - `gccli <email> calendars` - List all calendars
 - `gccli <email> events <calendarId> [--from <dt>] [--to <dt>]` - List events
 - `gccli <email> event <calendarId> <eventId>` - Get event details

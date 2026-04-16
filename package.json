@@ -1,13 +1,4 @@
 {
-  "dependencies": {},
-  "devDependencies": {
-    "@biomejs/biome": "2.4.12",
-    "agnix": "0.17.0",
-    "claude-code-lint": "^0.3.0",
-    "oxfmt": "0.45.0",
-    "oxlint": "1.60.0",
-    "ultracite": "^7.4.2"
-  },
   "scripts": {
     "lint:claude": "claudelint check-all",
     "lint:claude:fix": "claudelint format --fix",
@@ -17,5 +8,14 @@
     "lint:oxlint:fix": "bunx oxlint --fix .",
     "lint:oxfmt": "bunx oxfmt --check .",
     "lint:oxfmt:fix": "bunx oxfmt ."
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@biomejs/biome": "2.4.12",
+    "agnix": "0.17.0",
+    "claude-code-lint": "^0.3.0",
+    "oxfmt": "0.45.0",
+    "oxlint": "1.60.0",
+    "ultracite": "^7.4.2"
   }
 }

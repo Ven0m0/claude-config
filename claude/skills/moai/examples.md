@@ -14,6 +14,7 @@ allowed-tools: Read, Grep, Glob
 # Example Skill
 
 ## Workflow
+
 1. Gather inputs.
 2. Run scoped search.
 3. Apply change.
@@ -72,7 +73,7 @@ You handle X tasks with minimal context.
 ---
 name: test-planner
 description: Creates test plans and implementation checklists.
-tools: ["read", "search", "edit"]
+tools: ['read', 'search', 'edit']
 ---
 ```
 

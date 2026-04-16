@@ -8,9 +8,9 @@ read_when:
   - User wants to list their Cloudflare zones
 metadata:
   clawdbot:
-    emoji: "☁️"
+    emoji: '☁️'
     requires:
-      bins: ["curl", "jq"]
+      bins: ['curl', 'jq']
 ---
 
 # Cloudflare Skill
@@ -20,6 +20,7 @@ Connect to [Cloudflare](https://cloudflare.com) API for DNS management, tunnels,
 ## Setup
 
 ### 1. Get Your API Token
+
 1. Go to [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
 2. Create a token with required permissions:
    - **Zone:Read** - List domains
@@ -28,6 +29,7 @@ Connect to [Cloudflare](https://cloudflare.com) API for DNS management, tunnels,
 3. Copy the token
 
 ### 2. Configure
+
 ```bash
 # Option A: Store in file (recommended)
 echo "YOUR_API_TOKEN" > ~/.cloudflare_token
@@ -38,6 +40,7 @@ export CLOUDFLARE_API_TOKEN="YOUR_API_TOKEN"
 ```
 
 ### 3. Test Connection
+
 ```bash
 ./scripts/setup.sh
 ```
@@ -111,10 +114,10 @@ export CLOUDFLARE_API_TOKEN="YOUR_API_TOKEN"
 
 ## Token Permissions
 
-| Feature | Required Permission |
-|---------|-------------------|
-| List zones | Zone:Read |
-| Manage DNS | DNS:Edit |
+| Feature        | Required Permission            |
+| -------------- | ------------------------------ |
+| List zones     | Zone:Read                      |
+| Manage DNS     | DNS:Edit                       |
 | Manage tunnels | Account:Cloudflare Tunnel:Edit |
 
 Create token at: [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
@@ -124,11 +127,13 @@ Create token at: [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflar
 ## Common Workflows
 
 ### Point subdomain to server
+
 ```bash
 ./scripts/dns/create.sh mysite.com --type A --name api --content 1.2.3.4 --proxied
 ```
 
 ### Set up tunnel for local service
+
 ```bash
 # 1. Create tunnel
 ./scripts/tunnels/create.sh webhook-tunnel
@@ -155,9 +160,9 @@ cloudflared tunnel run --token $TOKEN
 
 ## Output Formats
 
-| Flag | Description |
-|------|-------------|
-| `--json` | Raw JSON from API |
+| Flag      | Description               |
+| --------- | ------------------------- |
+| `--json`  | Raw JSON from API         |
 | `--table` | Formatted table (default) |
 | `--quiet` | Minimal output (IDs only) |
 
@@ -165,9 +170,9 @@ cloudflared tunnel run --token $TOKEN
 
 ## Troubleshooting
 
-| Error | Solution |
-|-------|----------|
+| Error                | Solution                              |
+| -------------------- | ------------------------------------- |
 | "No API token found" | Run setup or set CLOUDFLARE_API_TOKEN |
-| "401 Unauthorized" | Check token is valid |
-| "403 Forbidden" | Token missing required permission |
-| "Zone not found" | Verify domain is in your account |
+| "401 Unauthorized"   | Check token is valid                  |
+| "403 Forbidden"      | Token missing required permission     |
+| "Zone not found"     | Verify domain is in your account      |

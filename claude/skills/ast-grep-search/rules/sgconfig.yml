@@ -7,42 +7,42 @@ ruleDirs:
   - languages
 
 testConfigs:
-  - testDir: "__tests__"
-    snapshotDir: "__snapshots__"
+  - testDir: '__tests__'
+    snapshotDir: '__snapshots__'
 
 languageGlobs:
   python:
-    - "**/*.py"
-    - "**/*.pyi"
+    - '**/*.py'
+    - '**/*.pyi'
   javascript:
-    - "**/*.js"
-    - "**/*.jsx"
-    - "**/*.mjs"
-    - "**/*.cjs"
+    - '**/*.js'
+    - '**/*.jsx'
+    - '**/*.mjs'
+    - '**/*.cjs'
   typescript:
-    - "**/*.ts"
-    - "**/*.tsx"
-    - "**/*.mts"
-    - "**/*.cts"
+    - '**/*.ts'
+    - '**/*.tsx'
+    - '**/*.mts'
+    - '**/*.cts'
   go:
-    - "**/*.go"
+    - '**/*.go'
   rust:
-    - "**/*.rs"
+    - '**/*.rs'
   java:
-    - "**/*.java"
+    - '**/*.java'
   kotlin:
-    - "**/*.kt"
-    - "**/*.kts"
+    - '**/*.kt'
+    - '**/*.kts'
   cpp:
-    - "**/*.c"
-    - "**/*.cpp"
-    - "**/*.cc"
-    - "**/*.h"
-    - "**/*.hpp"
+    - '**/*.c'
+    - '**/*.cpp'
+    - '**/*.cc'
+    - '**/*.h'
+    - '**/*.hpp'
   ruby:
-    - "**/*.rb"
+    - '**/*.rb'
   php:
-    - "**/*.php"
+    - '**/*.php'
 
 # Custom rules utilities (directory-based)
 # utilDirs:

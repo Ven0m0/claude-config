@@ -19,13 +19,8 @@ Configure only necessary MCP tools:
 ```json
 {
   "permissions": {
-    "allow": [
-      "mcp__memory__search",
-      "mcp__memory__get_observations"
-    ],
-    "deny": [
-      "mcp__memory__delete_*"
-    ]
+    "allow": ["mcp__memory__search", "mcp__memory__get_observations"],
+    "deny": ["mcp__memory__delete_*"]
   }
 }
 ```
@@ -44,11 +39,11 @@ NEVER hardcode secrets:
 
 ### Scope Appropriately
 
-| Scope | Use For |
-|-------|---------|
+| Scope                   | Use For                  |
+| ----------------------- | ------------------------ |
 | User (`~/.claude.json`) | Personal tools, API keys |
-| Project (`.mcp.json`) | Team-shared servers |
-| Managed | Enterprise requirements |
+| Project (`.mcp.json`)   | Team-shared servers      |
+| Managed                 | Enterprise requirements  |
 
 ## Tool Naming Convention
 
@@ -57,6 +52,7 @@ mcp__servername__toolname
 ```
 
 Examples:
+
 - `mcp__memory__search`
 - `mcp__github__create_pull_request`
 - `mcp__context7__get_library_docs`
@@ -115,8 +111,8 @@ docs = mcp__context7__get_library_docs(
 ### Check Server Status First
 
 ```markdown
-/mcp                    # List servers and status
-/mcp logs servername    # View server logs
+/mcp # List servers and status
+/mcp logs servername # View server logs
 ```
 
 ### Handle Timeouts
@@ -134,6 +130,7 @@ docs = mcp__context7__get_library_docs(
 
 ```markdown
 If MCP tool fails:
+
 1. Check server status
 2. Retry once
 3. Fall back to alternative (e.g., use gh CLI instead of GitHub MCP)
@@ -158,7 +155,9 @@ mcp__memory__get_observations(ids=[1, 2, 3])
 
 ```markdown
 # Avoid redundant lookups
-library_id = mcp__context7__resolve_library_id("react")
+
+library_id = mcp**context7**resolve_library_id("react")
+
 # Use library_id for multiple doc requests
 ```
 
@@ -180,11 +179,7 @@ Only allow specific directories:
 {
   "filesystem": {
     "command": "npx",
-    "args": [
-      "-y", "@anthropic/mcp-server-filesystem",
-      "./src",
-      "./tests"
-    ]
+    "args": ["-y", "@anthropic/mcp-server-filesystem", "./src", "./tests"]
   }
 }
 ```
@@ -194,11 +189,7 @@ Only allow specific directories:
 ```json
 {
   "permissions": {
-    "deny": [
-      "mcp__filesystem__delete_*",
-      "mcp__github__delete_*",
-      "mcp__*__drop_*"
-    ]
+    "deny": ["mcp__filesystem__delete_*", "mcp__github__delete_*", "mcp__*__drop_*"]
   }
 }
 ```
@@ -206,6 +197,7 @@ Only allow specific directories:
 ### Audit MCP Usage
 
 Regularly review:
+
 - Which MCP servers are configured
 - What permissions are granted
 - What operations are being performed

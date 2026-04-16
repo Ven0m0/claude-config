@@ -1,4 +1,4 @@
-# Predictive Code Analysis  
+# Predictive Code Analysis
 
 I'll analyze your codebase to predict potential problems before they impact your project.
 
@@ -30,14 +30,16 @@ To make accurate predictions, I need to consider:
    - Look for patterns that break at 10x, 100x scale
    - Check for technical debt accumulation
    - Identify brittleness in integration points
-</think>
+     </think>
 
 Based on this analysis framework, I'll use native tools for comprehensive analysis:
+
 - **Grep tool** to search for problematic patterns
 - **Glob tool** to analyze file structures and growth
 - **Read tool** to examine complex functions and hotspots
 
 I'll examine:
+
 - Code complexity trends and potential hotspots
 - Performance bottleneck patterns forming
 - Maintenance difficulty indicators
@@ -45,6 +47,7 @@ I'll examine:
 - Error handling gaps
 
 For each prediction, I'll:
+
 - Show specific code locations with file references
 - Explain why it's likely to cause future issues
 - Estimate potential timeline and impact
@@ -53,6 +56,7 @@ For each prediction, I'll:
 When I find multiple issues, I'll create a todo list for systematic review and prioritization.
 
 Analysis areas:
+
 - Functions approaching complexity thresholds
 - Files with high change frequency (potential hotspots)
 - Dependencies with known issues or update requirements
@@ -60,17 +64,20 @@ Analysis areas:
 - Code duplication leading to maintenance issues
 
 After analysis, I'll ask: "How would you like to track these predictions?"
+
 - Create todos: I'll add items to track resolution progress
 - Create GitHub issues: I'll generate properly formatted issues with details
 - Summary only: I'll provide actionable report without task creation
 
 **Important**: I will NEVER:
+
 - Add "Created by Claude" or any AI attribution to issues
 - Include "Generated with Claude Code" in descriptions
 - Modify repository settings or permissions
 - Add any AI/assistant signatures or watermarks
 
 Predictions will include:
+
 - Risk level assessment (Critical/High/Medium/Low)
 - Estimated timeline for potential issues
 - Specific remediation recommendations

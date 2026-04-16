@@ -223,18 +223,21 @@ virtualenv .venv         → uv venv
 ## Best Practices
 
 **Project Setup:**
+
 1. Use `uv init` for new projects
 2. Use `uv add` for dependencies (not pip install)
 3. Commit `uv.lock` to version control
 4. Use `uv sync` to reproduce environments
 
 **Workspaces:**
+
 1. Define members with glob patterns: `packages/*`
 2. Use `workspace = true` for internal dependencies
 3. Single `uv.lock` at root manages all packages
 4. Run commands with `--package` for specific contexts
 
 **Scripts:**
+
 1. Use `uv run script.py` instead of `python script.py`
 2. Use `--with` for ad-hoc dependencies
 3. Use `uv add --script` for persistent script dependencies

@@ -1,5 +1,5 @@
 ---
-applyTo: "**/*.sh"
+applyTo: '**/*.sh'
 ---
 
 All shell scripts in this repository use Bash.

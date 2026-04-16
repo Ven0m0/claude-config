@@ -2,23 +2,23 @@
 name: agent-memory
 description: Persist and retrieve repository-specific knowledge using AGENTS.md files. Use when you want to save important information about a codebase (build commands, code style, workflows) for future sessions.
 triggers:
-- /remember
+  - /remember
 ---
 
-* Repository memory: Use AGENTS.md in each repository root to store and access important information.
+- Repository memory: Use AGENTS.md in each repository root to store and access important information.
   - If this file exists, it will be added to your context automatically.
   - If missing, you should create it unless the user has explicitly asked you to not do so.
 
-* Store and maintain **general knowledge** that will be helpful for most future tasks:
+- Store and maintain **general knowledge** that will be helpful for most future tasks:
   1. Repository structure
   2. Common commands (build, lint, test, pre-commit, etc.)
   3. Code style preferences
   4. Workflows and best practices
   5. Any other repository-specific knowledge you learn
 
-* IMPORTANT: ONLY LOG the information that would be helpful for different future tasks, for example, how to configure the settings, how to setup the repository. Do NOT add issue-specific information (e.g., what specific error you have ran into and how you fix it).
+- IMPORTANT: ONLY LOG the information that would be helpful for different future tasks, for example, how to configure the settings, how to setup the repository. Do NOT add issue-specific information (e.g., what specific error you have ran into and how you fix it).
 
-* When adding new information:
+- When adding new information:
   - ALWAYS ask for user confirmation first by listing the exact items (numbered 1, 2, 3, etc.) you plan to save to AGENTS.md
   - Only save the items the user approves (they may ask you to save a subset)
   - Ensure it integrates nicely with existing knowledge in AGENTS.md

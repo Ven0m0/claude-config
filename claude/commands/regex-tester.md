@@ -25,20 +25,20 @@ const testerBenefits = {
     'Instant feedback on pattern matching',
     'Visual representation of matches',
     'Quick iteration on pattern design',
-    'Identify edge cases early'
+    'Identify edge cases early',
   ],
   debugging: [
     'Understand why patterns fail',
     'Visualize capture groups',
     'Test against multiple inputs',
-    'Detect performance issues'
+    'Detect performance issues',
   ],
   learning: [
     'Learn regex syntax interactively',
     'See explanations of pattern components',
     'Experiment safely',
-    'Build pattern library'
-  ]
+    'Build pattern library',
+  ],
 };
 ```
 
@@ -56,7 +56,7 @@ class InteractiveRegexTester {
     this.rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
-      prompt: 'regex> '
+      prompt: 'regex> ',
     });
 
     this.pattern = null;
@@ -134,7 +134,7 @@ class InteractiveRegexTester {
       // Re-test existing strings
       if (this.testStrings.length > 0) {
         console.log('\nRe-testing existing strings:');
-        this.testStrings.forEach(str => this.testString(str, false));
+        this.testStrings.forEach((str) => this.testString(str, false));
       }
     } catch (error) {
       console.log(`Error: ${error.message}`);
@@ -235,11 +235,11 @@ class InteractiveRegexTester {
       m: 'multiline - ^ and $ match line boundaries',
       s: 'dotall - . matches newlines',
       u: 'unicode - proper unicode handling',
-      y: 'sticky - matches from lastIndex only'
+      y: 'sticky - matches from lastIndex only',
     };
 
     if (this.flags) {
-      this.flags.split('').forEach(flag => {
+      this.flags.split('').forEach((flag) => {
         console.log(`  ${flag}: ${flagExplanations[flag]}`);
       });
     } else {
@@ -253,7 +253,7 @@ class InteractiveRegexTester {
   explainPatternComponents(pattern) {
     const explanations = {
       '^': 'Start of string/line',
-      '$': 'End of string/line',
+      $: 'End of string/line',
       '.': 'Any character (except newline)',
       '*': 'Zero or more times',
       '+': 'One or more times',
@@ -270,7 +270,7 @@ class InteractiveRegexTester {
       '(?=': 'Positive lookahead',
       '(?!': 'Negative lookahead',
       '(?<=': 'Positive lookbehind',
-      '(?<!': 'Negative lookbehind'
+      '(?<!': 'Negative lookbehind',
     };
 
     // Simple explanation - in production use a proper parser
@@ -317,7 +317,7 @@ app.post('/api/test', (req, res) => {
         match: match[0],
         index: match.index,
         groups: match.slice(1),
-        namedGroups: match.groups || {}
+        namedGroups: match.groups || {},
       });
 
       // Prevent infinite loop
@@ -327,12 +327,12 @@ app.post('/api/test', (req, res) => {
     res.json({
       success: true,
       matches,
-      matchCount: matches.length
+      matchCount: matches.length,
     });
   } catch (error) {
     res.json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -344,12 +344,12 @@ app.post('/api/explain', (req, res) => {
     const explanation = explainRegex(pattern);
     res.json({
       success: true,
-      explanation
+      explanation,
     });
   } catch (error) {
     res.json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -426,7 +426,7 @@ class RegexBatchTester {
         testString,
         matched: matches.length > 0,
         matchCount: matches.length,
-        matches
+        matches,
       });
     });
 
@@ -443,7 +443,7 @@ class RegexBatchTester {
         match: match[0],
         index: match.index,
         groups: match.slice(1),
-        namedGroups: match.groups || {}
+        namedGroups: match.groups || {},
       });
 
       if (!regex.global) break;
@@ -454,7 +454,7 @@ class RegexBatchTester {
 
   generateReport() {
     const totalTests = this.results.length;
-    const passed = this.results.filter(r => r.matched).length;
+    const passed = this.results.filter((r) => r.matched).length;
     const failed = totalTests - passed;
 
     return {
@@ -462,7 +462,7 @@ class RegexBatchTester {
       passed,
       failed,
       passRate: ((passed / totalTests) * 100).toFixed(1) + '%',
-      results: this.results
+      results: this.results,
     };
   }
 
@@ -475,7 +475,7 @@ class RegexBatchTester {
 
     markdown += `## Test Cases\n\n`;
 
-    this.results.forEach(result => {
+    this.results.forEach((result) => {
       const status = result.matched ? '✓' : '✗';
       markdown += `### ${status} Test ${result.index + 1}\n\n`;
       markdown += `**Input:** \`${result.testString}\`\n\n`;
@@ -509,13 +509,13 @@ class RegexBatchTester {
 const tester = new RegexBatchTester('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$', 'i');
 
 const testCases = [
-  'user@example.com',       // valid
-  'user.name@example.com',  // valid
+  'user@example.com', // valid
+  'user.name@example.com', // valid
   'user+tag@example.co.uk', // valid
-  'invalid.email',          // invalid
-  '@example.com',           // invalid
-  'user@',                  // invalid
-  'user@.com'               // invalid
+  'invalid.email', // invalid
+  '@example.com', // invalid
+  'user@', // invalid
+  'user@.com', // invalid
 ];
 
 tester.test(testCases);
@@ -532,7 +532,7 @@ class TestCaseGenerator {
       phone: this.generatePhones,
       url: this.generateUrls,
       date: this.generateDates,
-      custom: this.generateCustom
+      custom: this.generateCustom,
     };
   }
 
@@ -547,7 +547,7 @@ class TestCaseGenerator {
       const domain = domains[Math.floor(Math.random() * domains.length)];
       testCases.push({
         value: `${user}@${domain}`,
-        valid: true
+        valid: true,
       });
     }
 
@@ -574,7 +574,7 @@ class TestCaseGenerator {
 
       testCases.push({
         value: `(${areaCode}) ${exchange}-${number}`,
-        valid: true
+        valid: true,
       });
     }
 
@@ -604,7 +604,7 @@ class TestCaseGenerator {
 
       testCases.push({
         value: `${protocol}://${domain}${path}`,
-        valid: true
+        valid: true,
       });
     }
 
@@ -630,7 +630,7 @@ class TestCaseGenerator {
 
       testCases.push({
         value: `${year}-${month}-${day}`,
-        valid: true
+        valid: true,
       });
     }
 
@@ -662,7 +662,7 @@ const generator = new TestCaseGenerator();
 const emailTests = generator.generate('email', 20);
 
 console.log('Email test cases:');
-emailTests.forEach(test => {
+emailTests.forEach((test) => {
   console.log(`  ${test.valid ? '✓' : '✗'} ${test.value}`);
 });
 ```
@@ -696,11 +696,11 @@ class CaptureGroupVisualizer {
       fullMatch: {
         text: match[0],
         start: match.index,
-        end: match.index + match[0].length - 1
+        end: match.index + match[0].length - 1,
       },
       groups: [],
       namedGroups: {},
-      highlighted: this.highlightMatch(text, match)
+      highlighted: this.highlightMatch(text, match),
     };
 
     // Capture groups
@@ -712,7 +712,7 @@ class CaptureGroupVisualizer {
           index: i,
           text: match[i],
           start: groupStart,
-          end: groupStart + match[i].length - 1
+          end: groupStart + match[i].length - 1,
         });
       }
     }
@@ -731,7 +731,7 @@ class CaptureGroupVisualizer {
       '\x1b[33m', // Yellow
       '\x1b[34m', // Blue
       '\x1b[35m', // Magenta
-      '\x1b[36m'  // Cyan
+      '\x1b[36m', // Cyan
     ];
     const reset = '\x1b[0m';
 
@@ -742,12 +742,7 @@ class CaptureGroupVisualizer {
     const fullStart = match.index + offset;
     const fullEnd = fullStart + match[0].length;
 
-    result =
-      result.slice(0, fullStart) +
-      colors[0] +
-      result.slice(fullStart, fullEnd) +
-      reset +
-      result.slice(fullEnd);
+    result = result.slice(0, fullStart) + colors[0] + result.slice(fullStart, fullEnd) + reset + result.slice(fullEnd);
 
     return result;
   }
@@ -764,7 +759,7 @@ class CaptureGroupVisualizer {
 
       if (viz.groups.length > 0) {
         console.log('  Capture groups:');
-        viz.groups.forEach(group => {
+        viz.groups.forEach((group) => {
           console.log(`    Group ${group.index}: "${group.text}" [${group.start}-${group.end}]`);
         });
       }
@@ -788,14 +783,12 @@ class CaptureGroupVisualizer {
       console.log(testString);
 
       // Draw lines for full match
-      const fullLine = ' '.repeat(viz.fullMatch.start) +
-                      '^'.repeat(viz.fullMatch.text.length);
+      const fullLine = ' '.repeat(viz.fullMatch.start) + '^'.repeat(viz.fullMatch.text.length);
       console.log(fullLine + ' Full match');
 
       // Draw lines for groups
-      viz.groups.forEach(group => {
-        const groupLine = ' '.repeat(group.start) +
-                         '~'.repeat(group.text.length);
+      viz.groups.forEach((group) => {
+        const groupLine = ' '.repeat(group.start) + '~'.repeat(group.text.length);
         console.log(groupLine + ` Group ${group.index}`);
       });
     });
@@ -808,9 +801,7 @@ visualizer.printVisualization('Date: 2024-03-15 and 2024-12-31');
 visualizer.generateASCIIDiagram('Date: 2024-03-15 and 2024-12-31');
 
 // With named groups
-const namedVisualizer = new CaptureGroupVisualizer(
-  '(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})'
-);
+const namedVisualizer = new CaptureGroupVisualizer('(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})');
 namedVisualizer.printVisualization('2024-03-15');
 ```
 
@@ -829,7 +820,7 @@ class RegexExplainer {
     return {
       // Anchors
       '^': { type: 'anchor', desc: 'Start of string/line' },
-      '$': { type: 'anchor', desc: 'End of string/line' },
+      $: { type: 'anchor', desc: 'End of string/line' },
       '\\b': { type: 'anchor', desc: 'Word boundary' },
       '\\B': { type: 'anchor', desc: 'Non-word boundary' },
 
@@ -863,7 +854,7 @@ class RegexExplainer {
       '(?<!': { type: 'lookaround', desc: 'Negative lookbehind' },
 
       // Alternation
-      '|': { type: 'alternation', desc: 'OR operator' }
+      '|': { type: 'alternation', desc: 'OR operator' },
     };
   }
 
@@ -882,7 +873,7 @@ class RegexExplainer {
           type: 'literal',
           token: this.pattern[i],
           desc: `Literal character '${this.pattern[i]}'`,
-          length: 1
+          length: 1,
         });
         i++;
       }
@@ -902,7 +893,7 @@ class RegexExplainer {
           type: explanation.type,
           token,
           desc: explanation.desc,
-          length: len
+          length: len,
         };
       }
     }
@@ -916,10 +907,8 @@ class RegexExplainer {
       return {
         type: 'quantifier',
         token: rangeMatch[0],
-        desc: max ? `Between ${min} and ${max} times` :
-              rangeMatch[2] ? `${min} or more times` :
-              `Exactly ${min} times`,
-        length: rangeMatch[0].length
+        desc: max ? `Between ${min} and ${max} times` : rangeMatch[2] ? `${min} or more times` : `Exactly ${min} times`,
+        length: rangeMatch[0].length,
       };
     }
 
@@ -934,7 +923,7 @@ class RegexExplainer {
           type: 'class',
           token,
           desc: `Character class: any of [${classContent}]`,
-          length: token.length
+          length: token.length,
         };
       }
     }
@@ -960,7 +949,7 @@ class RegexExplainer {
     html += `<div class="pattern">Pattern: <code>/${this.pattern}/</code></div>`;
     html += '<div class="components">';
 
-    components.forEach(comp => {
+    components.forEach((comp) => {
       html += `
         <div class="component ${comp.type}">
           <span class="token">${this.escapeHTML(comp.token)}</span>
@@ -974,13 +963,13 @@ class RegexExplainer {
   }
 
   escapeHTML(str) {
-    return str.replace(/[&<>"']/g, char => {
+    return str.replace(/[&<>"']/g, (char) => {
       const escapeChars = {
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',
         '"': '&quot;',
-        "'": '&#39;'
+        "'": '&#39;',
       };
       return escapeChars[char];
     });
@@ -1018,7 +1007,7 @@ class RegexPerformanceAnalyzer {
       totalTime: totalTime.toFixed(2),
       avgTime: avgTime.toFixed(4),
       iterations,
-      ops: (iterations / (totalTime / 1000)).toFixed(0)
+      ops: (iterations / (totalTime / 1000)).toFixed(0),
     };
   }
 
@@ -1032,13 +1021,13 @@ class RegexPerformanceAnalyzer {
       return {
         catastrophic: false,
         executionTime: Date.now() - start,
-        result
+        result,
       };
     } catch (error) {
       return {
         catastrophic: true,
         executionTime: timeout,
-        error: 'Execution timed out - possible catastrophic backtracking'
+        error: 'Execution timed out - possible catastrophic backtracking',
       };
     }
   }
@@ -1060,13 +1049,13 @@ class RegexPerformanceAnalyzer {
   }
 
   comparePatterns(alternatives, testString) {
-    const results = alternatives.map(pattern => {
+    const results = alternatives.map((pattern) => {
       const analyzer = new RegexPerformanceAnalyzer(pattern);
       const benchmark = analyzer.benchmark(testString);
 
       return {
         pattern,
-        ...benchmark
+        ...benchmark,
       };
     });
 
@@ -1107,11 +1096,7 @@ const analyzer = new RegexPerformanceAnalyzer('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+
 analyzer.generateReport('user@example.com', 10000);
 
 // Compare alternative patterns
-const alternatives = [
-  '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$',
-  '^[\\w._%+-]+@[\\w.-]+\\.[a-z]{2,}$',
-  '^.+@.+\\..+$'
-];
+const alternatives = ['^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$', '^[\\w._%+-]+@[\\w.-]+\\.[a-z]{2,}$', '^.+@.+\\..+$'];
 
 const comparison = analyzer.comparePatterns(alternatives, 'user@example.com');
 console.log('\nPattern Comparison:');
@@ -1127,44 +1112,46 @@ const commonPatterns = {
   email: {
     simple: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     standard: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-    rfc5322: /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/i
+    rfc5322:
+      /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/i,
   },
 
   url: {
     simple: /^https?:\/\/.+/,
-    standard: /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/,
-    withProtocol: /^(?:http|https):\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/
+    standard:
+      /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/,
+    withProtocol: /^(?:http|https):\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/,
   },
 
   phone: {
     us: /^\+?1?\s*\(?(\d{3})\)?[-.\s]?(\d{3})[-.\s]?(\d{4})$/,
     international: /^\+?[\d\s-()]+$/,
-    formatted: /^\(\d{3}\)\s\d{3}-\d{4}$/
+    formatted: /^\(\d{3}\)\s\d{3}-\d{4}$/,
   },
 
   date: {
     iso: /^\d{4}-\d{2}-\d{2}$/,
     us: /^\d{2}\/\d{2}\/\d{4}$/,
-    european: /^\d{2}\.\d{2}\.\d{4}$/
+    european: /^\d{2}\.\d{2}\.\d{4}$/,
   },
 
   creditCard: {
     visa: /^4[0-9]{12}(?:[0-9]{3})?$/,
     mastercard: /^5[1-5][0-9]{14}$/,
     amex: /^3[47][0-9]{13}$/,
-    any: /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13})$/
+    any: /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13})$/,
   },
 
   password: {
     minimum: /^.{8,}$/,
     strong: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-    veryStrong: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])(?=.*[^A-Za-z\d@$!%*?&]).{12,}$/
+    veryStrong: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])(?=.*[^A-Za-z\d@$!%*?&]).{12,}$/,
   },
 
   ipAddress: {
     ipv4: /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/,
-    ipv6: /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4})$/
-  }
+    ipv6: /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4})$/,
+  },
 };
 
 // Export patterns
@@ -1181,7 +1168,7 @@ const regexTestingBestPractices = {
     'Test with invalid inputs',
     'Test with empty strings',
     'Test with very long strings',
-    'Test with special characters'
+    'Test with special characters',
   ],
 
   development: [
@@ -1190,7 +1177,7 @@ const regexTestingBestPractices = {
     'Comment complex regex patterns',
     'Break complex patterns into smaller parts',
     'Use named capture groups for clarity',
-    'Document expected input format'
+    'Document expected input format',
   ],
 
   performance: [
@@ -1199,7 +1186,7 @@ const regexTestingBestPractices = {
     'Be specific with character classes',
     'Anchor patterns when appropriate',
     'Test for catastrophic backtracking',
-    'Benchmark critical patterns'
+    'Benchmark critical patterns',
   ],
 
   maintenance: [
@@ -1208,8 +1195,8 @@ const regexTestingBestPractices = {
     'Maintain library of common patterns',
     'Review and update patterns regularly',
     'Share patterns across team',
-    'Use constants for reusable patterns'
-  ]
+    'Use constants for reusable patterns',
+  ],
 };
 ```
 

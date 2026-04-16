@@ -34,18 +34,19 @@ Options:
 ## Sync Priority
 
 When conflicts occur, prefer:
+
 1. Most recent modification timestamp
 2. User-specified source with `--source=<tool>`
 3. Claude Code conventions (as the most complete model)
 
 ## Common Patterns
 
-| Pattern | Claude Code | Copilot | Cursor | OpenCode |
-|---------|-------------|---------|--------|----------|
-| Agent instructions | `AGENTS.md` | `.github/copilot-instructions.md` | `.cursor/rules/` | `opencode/AGENTS.md` |
-| Skills | `claude/skills/` | - | - | `opencode/skill/` |
-| Hooks | `claude/hooks/` | - | - | - |
-| Commands | - | - | - | `opencode/command/` |
+| Pattern            | Claude Code      | Copilot                           | Cursor           | OpenCode             |
+| ------------------ | ---------------- | --------------------------------- | ---------------- | -------------------- |
+| Agent instructions | `AGENTS.md`      | `.github/copilot-instructions.md` | `.cursor/rules/` | `opencode/AGENTS.md` |
+| Skills             | `claude/skills/` | -                                 | -                | `opencode/skill/`    |
+| Hooks              | `claude/hooks/`  | -                                 | -                | -                    |
+| Commands           | -                | -                                 | -                | `opencode/command/`  |
 
 ## Notes
 

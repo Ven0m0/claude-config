@@ -1,6 +1,6 @@
 ---
 name: parallel
-version: "1.1.0"
+version: '1.1.0'
 description: High-accuracy web search and research via Parallel.ai API. Optimized for AI agents with rich excerpts and citations. Supports agentic mode for token-efficient multi-step reasoning.
 author: mvanhorn
 license: MIT
@@ -12,7 +12,7 @@ triggers:
   - research
 metadata:
   openclaw:
-    emoji: "🔬"
+    emoji: '🔬'
     requires:
       env:
         - PARALLEL_API_KEY
@@ -50,11 +50,11 @@ response = client.beta.search(
 
 ## Modes
 
-| Mode | Use Case | Tradeoff |
-|------|----------|----------|
-| `one-shot` | Default, balanced accuracy | Best for most queries |
-| `fast` ⚡ | Quick lookups, cost-sensitive | Lower latency/cost, may sacrifice some accuracy |
-| `agentic` | Complex multi-hop research | Higher accuracy, more expensive |
+| Mode       | Use Case                      | Tradeoff                                        |
+| ---------- | ----------------------------- | ----------------------------------------------- |
+| `one-shot` | Default, balanced accuracy    | Best for most queries                           |
+| `fast` ⚡  | Quick lookups, cost-sensitive | Lower latency/cost, may sacrifice some accuracy |
+| `agentic`  | Complex multi-hop research    | Higher accuracy, more expensive                 |
 
 ## Quick Usage
 
@@ -75,6 +75,7 @@ response = client.beta.search(
 ## Response Format
 
 Returns structured results with:
+
 - `search_id` - unique search identifier
 - `results[]` - array of results with:
   - `url` - source URL

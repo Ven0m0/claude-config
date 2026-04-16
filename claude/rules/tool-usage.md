@@ -6,13 +6,13 @@
 
 ### File Operations
 
-| Operation | Use | Avoid |
-|-----------|-----|-------|
-| Read file | `Read` | `cat`, `head`, `tail` |
-| Search content | `Grep` | `grep`, shell pipes |
-| Find files | `Glob` | `find` |
-| Edit file | `Edit`, `MultiEdit` | `sed`, `awk`, heredocs |
-| Create file | `Write` | `echo >`, `cat >` |
+| Operation      | Use                 | Avoid                  |
+| -------------- | ------------------- | ---------------------- |
+| Read file      | `Read`              | `cat`, `head`, `tail`  |
+| Search content | `Grep`              | `grep`, shell pipes    |
+| Find files     | `Glob`              | `find`                 |
+| Edit file      | `Edit`, `MultiEdit` | `sed`, `awk`, heredocs |
+| Create file    | `Write`             | `echo >`, `cat >`      |
 
 Shell commands are for actual system commands only: git, npm, cargo, uv, etc.
 
@@ -47,40 +47,46 @@ Batch related edits into a single MultiEdit call rather than sequential Edit cal
 ## Bash Command Rules
 
 <bash_rules>
+
 - Always quote paths containing spaces: `cd "/path/with spaces/"`
 - Avoid long-running processes (npm run dev, http servers); use tmux for those
 - Check before destructive operations: `ls directory/` before `rm -rf directory/`
-</bash_rules>
+  </bash_rules>
 
 ## Parallel Tool Usage
 
 <parallel_rules>
 Independent operations should run in parallel:
+
 - Multiple file reads
 - Multiple search queries
 - Independent analysis tasks
 
 Sequential when dependencies exist:
+
 1. Read file (need content first)
 2. Edit file (then modify)
 3. Verify (then check)
-</parallel_rules>
+   </parallel_rules>
 
 ## Subagent Usage
 
 Use subagents for:
+
 - Independent research tasks
 - Code analysis that reads many files
 - Keeping main context clean
 - Parallel work streams
 
 Subagent tasks should be specific and scoped:
+
 - Good: "Analyze auth module for security issues"
 - Bad: "Look around the codebase"
 
 ## Verification Requirements
 
 After code changes:
+
 1. Lint check: `ruff check` / `biome lint`
 2. Type check: `tsc` / `pyright`
 3. Test run: `npm test` / `pytest`

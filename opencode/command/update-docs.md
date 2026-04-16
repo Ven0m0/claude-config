@@ -18,23 +18,27 @@ Update documentation to reflect recent changes: $ARGUMENTS
 ## Documentation Types
 
 ### README.md
+
 - Installation instructions
 - Quick start guide
 - Feature overview
 - Configuration options
 
 ### API Documentation
+
 - Endpoint descriptions
 - Request/response formats
 - Authentication details
 - Error codes
 
 ### Code Comments
+
 - JSDoc for public APIs
 - Complex logic explanations
 - TODO/FIXME cleanup
 
 ### Guides
+
 - How-to tutorials
 - Architecture decisions (ADRs)
 - Troubleshooting guides
@@ -51,12 +55,14 @@ Update documentation to reflect recent changes: $ARGUMENTS
 ## Documentation Quality
 
 ### Good Documentation
+
 - Accurate and up-to-date
 - Clear and concise
 - Has working examples
 - Covers edge cases
 
 ### Avoid
+
 - Outdated information
 - Missing parameters
 - Broken examples

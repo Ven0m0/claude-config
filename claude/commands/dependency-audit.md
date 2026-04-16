@@ -11,11 +11,13 @@ version: 1.0.0
 Execute comprehensive dependency analysis and optimization for project: **$ARGUMENTS**
 
 ## OBJECTIVE
+
 Transform dependency management from operational overhead into strategic security and performance optimization that enhances system security by 80-90%, improves bundle performance by 40-50%, and ensures compliance excellence through automated dependency governance.
 
 ## EXECUTION FRAMEWORK
 
 ### Phase 1: Comprehensive Dependency Analysis
+
 ```bash
 # ClaudeForge Dependency Analysis Engine
 project_path=$1
@@ -32,6 +34,7 @@ performance_impact=(assess_performance_impact $dependency_context)
 ```
 
 ### Phase 2: Security Vulnerability Assessment
+
 - **Critical Vulnerabilities**: Identify and prioritize CVEs and security advisories
 - **Dependency Chain Analysis**: Check transitive dependencies for vulnerabilities
 - **Patch Management**: Automated security updates and vulnerability remediation
@@ -39,6 +42,7 @@ performance_impact=(assess_performance_impact $dependency_context)
 - **Risk Assessment**: Calculate security risk scores and mitigation strategies
 
 ### Phase 3: License Compliance Management
+
 - **License Detection**: Identify all package licenses and potential conflicts
 - **Compliance Validation**: Ensure adherence to organizational and legal requirements
 - **Policy Enforcement**: Automated license policy checking and violation reporting
@@ -46,6 +50,7 @@ performance_impact=(assess_performance_impact $dependency_context)
 - **Documentation Generation**: Create comprehensive license compliance reports
 
 ### Phase 4: Performance Optimization
+
 - **Bundle Size Analysis**: Identify large dependencies and optimization opportunities
 - **Tree Shaking Optimization**: Ensure unused code elimination
 - **Dependency Deduplication**: Remove duplicate dependencies and optimize imports
@@ -53,6 +58,7 @@ performance_impact=(assess_performance_impact $dependency_context)
 - **Caching Strategies**: Implement optimal dependency caching mechanisms
 
 ### Phase 5: Dependency Update Strategy
+
 - **Safe Update Planning**: Identify packages that can be safely updated
 - **Breaking Change Detection**: Analyze potential breaking changes and compatibility
 - **Automated Testing**: Test dependency updates in isolation before deployment
@@ -62,6 +68,7 @@ performance_impact=(assess_performance_impact $dependency_context)
 ## DELIVERABLES
 
 ### 1. Security Vulnerability Report
+
 ```
 🔒 Security Assessment Summary:
 - Critical Vulnerabilities: [count]
@@ -77,6 +84,7 @@ Recommended Actions:
 ```
 
 ### 2. License Compliance Analysis
+
 ```
 📋 License Compliance Report:
 - MIT License: [count] packages
@@ -89,6 +97,7 @@ Compliance Status: ✅ Compliant / ⚠️ Review Required / ❌ Violations
 ```
 
 ### 3. Performance Optimization Plan
+
 ```
 ⚡ Performance Optimization:
 - Current Bundle Size: [size]
@@ -103,6 +112,7 @@ Optimization Recommendations:
 ```
 
 ### 4. Dependency Update Roadmap
+
 ```
 🗺️ Update Strategy:
 - Safe Updates (Immediate): [packages]
@@ -120,6 +130,7 @@ Testing Requirements:
 ## AUTOMATION INTEGRATION
 
 ### CI/CD Pipeline Integration
+
 ```yaml
 # ClaudeForge Dependency Management Pipeline
 dependency_management:
@@ -137,6 +148,7 @@ dependency_management:
 ```
 
 ### Automated Monitoring Setup
+
 - **Scheduled Scans**: Daily/weekly automated dependency checks
 - **Alert Configuration**: Notifications for new vulnerabilities and updates
 - **Dashboard Integration**: Real-time dependency health monitoring
@@ -146,6 +158,7 @@ dependency_management:
 ## QUALITY ASSURANCE
 
 ### Security Validation
+
 - ✅ All critical vulnerabilities patched
 - ✅ No high-risk dependencies present
 - ✅ Security policies enforced
@@ -153,6 +166,7 @@ dependency_management:
 - ✅ Incident response procedures ready
 
 ### Compliance Verification
+
 - ✅ License policies adhered to
 - ✅ Legal requirements satisfied
 - ✅ Documentation complete
@@ -160,6 +174,7 @@ dependency_management:
 - ✅ Risk assessments documented
 
 ### Performance Assurance
+
 - ✅ Bundle size optimized
 - ✅ Loading performance improved
 - ✅ Caching strategies implemented
@@ -169,18 +184,21 @@ dependency_management:
 ## BUSINESS IMPACT METRICS
 
 ### Security Enhancement
+
 - **Vulnerability Reduction**: 80-90% decrease in security vulnerabilities
 - **Risk Mitigation**: 85-95% improvement in security posture
 - **Compliance Adherence**: 90-100% improvement in regulatory compliance
 - **Incident Prevention**: 75-85% reduction in security incidents
 
 ### Performance Optimization
+
 - **Bundle Size Reduction**: 30-50% decrease in bundle sizes
 - **Loading Performance**: 40-60% improvement in load times
 - **Runtime Performance**: 25-35% enhancement in execution speed
 - **Resource Efficiency**: 35-45% improvement in resource utilization
 
 ### Operational Efficiency
+
 - **Manual Effort Reduction**: 70-80% decrease in manual dependency management
 - **Update Velocity**: 50-60% faster dependency updates
 - **Testing Efficiency**: 40-50% improvement in testing workflows
@@ -189,12 +207,14 @@ dependency_management:
 ## CONTINUOUS IMPROVEMENT
 
 ### Monitoring & Analytics
+
 - **Dependency Health Tracking**: Continuous monitoring of dependency ecosystem
 - **Performance Trend Analysis**: Historical analysis of performance improvements
 - **Security Trend Monitoring**: Tracking security posture over time
 - **Compliance Trend Analysis**: Monitoring compliance adherence trends
 
 ### Optimization Iterations
+
 - **Monthly Reviews**: Regular dependency optimization assessments
 - **Quarterly Audits**: Comprehensive dependency ecosystem audits
 - **Annual Strategy**: Strategic dependency management planning

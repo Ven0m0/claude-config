@@ -18,6 +18,7 @@ This skill emphasizes **parallel delegation** for comprehensive analysis. Rather
 ### 1. JavaScript/TypeScript Anti-patterns
 
 **Callback Hell & Async Issues**
+
 ```bash
 # Nested callbacks (3+ levels)
 ast-grep -p '$FUNC($$$, function($$$) { $FUNC2($$$, function($$$) { $$$ }) })' --lang js
@@ -32,6 +33,7 @@ ast-grep -p '$PROMISE.then($$$)' --lang js
 ```
 
 **Magic Values**
+
 ```bash
 # Magic numbers in comparisons
 ast-grep -p 'if ($VAR > 100)' --lang js
@@ -43,11 +45,13 @@ ast-grep -p "if ($VAR === 'admin')" --lang js
 ```
 
 **Empty Catch Blocks**
+
 ```bash
 ast-grep -p 'try { $$$ } catch ($E) { }' --lang js
 ```
 
 **Console Statements (Debug Leftovers)**
+
 ```bash
 ast-grep -p 'console.log($$$)' --lang js
 ast-grep -p 'console.debug($$$)' --lang js
@@ -55,6 +59,7 @@ ast-grep -p 'console.warn($$$)' --lang js
 ```
 
 **var Instead of let/const**
+
 ```bash
 ast-grep -p 'var $VAR = $$$' --lang js
 ```
@@ -62,6 +67,7 @@ ast-grep -p 'var $VAR = $$$' --lang js
 ### 2. Vue 3 Anti-patterns
 
 **Props Mutation**
+
 ```yaml
 # YAML rule for props mutation detection
 id: vue-props-mutation
@@ -77,6 +83,7 @@ ast-grep -p 'props.$PROP = $VALUE' --lang js
 ```
 
 **Missing Keys in v-for**
+
 ```bash
 # Search in Vue templates
 ast-grep -p 'v-for="$ITEM in $LIST"' --lang html
@@ -84,6 +91,7 @@ ast-grep -p 'v-for="$ITEM in $LIST"' --lang html
 ```
 
 **Options API in Composition API Codebase**
+
 ```bash
 # Find Options API usage
 ast-grep -p 'export default { data() { $$$ } }' --lang js
@@ -95,6 +103,7 @@ ast-grep -p 'defineComponent({ setup($$$) { $$$ } })' --lang js
 ```
 
 **Reactive State Issues**
+
 ```bash
 # Destructuring reactive state (loses reactivity)
 ast-grep -p 'const { $$$PROPS } = $REACTIVE' --lang js
@@ -106,6 +115,7 @@ ast-grep -p 'const { $$$PROPS } = toRefs($REACTIVE)' --lang js
 ### 3. TypeScript Quality Issues
 
 **Excessive `any` Usage**
+
 ```bash
 ast-grep -p ': any' --lang ts
 ast-grep -p 'as any' --lang ts
@@ -113,17 +123,20 @@ ast-grep -p '<any>' --lang ts
 ```
 
 **Non-null Assertions**
+
 ```bash
 ast-grep -p '$VAR!' --lang ts
 ast-grep -p '$VAR!.$PROP' --lang ts
 ```
 
 **Type Assertions Instead of Guards**
+
 ```bash
 ast-grep -p '$VAR as $TYPE' --lang ts
 ```
 
 **Missing Return Types**
+
 ```bash
 # Functions without return type annotations
 ast-grep -p 'function $NAME($$$) { $$$ }' --lang ts
@@ -133,6 +146,7 @@ ast-grep -p 'function $NAME($$$) { $$$ }' --lang ts
 ### 4. Async/Promise Patterns
 
 **Unhandled Promises**
+
 ```bash
 # Promise without await or .then/.catch
 ast-grep -p '$ASYNC_FUNC($$$)' --lang js
@@ -143,11 +157,13 @@ ast-grep -p '$PROMISE_RETURNING()' --lang ts
 ```
 
 **Nested Callbacks (Pyramid of Doom)**
+
 ```bash
 ast-grep -p '$F1($$$, function($$$) { $F2($$$, function($$$) { $F3($$$, function($$$) { $$$ }) }) })' --lang js
 ```
 
 **Promise Constructor Anti-pattern**
+
 ```bash
 # Wrapping already-async code in new Promise
 ast-grep -p 'new Promise(($RESOLVE, $REJECT) => { $ASYNC_FUNC($$$).then($$$) })' --lang js
@@ -156,23 +172,27 @@ ast-grep -p 'new Promise(($RESOLVE, $REJECT) => { $ASYNC_FUNC($$$).then($$$) })'
 ### 5. Code Complexity
 
 **Long Functions (Manual Review)**
+
 ```bash
 # Find function definitions, then count lines
 ast-grep -p 'function $NAME($$$) { $$$ }' --lang js --json | jq '.[] | select(.range.end.line - .range.start.line > 50)'
 ```
 
 **Deep Nesting**
+
 ```bash
 # Nested if statements (4+ levels)
 ast-grep -p 'if ($A) { if ($B) { if ($C) { if ($D) { $$$ } } } }' --lang js
 ```
 
 **Large Parameter Lists**
+
 ```bash
 ast-grep -p 'function $NAME($A, $B, $C, $D, $E, $$$)' --lang js
 ```
 
 **Cyclomatic Complexity Indicators**
+
 ```bash
 # Multiple conditionals in single function
 ast-grep -p 'if ($$$) { $$$ } else if ($$$) { $$$ } else if ($$$) { $$$ }' --lang js
@@ -181,18 +201,21 @@ ast-grep -p 'if ($$$) { $$$ } else if ($$$) { $$$ } else if ($$$) { $$$ }' --lan
 ### 6. React/Pinia Store Patterns
 
 **Direct State Mutation (Pinia)**
+
 ```bash
 # Direct store state mutation outside actions
 ast-grep -p '$STORE.$STATE = $VALUE' --lang js
 ```
 
 **Missing Dependencies in useEffect**
+
 ```bash
 ast-grep -p 'useEffect(() => { $$$ }, [])' --lang jsx
 # Check if variables used inside are in dependency array
 ```
 
 **Inline Functions in JSX**
+
 ```bash
 ast-grep -p '<$COMPONENT onClick={() => $$$} />' --lang jsx
 ast-grep -p '<$COMPONENT onChange={() => $$$} />' --lang jsx
@@ -201,18 +224,21 @@ ast-grep -p '<$COMPONENT onChange={() => $$$} />' --lang jsx
 ### 7. Memory & Performance
 
 **Event Listeners Without Cleanup**
+
 ```bash
 ast-grep -p 'addEventListener($EVENT, $HANDLER)' --lang js
 # Check for corresponding removeEventListener
 ```
 
 **setInterval Without Cleanup**
+
 ```bash
 ast-grep -p 'setInterval($$$)' --lang js
 # Check for clearInterval
 ```
 
 **Large Arrays in Computed/Memos**
+
 ```bash
 ast-grep -p 'computed(() => $ARRAY.filter($$$))' --lang js
 ast-grep -p 'useMemo(() => $ARRAY.filter($$$), [$$$])' --lang jsx
@@ -221,18 +247,21 @@ ast-grep -p 'useMemo(() => $ARRAY.filter($$$), [$$$])' --lang jsx
 ### 8. Security Concerns
 
 **eval Usage**
+
 ```bash
 ast-grep -p 'eval($$$)' --lang js
 ast-grep -p 'new Function($$$)' --lang js
 ```
 
 **innerHTML Assignment (XSS Risk)**
+
 ```bash
 ast-grep -p '$ELEM.innerHTML = $$$' --lang js
 ast-grep -p 'dangerouslySetInnerHTML={{ __html: $$$ }}' --lang jsx
 ```
 
 **Hardcoded Secrets**
+
 ```bash
 ast-grep -p "apiKey: '$$$'" --lang js
 ast-grep -p "password = '$$$'" --lang js
@@ -240,6 +269,7 @@ ast-grep -p "secret: '$$$'" --lang js
 ```
 
 **SQL String Concatenation**
+
 ```bash
 ast-grep -p '"SELECT * FROM " + $VAR' --lang js
 ast-grep -p '`SELECT * FROM ${$VAR}`' --lang js
@@ -248,22 +278,26 @@ ast-grep -p '`SELECT * FROM ${$VAR}`' --lang js
 ### 9. Python Anti-patterns
 
 **Bare Except**
+
 ```bash
 ast-grep -p 'except: $$$' --lang py
 ```
 
 **Mutable Default Arguments**
+
 ```bash
 ast-grep -p 'def $FUNC($ARG=[])' --lang py
 ast-grep -p 'def $FUNC($ARG={})' --lang py
 ```
 
 **Global Variable Usage**
+
 ```bash
 ast-grep -p 'global $VAR' --lang py
 ```
 
 **Type: ignore Without Reason**
+
 ```bash
 # Search in comments via grep
 grep -r "# type: ignore$" --include="*.py"
@@ -308,6 +342,7 @@ When analyzing a codebase, launch multiple agents in parallel to maximize effici
 ### Consolidation
 
 After parallel analysis completes:
+
 1. Aggregate findings by severity (critical, high, medium, low)
 2. Group by category (security, performance, maintainability)
 3. Provide actionable remediation suggestions
@@ -366,6 +401,7 @@ note: |
 ## Integration with Commands
 
 This skill is designed to work with the `/code:antipatterns` command, which:
+
 1. Detects project language stack
 2. Launches parallel specialized agents
 3. Consolidates findings into prioritized report
@@ -382,12 +418,12 @@ This skill is designed to work with the `/code:antipatterns` command, which:
 
 ## Severity Levels
 
-| Severity | Description | Examples |
-|----------|-------------|----------|
-| **Critical** | Security vulnerabilities, data loss risk | eval(), SQL injection, hardcoded secrets |
-| **High** | Bugs, incorrect behavior | Props mutation, unhandled promises, empty catch |
-| **Medium** | Maintainability issues | Magic numbers, deep nesting, large functions |
-| **Low** | Style/preference | var usage, console.log, inline functions |
+| Severity     | Description                              | Examples                                        |
+| ------------ | ---------------------------------------- | ----------------------------------------------- |
+| **Critical** | Security vulnerabilities, data loss risk | eval(), SQL injection, hardcoded secrets        |
+| **High**     | Bugs, incorrect behavior                 | Props mutation, unhandled promises, empty catch |
+| **Medium**   | Maintainability issues                   | Magic numbers, deep nesting, large functions    |
+| **Low**      | Style/preference                         | var usage, console.log, inline functions        |
 
 ## Resources
 

@@ -1,8 +1,8 @@
 ---
 paths:
-  - "**/*.rs"
-  - "**/Cargo.toml"
-  - "**/Cargo.lock"
+  - '**/*.rs'
+  - '**/Cargo.toml'
+  - '**/Cargo.lock'
 ---
 
 # Rust Rules

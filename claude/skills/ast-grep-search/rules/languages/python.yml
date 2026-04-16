@@ -3,7 +3,7 @@
 id: use-fstring
 language: python
 severity: info
-message: "Consider using f-strings for string formatting"
+message: 'Consider using f-strings for string formatting'
 rule:
   any:
     - pattern: '$$$STR.format($$$ARGS)'
@@ -13,7 +13,7 @@ rule:
 id: use-pathlib
 language: python
 severity: info
-message: "Consider using pathlib for file path operations"
+message: 'Consider using pathlib for file path operations'
 rule:
   any:
     - pattern: os.path.join($$$ARGS)
@@ -25,7 +25,7 @@ rule:
 id: mutable-default-argument
 language: python
 severity: warning
-message: "Mutable default argument. Use None and initialize inside function."
+message: 'Mutable default argument. Use None and initialize inside function.'
 rule:
   any:
     - pattern: 'def $FUNC($$$ARGS, $PARAM=[], $$$REST):'
@@ -35,7 +35,7 @@ rule:
 id: type-comparison
 language: python
 severity: warning
-message: "Use isinstance() instead of type comparison"
+message: 'Use isinstance() instead of type comparison'
 rule:
   pattern: type($OBJ) == $TYPE
 fix: isinstance($OBJ, $TYPE)
@@ -44,7 +44,7 @@ fix: isinstance($OBJ, $TYPE)
 id: dict-get-default
 language: python
 severity: info
-message: "Use dict.get() with default instead of conditional"
+message: 'Use dict.get() with default instead of conditional'
 rule:
   pattern: |
     if $KEY in $DICT:

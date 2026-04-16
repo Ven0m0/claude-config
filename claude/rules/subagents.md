@@ -3,19 +3,21 @@
 ## When to Use Subagents
 
 <use_subagents>
+
 - Research tasks that read many files
 - Code analysis that fills context
 - Independent parallel work streams
 - Keeping main context clean
 - Specialized review (security, performance)
-</use_subagents>
+  </use_subagents>
 
 <avoid_subagents>
+
 - Simple single-file operations
 - Sequential dependent tasks
 - When you need to maintain conversation state
 - Trivial lookups
-</avoid_subagents>
+  </avoid_subagents>
 
 ## Configuration
 
@@ -34,11 +36,11 @@ model: opus
 
 ### Model Selection
 
-| Model | Use For | Cost |
-|-------|---------|------|
-| haiku | Fast tasks, file exploration, pattern matching | Lowest |
-| sonnet | Most work, balanced capability | Medium |
-| opus | Complex reasoning, architecture decisions, security-critical | Highest |
+| Model  | Use For                                                      | Cost    |
+| ------ | ------------------------------------------------------------ | ------- |
+| haiku  | Fast tasks, file exploration, pattern matching               | Lowest  |
+| sonnet | Most work, balanced capability                               | Medium  |
+| opus   | Complex reasoning, architecture decisions, security-critical | Highest |
 
 ## Invocation Patterns
 
@@ -50,6 +52,7 @@ Bad: `"Look at the code for problems"`
 ### Parallel Agents
 
 Launch simultaneously for independent analysis:
+
 - Agent 1: performance implications
 - Agent 2: security considerations
 - Agent 3: API compatibility
@@ -59,6 +62,7 @@ Synthesize results before proceeding.
 ### Expected Output Format
 
 Define what you want back:
+
 ```
 "Return findings as:
 1. File path and line number

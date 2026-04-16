@@ -15,6 +15,7 @@ Structured problem-solving through iterative reasoning with revision and branchi
 ## When to Use
 
 Use `mcp__reasoning__sequentialthinking` when:
+
 - Problem requires multiple interconnected reasoning steps
 - Initial scope or approach is uncertain
 - Need to filter through complexity to find core issues
@@ -33,18 +34,20 @@ Do not use for simple queries, direct facts, or single-step tasks.
 ## Parameters
 
 <required_parameters>
+
 - `thought` (string): current reasoning step
 - `nextThoughtNeeded` (boolean): whether more reasoning is needed
 - `thoughtNumber` (integer): current step number (starts at 1)
 - `totalThoughts` (integer): estimated total steps needed
-</required_parameters>
+  </required_parameters>
 
 <optional_parameters>
+
 - `isRevision` (boolean): indicates this revises previous thinking
 - `revisesThought` (integer): which thought number is being reconsidered
 - `branchFromThought` (integer): thought number to branch from
 - `branchId` (string): identifier for this reasoning branch
-</optional_parameters>
+  </optional_parameters>
 
 ## Workflow
 

@@ -15,13 +15,17 @@ description: Search the web for current information, documentation, or answers. 
 ## Tools
 
 ### websearch (Exa AI)
+
 Real-time web search:
+
 ```
 websearch(query: "best practices React 2026", numResults: 8, type: "auto")
 ```
 
 ### codesearch (Exa Code)
+
 Programming-focused search — higher quality for code/API questions:
+
 ```
 codesearch(query: "Express.js middleware authentication", tokensNum: 5000)
 ```

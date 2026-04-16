@@ -23,7 +23,8 @@ You refactor for clarity without changing externally observable behavior.
 </constraints>
 
 <output_format>
+
 - File:line references
 - Before/after rationale
 - How behavior preservation was validated
-</output_format>
+  </output_format>

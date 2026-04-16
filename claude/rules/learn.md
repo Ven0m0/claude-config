@@ -14,14 +14,14 @@ When the context monitor shows the `/learn check` reminder at 90%+ context:
 
 ### Triggers for /learn
 
-| Trigger | Example |
-|---------|---------|
+| Trigger                   | Example                                                  |
+| ------------------------- | -------------------------------------------------------- |
 | **Non-obvious debugging** | Spent 10+ minutes investigating; solution wasn't in docs |
-| **Misleading errors** | Error message pointed wrong direction; found real cause |
-| **Workarounds** | Discovered limitation and found creative solution |
-| **Tool integration** | Figured out how to use tool/API in undocumented way |
-| **Trial-and-error** | Tried multiple approaches before finding what worked |
-| **Repeatable workflow** | Multi-step task that will recur; worth standardizing |
+| **Misleading errors**     | Error message pointed wrong direction; found real cause  |
+| **Workarounds**           | Discovered limitation and found creative solution        |
+| **Tool integration**      | Figured out how to use tool/API in undocumented way      |
+| **Trial-and-error**       | Tried multiple approaches before finding what worked     |
+| **Repeatable workflow**   | Multi-step task that will recur; worth standardizing     |
 
 ### What NOT to Extract (Stay Silent)
 

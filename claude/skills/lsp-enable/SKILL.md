@@ -138,6 +138,7 @@ export ENABLE_LSP_TOOL=1
 If LSP servers are not installed, use `/lsp-tools:lsp-setup` for guided installation.
 
 **Quick verification:**
+
 ```bash
 # Run verification script
 bash "${CLAUDE_PLUGIN_DIR}/scripts/bash/verify-lsp-servers.sh"
@@ -145,20 +146,20 @@ bash "${CLAUDE_PLUGIN_DIR}/scripts/bash/verify-lsp-servers.sh"
 
 **Per-language installation scripts are available:**
 
-| Language | Server | Install Script |
-|----------|--------|----------------|
-| TypeScript/JS | vtsls | [scripts/bash/install-typescript-lsp.sh](./scripts/bash/install-typescript-lsp.sh) |
-| Python | pyright | [scripts/bash/install-python-lsp.sh](./scripts/bash/install-python-lsp.sh) |
-| Rust | rust-analyzer | [scripts/bash/install-rust-lsp.sh](./scripts/bash/install-rust-lsp.sh) |
-| Go | gopls | [scripts/bash/install-go-lsp.sh](./scripts/bash/install-go-lsp.sh) |
-| Java | jdtls | [scripts/bash/install-java-lsp.sh](./scripts/bash/install-java-lsp.sh) |
-| Kotlin | kotlin-language-server | [scripts/bash/install-kotlin-lsp.sh](./scripts/bash/install-kotlin-lsp.sh) |
-| C/C++ | clangd | [scripts/bash/install-cpp-lsp.sh](./scripts/bash/install-cpp-lsp.sh) |
-| C# | OmniSharp | [scripts/bash/install-csharp-lsp.sh](./scripts/bash/install-csharp-lsp.sh) |
-| PHP | phpactor | [scripts/bash/install-php-lsp.sh](./scripts/bash/install-php-lsp.sh) |
-| Ruby | ruby-lsp | [scripts/bash/install-ruby-lsp.sh](./scripts/bash/install-ruby-lsp.sh) |
-| HTML/CSS | vscode-langservers | [scripts/bash/install-html-css-lsp.sh](./scripts/bash/install-html-css-lsp.sh) |
-| LaTeX | texlab | [scripts/bash/install-latex-lsp.sh](./scripts/bash/install-latex-lsp.sh) |
+| Language      | Server                 | Install Script                                                                     |
+| ------------- | ---------------------- | ---------------------------------------------------------------------------------- |
+| TypeScript/JS | vtsls                  | [scripts/bash/install-typescript-lsp.sh](./scripts/bash/install-typescript-lsp.sh) |
+| Python        | pyright                | [scripts/bash/install-python-lsp.sh](./scripts/bash/install-python-lsp.sh)         |
+| Rust          | rust-analyzer          | [scripts/bash/install-rust-lsp.sh](./scripts/bash/install-rust-lsp.sh)             |
+| Go            | gopls                  | [scripts/bash/install-go-lsp.sh](./scripts/bash/install-go-lsp.sh)                 |
+| Java          | jdtls                  | [scripts/bash/install-java-lsp.sh](./scripts/bash/install-java-lsp.sh)             |
+| Kotlin        | kotlin-language-server | [scripts/bash/install-kotlin-lsp.sh](./scripts/bash/install-kotlin-lsp.sh)         |
+| C/C++         | clangd                 | [scripts/bash/install-cpp-lsp.sh](./scripts/bash/install-cpp-lsp.sh)               |
+| C#            | OmniSharp              | [scripts/bash/install-csharp-lsp.sh](./scripts/bash/install-csharp-lsp.sh)         |
+| PHP           | phpactor               | [scripts/bash/install-php-lsp.sh](./scripts/bash/install-php-lsp.sh)               |
+| Ruby          | ruby-lsp               | [scripts/bash/install-ruby-lsp.sh](./scripts/bash/install-ruby-lsp.sh)             |
+| HTML/CSS      | vscode-langservers     | [scripts/bash/install-html-css-lsp.sh](./scripts/bash/install-html-css-lsp.sh)     |
+| LaTeX         | texlab                 | [scripts/bash/install-latex-lsp.sh](./scripts/bash/install-latex-lsp.sh)           |
 
 **Windows users:** Use corresponding PowerShell scripts in `scripts/powershell/`.
 
@@ -210,20 +211,20 @@ If you catch yourself:
 
 Use language-specific LSP sections for tooling and quality gates:
 
-| Language              | Reference File                         |
-| --------------------- | -------------------------------------- |
+| Language              | Reference File                                                                 |
+| --------------------- | ------------------------------------------------------------------------------ |
 | TypeScript/JavaScript | [references/typescript-lsp-section.md](./references/typescript-lsp-section.md) |
-| Python                | [references/python-lsp-section.md](./references/python-lsp-section.md)     |
-| Go                    | [references/go-lsp-section.md](./references/go-lsp-section.md)         |
-| Rust                  | [references/rust-lsp-section.md](./references/rust-lsp-section.md)       |
-| Java                  | [references/java-lsp-section.md](./references/java-lsp-section.md)       |
-| Kotlin                | [references/kotlin-lsp-section.md](./references/kotlin-lsp-section.md)     |
-| C/C++                 | [references/cpp-lsp-section.md](./references/cpp-lsp-section.md)        |
-| C#                    | [references/csharp-lsp-section.md](./references/csharp-lsp-section.md)     |
-| PHP                   | [references/php-lsp-section.md](./references/php-lsp-section.md)        |
-| Ruby                  | [references/ruby-lsp-section.md](./references/ruby-lsp-section.md)       |
-| HTML/CSS              | [references/html-css-lsp-section.md](./references/html-css-lsp-section.md)   |
-| LaTeX                 | [references/latex-lsp-section.md](./references/latex-lsp-section.md)      |
+| Python                | [references/python-lsp-section.md](./references/python-lsp-section.md)         |
+| Go                    | [references/go-lsp-section.md](./references/go-lsp-section.md)                 |
+| Rust                  | [references/rust-lsp-section.md](./references/rust-lsp-section.md)             |
+| Java                  | [references/java-lsp-section.md](./references/java-lsp-section.md)             |
+| Kotlin                | [references/kotlin-lsp-section.md](./references/kotlin-lsp-section.md)         |
+| C/C++                 | [references/cpp-lsp-section.md](./references/cpp-lsp-section.md)               |
+| C#                    | [references/csharp-lsp-section.md](./references/csharp-lsp-section.md)         |
+| PHP                   | [references/php-lsp-section.md](./references/php-lsp-section.md)               |
+| Ruby                  | [references/ruby-lsp-section.md](./references/ruby-lsp-section.md)             |
+| HTML/CSS              | [references/html-css-lsp-section.md](./references/html-css-lsp-section.md)     |
+| LaTeX                 | [references/latex-lsp-section.md](./references/latex-lsp-section.md)           |
 
 Each file includes:
 

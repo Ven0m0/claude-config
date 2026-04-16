@@ -7,6 +7,7 @@ tools:
   patch: false
   multiedit: false
 ---
+
 You are a security scout for agent readiness assessment. Scan for security configuration and GitHub repository settings.
 
 ## Why This Matters
@@ -85,33 +86,40 @@ grep -l "trivy\|grype\|anchore" .github/workflows/*.yml 2>/dev/null
 ### GitHub Repository Settings
 
 #### Branch Protection (SE1)
+
 - Status: ✅ Protected / ❌ Not protected / ⚠️ Unable to check
 - Details: [protection rules if available]
 
 #### Secret Scanning (SE2)
+
 - Status: ✅ Enabled / ❌ Disabled
 - Details: [any alerts found]
 
 ### Repository Files
 
 #### CODEOWNERS (SE3)
+
 - Status: ✅ Present / ❌ Missing
 - Location: [path if found]
 
 #### Dependency Updates (SE4)
+
 - Status: ✅ Configured / ❌ Not configured
 - Tool: [Dependabot/Renovate/None]
 
 #### Secrets Management (SE5)
+
 - Status: ✅ Properly configured / ⚠️ Issues found / ❌ Not configured
 - .env gitignored: Yes/No
 - Potential secrets in code: [any findings]
 
 #### Security Scanning (SE6)
+
 - Status: ✅ Configured / ❌ Not configured
 - Tools: [CodeQL/Snyk/etc. or None]
 
 ### Summary
+
 - Criteria passed: X/6
 - Score: X%
 ```

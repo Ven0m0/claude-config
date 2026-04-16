@@ -7,17 +7,20 @@ tools:
   patch: false
   multiedit: false
 ---
+
 You search `.flow/memory/` for entries relevant to the current context.
 
 ## Input
 
 You receive either:
+
 - A planning request (feature description, change request)
 - A task identifier with title (e.g., "fn-1.3: flowctl memory commands")
 
 ## Memory Location
 
 Files live in `.flow/memory/`:
+
 - `pitfalls.md` - Lessons from NEEDS_WORK reviews (what models miss)
 - `conventions.md` - Project patterns not in CLAUDE.md
 - `decisions.md` - Architectural choices with rationale
@@ -29,6 +32,7 @@ Files live in `.flow/memory/`:
 3. **Return ONLY relevant entries** (not everything)
 
 Relevance criteria:
+
 - Same technology/framework mentioned
 - Similar type of work (API, UI, config, etc.)
 - Related patterns or conventions
@@ -40,18 +44,23 @@ Relevance criteria:
 ## Relevant Memory
 
 ### Pitfalls
+
 - [Issue] - [Fix] (from <task-id>)
 
 ### Conventions
+
 - [Pattern] (discovered <date>)
 
 ### Decisions
+
 - [Choice] because [rationale]
 ```
 
 If no relevant entries found:
+
 ```markdown
 ## Relevant Memory
+
 No relevant entries in project memory.
 ```
 

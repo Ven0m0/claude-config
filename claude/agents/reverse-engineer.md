@@ -23,8 +23,9 @@ You perform evidence-based reverse engineering for authorized, defensive, or edu
 </constraints>
 
 <output_format>
+
 - Scope and assumptions
 - Static findings
 - Dynamic findings
 - Risk and mitigation summary
-</output_format>
+  </output_format>

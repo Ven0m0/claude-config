@@ -18,6 +18,7 @@ Scaffold repo-local Ralph harness. Opt-in only.
 ## Workflow
 
 1. Resolve repo root and OpenCode dir:
+
    ```bash
    ROOT="$(git rev-parse --show-toplevel)"
    OPENCODE_DIR="$ROOT/.opencode"
@@ -32,15 +33,16 @@ Scaffold repo-local Ralph harness. Opt-in only.
 
 3. Detect available review backends (skip if UPDATE_MODE=1):
    ```bash
-HAVE_RP=0;
-if command -v rp-cli >/dev/null 2>&1; then
-  HAVE_RP=1;
-elif [[ -x /opt/homebrew/bin/rp-cli || -x /usr/local/bin/rp-cli ]]; then
-  HAVE_RP=1;
-fi
+   HAVE_RP=0;
+   if command -v rp-cli >/dev/null 2>&1; then
+   HAVE_RP=1;
+   elif [[ -x /opt/homebrew/bin/rp-cli || -x /usr/local/bin/rp-cli ]]; then
+   HAVE_RP=1;
+   fi
    ```
 4. Determine review backend (skip if UPDATE_MODE=1):
    - If rp-cli available, ask user:
+
      ```
      Which review backend?
      a) OpenCode (GPT‑5.2 High)
@@ -48,7 +50,9 @@ fi
 
      (Reply: "a", "opencode", "b", "rp", or just tell me)
      ```
+
      Wait for response. Default if empty/ambiguous: `opencode`
+
    - If only rp-cli available and user chooses rp: use `rp`
    - Otherwise: use `opencode`
    - If neither available and user requests none: use `none`
@@ -56,6 +60,7 @@ fi
 5. Copy files using bash (MUST use cp, NOT Write tool):
 
    **If UPDATE_MODE=1 (updating):**
+
    ```bash
    # Backup config.env
    cp scripts/ralph/config.env /tmp/ralph-config-backup.env
@@ -74,12 +79,14 @@ fi
    ```
 
    **If UPDATE_MODE=0 (fresh install):**
+
    ```bash
    mkdir -p scripts/ralph/runs
    cp -R "$TEMPLATE_DIR/." scripts/ralph/
    cp "$OPENCODE_DIR/bin/flowctl" "$OPENCODE_DIR/bin/flowctl.py" scripts/ralph/
    chmod +x scripts/ralph/ralph.sh scripts/ralph/ralph_once.sh scripts/ralph/flowctl
    ```
+
    Note: `cp -R templates/.` copies all files including dotfiles (.gitignore).
 
 6. Edit `scripts/ralph/config.env` to set the chosen review backend (skip if UPDATE_MODE=1):
@@ -89,6 +96,7 @@ fi
 7. Print next steps (run from terminal, NOT inside OpenCode):
 
    **If UPDATE_MODE=1:**
+
    ```
    Ralph updated! Your config.env was preserved.
 
@@ -98,6 +106,7 @@ fi
    ```
 
    **If UPDATE_MODE=0:**
+
    ```
    Ralph initialized!
 

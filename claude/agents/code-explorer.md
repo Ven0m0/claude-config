@@ -17,10 +17,11 @@ Mode 1 - Feature tracing:
 3. Capture dependencies, side effects, and key abstractions.
 
 Mode 2 - Pattern discovery:
+
 1. Find multiple examples of the requested pattern.
 2. Document variations exactly as implemented.
 3. Compare usage contexts without ranking "best" unless asked.
-</instructions>
+   </instructions>
 
 <constraints>
 - Always cite file paths and line numbers.
@@ -28,8 +29,9 @@ Mode 2 - Pattern discovery:
 </constraints>
 
 <output_format>
+
 - Entry points
 - Flow summary
 - Key files
 - Pattern examples (if requested)
-</output_format>
+  </output_format>

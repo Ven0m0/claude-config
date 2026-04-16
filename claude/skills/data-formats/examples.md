@@ -9,6 +9,7 @@ Multishot prompting examples demonstrating practical data format patterns coveri
 **Scenario**: Reduce token usage when sending structured data to LLMs.
 
 **Input**:
+
 ```python
 # Original JSON data - high token count
 user_data = {
@@ -27,6 +28,7 @@ json_output = json.dumps(user_data)
 ```
 
 **Output**:
+
 ```python
 from moai_formats_data import TOONEncoder
 from datetime import datetime
@@ -128,6 +130,7 @@ decoded = encoder.decode(toon_output)
 **Scenario**: Process large JSON files efficiently with streaming and optimization.
 
 **Input**:
+
 ```python
 # Need to process a 500MB JSON file with millions of records
 # Standard json.load() causes memory issues
@@ -139,6 +142,7 @@ with open('large_dataset.json', 'r') as f:
 ```
 
 **Output**:
+
 ```python
 from moai_formats_data import JSONOptimizer, StreamProcessor
 import orjson
@@ -258,6 +262,7 @@ print(f"Total balance: {total}")
 **Scenario**: Implement robust data validation with support for schema versioning and migration.
 
 **Input**:
+
 ```python
 # Need validation system that:
 # - Validates complex nested data
@@ -267,6 +272,7 @@ print(f"Total balance: {total}")
 ```
 
 **Output**:
+
 ```python
 from moai_formats_data import DataValidator, SchemaEvolution
 from typing import Dict, Any, List, Optional
@@ -801,4 +807,4 @@ def benchmark_serialization():
 
 ---
 
-*For additional patterns and format-specific optimizations, see the `modules/` directory.*
+_For additional patterns and format-specific optimizations, see the `modules/` directory._

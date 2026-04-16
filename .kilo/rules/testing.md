@@ -2,12 +2,12 @@
 
 ## Test Runner by Plugin
 
-| Plugin | Runner | Command |
-|--------|--------|---------|
-| `plugins/conserve/` | pytest | `uv run pytest plugins/conserve/tests/ -v` |
-| `plugins/prompt-improver/` | pytest | `uv run pytest plugins/prompt-improver/tests/ -v` |
-| `plugins/dependency-blocker/` | bats | `bats plugins/dependency-blocker/tests/*.bats` |
-| `plugins/plugin-validator/` | node | `node plugins/plugin-validator/test.js` |
+| Plugin                        | Runner | Command                                           |
+| ----------------------------- | ------ | ------------------------------------------------- |
+| `plugins/conserve/`           | pytest | `uv run pytest plugins/conserve/tests/ -v`        |
+| `plugins/prompt-improver/`    | pytest | `uv run pytest plugins/prompt-improver/tests/ -v` |
+| `plugins/dependency-blocker/` | bats   | `bats plugins/dependency-blocker/tests/*.bats`    |
+| `plugins/plugin-validator/`   | node   | `node plugins/plugin-validator/test.js`           |
 
 ## Scope Rules
 

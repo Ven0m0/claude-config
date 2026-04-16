@@ -6,11 +6,11 @@ compatibility: Designed for Claude Code
 allowed-tools: Read, Grep, Glob, Bash
 user-invocable: false
 metadata:
-  version: "6.0.0"
-  category: "foundation"
-  status: "active"
-  updated: "2026-02-22"
-  tags: "foundation, claude-code, skill-authoring, agent-authoring, plugins, hooks, commands"
+  version: '6.0.0'
+  category: 'foundation'
+  status: 'active'
+  updated: '2026-02-22'
+  tags: 'foundation, claude-code, skill-authoring, agent-authoring, plugins, hooks, commands'
 ---
 
 # Claude Code Authoring Foundation

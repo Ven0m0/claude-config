@@ -24,7 +24,7 @@ Install: `pip install json-repair`
 
 ### Core API
 
-**`repair_json(json_str, return_objects=False, skip_json_loads=False, ensure_ascii=True, strict=False, schema=None, stream_stable=False, **kwargs)`**
+**`repair_json(json_str, return_objects=False, skip_json_loads=False, ensure_ascii=True, strict=False, schema=None, stream_stable=False, **kwargs)`\*\*
 
 Repairs a JSON string. Returns a valid JSON string by default, or a Python object
 when `return_objects=True`. Passes through all `json.dumps()` kwargs (indent, etc).
@@ -35,11 +35,12 @@ Returns a Python object. Accepts same kwargs as `repair_json`.
 **`json_repair.load(fd, **kwargs)`** — drop-in replacement for `json.load()`.
 Reads from a file descriptor.
 
-**`json_repair.from_file(path, **kwargs)`** — reads and repairs JSON from a file path.
+**`json_repair.from_file(path, **kwargs)`\*\* — reads and repairs JSON from a file path.
 
 ### Usage Patterns
 
 **Simple repair (string → string):**
+
 ```python
 from json_repair import repair_json
 
@@ -47,6 +48,7 @@ fixed = repair_json('{"name": "test", "value": 42,}')
 ```
 
 **Direct to object (fastest path — skips serialization):**
+
 ```python
 import json_repair
 
@@ -56,6 +58,7 @@ obj = json_repair.repair_json(bad_json_string, return_objects=True)
 ```
 
 **From file:**
+
 ```python
 import json_repair
 
@@ -136,6 +139,7 @@ result = repair_json('{"value": "1"}', schema=schema, return_objects=True)
 ```
 
 With Pydantic v2:
+
 ```python
 from pydantic import BaseModel, Field
 from json_repair import repair_json

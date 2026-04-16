@@ -17,6 +17,7 @@
   }
 }
 ```
+
 ```json
   "sort": {
     "by": "exacto",
@@ -34,7 +35,8 @@
   "temperature": 0.3
 ```
 
-openrouter: 
+openrouter:
+
 - https://openrouter.ai/docs/guides/routing/provider-selection
 
 ```text
@@ -49,6 +51,7 @@ openrouter/openrouter/auto:exacto:online
 ```
 
 kilo:
+
 ```text
 kilo/kilo-auto/free
 kilo/kilo-auto/frontier
@@ -62,6 +65,7 @@ kilo/morph/morph-v3-fast
 ```
 
 opencode:
+
 ```text
 opencode/minimax-m2.5-free
 opencode/glm-5

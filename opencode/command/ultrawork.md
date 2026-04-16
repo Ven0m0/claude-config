@@ -27,12 +27,12 @@ You receive a set of tasks (or derive them from context). Your role is to:
 
 Route each task to the agent that fits its complexity. Do NOT over-provision.
 
-| Tier | When to use | Agent |
-|------|-------------|-------|
-| LOW | Simple fix, rename, add export, type annotation, one-liner | `executor` |
-| MEDIUM | Feature implementation, endpoint, component, test suite | `coder` |
-| HIGH | Complex refactor, multi-file migration, architecture change | `build` |
-| CRITICAL | Deep review, architectural validation, high-risk changes | `reviewer` |
+| Tier     | When to use                                                 | Agent      |
+| -------- | ----------------------------------------------------------- | ---------- |
+| LOW      | Simple fix, rename, add export, type annotation, one-liner  | `executor` |
+| MEDIUM   | Feature implementation, endpoint, component, test suite     | `coder`    |
+| HIGH     | Complex refactor, multi-file migration, architecture change | `build`    |
+| CRITICAL | Deep review, architectural validation, high-risk changes    | `reviewer` |
 
 ## Execution Rules
 
@@ -43,6 +43,7 @@ Route each task to the agent that fits its complexity. Do NOT over-provision.
 **Dependency ordering:** If task B reads output from task A, run A first, then B. For everything else, parallel.
 
 **Tier examples:**
+
 - LOW: "add missing type export for Config", "rename variable foo to bar in utils.ts"
 - MEDIUM: "implement /api/users endpoint with validation and error handling"
 - HIGH: "migrate authentication from JWT to session-based across all middleware"
@@ -59,6 +60,7 @@ Route each task to the agent that fits its complexity. Do NOT over-provision.
 ## Verification (lightweight — not full QA)
 
 After all tasks complete:
+
 - Run build/typecheck
 - Run only tests affected by the changes
 - Report any failures with which task caused them
@@ -71,18 +73,21 @@ For full plan-first execution and review loops, use the Flow Next commands when 
 ## Ultrawork Complete
 
 ### Tasks Executed
-| Tier | Agent | Task | Status |
-|------|-------|------|--------|
-| MEDIUM | coder | Implement /api/users endpoint | DONE |
-| LOW | executor | Add Config type export | DONE |
-| LOW | executor | Rename foo -> bar in utils.ts | DONE |
+
+| Tier   | Agent    | Task                          | Status |
+| ------ | -------- | ----------------------------- | ------ |
+| MEDIUM | coder    | Implement /api/users endpoint | DONE   |
+| LOW    | executor | Add Config type export        | DONE   |
+| LOW    | executor | Rename foo -> bar in utils.ts | DONE   |
 
 ### Verification
+
 - Build: [PASS | FAIL]
 - Tests: [PASS | FAIL | N/A]
 - Lint: [PASS | FAIL]
 
 ### Notes
+
 [Failures, surprises, or follow-up items]
 ```
 

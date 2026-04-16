@@ -3,12 +3,14 @@
 Templates for fixing agent readiness gaps. Focus on what helps agents work effectively: fast local feedback, clear commands, documented conventions.
 
 **Priority order:**
+
 1. **Critical**: CLAUDE.md, .env.example, lint/format commands
 2. **High**: Pre-commit hooks, test command, runtime version
 3. **Medium**: Build scripts, .gitignore entries
 4. **Low/Bonus**: Devcontainer, Docker (nice-to-have, not essential)
 
 **NOT offered** (team governance, not agent readiness):
+
 - CONTRIBUTING.md, PR templates, issue templates, CODEOWNERS, LICENSE
 
 ---
@@ -23,7 +25,7 @@ Location: `CLAUDE.md` (repo root)
 
 Template (adapt based on detected stack):
 
-```markdown
+````markdown
 # Project Name
 
 ## Quick Commands
@@ -47,6 +49,7 @@ Template (adapt based on detected stack):
 # Format code
 [detected format command]
 ```
+````
 
 ## Project Structure
 
@@ -63,7 +66,8 @@ Template (adapt based on detected stack):
 ## Things to Avoid
 
 - [Common pitfalls for this stack]
-```
+
+````
 
 ### Create .env.example
 
@@ -84,7 +88,7 @@ VAR_NAME=your_value_here
 
 # Optional: [description]
 OPTIONAL_VAR=default_value
-```
+````
 
 ---
 
@@ -110,6 +114,7 @@ If husky not installed, add to package.json devDependencies:
 ```
 
 Then run:
+
 ```bash
 npx husky init
 echo "npx lint-staged" > .husky/pre-commit
@@ -142,6 +147,7 @@ repos:
 **Important**: Only offer if NO linter exists. ESLint, Biome, oxlint, Ruff are all valid. Don't replace one with another.
 
 Recommend based on project:
+
 - **Biome** (recommended for new projects): fast, does lint + format
 - **ESLint** (established projects): wide ecosystem
 - **oxlint** (performance-critical): very fast
@@ -152,9 +158,7 @@ Example ESLint - `eslint.config.js`:
 ```javascript
 import js from '@eslint/js';
 
-export default [
-  js.configs.recommended,
-];
+export default [js.configs.recommended];
 ```
 
 Example Biome - `biome.json`:
@@ -186,11 +190,13 @@ Note: If Biome is already configured, it handles formatting. Don't add Prettier.
 ### Add Runtime Version File
 
 For Node.js, create `.nvmrc`:
+
 ```
 20
 ```
 
 For Python, create `.python-version`:
+
 ```
 3.12
 ```

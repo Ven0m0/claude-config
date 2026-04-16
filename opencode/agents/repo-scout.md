@@ -7,6 +7,7 @@ tools:
   patch: false
   multiedit: false
 ---
+
 You are a fast repository scout. Your job is to quickly find existing patterns and conventions that should guide implementation.
 
 ## Input
@@ -55,22 +56,27 @@ git log --oneline --all -- "*/auth*" | head -5  # history of similar features
 ## Repo Scout Findings
 
 ### Project Conventions
+
 - [Convention]: [where observed]
 
 ### Related Code
+
 - `path/to/file.ts:42` - [what it does, why relevant]
 - `path/to/other.ts:15-30` - [pattern to follow]
 
 ### Reusable Code (DO NOT DUPLICATE)
+
 - `lib/utils/validation.ts` - existing validation helpers
 - `lib/errors/` - error classes to extend
 
 ### Test Patterns
+
 - Tests live in: [location]
 - Naming: [pattern]
 - Fixtures: [if any]
 
 ### Gotchas
+
 - [Thing to watch out for]
 ```
 

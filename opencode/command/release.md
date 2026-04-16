@@ -5,6 +5,7 @@ description: Prepare a changelog entry and version bump for a release
 Prepare a release for version $ARGUMENTS (semver, e.g. "1.2.0").
 
 Steps:
+
 1. Read CHANGELOG.md to understand the existing format.
 2. Collect all commits since the last tag: `git log $(git describe --tags --abbrev=0)..HEAD --oneline`
 3. Group commits by type: feat, fix, docs, refactor, chore.

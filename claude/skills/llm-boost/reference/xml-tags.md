@@ -20,39 +20,39 @@ XML tags give LLMs structural cues that improve accuracy, reduce mixing of promp
 
 ### Input Structuring Tags
 
-| Tag | Purpose | Example Use |
-|-----|---------|-------------|
-| `<context>` | Background information | Project description, domain knowledge |
-| `<instructions>` | What to do | Task directives, constraints |
-| `<document>` | Source material | Files, articles, contracts |
-| `<data>` / `<dataset>` | Structured input | CSV, JSON, records |
-| `<examples>` | Few-shot demonstrations | Input/output pairs |
-| `<rules>` | Constraints and conditions | Business logic, validation rules |
-| `<schema>` | Structure definitions | API schemas, data models |
-| `<persona>` / `<role>` | Identity framing | Expert role, tone guidance |
+| Tag                    | Purpose                    | Example Use                           |
+| ---------------------- | -------------------------- | ------------------------------------- |
+| `<context>`            | Background information     | Project description, domain knowledge |
+| `<instructions>`       | What to do                 | Task directives, constraints          |
+| `<document>`           | Source material            | Files, articles, contracts            |
+| `<data>` / `<dataset>` | Structured input           | CSV, JSON, records                    |
+| `<examples>`           | Few-shot demonstrations    | Input/output pairs                    |
+| `<rules>`              | Constraints and conditions | Business logic, validation rules      |
+| `<schema>`             | Structure definitions      | API schemas, data models              |
+| `<persona>` / `<role>` | Identity framing           | Expert role, tone guidance            |
 
 ### Output Structuring Tags
 
-| Tag | Purpose | Extraction Pattern |
-|-----|---------|-------------------|
-| `<thinking>` | Internal reasoning (CoT) | Filter out before showing user |
-| `<answer>` | Final response | Primary extraction target |
-| `<score>` | Numeric evaluation | `int(extract_tag(text, 'score'))` |
-| `<feedback>` | Qualitative assessment | Display to user |
-| `<classification>` | Category assignment | Route to handler |
-| `<confidence>` | Certainty level | Threshold decisions |
-| `<action>` | Recommended next step | Workflow routing |
-| `<citation>` | Source attribution | Reference linking |
+| Tag                | Purpose                  | Extraction Pattern                |
+| ------------------ | ------------------------ | --------------------------------- |
+| `<thinking>`       | Internal reasoning (CoT) | Filter out before showing user    |
+| `<answer>`         | Final response           | Primary extraction target         |
+| `<score>`          | Numeric evaluation       | `int(extract_tag(text, 'score'))` |
+| `<feedback>`       | Qualitative assessment   | Display to user                   |
+| `<classification>` | Category assignment      | Route to handler                  |
+| `<confidence>`     | Certainty level          | Threshold decisions               |
+| `<action>`         | Recommended next step    | Workflow routing                  |
+| `<citation>`       | Source attribution       | Reference linking                 |
 
 ### Organizational Tags
 
-| Tag | Purpose |
-|-----|---------|
-| `<section>` | Logical grouping |
-| `<formatting>` | Output format specification |
-| `<constraints>` | What to avoid or limit |
-| `<task>` | Specific work item |
-| `<metadata>` | Non-content information |
+| Tag             | Purpose                     |
+| --------------- | --------------------------- |
+| `<section>`     | Logical grouping            |
+| `<formatting>`  | Output format specification |
+| `<constraints>` | What to avoid or limit      |
+| `<task>`        | Specific work item          |
+| `<metadata>`    | Non-content information     |
 
 ## Patterns
 
@@ -122,6 +122,7 @@ XML tags give LLMs structural cues that improve accuracy, reduce mixing of promp
 ```
 
 Output:
+
 ```xml
 <thinking>
 Distance = speed × time
@@ -257,22 +258,21 @@ function extractTag(text, tag) {
 }
 
 function extractAll(text, tag) {
-  return [...text.matchAll(new RegExp(`<${tag}>(.*?)</${tag}>`, 'gs'))]
-    .map(m => m[1].trim());
+  return [...text.matchAll(new RegExp(`<${tag}>(.*?)</${tag}>`, 'gs'))].map((m) => m[1].trim());
 }
 ```
 
 ## Common Mistakes
 
-| Mistake | Fix |
-|---------|-----|
-| Generic names (`<data1>`, `<section_a>`) | Use semantic names (`<contract>`, `<rubric>`) |
-| Inconsistent naming (mix `<doc>` and `<document>`) | Pick one, use everywhere |
-| Not referencing tags in instructions | "Using the data in `<dataset>` tags..." |
-| Over-nesting (5+ levels deep) | Flatten to 2-3 levels max |
-| Tags in output without extraction plan | Define extraction before prompting |
-| Missing closing tags | Always close: `<tag>...</tag>` |
-| Using XML reserved chars unescaped in content | Escape `&`, `<`, `>` in data or use CDATA |
+| Mistake                                            | Fix                                           |
+| -------------------------------------------------- | --------------------------------------------- |
+| Generic names (`<data1>`, `<section_a>`)           | Use semantic names (`<contract>`, `<rubric>`) |
+| Inconsistent naming (mix `<doc>` and `<document>`) | Pick one, use everywhere                      |
+| Not referencing tags in instructions               | "Using the data in `<dataset>` tags..."       |
+| Over-nesting (5+ levels deep)                      | Flatten to 2-3 levels max                     |
+| Tags in output without extraction plan             | Define extraction before prompting            |
+| Missing closing tags                               | Always close: `<tag>...</tag>`                |
+| Using XML reserved chars unescaped in content      | Escape `&`, `<`, `>` in data or use CDATA     |
 
 ## Tag Design Checklist
 

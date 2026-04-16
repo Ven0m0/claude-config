@@ -8,6 +8,7 @@ category: core-principles
 <principles>
 
 ## Development Philosophy
+
 - Code exists to serve human needs. Security is non-negotiable.
 - Write clean, maintainable code over rushing implementations.
 - Clear, accurate documentation prevents future confusion.
@@ -20,6 +21,7 @@ category: core-principles
 
 <security_checklist>
 Before any commit:
+
 - No hardcoded secrets (API keys, passwords, tokens)
 - All user inputs validated
 - SQL injection prevention (parameterized queries)
@@ -28,45 +30,46 @@ Before any commit:
 - Authentication/authorization verified
 - Rate limiting on all endpoints
 - Error messages don't leak sensitive data
-</security_checklist>
+  </security_checklist>
 
 ### Key Patterns
 
-| Concern | Bad | Good |
-|---------|-----|------|
-| Secrets | `const apiKey = "sk-proj-xxxxx"` | `const apiKey = process.env.OPENAI_API_KEY` |
-| SQL | String concatenation | `db.query('SELECT * FROM users WHERE id = ?', [userId])` |
-| XSS | Raw user input in HTML | Template engine auto-escaping `{{ userInput }}` |
+| Concern | Bad                              | Good                                                     |
+| ------- | -------------------------------- | -------------------------------------------------------- |
+| Secrets | `const apiKey = "sk-proj-xxxxx"` | `const apiKey = process.env.OPENAI_API_KEY`              |
+| SQL     | String concatenation             | `db.query('SELECT * FROM users WHERE id = ?', [userId])` |
+| XSS     | Raw user input in HTML           | Template engine auto-escaping `{{ userInput }}`          |
 
 ## Code Quality Standards
 
-| Principle | Requirement |
-|-----------|-------------|
-| Error Handling | Try/catch with meaningful messages |
-| Type Safety | TypeScript strict mode, `noImplicitAny: true` |
-| Documentation | JSDoc for all public APIs |
-| Consistent Style | Use project linter/formatter |
-| Clarity | Prefer descriptive names over brevity |
-| Testing | Edge case coverage, 100% on critical paths |
+| Principle        | Requirement                                   |
+| ---------------- | --------------------------------------------- |
+| Error Handling   | Try/catch with meaningful messages            |
+| Type Safety      | TypeScript strict mode, `noImplicitAny: true` |
+| Documentation    | JSDoc for all public APIs                     |
+| Consistent Style | Use project linter/formatter                  |
+| Clarity          | Prefer descriptive names over brevity         |
+| Testing          | Edge case coverage, 100% on critical paths    |
 
 ## Development Workflow
 
 <pre_commit>
+
 1. Code compiles without errors
 2. All tests pass
 3. Security scan passes
 4. Performance meets requirements
 5. Documentation updated
 6. No hardcoded secrets
-</pre_commit>
+   </pre_commit>
 
 ## Git Standards
 
-| Practice | When | Example |
-|----------|------|---------|
-| Atomic Commits | One logical change per commit | `feat: Add user authentication` |
-| Feature Branches | Isolated work | `git checkout -b feature/auth` |
-| Code Review | All changes before merge | Required for main branch |
+| Practice         | When                          | Example                         |
+| ---------------- | ----------------------------- | ------------------------------- |
+| Atomic Commits   | One logical change per commit | `feat: Add user authentication` |
+| Feature Branches | Isolated work                 | `git checkout -b feature/auth`  |
+| Code Review      | All changes before merge      | Required for main branch        |
 
 ## Performance Guidelines
 

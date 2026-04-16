@@ -9,6 +9,7 @@
 ## Problem Statement
 
 OpenCode (an AI coding assistant) requires local access but needs to be accessible remotely for:
+
 - Development from multiple machines
 - Access while traveling
 - Shared development environments
@@ -20,11 +21,13 @@ Traditional solutions (VPN, port forwarding, self-signed certs) have security, r
 ## Solution
 
 A reproducible setup using Cloudflare Tunnel to expose openchamber (OpenCode's web GUI) securely without:
+
 - Opening firewall ports
 - Managing TLS certificates
 - Exposing the host's IP
 
 Supports two install modes:
+
 - **Local mode** (default): systemd services, no Docker
 - **Docker mode**: Docker Compose stack
 
@@ -89,22 +92,22 @@ docker-compose.yml
 
 ### 1. Cloudflare Tunnel vs Alternatives
 
-| Option | Pros | Cons | Verdict |
-|--------|------|------|---------|
-| **Cloudflare Tunnel** | No open ports, managed TLS, free, DDoS protection | Vendor lock-in, requires Cloudflare account | **Chosen** |
-| Tailscale/Funnel | P2P, no vendor account needed | Requires client install, Funnel has limits | Rejected |
-| ngrok | Quick setup | Paid for custom domains, rate limits | Rejected |
-| Port forwarding + Let's Encrypt | Full control | Exposes IP, manual cert management, firewall config | Rejected |
-| VPN (WireGuard) | Full control | Requires client config, exposes internal network | Rejected |
+| Option                          | Pros                                              | Cons                                                | Verdict    |
+| ------------------------------- | ------------------------------------------------- | --------------------------------------------------- | ---------- |
+| **Cloudflare Tunnel**           | No open ports, managed TLS, free, DDoS protection | Vendor lock-in, requires Cloudflare account         | **Chosen** |
+| Tailscale/Funnel                | P2P, no vendor account needed                     | Requires client install, Funnel has limits          | Rejected   |
+| ngrok                           | Quick setup                                       | Paid for custom domains, rate limits                | Rejected   |
+| Port forwarding + Let's Encrypt | Full control                                      | Exposes IP, manual cert management, firewall config | Rejected   |
+| VPN (WireGuard)                 | Full control                                      | Requires client config, exposes internal network    | Rejected   |
 
 **Rationale**: Cloudflare Tunnel provides the best balance of security, simplicity, and cost for a single-user web service.
 
 ### 2. Local (systemd) vs Docker
 
-| Mode | Pros | Cons | When to Use |
-|------|------|------|-------------|
-| **Local** | Lower overhead, native logging, simpler debugging | Host package dependency | Default, production servers |
-| Docker | Isolation, reproducible environment | Extra layer, Docker daemon required | Development, multi-tenant hosts |
+| Mode      | Pros                                              | Cons                                | When to Use                     |
+| --------- | ------------------------------------------------- | ----------------------------------- | ------------------------------- |
+| **Local** | Lower overhead, native logging, simpler debugging | Host package dependency             | Default, production servers     |
+| Docker    | Isolation, reproducible environment               | Extra layer, Docker daemon required | Development, multi-tenant hosts |
 
 **Rationale**: Local mode is default because this is a single-user service on a dedicated host. Docker adds unnecessary complexity.
 
@@ -113,6 +116,7 @@ docker-compose.yml
 **Problem**: `openchamber serve` uses bun's IPC which fails in systemd (daemon mode broken).
 
 **Solution**: Bypass the CLI wrapper and execute the server script directly:
+
 ```bash
 node /usr/lib/node_modules/@openchamber/web/server/index.js --port 3000
 ```
@@ -129,10 +133,10 @@ node /usr/lib/node_modules/@openchamber/web/server/index.js --port 3000
 
 ### 5. Dual Cloudflare Credential Support
 
-| Credential Type | Length | Auth Header | When to Use |
-|-----------------|--------|-------------|-------------|
-| API Token | 40 chars | `Authorization: Bearer` | Recommended |
-| Global API Key | 37 chars | `X-Auth-Email` + `X-Auth-Key` | Legacy accounts |
+| Credential Type | Length   | Auth Header                   | When to Use     |
+| --------------- | -------- | ----------------------------- | --------------- |
+| API Token       | 40 chars | `Authorization: Bearer`       | Recommended     |
+| Global API Key  | 37 chars | `X-Auth-Email` + `X-Auth-Key` | Legacy accounts |
 
 **Rationale**: Supports both credential types for compatibility. API Token preferred for least privilege.
 
@@ -140,18 +144,18 @@ node /usr/lib/node_modules/@openchamber/web/server/index.js --port 3000
 
 ## File Inventory
 
-| File | Purpose | Git Tracked |
-|------|---------|-------------|
-| `.env.example` | Config template | Yes |
-| `.env` | User secrets | **No** |
-| `.gitignore` | Exclude secrets | Yes |
-| `setup.sh` | Cloudflare tunnel + DNS provisioning | Yes |
-| `install-local.sh` | Local systemd installation | Yes |
-| `docker-compose.yml` | Docker stack definition | Yes |
-| `Makefile` | Convenience targets | Yes |
-| `cloudflared/credentials.json` | Tunnel credentials | **No** |
-| `cloudflared/config.yml` | Tunnel config (generated) | Yes |
-| `/etc/openchamber/env` | Runtime secrets (local mode) | **No** |
+| File                           | Purpose                              | Git Tracked |
+| ------------------------------ | ------------------------------------ | ----------- |
+| `.env.example`                 | Config template                      | Yes         |
+| `.env`                         | User secrets                         | **No**      |
+| `.gitignore`                   | Exclude secrets                      | Yes         |
+| `setup.sh`                     | Cloudflare tunnel + DNS provisioning | Yes         |
+| `install-local.sh`             | Local systemd installation           | Yes         |
+| `docker-compose.yml`           | Docker stack definition              | Yes         |
+| `Makefile`                     | Convenience targets                  | Yes         |
+| `cloudflared/credentials.json` | Tunnel credentials                   | **No**      |
+| `cloudflared/config.yml`       | Tunnel config (generated)            | Yes         |
+| `/etc/openchamber/env`         | Runtime secrets (local mode)         | **No**      |
 
 ---
 
@@ -159,13 +163,13 @@ node /usr/lib/node_modules/@openchamber/web/server/index.js --port 3000
 
 ### Completed: Security Fixes
 
-| Issue | Fix | Location |
-|-------|-----|----------|
-| Secrets in systemd unit files | EnvironmentFile pattern | `install-local.sh:153-161` |
-| .env world-readable after source | chmod 600 immediately | `setup.sh:20` |
-| JSON injection in API calls | jq -n with --arg | `setup.sh:152,219-220,225-226` |
-| Missing directory for credentials | mkdir -p before write | `setup.sh:160,172` |
-| No Docker health monitoring | healthcheck directive | `docker-compose.yml:7-12,25-27` |
+| Issue                             | Fix                     | Location                        |
+| --------------------------------- | ----------------------- | ------------------------------- |
+| Secrets in systemd unit files     | EnvironmentFile pattern | `install-local.sh:153-161`      |
+| .env world-readable after source  | chmod 600 immediately   | `setup.sh:20`                   |
+| JSON injection in API calls       | jq -n with --arg        | `setup.sh:152,219-220,225-226`  |
+| Missing directory for credentials | mkdir -p before write   | `setup.sh:160,172`              |
+| No Docker health monitoring       | healthcheck directive   | `docker-compose.yml:7-12,25-27` |
 
 ### Completed: Install Mode
 
@@ -196,13 +200,13 @@ All items verified working:
 
 ### Common Issues
 
-| Symptom | Check | Fix |
-|---------|-------|-----|
-| 502 Bad Gateway | `systemctl status openchamber` | `systemctl restart openchamber` |
-| Connection timeout | `systemctl status cloudflared-openchamber` | `systemctl restart cloudflared-openchamber` |
-| Auth fails | `/etc/openchamber/env` has correct password | Re-run `install-local.sh` |
-| DNS not resolving | Cloudflare dashboard > DNS | Check CNAME exists, is proxied |
-| Tunnel not in dashboard | `cloudflared tunnel list` | Re-run `setup.sh` |
+| Symptom                 | Check                                       | Fix                                         |
+| ----------------------- | ------------------------------------------- | ------------------------------------------- |
+| 502 Bad Gateway         | `systemctl status openchamber`              | `systemctl restart openchamber`             |
+| Connection timeout      | `systemctl status cloudflared-openchamber`  | `systemctl restart cloudflared-openchamber` |
+| Auth fails              | `/etc/openchamber/env` has correct password | Re-run `install-local.sh`                   |
+| DNS not resolving       | Cloudflare dashboard > DNS                  | Check CNAME exists, is proxied              |
+| Tunnel not in dashboard | `cloudflared tunnel list`                   | Re-run `setup.sh`                           |
 
 ### Debugging Commands
 
@@ -254,10 +258,10 @@ sudo systemctl daemon-reload
 
 ### Health Endpoints
 
-| Endpoint | Purpose | Expected |
-|----------|---------|----------|
-| `http://localhost:3000/health` | Local service health | `{"status":"ok"}` |
-| `https://$TUNNEL_HOSTNAME` | End-to-end connectivity | 200 with auth prompt |
+| Endpoint                       | Purpose                 | Expected             |
+| ------------------------------ | ----------------------- | -------------------- |
+| `http://localhost:3000/health` | Local service health    | `{"status":"ok"}`    |
+| `https://$TUNNEL_HOSTNAME`     | End-to-end connectivity | 200 with auth prompt |
 
 ### Recommended Monitoring
 
@@ -277,24 +281,24 @@ sudo systemctl daemon-reload
 
 ### What's Protected
 
-| Asset | Protection |
-|-------|------------|
-| `.env` | mode 0600, gitignored |
-| `cloudflared/credentials.json` | mode 0600, gitignored |
-| `/etc/openchamber/env` | mode 0600, root-owned |
-| In-transit data | TLS 1.3 (Cloudflare-managed) |
-| Web UI | Password authentication |
+| Asset                          | Protection                   |
+| ------------------------------ | ---------------------------- |
+| `.env`                         | mode 0600, gitignored        |
+| `cloudflared/credentials.json` | mode 0600, gitignored        |
+| `/etc/openchamber/env`         | mode 0600, root-owned        |
+| In-transit data                | TLS 1.3 (Cloudflare-managed) |
+| Web UI                         | Password authentication      |
 
 ### Threat Model
 
-| Threat | Mitigation | Status |
-|--------|------------|--------|
-| Credential leak via git | `.gitignore` excludes secrets | Implemented |
-| Credential exposure on host | Restricted file permissions | Implemented |
-| MITM on public network | Cloudflare TLS termination | Implemented |
-| DDoS | Cloudflare proxy | Automatic |
-| Brute force UI password | No rate limiting | **Known limitation** |
-| Session hijacking | No HTTPS-only cookies | **Known limitation** |
+| Threat                      | Mitigation                    | Status               |
+| --------------------------- | ----------------------------- | -------------------- |
+| Credential leak via git     | `.gitignore` excludes secrets | Implemented          |
+| Credential exposure on host | Restricted file permissions   | Implemented          |
+| MITM on public network      | Cloudflare TLS termination    | Implemented          |
+| DDoS                        | Cloudflare proxy              | Automatic            |
+| Brute force UI password     | No rate limiting              | **Known limitation** |
+| Session hijacking           | No HTTPS-only cookies         | **Known limitation** |
 
 ### Known Limitations
 
@@ -322,13 +326,13 @@ sudo systemctl daemon-reload
 
 ### Potential Improvements
 
-| Area | Improvement | Effort |
-|------|-------------|--------|
-| Availability | Multiple tunnels, load balancing | Medium |
-| Backup | Persistent volume, backup script | Low |
-| Updates | Auto-update cloudflared, openchamber | Low |
-| Auth | Cloudflare Access (SSO/2FA) | Low |
-| Monitoring | Prometheus metrics export | Medium |
+| Area         | Improvement                          | Effort |
+| ------------ | ------------------------------------ | ------ |
+| Availability | Multiple tunnels, load balancing     | Medium |
+| Backup       | Persistent volume, backup script     | Low    |
+| Updates      | Auto-update cloudflared, openchamber | Low    |
+| Auth         | Cloudflare Access (SSO/2FA)          | Low    |
+| Monitoring   | Prometheus metrics export            | Medium |
 
 ---
 

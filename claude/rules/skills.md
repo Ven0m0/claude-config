@@ -1,6 +1,6 @@
 ---
 paths:
-  - "**/skills/*/SKILL.md"
+  - '**/skills/*/SKILL.md'
 ---
 
 # Skills Rules
@@ -11,8 +11,8 @@ Every SKILL.md must have YAML frontmatter:
 
 ```yaml
 ---
-name: skill-name          # Unique, kebab-case
-description: Brief desc   # What the skill provides
+name: skill-name # Unique, kebab-case
+description: Brief desc # What the skill provides
 ---
 ```
 
@@ -52,19 +52,19 @@ Use `$ARGUMENTS` placeholder for user input.
 
 ## Tool Restrictions
 
-| Type | Tools |
-|------|-------|
-| Read-Only | Read, Grep, Glob |
-| Modification | Read, Grep, Edit, Bash |
-| Full Access | Read, Grep, Glob, Edit, Write, Bash, Task |
+| Type         | Tools                                     |
+| ------------ | ----------------------------------------- |
+| Read-Only    | Read, Grep, Glob                          |
+| Modification | Read, Grep, Edit, Bash                    |
+| Full Access  | Read, Grep, Glob, Edit, Write, Bash, Task |
 
 ## Debugging Skills
 
-| Problem | Solution |
-|---------|----------|
-| Skill not loading | Check YAML frontmatter syntax, verify path `.claude/skills/*/SKILL.md` |
-| Not auto-applied | Remove `disable-model-invocation`, make description match relevant contexts |
-| Workflow not executing | Check `$ARGUMENTS` usage, verify script permissions |
+| Problem                | Solution                                                                    |
+| ---------------------- | --------------------------------------------------------------------------- |
+| Skill not loading      | Check YAML frontmatter syntax, verify path `.claude/skills/*/SKILL.md`      |
+| Not auto-applied       | Remove `disable-model-invocation`, make description match relevant contexts |
+| Workflow not executing | Check `$ARGUMENTS` usage, verify script permissions                         |
 
 ## Discovery
 

@@ -56,6 +56,7 @@ linux-kernel-crash-debug/
 ## 使用方法
 
 当你在 Claude Code 中提及以下内容时，此技能会自动触发：
+
 - kernel crash / kernel panic
 - vmcore 分析
 - crash utility

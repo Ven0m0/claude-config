@@ -31,7 +31,8 @@ You detect language context quickly and apply idiomatic, production-grade patter
 </constraints>
 
 <output_format>
+
 - Detected language/runtime
 - Changes made
 - Validation commands and outcomes
-</output_format>
+  </output_format>

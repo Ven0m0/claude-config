@@ -28,12 +28,14 @@ The command will generate a comprehensive analysis and implementation plan.
 ## What Gets Analyzed
 
 **Issue Content**
+
 - Title and description
 - User requirements and acceptance criteria
 - Expected behavior vs current behavior
 - Comments and discussion
 
 **Technical Context**
+
 - Related code files and components
 - Existing patterns and architecture
 - Dependencies and integrations
@@ -54,12 +56,14 @@ The analyzer produces:
 **Issue #456**: "Add user profile export feature"
 
 **Requirements**
+
 - Users need ability to export profile data
 - Support JSON and CSV formats
 - Include all profile information
 - Downloadable file generation
 
 **Technical Approach**
+
 ```
 Component: ProfileExportService
 Location: src/services/profile-export.ts
@@ -68,6 +72,7 @@ API Endpoint: GET /api/users/:id/export?format=json|csv
 ```
 
 **Implementation Tasks**
+
 1. Create ProfileExportService class
 2. Add JSON serialization method
 3. Add CSV conversion method
@@ -77,11 +82,13 @@ API Endpoint: GET /api/users/:id/export?format=json|csv
 7. Update API documentation
 
 **Files to Create**
+
 - `src/services/profile-export.ts`
 - `src/services/profile-export.test.ts`
 - `src/api/routes/export.ts`
 
 **Files to Modify**
+
 - `src/components/ProfilePage.tsx` (add export button)
 - `package.json` (add json2csv dependency)
 
@@ -110,16 +117,19 @@ When suggesting implementation:
 ## Technical Approach
 
 **Architecture**
+
 - Component structure
 - Data flow
 - Integration points
 
 **Key Decisions**
+
 - Technology choices
 - Design patterns to use
 - Libraries or frameworks
 
 **Considerations**
+
 - Performance implications
 - Security requirements
 - Backward compatibility
@@ -131,21 +141,25 @@ When suggesting implementation:
 ## Implementation Plan
 
 ### Phase 1: Setup (2h)
+
 - [ ] Create service module
 - [ ] Add dependencies
 - [ ] Set up test structure
 
 ### Phase 2: Core Logic (4h)
+
 - [ ] Implement data extraction
 - [ ] Add format conversion
 - [ ] Handle edge cases
 
 ### Phase 3: Integration (3h)
+
 - [ ] Create API endpoint
 - [ ] Add UI controls
 - [ ] Connect frontend to backend
 
 ### Phase 4: Testing (2h)
+
 - [ ] Unit tests
 - [ ] Integration tests
 - [ ] Manual verification
@@ -154,21 +168,25 @@ When suggesting implementation:
 ## Common Issue Types
 
 **Feature Request**
+
 - Focus on user needs and acceptance criteria
 - Consider UI/UX implications
 - Plan for scalability
 
 **Bug Report**
+
 - Identify root cause
 - Assess impact and urgency
 - Plan for regression tests
 
 **Performance Issue**
+
 - Profile and measure current state
 - Identify bottlenecks
 - Set performance targets
 
 **Refactoring**
+
 - Document current problems
 - Define desired state
 - Ensure no behavior changes
@@ -201,11 +219,13 @@ If these aren't clear, ask on the issue:
 Identify potential challenges:
 
 **Technical Risks**
+
 - Complex integrations
 - Performance concerns
 - Security implications
 
 **Process Risks**
+
 - Unclear requirements
 - Dependency on other teams
 - Tight deadlines
@@ -223,6 +243,7 @@ Identify potential challenges:
 ## Quality Standards
 
 A good analysis includes:
+
 - Clear requirements summary
 - Concrete technical approach
 - Realistic task breakdown

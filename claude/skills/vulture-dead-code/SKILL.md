@@ -14,18 +14,21 @@ Tools for finding unused Python code including functions, classes, variables, im
 ## Quick Reference (30 seconds)
 
 ### Tool Comparison
-| Feature | Vulture | deadcode |
-|---------|---------|----------|
-| **Approach** | Static analysis + confidence scores | AST-based detection |
-| **Accuracy** | Confidence scores (60-100%) | High accuracy, fewer false positives |
-| **Best For** | Large codebases, gradual cleanup | New projects, strict enforcement |
+
+| Feature      | Vulture                             | deadcode                             |
+| ------------ | ----------------------------------- | ------------------------------------ |
+| **Approach** | Static analysis + confidence scores | AST-based detection                  |
+| **Accuracy** | Confidence scores (60-100%)         | High accuracy, fewer false positives |
+| **Best For** | Large codebases, gradual cleanup    | New projects, strict enforcement     |
 
 ### Installation
+
 ```bash
 uv add --dev vulture deadcode  # Install both
 ```
 
 ### Basic Commands
+
 ```bash
 # Vulture - confidence-based
 vulture --min-confidence 80 .
@@ -43,6 +46,7 @@ deadcode --show-unreachable .
 ### Vulture Configuration
 
 **pyproject.toml:**
+
 ```toml
 [tool.vulture]
 min_confidence = 80
@@ -53,6 +57,7 @@ ignore_names = ["test_*", "setUp*", "tearDown*"]
 ```
 
 **Whitelist pattern** (`vulture_whitelist.py`):
+
 ```python
 # Used by external code
 _.used_by_external_lib  # confidence: 60%
@@ -65,6 +70,7 @@ def plugin_hook(): pass  # Called by plugin system
 ### deadcode Configuration
 
 **pyproject.toml:**
+
 ```toml
 [tool.deadcode]
 paths = ["src"]
@@ -74,29 +80,33 @@ ignore_names = ["test_*", "*Factory", "*Schema"]
 ```
 
 ### Understanding Confidence Scores
-| Score | Meaning | Action |
-|-------|---------|--------|
-| 100% | Definitely unused | Safe to remove |
-| 80% | Likely unused | Review before removing |
-| 60% | Possibly unused | Might be dynamic/external |
+
+| Score | Meaning           | Action                    |
+| ----- | ----------------- | ------------------------- |
+| 100%  | Definitely unused | Safe to remove            |
+| 80%   | Likely unused     | Review before removing    |
+| 60%   | Possibly unused   | Might be dynamic/external |
 
 ---
 
 ## Common Patterns
 
 ### Unused Imports
+
 ```python
 import sys  # FOUND: confidence 100%
 import logging  # USED: logger = logging.getLogger(__name__)
 ```
 
 ### Unused Functions
+
 ```python
 def unused_helper(): pass  # FOUND: never called
 def used_helper(): pass    # USED: result = used_helper()
 ```
 
 ### False Positive Handling
+
 ```python
 # Dynamic access - whitelist needed
 obj = getattr(module, 'dynamic_function')
@@ -114,6 +124,7 @@ def create_test_user(): pass  # test_*
 ## CI Integration
 
 ### GitHub Actions
+
 ```yaml
 name: Dead Code Check
 on: [push, pull_request]
@@ -130,6 +141,7 @@ jobs:
 ```
 
 ### Pre-commit Hook
+
 ```yaml
 repos:
   - repo: https://github.com/jendrikseipp/vulture
@@ -156,14 +168,16 @@ repos:
 5. **Review before removing** - verify no dynamic/external usage
 
 ### When to Choose
-| Use Vulture | Use deadcode |
-|-------------|--------------|
-| Large/mature codebases | New projects |
-| Gradual cleanup | Strict enforcement |
-| Complex dynamics (getattr, exec) | AST accuracy needed |
-| Need whitelist management | Unreachable code detection |
+
+| Use Vulture                      | Use deadcode               |
+| -------------------------------- | -------------------------- |
+| Large/mature codebases           | New projects               |
+| Gradual cleanup                  | Strict enforcement         |
+| Complex dynamics (getattr, exec) | AST accuracy needed        |
+| Need whitelist management        | Unreachable code detection |
 
 ### Hybrid Approach
+
 ```bash
 vulture --min-confidence 80 .  # Broad detection
 deadcode .                      # Precise detection

@@ -397,6 +397,7 @@ gh pr create --title "Feature title" --body "Feature description"
 **Important**: Always check current branch before implementing. Never commit directly to main/master when creating a PR.
 
 ### PR Management Workflow
+
 ```bash
 # Already on feature branch - proceed with PR
 # ... make changes ...
@@ -406,6 +407,7 @@ gh pr create --title "Add new feature" --body "Implements #123"
 ```
 
 ### CI/CD Monitoring
+
 ```bash
 # Watch workflow run
 gh run watch --interval 1
@@ -416,6 +418,7 @@ gh run rerun --failed
 ```
 
 ### Issue Triage
+
 ```bash
 # List issues needing attention
 gh issue list --label "needs-triage" --assignee @me

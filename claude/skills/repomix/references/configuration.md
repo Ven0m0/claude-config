@@ -139,19 +139,19 @@ Order (highest to lowest priority):
 **TypeScript:**
 
 ```json
-{"include": ["**/*.ts", "**/*.tsx"], "ignore": {"customPatterns": ["**/*.test.ts", "dist/"]}}
+{ "include": ["**/*.ts", "**/*.tsx"], "ignore": { "customPatterns": ["**/*.test.ts", "dist/"] } }
 ```
 
 **React:**
 
 ```json
-{"include": ["src/**/*.{js,jsx,ts,tsx}", "*.md"], "ignore": {"customPatterns": ["build/"]}}
+{ "include": ["src/**/*.{js,jsx,ts,tsx}", "*.md"], "ignore": { "customPatterns": ["build/"] } }
 ```
 
 **Monorepo:**
 
 ```json
-{"include": ["packages/*/src/**"], "ignore": {"customPatterns": ["packages/*/dist/"]}}
+{ "include": ["packages/*/src/**"], "ignore": { "customPatterns": ["packages/*/dist/"] } }
 ```
 
 ## Output Formats

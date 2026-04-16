@@ -182,6 +182,7 @@ SWAP: /dev/sda8  OFFSET: 22716
 ### Page Table Hierarchy
 
 x86_64 four-level page table:
+
 - **PGD** (Page Global Directory): Page Global Directory
 - **PUD** (Page Upper Directory): Page Upper Directory
 - **PMD** (Page Middle Directory): Page Middle Directory

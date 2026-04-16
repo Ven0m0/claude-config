@@ -60,6 +60,7 @@ PLAN_SPEC="$($FLOWCTL cat "$EPIC_ID")"
 ### Step 2: Build review prompt
 
 Include:
+
 - Plan summary + spec
 - Focus areas from arguments
 - Review criteria (completeness, feasibility, clarity, architecture, risks, scope, testability)
@@ -103,6 +104,7 @@ EOF
 ### Step 6: Handle Verdict
 
 If `VERDICT=NEEDS_WORK`:
+
 1. Parse issues from output
 2. Fix plan via `$FLOWCTL epic set-plan`
 3. Re-run (use bash timeout 600000): `$FLOWCTL opencode plan-review "$EPIC_ID" --receipt "$RECEIPT_PATH"`
@@ -136,6 +138,7 @@ If this block fails, output `<promise>RETRY</promise>` and stop. Do not improvis
 ## Phase 1: Read the Plan (RP)
 
 **If Flow issue:**
+
 ```bash
 $FLOWCTL show <id> --json
 $FLOWCTL cat <id>
@@ -144,9 +147,11 @@ $FLOWCTL cat <id>
 Save output for inclusion in review prompt. Compose a 1-2 sentence summary for the setup-review command.
 
 **Save checkpoint** (protects against context compaction during review):
+
 ```bash
 $FLOWCTL checkpoint save --epic <id> --json
 ```
+
 This creates `.flow/.checkpoint-<id>.json` with full state. If compaction occurs during review-fix cycles, restore with `$FLOWCTL checkpoint restore --epic <id>`.
 
 ---
@@ -180,11 +185,13 @@ $FLOWCTL rp select-add --window "$W" --tab "$T" docs/prd.md
 ### Build combined prompt
 
 Get builder's handoff:
+
 ```bash
 HANDOFF="$($FLOWCTL rp prompt-get --window "$W" --tab "$T")"
 ```
 
 Write combined prompt:
+
 ```bash
 cat > /tmp/review-prompt.md << 'EOF'
 [PASTE HANDOFF HERE]
@@ -273,6 +280,7 @@ fi
 ### Update status
 
 Extract verdict from response, then:
+
 ```bash
 # If SHIP
 $FLOWCTL epic set-plan-review-status <EPIC_ID> --status ship --json
@@ -294,6 +302,7 @@ If verdict is NEEDS_WORK:
 1. **Parse issues** - Extract ALL issues by severity (Critical → Major → Minor)
 2. **Fix the plan** - Address each issue. Write updated plan to temp file.
 3. **Update plan in flowctl** (MANDATORY before re-review):
+
    ```bash
    # Option A: stdin heredoc (preferred, no temp file)
    $FLOWCTL epic set-plan <EPIC_ID> --file - --json <<'EOF'
@@ -303,19 +312,23 @@ If verdict is NEEDS_WORK:
    # Option B: temp file (if content has single quotes)
    $FLOWCTL epic set-plan <EPIC_ID> --file /tmp/updated-plan.md --json
    ```
+
    **If you skip this step and re-review with same content, reviewer will return NEEDS_WORK again.**
 
    **Recovery**: If context compaction occurred, restore from checkpoint first:
+
    ```bash
    $FLOWCTL checkpoint restore --epic <EPIC_ID> --json
    ```
 
 4. **Sync affected task specs** - If epic changes affect task specs, update them:
+
    ```bash
    $FLOWCTL task set-spec <TASK_ID> --file - --json <<'EOF'
    <updated task spec content>
    EOF
    ```
+
    Task specs need updating when epic changes affect:
    - State/enum values referenced in tasks
    - Acceptance criteria that tasks implement
@@ -327,6 +340,7 @@ If verdict is NEEDS_WORK:
 
    **IMPORTANT**: Do NOT re-add files already in the selection. RepoPrompt auto-refreshes
    file contents on every message. Only use `select-add` for NEW files created during fixes:
+
    ```bash
    # Only if fixes created new files not in original selection
    if [[ -n "$NEW_FILES" ]]; then
@@ -347,6 +361,7 @@ If verdict is NEEDS_WORK:
 
    $FLOWCTL rp chat-send --window "$W" --tab "$T" --message-file /tmp/re-review.md
    ```
+
 6. **Repeat** until Ship
 
 **Anti-pattern**: Re-adding already-selected files before re-review. RP auto-refreshes; re-adding can cause issues.

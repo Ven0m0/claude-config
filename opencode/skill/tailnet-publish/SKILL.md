@@ -16,6 +16,7 @@ Share outputs, logs, or status updates via Tailscale network.
 ## Usage
 
 ### Publish File
+
 ```bash
 tailscale serve --bg <file>
 # Or use tailscale file sharing
@@ -23,12 +24,14 @@ tailscale cp <filepath> <user>@<host>:
 ```
 
 ### Share Log Output
+
 ```bash
 # Pipe output to Tailscale serve
 some-command | tailscale serve /local -
 ```
 
 ### Check Status
+
 ```bash
 tailscale status
 tailscale serve status
@@ -37,6 +40,7 @@ tailscale serve status
 ## Configuration
 
 Set up Tailscale auth key for programmatic access:
+
 ```bash
 export TS_AUTHKEY="tskey-auth-..."
 ```
@@ -44,6 +48,7 @@ export TS_AUTHKEY="tskey-auth-..."
 ## Common Patterns
 
 ### Share Build Output
+
 ```bash
 make build 2>&1 | tee build.log
 tailscale serve --bg build.log
@@ -51,12 +56,14 @@ tailscale serve --bg build.log
 ```
 
 ### Share Directory (HTTP)
+
 ```bash
 cd /path/to/directory
 tailscale serve /dir --
 ```
 
 ### Real-time Log Streaming
+
 ```bash
 tailscale serve /logs kubectl logs -f <pod> -
 ```

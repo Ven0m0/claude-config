@@ -21,38 +21,38 @@ const flags = {
   i: 'case-insensitive',
   m: 'multiline - ^ and $ match line boundaries',
   s: 'dotall - . matches newlines',
-  u: 'unicode - proper unicode handling'
+  u: 'unicode - proper unicode handling',
 };
 
 // Character classes
 const patterns = {
-  digit: /\d/,              // [0-9]
-  word: /\w/,               // [a-zA-Z0-9_]
-  whitespace: /\s/,         // [ \t\n\r\f\v]
-  anyChar: /./,             // Any except newline
+  digit: /\d/, // [0-9]
+  word: /\w/, // [a-zA-Z0-9_]
+  whitespace: /\s/, // [ \t\n\r\f\v]
+  anyChar: /./, // Any except newline
   vowels: /[aeiou]/i,
-  hexDigit: /[0-9a-fA-F]/
+  hexDigit: /[0-9a-fA-F]/,
 };
 
 // Quantifiers
 const quantifiers = {
-  zeroOrMore: /a*/,         // a, aa, aaa, or empty
-  oneOrMore: /a+/,          // a, aa, aaa (not empty)
-  zeroOrOne: /a?/,          // a or empty
-  exactly: /a{3}/,          // aaa (exactly 3)
-  atLeast: /a{3,}/,         // aaa, aaaa, etc.
-  range: /a{3,5}/           // aaa, aaaa, or aaaaa
+  zeroOrMore: /a*/, // a, aa, aaa, or empty
+  oneOrMore: /a+/, // a, aa, aaa (not empty)
+  zeroOrOne: /a?/, // a or empty
+  exactly: /a{3}/, // aaa (exactly 3)
+  atLeast: /a{3,}/, // aaa, aaaa, etc.
+  range: /a{3,5}/, // aaa, aaaa, or aaaaa
 };
 
 // Greedy vs lazy
-const greedy = /".+"/;      // Matches entire: "first" and "second"
-const lazy = /".+?"/;       // Matches: "first" separately
+const greedy = /".+"/; // Matches entire: "first" and "second"
+const lazy = /".+?"/; // Matches: "first" separately
 
 // Anchors
 const anchors = {
   startOfString: /^hello/,
   endOfString: /world$/,
-  wordBoundary: /\bcat\b/   // Matches 'cat' but not 'catch'
+  wordBoundary: /\bcat\b/, // Matches 'cat' but not 'catch'
 };
 ```
 
@@ -61,7 +61,8 @@ const anchors = {
 ```javascript
 // Email validation
 const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const emailRFC = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+const emailRFC =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
 // URL validation
 const url = /^https?:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/[^\s]*)?$/;
@@ -71,8 +72,8 @@ const phone = /^\(?(\d{3})\)?[-.\s]?(\d{3})[-.\s]?(\d{4})$/;
 const phoneFlexible = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
 
 // Date formats
-const dateISO = /^\d{4}-\d{2}-\d{2}$/;                          // YYYY-MM-DD
-const dateUS = /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/\d{4}$/;  // MM/DD/YYYY
+const dateISO = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD
+const dateUS = /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/\d{4}$/; // MM/DD/YYYY
 
 // Password strength
 const password = {
@@ -80,7 +81,7 @@ const password = {
   hasLowercase: /[a-z]/,
   hasDigit: /\d/,
   hasSpecial: /[!@#$%^&*(),.?":{}|<>]/,
-  strong: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+  strong: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
 };
 
 // IP addresses
@@ -90,7 +91,7 @@ const ipv4 = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4
 const creditCard = {
   visa: /^4[0-9]{12}(?:[0-9]{3})?$/,
   mastercard: /^5[1-5][0-9]{14}$/,
-  amex: /^3[47][0-9]{13}$/
+  amex: /^3[47][0-9]{13}$/,
 };
 ```
 
@@ -100,20 +101,20 @@ const creditCard = {
 // Named capture groups
 const datePattern = /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/;
 const match = '2024-03-15'.match(datePattern);
-console.log(match.groups);  // { year: '2024', month: '03', day: '15' }
+console.log(match.groups); // { year: '2024', month: '03', day: '15' }
 
 // Lookahead/lookbehind
-const hasUpperAndLower = /^(?=.*[a-z])(?=.*[A-Z]).+$/;  // Positive lookahead
-const noDigits = /^(?!.*\d).+$/;                         // Negative lookahead
-const afterDollar = /(?<=\$)\d+/;                        // Positive lookbehind
-const notAfterDollar = /(?<!\$)\d+/;                     // Negative lookbehind
+const hasUpperAndLower = /^(?=.*[a-z])(?=.*[A-Z]).+$/; // Positive lookahead
+const noDigits = /^(?!.*\d).+$/; // Negative lookahead
+const afterDollar = /(?<=\$)\d+/; // Positive lookbehind
+const notAfterDollar = /(?<!\$)\d+/; // Negative lookbehind
 
 // Non-capturing groups
 const urlPattern = /^(?:https?:\/\/)?(?:www\.)?([a-z0-9-]+)\.com$/i;
 
 // Backreferences
-const repeatedWord = /\b(\w+)\s+\1\b/;  // Matches "hello hello"
-const htmlTag = /<(\w+)>(.*?)<\/\1>/;   // Matches <div>content</div>
+const repeatedWord = /\b(\w+)\s+\1\b/; // Matches "hello hello"
+const htmlTag = /<(\w+)>(.*?)<\/\1>/; // Matches <div>content</div>
 
 // Alternation
 const fileExt = /\.(jpg|jpeg|png|gif|webp)$/i;
@@ -123,7 +124,7 @@ const fileExt = /\.(jpg|jpeg|png|gif|webp)$/i;
 
 ```javascript
 // BAD: Catastrophic backtracking
-const bad = /^(a+)+$/;  // Hangs on: 'aaaaaaaaab'
+const bad = /^(a+)+$/; // Hangs on: 'aaaaaaaaab'
 
 // GOOD: Avoid nested quantifiers
 const good = /^a+$/;
@@ -141,7 +142,7 @@ const unoptimized = /hello world|hello there|hello everyone/;
 const optimized = /hello (?:world|there|everyone)/;
 
 // Use character classes instead of alternation
-const charClass = /[abc]/;    // Better than /a|b|c/
+const charClass = /[abc]/; // Better than /a|b|c/
 
 // Benchmark regex performance
 function benchmarkRegex(pattern, text, iterations = 100000) {
@@ -161,9 +162,9 @@ const vulnerable2 = /(\w+\*)+/;
 // Detect dangerous patterns
 function isRegexSafe(pattern) {
   const dangerousPatterns = [
-    /(\w+\*)+/,      // Nested quantifiers
-    /(\w+)+/,        // Repeated groups
-    /(\w*)*/ // Nested * quantifiers
+    /(\w+\*)+/, // Nested quantifiers
+    /(\w+)+/, // Repeated groups
+    /(\w*)*/, // Nested * quantifiers
   ];
 
   const patternStr = pattern.toString();

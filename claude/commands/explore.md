@@ -13,6 +13,7 @@ Explore local or remote codebases using Repomix for analysis and understanding.
 ## Usage
 
 `/explore [target] [mode] [options]` where:
+
 - target: local path, owner/repo, or full URL
 - mode: `pack` (default), `analyze`, or `explore`
 - options: additional Repomix options
@@ -27,14 +28,14 @@ Explore local or remote codebases using Repomix for analysis and understanding.
 
 ## Available Options
 
-| Option | Purpose |
-|--------|---------|
-| `--style xml\|markdown\|json` | Output format |
-| `--include` | Filter patterns (`"src/**/*.ts"`) |
-| `--ignore` | Exclude patterns (`"node_modules/**"`) |
-| `--compress` | Token reduction via tree-sitter |
-| `--output` | Custom location |
-| `--copy` | Clipboard copy |
+| Option                        | Purpose                                |
+| ----------------------------- | -------------------------------------- |
+| `--style xml\|markdown\|json` | Output format                          |
+| `--include`                   | Filter patterns (`"src/**/*.ts"`)      |
+| `--ignore`                    | Exclude patterns (`"node_modules/**"`) |
+| `--compress`                  | Token reduction via tree-sitter        |
+| `--output`                    | Custom location                        |
+| `--copy`                      | Clipboard copy                         |
 
 ## Examples
 

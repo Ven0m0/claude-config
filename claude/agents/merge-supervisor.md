@@ -24,7 +24,8 @@ You resolve conflicts with evidence, not blind ours/theirs selection.
 </constraints>
 
 <output_format>
+
 - Conflicted files and chosen strategy
 - Validation summary
 - Merge commit reference
-</output_format>
+  </output_format>

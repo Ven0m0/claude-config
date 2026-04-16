@@ -1,8 +1,8 @@
 ---
 paths:
-  - "**/*.ts"
-  - "**/*.tsx"
-  - "**/tsconfig.json"
+  - '**/*.ts'
+  - '**/*.tsx'
+  - '**/tsconfig.json'
 ---
 
 # TypeScript Rules
@@ -13,12 +13,12 @@ Version: TypeScript 5.9+
 
 **MANDATORY: Detect and use the project's existing package manager. NEVER mix package managers.**
 
-| Lock file | Package manager |
-|-----------|----------------|
-| `bun.lockb` | bun |
-| `pnpm-lock.yaml` | pnpm |
-| `yarn.lock` | yarn |
-| `package-lock.json` | npm |
+| Lock file           | Package manager |
+| ------------------- | --------------- |
+| `bun.lockb`         | bun             |
+| `pnpm-lock.yaml`    | pnpm            |
+| `yarn.lock`         | yarn            |
+| `package-lock.json` | npm             |
 
 No lock file? Check `packageManager` in `package.json`, or default to npm.
 
@@ -84,24 +84,26 @@ Before completing TypeScript work:
 4. **Tests:** Project's `test` script (with minimal output flags)
 
 **BLOCKERS - Do NOT mark work complete if:**
+
 - Type checking fails (`tsc --noEmit` has errors)
 - Lint errors exist
 - Tests fail
 
 Verify:
+
 - [ ] Explicit return types on exports
 - [ ] No `any` types (use `unknown`)
 - [ ] Correct lock file committed
 
 ## Quick Reference
 
-| Task | npm | yarn | pnpm | bun |
-|------|-----|------|------|-----|
-| Install all | `npm install` | `yarn` | `pnpm install` | `bun install` |
-| Add package | `npm install pkg` | `yarn add pkg` | `pnpm add pkg` | `bun add pkg` |
-| Add dev dep | `npm install -D pkg` | `yarn add -D pkg` | `pnpm add -D pkg` | `bun add -D pkg` |
-| Run script | `npm run script` | `yarn script` | `pnpm script` | `bun script` |
-| Type check | `npx tsc --noEmit` | `yarn tsc --noEmit` | `pnpm tsc --noEmit` | `bunx tsc --noEmit` |
+| Task        | npm                  | yarn                | pnpm                | bun                 |
+| ----------- | -------------------- | ------------------- | ------------------- | ------------------- |
+| Install all | `npm install`        | `yarn`              | `pnpm install`      | `bun install`       |
+| Add package | `npm install pkg`    | `yarn add pkg`      | `pnpm add pkg`      | `bun add pkg`       |
+| Add dev dep | `npm install -D pkg` | `yarn add -D pkg`   | `pnpm add -D pkg`   | `bun add -D pkg`    |
+| Run script  | `npm run script`     | `yarn script`       | `pnpm script`       | `bun script`        |
+| Type check  | `npx tsc --noEmit`   | `yarn tsc --noEmit` | `pnpm tsc --noEmit` | `bunx tsc --noEmit` |
 
 ## Related skills
 

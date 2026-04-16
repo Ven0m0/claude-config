@@ -7,6 +7,7 @@
 ### 1. Reproduce First
 
 Before fixing:
+
 1. Understand the error message/behavior
 2. Identify reproduction steps
 3. Create minimal test case if possible
@@ -15,15 +16,16 @@ Before fixing:
 ### 2. Gather Context
 
 ```markdown
-Read(error_file.py)          # Understand code
-Grep("function_name")        # Find related code
-Grep("error_message")        # Find error origins
-git log -p --follow -- file  # Check history
+Read(error_file.py) # Understand code
+Grep("function_name") # Find related code
+Grep("error_message") # Find error origins
+git log -p --follow -- file # Check history
 ```
 
 ### 3. Form Hypothesis
 
 Based on error and code:
+
 - What could cause this behavior?
 - What changed recently? (git diff)
 - What assumptions might be wrong?
@@ -69,11 +71,11 @@ Adding try/catch to suppress errors is wrong. Understand why the error occurs an
 
 ## Debugging Tools
 
-| Language | Quick Debug | Debugger |
-|----------|------------|----------|
-| Python | `print(f"DEBUG: {variable=}")` | `breakpoint()` (3.7+) |
-| JavaScript | `console.log('DEBUG:', { variable })` | `debugger;` |
-| Shell | `set -x` (print commands) | `set -e` (exit on error) |
+| Language   | Quick Debug                           | Debugger                 |
+| ---------- | ------------------------------------- | ------------------------ |
+| Python     | `print(f"DEBUG: {variable=}")`        | `breakpoint()` (3.7+)    |
+| JavaScript | `console.log('DEBUG:', { variable })` | `debugger;`              |
+| Shell      | `set -x` (print commands)             | `set -e` (exit on error) |
 
 ## Test-Driven Debugging
 

@@ -7,6 +7,7 @@ description: Prepare a human-developed codebase for agentic development
 You are preparing a human-developed codebase for agentic development. This repository was forked or started from code developed by humans and will now be developed predominantly by AI agents like yourself.
 
 The development model is **human-guided agentic code development**:
+
 - The human user controls planning decisions and provides task instructions
 - The human supervises and answers questions as required
 - AI agents take the lead in undertaking actual code edits
@@ -18,6 +19,7 @@ Work through the checklist below systematically. Use your todo list to track pro
 ## Phase 1: Assessment & User Intake
 
 ### 1.1 Analyze Current State
+
 - [ ] Examine the repository structure, files, and organization
 - [ ] Identify the primary language(s) and frameworks used
 - [ ] Check for existing documentation (README, CONTRIBUTING, etc.)
@@ -25,6 +27,7 @@ Work through the checklist below systematically. Use your todo list to track pro
 - [ ] Identify potential ambiguities an agent might encounter
 
 ### 1.2 User Intake Questions
+
 Ask the user these questions (batch them together):
 
 1. **Collaboration Model**: Will this remain a collaborative project with human contributors, or will development be primarily agentic?
@@ -38,13 +41,16 @@ Ask the user these questions (batch them together):
 ## Phase 2: Structural Refactoring
 
 ### 2.1 Repository Organization
+
 Based on user responses:
+
 - [ ] Create clear folder hierarchy separating code from meta-content
 - [ ] Use descriptive folder names (agents thrive on clarity)
 - [ ] Ensure deployment/build configs are updated if paths change
 - [ ] Remove or update CONTRIBUTING.md based on collaboration model
 
 ### 2.2 Create Agent-Friendly Infrastructure
+
 - [ ] Create `CLAUDE.md` at repository root describing:
   - Project purpose and goals
   - Key architectural decisions
@@ -59,6 +65,7 @@ Based on user responses:
 - [ ] Optionally create `/planning/` for discussions and decisions
 
 ### 2.3 Code Clarity Improvements
+
 - [ ] Add clarifying comments where agent navigation might be ambiguous
 - [ ] Ensure function/class names are descriptive
 - [ ] Document any non-obvious patterns or conventions
@@ -67,13 +74,16 @@ Based on user responses:
 ## Phase 3: Documentation Updates
 
 ### 3.1 README Updates
+
 - [ ] Update README to reflect agentic development model (if public)
 - [ ] Add AI-assisted development disclosure (if user requested)
 - [ ] Document how to work with this codebase agentically
 - [ ] Update any outdated sections
 
 ### 3.2 Agent-Specific Conventions
+
 If the user wants to support other contributors using agents:
+
 - [ ] Document conventions for `/for-ai/` (input files for agents)
 - [ ] Document conventions for `/from-ai/` (agent output files)
 - [ ] Add guidance on `task.md` and `context.md` usage
@@ -81,12 +91,14 @@ If the user wants to support other contributors using agents:
 ## Phase 4: Validation
 
 ### 4.1 Final Checks
+
 - [ ] Verify no breaking changes to build/deployment
 - [ ] Ensure all paths and imports are correct
 - [ ] Test that the application still runs (if applicable)
 - [ ] Review changes with user before committing
 
 ### 4.2 Web Search for Best Practices
+
 Run a web search for current best practices in agentic code development to ensure your recommendations are up-to-date. AI tooling evolves rapidly.
 
 ## Execution Notes

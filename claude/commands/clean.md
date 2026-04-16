@@ -13,6 +13,7 @@ Comprehensive cleanup for code, artifacts, git workflow, context, and comments.
 ## Usage
 
 `/clean [mode]` where mode is:
+
 - `code` or no args: clean technical debt
 - `artifacts`: clean development artifacts
 - `branches`: clean git branches
@@ -61,8 +62,9 @@ git branch --merged | xargs -n 1 git branch -d
 </instructions>
 
 <output_format>
+
 - Summary by category
 - Lines/files removed
 - Risk assessment
 - Follow-up tasks
-</output_format>
+  </output_format>

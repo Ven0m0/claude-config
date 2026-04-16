@@ -2,13 +2,13 @@
 name: ssh
 description: Establish and manage SSH connections to remote machines, including key generation, configuration, and file transfers. Use when connecting to remote servers, executing remote commands, or transferring files via SCP.
 triggers:
-- ssh
-- remote server
-- remote machine
-- remote host
-- remote connection
-- secure shell
-- ssh keys
+  - ssh
+  - remote server
+  - remote machine
+  - remote host
+  - remote connection
+  - secure shell
+  - ssh keys
 ---
 
 # SSH Skill
@@ -37,16 +37,19 @@ When prompted, you should ask the user for their password or a private key.
 ### Key-Based Authentication
 
 Generate a new SSH key pair:
+
 ```bash
 ssh-keygen -t ed25519 -f ~/.ssh/key_name -C "comment" -N ""
 ```
 
 Copy the public key to the remote server:
+
 ```bash
 ssh-copy-id -i ~/.ssh/key_name.pub username@hostname
 ```
 
 Connect using the private key:
+
 ```bash
 ssh -i ~/.ssh/key_name username@hostname
 ```
@@ -54,6 +57,7 @@ ssh -i ~/.ssh/key_name username@hostname
 ## SSH Configuration
 
 Create or edit the SSH config file for easier connections:
+
 ```bash
 mkdir -p ~/.ssh
 cat > ~/.ssh/config << 'EOF'
@@ -68,6 +72,7 @@ chmod 600 ~/.ssh/config
 ```
 
 Then connect using the alias:
+
 ```bash
 ssh alias
 ```
@@ -85,16 +90,19 @@ ssh alias
 ## File Transfer with SCP
 
 Copy a file to the remote server:
+
 ```bash
 scp /path/to/local/file username@hostname:/path/to/remote/directory/
 ```
 
 Copy a file from the remote server:
+
 ```bash
 scp username@hostname:/path/to/remote/file /path/to/local/directory/
 ```
 
 Copy a directory recursively:
+
 ```bash
 scp -r /path/to/local/directory username@hostname:/path/to/remote/directory/
 ```
@@ -102,11 +110,13 @@ scp -r /path/to/local/directory username@hostname:/path/to/remote/directory/
 ## SSH Agent
 
 Start the SSH agent:
+
 ```bash
 eval "$(ssh-agent -s)"
 ```
 
 Add a key to the agent:
+
 ```bash
 ssh-add ~/.ssh/key_name
 ```

@@ -60,7 +60,7 @@ class JSONValidator {
     this.ajv = new Ajv({
       allErrors: true,
       verbose: true,
-      strict: false
+      strict: false,
     });
     addFormats(this.ajv);
 
@@ -82,7 +82,7 @@ class JSONValidator {
           path: error.instancePath || '/',
           message: error.message || 'Validation error',
           keyword: error.keyword,
-          params: error.params
+          params: error.params,
         });
       }
     }
@@ -93,7 +93,7 @@ class JSONValidator {
     return {
       valid,
       errors,
-      warnings
+      warnings,
     };
   }
 
@@ -143,9 +143,7 @@ class JSONValidator {
       return currentDepth;
     }
 
-    const depths = Object.values(obj).map(value =>
-      this.getDepth(value, currentDepth + 1)
-    );
+    const depths = Object.values(obj).map((value) => this.getDepth(value, currentDepth + 1));
 
     return depths.length > 0 ? Math.max(...depths) : currentDepth;
   }
@@ -153,7 +151,7 @@ class JSONValidator {
   format(json: string | object, options?: FormatOptions): string {
     const obj = typeof json === 'string' ? JSON.parse(json) : json;
 
-    const space = options?.minify ? undefined : (options?.indent || 2);
+    const space = options?.minify ? undefined : options?.indent || 2;
     return JSON.stringify(obj, null, space);
   }
 
@@ -175,7 +173,7 @@ class JSONValidator {
         type: 'type',
         oldValue: obj1,
         newValue: obj2,
-        message: `Type changed from ${typeof obj1} to ${typeof obj2}`
+        message: `Type changed from ${typeof obj1} to ${typeof obj2}`,
       });
       return;
     }
@@ -188,7 +186,7 @@ class JSONValidator {
           type: 'value',
           oldValue: obj1,
           newValue: obj2,
-          message: 'Value changed'
+          message: 'Value changed',
         });
       }
       return;
@@ -202,7 +200,7 @@ class JSONValidator {
           type: 'array-length',
           oldValue: obj1.length,
           newValue: obj2.length,
-          message: `Array length changed from ${obj1.length} to ${obj2.length}`
+          message: `Array length changed from ${obj1.length} to ${obj2.length}`,
         });
       }
 
@@ -214,7 +212,7 @@ class JSONValidator {
             type: 'added',
             oldValue: undefined,
             newValue: obj2[i],
-            message: 'Array item added'
+            message: 'Array item added',
           });
         } else if (i >= obj2.length) {
           differences.push({
@@ -222,7 +220,7 @@ class JSONValidator {
             type: 'removed',
             oldValue: obj1[i],
             newValue: undefined,
-            message: 'Array item removed'
+            message: 'Array item removed',
           });
         } else {
           this.compareObjects(obj1[i], obj2[i], `${path}[${i}]`, differences);
@@ -246,7 +244,7 @@ class JSONValidator {
             type: 'added',
             oldValue: undefined,
             newValue: obj2[key],
-            message: 'Property added'
+            message: 'Property added',
           });
         } else if (!(key in obj2)) {
           differences.push({
@@ -254,7 +252,7 @@ class JSONValidator {
             type: 'removed',
             oldValue: obj1[key],
             newValue: undefined,
-            message: 'Property removed'
+            message: 'Property removed',
           });
         } else {
           this.compareObjects(obj1[key], obj2[key], currentPath, differences);
@@ -270,7 +268,7 @@ class JSONValidator {
         type: 'value',
         oldValue: obj1,
         newValue: obj2,
-        message: 'Value changed'
+        message: 'Value changed',
       });
     }
   }
@@ -313,15 +311,15 @@ const userSchema = {
     name: { type: 'string', minLength: 2 },
     email: { type: 'string', format: 'email' },
     age: { type: 'integer', minimum: 0, maximum: 120 },
-    website: { type: 'string', format: 'uri' }
-  }
+    website: { type: 'string', format: 'uri' },
+  },
 };
 
 const userData = {
   name: 'John Doe',
   email: 'john@example.com',
   age: 30,
-  website: 'https://johndoe.com'
+  website: 'https://johndoe.com',
 };
 
 const result = validator.validate(userData, userSchema);
@@ -329,7 +327,7 @@ console.log('Validation Result:', result);
 
 if (!result.valid) {
   console.log('Errors:');
-  result.errors.forEach(err => {
+  result.errors.forEach((err) => {
     console.log(`  - ${err.path}: ${err.message}`);
   });
 }
@@ -345,8 +343,8 @@ const data = {
   users: [
     { name: 'Alice', age: 30, active: true },
     { name: 'Bob', age: 25, active: false },
-    { name: 'Charlie', age: 35, active: true }
-  ]
+    { name: 'Charlie', age: 35, active: true },
+  ],
 };
 
 const activeUsers = validator.query(data, '$.users[?(@.active)]');
@@ -356,19 +354,19 @@ console.log('Active users:', activeUsers);
 const oldData = {
   name: 'John',
   age: 30,
-  city: 'New York'
+  city: 'New York',
 };
 
 const newData = {
   name: 'John',
   age: 31,
   city: 'San Francisco',
-  email: 'john@example.com'
+  email: 'john@example.com',
 };
 
 const diff = validator.diff(oldData, newData);
 console.log('Differences:');
-diff.forEach(d => {
+diff.forEach((d) => {
   console.log(`  ${d.path}: ${d.message}`);
   console.log(`    Old: ${JSON.stringify(d.oldValue)}`);
   console.log(`    New: ${JSON.stringify(d.newValue)}`);
@@ -385,10 +383,7 @@ import * as fs from 'fs';
 
 const program = new Command();
 
-program
-  .name('json-validator')
-  .description('Validate and manipulate JSON files')
-  .version('1.0.0');
+program.name('json-validator').description('Validate and manipulate JSON files').version('1.0.0');
 
 program
   .command('validate')
@@ -403,14 +398,14 @@ program
       console.log('✅ Validation passed');
     } else {
       console.log('❌ Validation failed');
-      result.errors.forEach(err => {
+      result.errors.forEach((err) => {
         console.log(`  ${err.path}: ${err.message}`);
       });
     }
 
     if (result.warnings.length > 0) {
       console.log('\\n⚠️  Warnings:');
-      result.warnings.forEach(w => console.log(`  ${w}`));
+      result.warnings.forEach((w) => console.log(`  ${w}`));
     }
   });
 
@@ -426,7 +421,7 @@ program
     const content = fs.readFileSync(options.input, 'utf-8');
     const formatted = validator.format(content, {
       minify: options.minify,
-      indent: parseInt(options.indent)
+      indent: parseInt(options.indent),
     });
 
     const output = options.output || options.input;
@@ -461,7 +456,7 @@ program
       console.log('✅ No differences found');
     } else {
       console.log(`Found ${diff.length} differences:`);
-      diff.forEach(d => {
+      diff.forEach((d) => {
         console.log(`\\n${d.path}:`);
         console.log(`  Type: ${d.type}`);
         console.log(`  Message: ${d.message}`);
@@ -481,6 +476,7 @@ program.parse();
 ## Best Practices
 
 ### Validation
+
 - **Schema First**: Define schemas before implementing features
 - **Strict Validation**: Use strict schemas in production
 - **Error Handling**: Provide clear error messages
@@ -488,6 +484,7 @@ program.parse();
 - **Custom Validators**: Create domain-specific validators
 
 ### Data Management
+
 - **Format Consistently**: Use consistent JSON formatting
 - **Avoid Deep Nesting**: Keep JSON structures shallow
 - **Use Arrays**: Use arrays for lists instead of numbered keys
@@ -495,6 +492,7 @@ program.parse();
 - **Documentation**: Document JSON structure and schemas
 
 ### Performance
+
 - **Compile Schemas**: Cache compiled schemas for better performance
 - **Stream Large Files**: Use streaming for large JSON files
 - **Optimize Queries**: Use efficient JSONPath expressions

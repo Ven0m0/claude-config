@@ -15,11 +15,13 @@ description: Index and search the codebase efficiently. Use when needing to unde
 ## Strategy
 
 ### 1. Structure Map
+
 ```bash
 fd --type f --exclude "node_modules" --exclude "__pycache__" | head -200
 ```
 
 ### 2. Content Search
+
 ```bash
 # Find definitions
 rg "^def |^function |^class " --type py --type ts -n
@@ -32,12 +34,14 @@ rg "pattern" --type ts -n
 ```
 
 ### 3. Key Files
+
 ```bash
 # Entry points and configs
 fd --type f -e json -e yaml -e toml | grep -v node_modules | head -50
 ```
 
 ### 4. Related Tests
+
 ```bash
 fd "test_.*\.py$|.*_test\.go$|.*\.spec\.(ts|js)$"
 ```

@@ -33,12 +33,14 @@ The `env-setup.sh` script is sourced before each Bash command, making environmen
 **Setup options:**
 
 1. **Use the provided env-setup.sh** (recommended for this repo):
+
    ```bash
    export CLAUDE_ENV_FILE="$(pwd)/claude/env-setup.sh"
    claude
    ```
 
 2. **Create a custom env file** for project-specific needs:
+
    ```bash
    # Example: env-setup.sh
    conda activate myenv
@@ -55,13 +57,13 @@ The `env-setup.sh` script is sourced before each Bash command, making environmen
 
 ### Key documentation
 
-| Doc | Purpose |
-|-----|---------|
+| Doc                                                              | Purpose                                                    |
+| ---------------------------------------------------------------- | ---------------------------------------------------------- |
 | [docs/progressive-disclosure.md](docs/progressive-disclosure.md) | Content architecture (quick ref, implementation, advanced) |
-| [docs/prompt-best-practices.md](docs/prompt-best-practices.md) | Prompt design best practices |
-| [docs/skills-index.md](docs/skills-index.md) | Concise skills reference (33 skills) |
-| [docs/toon.md](docs/toon.md) | TOON format and token-efficient data |
-| [docs/claude-md-guide.md](docs/claude-md-guide.md) | CLAUDE.md authoring best practices and scoring rubric |
+| [docs/prompt-best-practices.md](docs/prompt-best-practices.md)   | Prompt design best practices                               |
+| [docs/skills-index.md](docs/skills-index.md)                     | Concise skills reference (33 skills)                       |
+| [docs/toon.md](docs/toon.md)                                     | TOON format and token-efficient data                       |
+| [docs/claude-md-guide.md](docs/claude-md-guide.md)               | CLAUDE.md authoring best practices and scoring rubric      |
 
 Start with `CLAUDE.md` (points to `AGENTS.md`) for project-wide rules and agent orchestration.
 
@@ -69,27 +71,27 @@ Start with `CLAUDE.md` (points to `AGENTS.md`) for project-wide rules and agent 
 
 ### Agent and skill optimization
 
-| Use case | Agent or skill |
-|----------|----------------|
-| Optimize agents / run more optimizations | **improve-agent** |
-| Optimize markdown for tokens | **markdown-optimizer** |
-| CLAUDE.md audit/optimize/create/migrate | **claudemd**, **claude-md-auditor** |
-| Skill definitions and validation | **skill-auditor** |
-| Optimize skills for token efficiency | **skill-optimizer** skill |
-| Doc token analysis and restructuring | **llm-docs-optimizer** skill |
-| Tool substitution (fd, rg, bun, uv) | **modern-tool-substitution** skill |
-| Hook config and lifecycle | **hooks-configuration** skill |
+| Use case                                 | Agent or skill                      |
+| ---------------------------------------- | ----------------------------------- |
+| Optimize agents / run more optimizations | **improve-agent**                   |
+| Optimize markdown for tokens             | **markdown-optimizer**              |
+| CLAUDE.md audit/optimize/create/migrate  | **claudemd**, **claude-md-auditor** |
+| Skill definitions and validation         | **skill-auditor**                   |
+| Optimize skills for token efficiency     | **skill-optimizer** skill           |
+| Doc token analysis and restructuring     | **llm-docs-optimizer** skill        |
+| Tool substitution (fd, rg, bun, uv)      | **modern-tool-substitution** skill  |
+| Hook config and lifecycle                | **hooks-configuration** skill       |
 
 See [AGENTS.md](AGENTS.md) for the full agent table and when to delegate.
 
 ### Token reduction and TOON/ZON
 
-| Use case | Resource |
-|----------|----------|
-| Choose ZON/TOON/PLOON for data dirs | **toon-formatter** skill |
-| Encode/validate TOON | **toon-formatter** skill; [scripts/validate-toon.py](scripts/validate-toon.py) |
-| Context/token budget | **strategic-compact** skill, **moai** skill |
-| Model params by task type | [docs/llm-tuning.md](docs/llm-tuning.md) |
+| Use case                            | Resource                                                                       |
+| ----------------------------------- | ------------------------------------------------------------------------------ |
+| Choose ZON/TOON/PLOON for data dirs | **toon-formatter** skill                                                       |
+| Encode/validate TOON                | **toon-formatter** skill; [scripts/validate-toon.py](scripts/validate-toon.py) |
+| Context/token budget                | **strategic-compact** skill, **moai** skill                                    |
+| Model params by task type           | [docs/llm-tuning.md](docs/llm-tuning.md)                                       |
 
 See [docs/toon.md](docs/toon.md) and [AGENTS.md](AGENTS.md) (Workflow and doc optimization).
 
@@ -172,12 +174,14 @@ Modern tools enforced:
 ### Recent Consolidation (2026-02-18)
 
 **Skills (60 → 33):**
+
 - Merged TOON skills: `use-toon`, `toon-formatter`, `ref-toon-format` → `toon-formatter`
 - Merged MoAI skills: `moai`, `moai-foundation-claude`, `moai-foundation-context` → `moai`
 - Merged MCP skills: `mcp-builder`, `mcp-tools-as-code`, `mcp-to-skill-converter` → `mcp-builder`
 - Removed minimal/redundant skills: 26 directories
 
 **Docs (20 → 14):**
+
 - Removed official doc copies: `claude-code-settings.md` (105KB), `prompt-caching.md` (78KB), `skills-ref.md` (33KB), `subagents.md` (34KB), `mcp.md` (43KB), `best-practices-claude.md` (36KB)
 - Merged: `best-practices-skills.md` → `claude-md-guide.md`
 - Created: `skills-index.md` (concise skill reference)
@@ -203,7 +207,7 @@ bun update <package>
 ---
 description: Short description
 category: category-name
-allowed-tools: Bash, Read  # optional
+allowed-tools: Bash, Read # optional
 ---
 
 Your ultra-short command instructions here (5-15 lines max).

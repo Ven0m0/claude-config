@@ -1,9 +1,9 @@
 ---
 paths:
-  - "**/*.js"
-  - "**/*.mjs"
-  - "**/*.cjs"
-  - "**/package.json"
+  - '**/*.js'
+  - '**/*.mjs'
+  - '**/*.cjs'
+  - '**/package.json'
 ---
 
 # JavaScript Rules

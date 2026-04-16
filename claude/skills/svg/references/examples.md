@@ -38,10 +38,21 @@ Icon component with size and color props:
 CSS for icon sizing:
 
 ```css
-.icon { display: inline-block; }
-.icon-small { width: 16px; height: 16px; }
-.icon-medium { width: 24px; height: 24px; }
-.icon-large { width: 32px; height: 32px; }
+.icon {
+  display: inline-block;
+}
+.icon-small {
+  width: 16px;
+  height: 16px;
+}
+.icon-medium {
+  width: 24px;
+  height: 24px;
+}
+.icon-large {
+  width: 32px;
+  height: 32px;
+}
 ```
 
 ---

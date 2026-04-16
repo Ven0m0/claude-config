@@ -11,14 +11,14 @@ Extract reusable knowledge from this session into skills. Evaluate what was lear
 
 ## When to Use
 
-| Trigger | Example |
-|---------|---------|
-| Non-obvious debugging | Spent 10+ minutes investigating; solution not in docs |
-| Misleading errors | Error message pointed wrong direction; found real cause |
-| Workarounds | Found limitation and creative solution |
-| Tool integration | Figured out undocumented tool/API usage |
-| Trial-and-error | Tried multiple approaches before success |
-| Repeatable workflow | Multi-step task that will recur |
+| Trigger               | Example                                                 |
+| --------------------- | ------------------------------------------------------- |
+| Non-obvious debugging | Spent 10+ minutes investigating; solution not in docs   |
+| Misleading errors     | Error message pointed wrong direction; found real cause |
+| Workarounds           | Found limitation and creative solution                  |
+| Tool integration      | Figured out undocumented tool/API usage                 |
+| Trial-and-error       | Tried multiple approaches before success                |
+| Repeatable workflow   | Multi-step task that will recur                         |
 
 ## Phase 1: Evaluate
 
@@ -41,41 +41,47 @@ ls .claude/skills/ 2>/dev/null
 rg -i "keyword" .claude/skills/ 2>/dev/null
 ```
 
-| Found | Action |
-|-------|--------|
-| Nothing related | Create new skill |
-| Same trigger and fix | Update existing (bump version) |
-| Partial overlap | Update existing with new variant |
+| Found                | Action                           |
+| -------------------- | -------------------------------- |
+| Nothing related      | Create new skill                 |
+| Same trigger and fix | Update existing (bump version)   |
+| Partial overlap      | Update existing with new variant |
 
 ## Phase 3: Create the Skill
 
 Location: `.claude/skills/[skill-name]/SKILL.md`
 
-<skill_template>
----
+## <skill_template>
+
 name: descriptive-kebab-case-name
 description: |
-  What the skill does. Specific trigger conditions (exact error messages, symptoms).
-  When to use it (contexts, scenarios).
+What the skill does. Specific trigger conditions (exact error messages, symptoms).
+When to use it (contexts, scenarios).
 author: Claude Code
 version: 1.0.0
+
 ---
 
 # Skill Name
 
 ## Problem
+
 [Clear description]
 
 ## Context / Trigger Conditions
+
 [When to use - exact error messages, symptoms, scenarios]
 
 ## Solution
+
 [Step-by-step solution]
 
 ## Verification
+
 [How to verify it worked]
 
 ## Example
+
 [Concrete example]
 </skill_template>
 

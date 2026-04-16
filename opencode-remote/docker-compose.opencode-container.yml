@@ -21,14 +21,14 @@ services:
     image: ghcr.io/spiermar/opencode-container-base:latest
     restart: unless-stopped
     environment:
-      CLI_HOST: "0.0.0.0"
-      CLI_PORT: "9898"
-      CORS: "https://${TUNNEL_HOSTNAME}"
-      MODE: "server"
-      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
-      GITHUB_TOKEN: "${GITHUB_TOKEN:-}"
+      CLI_HOST: '0.0.0.0'
+      CLI_PORT: '9898'
+      CORS: 'https://${TUNNEL_HOSTNAME}'
+      MODE: 'server'
+      ANTHROPIC_API_KEY: '${ANTHROPIC_API_KEY:-}'
+      GITHUB_TOKEN: '${GITHUB_TOKEN:-}'
     healthcheck:
-      test: ["CMD-SHELL", "curl -s -o /dev/null http://localhost:9898/ || exit 1"]
+      test: ['CMD-SHELL', 'curl -s -o /dev/null http://localhost:9898/ || exit 1']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -41,7 +41,7 @@ services:
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
     environment:
-      TUNNEL_TOKEN: "${TUNNEL_TOKEN}"
+      TUNNEL_TOKEN: '${TUNNEL_TOKEN}'
     command: tunnel --no-autoupdate run
     depends_on:
       opencode:

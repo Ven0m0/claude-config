@@ -57,41 +57,41 @@ WHAT ARE YOU LOOKING FOR?
 
 ## Comparison Matrix
 
-| Need | LSP | Grep | Glob | Read |
-|------|-----|------|------|------|
-| Find function definition | goToDefinition | Slow, inaccurate | N/A | N/A |
-| Find all usages | findReferences | Returns false positives | N/A | N/A |
-| Get type info | hover | N/A | N/A | Read definition file |
-| Search symbol by name | workspaceSymbol | Works but imprecise | N/A | N/A |
-| Find TODO comments | N/A | TODO\|FIXME | N/A | N/A |
-| Find config values | N/A | CONFIG_NAME | N/A | N/A |
-| Find files by pattern | N/A | N/A | *.test.ts | N/A |
-| Read known file | N/A | N/A | N/A | Direct read |
+| Need                     | LSP             | Grep                    | Glob       | Read                 |
+| ------------------------ | --------------- | ----------------------- | ---------- | -------------------- |
+| Find function definition | goToDefinition  | Slow, inaccurate        | N/A        | N/A                  |
+| Find all usages          | findReferences  | Returns false positives | N/A        | N/A                  |
+| Get type info            | hover           | N/A                     | N/A        | Read definition file |
+| Search symbol by name    | workspaceSymbol | Works but imprecise     | N/A        | N/A                  |
+| Find TODO comments       | N/A             | TODO\|FIXME             | N/A        | N/A                  |
+| Find config values       | N/A             | CONFIG_NAME             | N/A        | N/A                  |
+| Find files by pattern    | N/A             | N/A                     | \*.test.ts | N/A                  |
+| Read known file          | N/A             | N/A                     | N/A        | Direct read          |
 
 ## When LSP is Superior
 
 ### Large Codebases (100+ files)
 
-| Operation | Grep Time | LSP Time |
-|-----------|-----------|----------|
-| Find function definition | 45+ seconds | ~50ms |
-| Find all references | 60+ seconds | ~100-500ms |
-| Get type signature | Read multiple files | ~30ms |
+| Operation                | Grep Time           | LSP Time   |
+| ------------------------ | ------------------- | ---------- |
+| Find function definition | 45+ seconds         | ~50ms      |
+| Find all references      | 60+ seconds         | ~100-500ms |
+| Get type signature       | Read multiple files | ~30ms      |
 
 ### Semantic Accuracy
 
-| Search | Grep Matches | LSP Matches |
-|--------|--------------|-------------|
-| `getUserById` | 500+ (comments, strings, similar names) | 23 (exact function references) |
-| `User` | 1000+ (UserName, UserType, "User", etc.) | 45 (actual type usages) |
+| Search        | Grep Matches                             | LSP Matches                    |
+| ------------- | ---------------------------------------- | ------------------------------ |
+| `getUserById` | 500+ (comments, strings, similar names)  | 23 (exact function references) |
+| `User`        | 1000+ (UserName, UserType, "User", etc.) | 45 (actual type usages)        |
 
 ### Token Efficiency
 
-| Scenario | Grep Tokens | LSP Tokens |
-|----------|-------------|------------|
-| Find usages in large project | 2000+ (scanning output) | 500 |
-| Navigate to definition | Multiple attempts | Single call |
-| Understand type | Read multiple files | Single hover |
+| Scenario                     | Grep Tokens             | LSP Tokens   |
+| ---------------------------- | ----------------------- | ------------ |
+| Find usages in large project | 2000+ (scanning output) | 500          |
+| Navigate to definition       | Multiple attempts       | Single call  |
+| Understand type              | Read multiple files     | Single hover |
 
 ## When Grep is Appropriate
 
@@ -158,13 +158,13 @@ WHAT ARE YOU LOOKING FOR?
 
 ## Codebase Size Heuristics
 
-| Codebase Size | Recommendation |
-|---------------|----------------|
-| < 10 files | Grep/Read acceptable |
-| 10-50 files | Prefer LSP, grep fallback OK |
-| 50-100 files | Strong preference for LSP |
-| 100+ files | LSP required for efficiency |
-| 500+ files | LSP mandatory, grep wastes tokens |
+| Codebase Size | Recommendation                    |
+| ------------- | --------------------------------- |
+| < 10 files    | Grep/Read acceptable              |
+| 10-50 files   | Prefer LSP, grep fallback OK      |
+| 50-100 files  | Strong preference for LSP         |
+| 100+ files    | LSP required for efficiency       |
+| 500+ files    | LSP mandatory, grep wastes tokens |
 
 ## Anti-Patterns
 

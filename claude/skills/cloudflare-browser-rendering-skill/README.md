@@ -3,6 +3,7 @@
 An OpenClaw skill for extracting rendered webpage content with Cloudflare Browser Rendering APIs.
 
 It fills the gap between lightweight `web_fetch` and full interactive browser automation:
+
 - Use `/markdown` for JavaScript-heavy single pages
 - Use `/crawl` for asynchronous multi-page site/documentation crawling
 - Fall back to `browser` when login or interaction is required
@@ -10,10 +11,12 @@ It fills the gap between lightweight `web_fetch` and full interactive browser au
 ## Why this skill exists
 
 OpenClaw already has strong tools for two ends of the spectrum:
+
 - `web_fetch` is fast and lightweight for simple pages
 - `browser` is powerful for interactive workflows
 
 This skill sits in the middle:
+
 - stronger than `web_fetch` when rendering matters
 - lighter than `browser` when you only need content extraction
 

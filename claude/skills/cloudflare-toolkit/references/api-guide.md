@@ -6,6 +6,7 @@ All API calls use Bearer token auth. Create tokens at:
 https://dash.cloudflare.com/profile/api-tokens
 
 ### Recommended token templates:
+
 - **DNS management:** Zone:DNS:Edit + Zone:Zone:Read
 - **Full zone management:** Zone:DNS:Edit + Zone:Zone:Read + Zone:Zone Settings:Edit
 - **Tunnel management:** Account:Cloudflare Tunnel:Edit + Zone:DNS:Edit
@@ -17,15 +18,15 @@ Every domain (zone) has a unique zone ID. Use `cf zones` to list all zones and t
 
 ## Common DNS record types
 
-| Type | Use case | Example content |
-|------|----------|-----------------|
-| A | IPv4 address | `192.0.2.1` |
-| AAAA | IPv6 address | `2001:db8::1` |
-| CNAME | Alias to another domain | `example.com` |
-| MX | Mail server | `mail.example.com` (+ priority) |
-| TXT | Verification, SPF, DKIM | `v=spf1 include:...` |
-| NS | Nameserver delegation | `ns1.example.com` |
-| SRV | Service discovery | `target:port:weight:priority` |
+| Type  | Use case                | Example content                 |
+| ----- | ----------------------- | ------------------------------- |
+| A     | IPv4 address            | `192.0.2.1`                     |
+| AAAA  | IPv6 address            | `2001:db8::1`                   |
+| CNAME | Alias to another domain | `example.com`                   |
+| MX    | Mail server             | `mail.example.com` (+ priority) |
+| TXT   | Verification, SPF, DKIM | `v=spf1 include:...`            |
+| NS    | Nameserver delegation   | `ns1.example.com`               |
+| SRV   | Service discovery       | `target:port:weight:priority`   |
 
 ## Proxied vs DNS-only
 
@@ -36,12 +37,12 @@ Every domain (zone) has a unique zone ID. Use `cf zones` to list all zones and t
 
 ## SSL modes
 
-| Mode | Description |
-|------|-------------|
-| `off` | No SSL |
+| Mode       | Description                                              |
+| ---------- | -------------------------------------------------------- |
+| `off`      | No SSL                                                   |
 | `flexible` | SSL between browser and Cloudflare only (origin is HTTP) |
-| `full` | SSL end-to-end, but origin cert not validated |
-| `strict` | SSL end-to-end, origin cert must be valid (recommended) |
+| `full`     | SSL end-to-end, but origin cert not validated            |
+| `strict`   | SSL end-to-end, origin cert must be valid (recommended)  |
 
 ## TTL
 

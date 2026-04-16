@@ -1,5 +1,5 @@
 ---
-applyTo: "**/*.ts, **/*.tsx, **/*.js, **/*.jsx, **/*.mjs, **/*.cjs"
+applyTo: '**/*.ts, **/*.tsx, **/*.js, **/*.jsx, **/*.mjs, **/*.cjs'
 ---
 
 JS/TS in this repository uses Bun as runtime and package manager, Biome for formatting and linting.

@@ -71,7 +71,7 @@ Runtime state (status, assignee, evidence) is stored in `.git/flow-state/` (not 
 ## Evidence JSON Format
 
 ```json
-{"commits": ["abc123"], "tests": ["npm test"], "prs": []}
+{ "commits": ["abc123"], "tests": ["npm test"], "prs": [] }
 ```
 
 ## More Info

@@ -26,16 +26,19 @@ description: Analyze code repositories for structure, patterns, and issues. Use 
 ## Analysis Patterns
 
 **Web Projects**:
+
 - Check for src/, app/, pages/ directories
 - Look for routing configuration
 - Identify state management
 
 **Python Projects**:
+
 - Check for src/ or package directories
 - Look for requirements.txt / pyproject.toml
 - Find test directories
 
 **Rust Projects**:
+
 - Read Cargo.toml for dependencies
 - Check src/ structure
 - Look for examples/
@@ -50,6 +53,7 @@ description: Analyze code repositories for structure, patterns, and issues. Use 
 ## Output Format
 
 Provide a concise summary including:
+
 1. Project type and primary language
 2. Key directories and their purposes
 3. Main dependencies/frameworks

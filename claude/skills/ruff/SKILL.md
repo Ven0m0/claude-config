@@ -49,6 +49,7 @@ ruff check --watch                # Watch for changes
 ```
 
 **Important:** Always pass directory as parameter, don't use `cd`:
+
 ```bash
 # ✅ Good
 ruff check services/orchestrator
@@ -69,18 +70,18 @@ ruff linter                       # List available linters
 
 ### Common Rule Codes
 
-| Code | Description | Example |
-|------|-------------|---------|
-| `E` | pycodestyle errors | E501 (line too long) |
-| `F` | Pyflakes | F401 (unused import) |
-| `W` | pycodestyle warnings | W605 (invalid escape) |
-| `B` | flake8-bugbear | B006 (mutable default) |
-| `I` | isort | I001 (unsorted imports) |
-| `UP` | pyupgrade | UP006 (deprecated types) |
-| `SIM` | flake8-simplify | SIM102 (nested if) |
-| `D` | pydocstyle | D100 (missing docstring) |
-| `S` | flake8-bandit | S101 (assert usage) |
-| `C4` | flake8-comprehensions | C400 (unnecessary generator) |
+| Code  | Description           | Example                      |
+| ----- | --------------------- | ---------------------------- |
+| `E`   | pycodestyle errors    | E501 (line too long)         |
+| `F`   | Pyflakes              | F401 (unused import)         |
+| `W`   | pycodestyle warnings  | W605 (invalid escape)        |
+| `B`   | flake8-bugbear        | B006 (mutable default)       |
+| `I`   | isort                 | I001 (unsorted imports)      |
+| `UP`  | pyupgrade             | UP006 (deprecated types)     |
+| `SIM` | flake8-simplify       | SIM102 (nested if)           |
+| `D`   | pydocstyle            | D100 (missing docstring)     |
+| `S`   | flake8-bandit         | S101 (assert usage)          |
+| `C4`  | flake8-comprehensions | C400 (unnecessary generator) |
 
 ### Output Formats
 
@@ -258,17 +259,20 @@ git diff --name-only main...HEAD | grep '\.py$' | xargs ruff format
 ## Best Practices
 
 **Rule Selection Strategy:**
+
 1. Start minimal: `select = ["E", "F"]`
 2. Add bugbear: `select = ["E", "F", "B"]`
 3. Add imports: `select = ["E", "F", "B", "I"]`
 4. Add pyupgrade: `select = ["E", "F", "B", "I", "UP"]`
 
 **Fixable vs Unfixable:**
+
 - Mark uncertain rules as `unfixable` for manual review
 - Common unfixables: `B` (bugbear), some `F` rules
 - Safe to auto-fix: `I` (isort), `UP` (pyupgrade)
 
 **Critical: Directory Parameters**
+
 - ✅ Always pass directory: `ruff check services/orchestrator`
 - ❌ Never use cd: `cd services/orchestrator && ruff check`
 

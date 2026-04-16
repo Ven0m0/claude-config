@@ -36,6 +36,7 @@ We optimize by adhering to basic engineering principles: separating concerns, no
    ```
 
 ### Example Results
+
 - Deleted 15 archived files
 - Removed obsolete documentation
 - Cleaned historical decision records
@@ -49,6 +50,7 @@ We optimize by adhering to basic engineering principles: separating concerns, no
 **Savings Potential**: Medium-High (10,500 tokens)
 
 ### Hub-and-Spoke Structure
+
 ```
 # Before: Monolithic
 complete-guide.md (2,000 lines)
@@ -62,18 +64,19 @@ README.md (150 lines)          ← Hub
 ```
 
 ### Implementation
+
 1. **Create Hub Document**: High-level overview, navigation to sub-documents, quick-start essentials, cross-references
 2. **Split by Concern**: Each sub-doc has single topic, progressive depth (basic → advanced), self-contained but linked
 3. **Maintain Discoverability**: Clear navigation in hub, breadcrumbs in sub-docs, cross-references where relevant
 
 ### Directory-Specific Limits
 
-| Directory | Limit | Purpose |
-|-----------|-------|---------|
-| `docs/` | 500 lines | Strict reference material |
-| `book/` | 1000 lines | Lenient tutorials |
-| `examples/` | 800 lines | Focused examples |
-| `skills/` | 300 lines | Concise instructions |
+| Directory   | Limit      | Purpose                   |
+| ----------- | ---------- | ------------------------- |
+| `docs/`     | 500 lines  | Strict reference material |
+| `book/`     | 1000 lines | Lenient tutorials         |
+| `examples/` | 800 lines  | Focused examples          |
+| `skills/`   | 300 lines  | Concise instructions      |
 
 ---
 
@@ -85,6 +88,7 @@ README.md (150 lines)          ← Hub
 See [Data Extraction Pattern Guide](./guides/data-extraction-pattern.md) for details.
 
 ### Quick Summary
+
 ```python
 # Before: Embedded data (830 lines)
 def _topics():
@@ -106,6 +110,7 @@ def load_topics():
 **Savings Potential**: Medium (2,400 tokens)
 
 ### Process
+
 1. **Identify Duplication**
    ```bash
    grep -r "def extract_snippet" plugins/*/scripts/
@@ -117,15 +122,17 @@ def load_topics():
        """Reusable snippet extraction."""
    ```
 3. **Update Consumers**
+
    ```python
    # Before: Duplicated in 4 files (50 lines each)
    def _extract_snippet(self, ...): ...
-   
+
    # After: Import from utils
    from pensive.utils import extract_code_snippet
    ```
 
 ### Example: Pensive Review Skills
+
 **Created**: `content_parser.py`, `severity_mapper.py`, `report_generator.py`
 **Enhanced**: `BaseReviewSkill` with shared helper methods
 **Results**: ~400 lines of utilities replace ~800 lines of duplicates, 4 review skills now share common code
@@ -138,6 +145,7 @@ def load_topics():
 **Savings Potential**: Medium (5,540 tokens)
 
 ### Strategy
+
 1. **Create Centralized Location**
    ```
    examples/
@@ -146,15 +154,19 @@ def load_topics():
        └── library-example.md (699 lines)
    ```
 2. **Replace with Stubs**
+
    ```markdown
    # Microservices Example (Stub)
+
    Full example: `/examples/attune/microservices-example.md`
    **Quick Summary**: This example demonstrates...
    [View Full Example](../../../examples/attune/microservices-example.md)
    ```
+
 3. **Keep Essential Examples**: Quick-start stays in plugin, detailed worked examples move to `/examples/`, threshold: <400 lines stays, >600 lines moves
 
 ### Results
+
 - 1,425 lines moved to `/examples/`
 - 38 lines of stubs remain in plugin
 - **Savings**: ~1,385 lines = ~5,540 tokens
@@ -167,18 +179,25 @@ def load_topics():
 **Savings Potential**: Medium (3,200 tokens from 8 files)
 
 ### Technique
+
 ```markdown
 # Hub Document (200 lines)
+
 ## Quick Start
+
 Essential information for 80% of users.
+
 ## Core Concepts
+
 Mid-level details with links to deep dives.
 See: [Advanced Topics](./advanced.md)
 ```
 
 ### Application Example
+
 **Before**: Single `error-handling-complete.md` (1,500 lines)
 **After**:
+
 - `error-handling.md` (400 lines) - Core concepts
 - `error-patterns.md` (500 lines) - Common patterns
 - `error-recovery.md` (400 lines) - Advanced recovery
@@ -194,12 +213,14 @@ See: [Advanced Topics](./advanced.md)
 **Savings Potential**: Low-Medium (130 tokens)
 
 ### Process
+
 ```bash
 rg "TODO|FIXME|HACK|XXX" --type py --type md
 # Categorize: Remove (completed/obsolete), Track (move to issues), Keep (short-term reminders)
 ```
 
 ### Results
+
 - Confirmed excellent hygiene (minimal cleanup needed)
 - Removed false positives
 - Low savings but good maintenance practice
@@ -214,8 +235,10 @@ rg "TODO|FIXME|HACK|XXX" --type py --type md
 ### Common Anti-Patterns
 
 #### "Complete Guide" Files
+
 **Problem**: Monolithic files that try to cover everything
 **Solution**: Split into modular guides
+
 ```
 ❌ rust-complete-guide.md (2,500 lines)
 ✅ rust/
@@ -227,11 +250,13 @@ rg "TODO|FIXME|HACK|XXX" --type py --type md
 ```
 
 #### Verbose Examples
+
 **Problem**: Examples with too much explanation
 **Solution**: Show, don't tell
 
 ❌ **Before (150 lines):** Long prose explaining every step...
 ✅ **After (30 lines):**
+
 ```python
 from mylib import Client
 client = Client(api_key="...")
@@ -239,6 +264,7 @@ result = client.process(data)
 ```
 
 #### Redundant Documentation
+
 **Problem**: Same content in multiple places
 **Solution**: Single source of truth with references: `See: [Feature Guide](./guides/feature-guide.md)`
 
@@ -248,29 +274,33 @@ result = client.process(data)
 
 ### Phase-Based Approach
 
-| Phase | Actions |
-|-------|---------|
-| 1: Discovery | Run `/conserve:bloat-scan`, identify large files (>500 lines docs, >800 code), duplicates, archives |
-| 2: Analysis | Measure size, identify opportunity, estimate savings, assess effort, calculate ROI |
-| 3: Planning | Prioritize by ROI (quick wins), impact (large savings), risk (easy validation), strategic value |
-| 4: Execution | Create backup branch, apply pattern, validate functionality, document, commit |
-| 5: Validation | Run tests, measure before/after, calculate token savings (~4 tokens/line) |
+| Phase         | Actions                                                                                             |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| 1: Discovery  | Run `/conserve:bloat-scan`, identify large files (>500 lines docs, >800 code), duplicates, archives |
+| 2: Analysis   | Measure size, identify opportunity, estimate savings, assess effort, calculate ROI                  |
+| 3: Planning   | Prioritize by ROI (quick wins), impact (large savings), risk (easy validation), strategic value     |
+| 4: Execution  | Create backup branch, apply pattern, validate functionality, document, commit                       |
+| 5: Validation | Run tests, measure before/after, calculate token savings (~4 tokens/line)                           |
 
 ---
 
 ## Metrics and Measurement
 
 ### Token Estimation
+
 - Conservative: 1 line = 3 tokens
 - Average: 1 line = 4 tokens
 - Complex: 1 line = 5 tokens
 
 ### Success Criteria
+
 Optimization succeeds when we reduce size while passing all tests. We must update related documentation and keep the git history clean. The goal is measurable token savings without breaking the system.
 
 ### Tracking Template
+
 ```markdown
 ## Phase N: [Name]
+
 **Before**: File X: Y lines, File Z: W lines, Total: N lines
 **After**: File X: Y' lines, File Z: W' lines, Total: N' lines
 **Savings**: (N - N') lines × 4 = ~T tokens
@@ -282,20 +312,21 @@ Optimization succeeds when we reduce size while passing all tests. We must updat
 
 ### Phase-by-Phase Breakdown
 
-| Phase | Focus | Tokens Saved |
-|-------|-------|--------------|
-| 1: Archive Cleanup | Historical artifacts | 33,400 |
-| 2: Doc Refactoring | Hub-and-spoke | 10,500 |
-| 3: TODO Audit | Code hygiene | 130 |
-| 4: Anti-Pattern Removal | Complete-guide files | 5,410 |
-| 5: Progressive Disclosure | Documentation standards | 3,200 |
-| 6: Shared Utilities | Code deduplication | 2,400 |
-| 7: Tutorial Split | (Deferred) | 0 |
-| 8: Examples Repo | Centralized examples | 5,540 |
-| 9: Data Extraction | YAML configuration | 10,192 |
-| **Total** | | **~70,772** |
+| Phase                     | Focus                   | Tokens Saved |
+| ------------------------- | ----------------------- | ------------ |
+| 1: Archive Cleanup        | Historical artifacts    | 33,400       |
+| 2: Doc Refactoring        | Hub-and-spoke           | 10,500       |
+| 3: TODO Audit             | Code hygiene            | 130          |
+| 4: Anti-Pattern Removal   | Complete-guide files    | 5,410        |
+| 5: Progressive Disclosure | Documentation standards | 3,200        |
+| 6: Shared Utilities       | Code deduplication      | 2,400        |
+| 7: Tutorial Split         | (Deferred)              | 0            |
+| 8: Examples Repo          | Centralized examples    | 5,540        |
+| 9: Data Extraction        | YAML configuration      | 10,192       |
+| **Total**                 |                         | **~70,772**  |
 
 ### Impact Summary
+
 - **Context Reduction**: 28-33%
 - **Files Deleted**: 19
 - **Files Refactored**: 19
@@ -314,11 +345,11 @@ Optimization succeeds when we reduce size while passing all tests. We must updat
 
 ## When to Apply
 
-| Priority | Triggers |
-|----------|----------|
-| High | Context limits exceeded, slow performance, high costs |
-| Medium | Approaching limits, technical debt cleanup |
-| Low | Minor cleanups |
+| Priority | Triggers                                              |
+| -------- | ----------------------------------------------------- |
+| High     | Context limits exceeded, slow performance, high costs |
+| Medium   | Approaching limits, technical debt cleanup            |
+| Low      | Minor cleanups                                        |
 
 ---
 

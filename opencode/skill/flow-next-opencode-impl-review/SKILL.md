@@ -15,6 +15,7 @@ Conduct a John Carmack-level review of implementation changes on the current bra
 **⚠️ RepoPrompt 1.6.0+ Required (rp backend)**: The RP backend uses builder review mode. Check version: `rp-cli --version`.
 
 **CRITICAL: flowctl is BUNDLED — NOT installed globally.** `which flowctl` will fail (expected). Always use:
+
 ```bash
 ROOT="$(git rev-parse --show-toplevel)"
 OPENCODE_DIR="$ROOT/.opencode"
@@ -24,6 +25,7 @@ FLOWCTL="$OPENCODE_DIR/bin/flowctl"
 ## Backend Selection
 
 **Priority** (first match wins):
+
 1. `--review=rp|opencode|export|none` argument
 2. `FLOW_REVIEW_BACKEND` env var (`rp`, `opencode`, `none`)
 3. `.flow/config.json` → `review.backend`
@@ -33,6 +35,7 @@ FLOWCTL="$OPENCODE_DIR/bin/flowctl"
 ### Parse from arguments first
 
 Check $ARGUMENTS for:
+
 - `--review=rp` or `--review rp` → use rp
 - `--review=opencode` or `--review opencode` → use opencode
 - `--review=export` or `--review export` → use export
@@ -65,6 +68,7 @@ fi
 If `BACKEND` is empty AND `HAVE_RP=1`, AND not in Ralph mode (`FLOW_RALPH` not set):
 
 Output this question as text:
+
 ```
 Which review backend?
 a) OpenCode review (GPT-5.2, reasoning high)
@@ -92,6 +96,7 @@ fi
 ## Critical Rules
 
 **For rp backend:**
+
 1. **DO NOT REVIEW CODE YOURSELF** - you coordinate, RepoPrompt reviews
 2. **MUST WAIT for actual RP response** - never simulate/skip the review
 3. **MUST use `setup-review`** - handles window selection + builder atomically
@@ -99,15 +104,18 @@ fi
 5. **Re-reviews MUST stay in SAME chat** - omit `--new-chat` after first review
 
 **For opencode backend:**
+
 1. Use `$FLOWCTL opencode impl-review` command
 2. Pass `--base` for diff scope and `--receipt` for session continuity
 3. Parse verdict from command output
 
 **For all backends:**
+
 - If `REVIEW_RECEIPT_PATH` set: write receipt after review (any verdict)
 - Any failure → output `<promise>RETRY</promise>` and stop
 
 **FORBIDDEN**:
+
 - Self-declaring SHIP without actual backend verdict
 - Mixing backends mid-review (stick to one)
 - Skipping review when backend is "none" without user consent

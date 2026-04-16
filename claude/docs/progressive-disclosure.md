@@ -12,19 +12,25 @@ Last Updated: 2025-11-25
 Progressive Disclosure = Layered content delivery matching user expertise and time investment.
 
 Three Levels:
+
 1. Quick Reference (30 seconds) - Core principles, immediate value
 2. Implementation Guide (5 minutes) - Workflows, patterns, examples
 3. Advanced Patterns (10+ minutes) - Deep dives, edge cases, optimization
 
 SKILL.md Structure (≤500 lines hard limit):
+
 ```markdown
 ## Quick Reference (30s) # 80-120 lines
+
 ## Implementation Guide (5min) # 180-250 lines
+
 ## Advanced Patterns (10+min) # 80-140 lines
+
 ## Works Well With # 10-20 lines
 ```
 
 Token Efficiency:
+
 - Level 1: 1,000 tokens → Immediate value
 - Level 2: 3,000 tokens → Practical guidance
 - Level 3: 5,000 tokens → Expert knowledge
@@ -40,6 +46,7 @@ File Overflow: When SKILL.md > 500 lines → Split to modules/
 Purpose: Deliver maximum value in minimum time (30 seconds reading).
 
 Content Requirements:
+
 - Core concepts in 1-2 sentences
 - Key patterns/workflows as diagrams
 - Essential syntax/commands
@@ -47,32 +54,39 @@ Content Requirements:
 - Cross-references to deeper content
 
 Structure Template:
-```markdown
+
+````markdown
 ## Quick Reference (30 seconds)
 
 [Skill Name] is [one-sentence definition].
 
 Core Principles:
+
 1. Principle 1 - Brief explanation
 2. Principle 2 - Brief explanation
 3. Principle 3 - Brief explanation
 
 Quick Access:
+
 - Pattern A → [Link to module](modules/pattern-a.md)
 - Pattern B → [Link to module](modules/pattern-b.md)
 - Pattern C → [Link to module](modules/pattern-c.md)
 
 Use Cases:
+
 - Scenario 1
 - Scenario 2
 - Scenario 3
 
 Quick Syntax:
+
 ```python
 # Minimal working example
 result = function(params)
 ```
-```
+````
+
+````
 
 Example - Quality Framework:
 ```markdown
@@ -101,8 +115,9 @@ validations = [
  security_score == 100,# S
  has_clear_commits # T
 ]
-```
-```
+````
+
+````
 
 Token Budget: ~1,000 tokens
 
@@ -128,13 +143,15 @@ Structure Template:
 Purpose: [What this pattern achieves]
 
 Workflow:
-```
+````
+
 Step 1: [Action]
- ↓
+↓
 Step 2: [Action]
- ↓
+↓
 Step 3: [Action]
-```
+
+````
 
 Implementation:
 ```python
@@ -142,23 +159,25 @@ Implementation:
 def implement_pattern():
  # Step 1
  result1 = step_one()
- 
+
  # Step 2
  result2 = step_two(result1)
- 
+
  # Step 3
  return finalize(result2)
-```
+````
 
 Common Scenarios:
 
 Scenario A: [Description]
+
 ```python
 # Specific implementation for scenario A
 solution_a()
 ```
 
 Scenario B: [Description]
+
 ```python
 # Specific implementation for scenario B
 solution_b()
@@ -169,7 +188,8 @@ solution_b()
 ### Pattern 2: [Pattern Name]
 
 [Repeat structure]
-```
+
+````
 
 Example - DDD Workflow:
 ```markdown
@@ -192,15 +212,18 @@ docs/specs/SPEC-001/ or .claude/specs/SPEC-001/
 
 # 3. Execute /clear (mandatory)
 /clear # Saves 45-50K tokens, prepares clean context
-```
+````
 
 EARS Format Structure:
+
 ```markdown
 ### SPEC-001-REQ-01: User Registration (Ubiquitous)
+
 Pattern: Ubiquitous
 Statement: The system SHALL register users with email and password validation.
 
 Acceptance Criteria:
+
 - Email format validated (RFC 5322)
 - Password strength: ≥8 chars, mixed case, numbers, symbols
 - Duplicate email rejected with clear error
@@ -228,13 +251,14 @@ def register_user(email, password):
 # REFACTOR: Improve quality
 def register_user(email: str, password: str) -> RegistrationResult:
  """Register new user with email and password.
- 
+
  Implements SPEC-001-REQ-01
  """
  # Validation, hashing, database operations
  return RegistrationResult(success=True, user=user)
 ```
-```
+
+````
 
 Token Budget: ~3,000 tokens
 
@@ -265,26 +289,28 @@ Implementation:
 class AdvancedPattern:
  def __init__(self):
  self.setup_complex_state()
- 
+
  def handle_edge_case_1(self):
  # Detailed edge case handling
  pass
- 
+
  def handle_edge_case_2(self):
  # Another edge case
  pass
- 
+
  def optimize_performance(self):
  # Performance optimization
  pass
-```
+````
 
 Edge Cases:
+
 - Case 1: [Description and solution]
 - Case 2: [Description and solution]
 - Case 3: [Description and solution]
 
 Performance Considerations:
+
 - Optimization technique 1
 - Optimization technique 2
 - Benchmarking approach
@@ -300,16 +326,19 @@ Performance Considerations:
 ### Anti-Patterns to Avoid
 
 Anti-Pattern 1: [Description]
+
 ```python
 # BAD: Anti-pattern example
 bad_implementation()
 ```
 
 Solution:
+
 ```python
 # GOOD: Correct implementation
 good_implementation()
 ```
+
 ```
 
 Token Budget: ~5,000 tokens
@@ -324,40 +353,42 @@ Critical Rule: SKILL.md MUST be ≤500 lines.
 
 Line Budget Breakdown:
 ```
+
 SKILL.md (500 lines maximum)
- Frontmatter (4-6 lines)
- name, description, tools
+Frontmatter (4-6 lines)
+name, description, tools
 
- Quick Reference (80-120 lines)
- Core concepts (30-40)
- Quick access (20-30)
- Use cases (15-20)
- Quick syntax (15-30)
+Quick Reference (80-120 lines)
+Core concepts (30-40)
+Quick access (20-30)
+Use cases (15-20)
+Quick syntax (15-30)
 
- Implementation Guide (180-250 lines)
- Pattern 1 (60-80)
- Pattern 2 (60-80)
- Pattern 3 (60-90)
+Implementation Guide (180-250 lines)
+Pattern 1 (60-80)
+Pattern 2 (60-80)
+Pattern 3 (60-90)
 
- Advanced Patterns (80-140 lines)
- Advanced pattern 1 (40-60)
- Advanced pattern 2 (40-60)
- Edge cases (20-40)
+Advanced Patterns (80-140 lines)
+Advanced pattern 1 (40-60)
+Advanced pattern 2 (40-60)
+Edge cases (20-40)
 
- Works Well With (10-20 lines)
- Agents (3-5)
- Skills (3-5)
- Commands (2-4)
- Memory (2-4)
-```
+Works Well With (10-20 lines)
+Agents (3-5)
+Skills (3-5)
+Commands (2-4)
+Memory (2-4)
+
+````
 
 Overflow Handling Strategy:
 ```python
 class SKILLMDValidator:
  """Validate and enforce 500-line SKILL.md limit."""
- 
+
  MAX_LINES = 500
- 
+
  def validate_skill(self, skill_path: str) -> dict:
  """Validate SKILL.md compliance."""
  skill_file = f"{skill_path}/SKILL.md"
@@ -368,7 +399,7 @@ class SKILLMDValidator:
   return {"valid": False, "line_count": line_count, "overflow": line_count - self.MAX_LINES,
     "action": "SPLIT_REQUIRED", "recommendation": self._generate_split_recommendation(lines)}
  return {"valid": True, "line_count": line_count, "remaining": self.MAX_LINES - line_count}
- 
+
  def _generate_split_recommendation(self, lines: list) -> dict:
  """Generate file splitting recommendation."""
  sections = self._analyze_sections(lines)
@@ -385,7 +416,7 @@ class SKILLMDValidator:
   recommendations.append({"target": "reference.md", "content": "External references", "lines_saved": reference_lines - 10})
  return {"recommendations": recommendations, "total_lines_saved": sum(r["lines_saved"] for r in recommendations),
    "resulting_size": len(lines) - sum(r["lines_saved"] for r in recommendations)}
- 
+
  def auto_split_skill(self, skill_path: str):
  """Automatically split SKILL.md into modules."""
  skill_file = f"{skill_path}/SKILL.md"
@@ -418,19 +449,20 @@ if not result["valid"]:
  print(f" Recommendation: {result['recommendation']}")
  validator.auto_split_skill(".claude/skills/<skill-name>")
  print(" Skill automatically split into modules")
-```
+````
 
 ### Progressive Loading Strategy
 
 Token-Efficient Content Access:
+
 ```python
 class ProgressiveContentLoader:
  """Load skill content progressively based on user needs."""
- 
+
  def __init__(self, skill_path: str):
  self.skill_path = skill_path
  self.loaded_levels = set()
- 
+
  def load_level_1(self) -> str:
  """Load Quick Reference only (30 seconds, ~1K tokens)."""
  if "level_1" in self.loaded_levels:
@@ -440,7 +472,7 @@ class ProgressiveContentLoader:
  quick_ref = self._extract_section(content, "Quick Reference")
  self.loaded_levels.add("level_1")
  return quick_ref
- 
+
  def load_level_2(self) -> str:
  """Load Implementation Guide (~3K additional tokens)."""
  if "level_2" not in self.loaded_levels:
@@ -449,7 +481,7 @@ class ProgressiveContentLoader:
   impl_guide = self._extract_section(content, "Implementation Guide")
   self.loaded_levels.add("level_2")
   return impl_guide
- 
+
  def load_level_3(self) -> str:
  """Load Advanced Patterns (~5K additional tokens)."""
  if "level_3" not in self.loaded_levels:
@@ -463,14 +495,14 @@ class ProgressiveContentLoader:
   advanced = self._extract_section(content, "Advanced Patterns")
   self.loaded_levels.add("level_3")
   return advanced
- 
+
  def load_examples(self) -> str:
  """Load examples.md if exists."""
  examples_path = f"{self.skill_path}/examples.md"
  if os.path.exists(examples_path):
   with open(examples_path) as f:
   return f.read()
- 
+
  def load_on_demand(self, user_expertise: str, time_available: int) -> str:
  """Load appropriate level based on user context."""
  if time_available <= 30:
@@ -490,10 +522,12 @@ comprehensive = loader.load_on_demand(expertise="expert", time_available=900)  #
 ### Cross-Reference Architecture
 
 Effective Cross-Linking:
+
 ```markdown
 ## Quick Reference (30 seconds)
 
 Quick Access:
+
 - TRUST 5 Framework → [Module](modules/trust-5-framework.md)
 - SPEC-First DDD → [Module](modules/spec-first-ddd.md)
 - Delegation Patterns → [Module](modules/delegation-patterns.md)
@@ -516,6 +550,7 @@ For advanced TRUST 5 patterns, see [Advanced TRUST 5](modules/trust-5-framework.
 Brief Introduction: Advanced patterns split to dedicated modules for depth.
 
 Available Modules:
+
 - [trust-5-framework.md](modules/trust-5-framework.md) - Quality assurance
 - [spec-first-ddd.md](modules/spec-first-ddd.md) - Development workflow
 - [delegation-patterns.md](modules/delegation-patterns.md) - Agent orchestration
@@ -529,15 +564,18 @@ Available Modules:
 ## Works Well With
 
 Skills:
+
 - Modular skill layout under `claude/skills/` - File organization patterns
 - Token optimization - Content efficiency (see `claude/skills/llm-docs-optimizer`, `markdown-optimizer` agent)
 - Skill authoring - See `claude/rules/development/skill-authoring.md`
 
 Agents:
+
 - skill-factory - Create skills with progressive disclosure
 - docs-manager - Generate documentation with layered structure
 
 Commands:
+
 - Plan phase - Generate SPEC with progressive detail
 - Sync phase - Create docs with layered structure
 

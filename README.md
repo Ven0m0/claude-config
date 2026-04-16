@@ -139,20 +139,20 @@ The `claude/` directory is a standalone config pack with:
 
 **12 Sub-Agents** (`claude/agents/`):
 
-| Agent | Purpose |
-|---|---|
-| `ci-cd-expert` | CI/CD pipeline design and troubleshooting |
-| `code-explorer` | Codebase analysis and architecture mapping |
-| `code-simplifier` | Refactoring for clarity and maintainability |
+| Agent               | Purpose                                        |
+| ------------------- | ---------------------------------------------- |
+| `ci-cd-expert`      | CI/CD pipeline design and troubleshooting      |
+| `code-explorer`     | Codebase analysis and architecture mapping     |
+| `code-simplifier`   | Refactoring for clarity and maintainability    |
 | `docker-specialist` | Dockerfile optimization and security hardening |
-| `general-purpose` | Default multi-step task agent |
-| `language-expert` | Multi-language: Bash, Python, JS, TS, Rust |
-| `maintenance` | Cleanup, tech debt, DX improvements |
-| `merge-supervisor` | Git merge conflict resolution |
-| `optimizer` | Context and LLM optimization |
-| `prd` | Product Requirements Documents |
-| `reverse-engineer` | Binary analysis (authorized use only) |
-| `skill-auditor` | SKILL.md compliance audits |
+| `general-purpose`   | Default multi-step task agent                  |
+| `language-expert`   | Multi-language: Bash, Python, JS, TS, Rust     |
+| `maintenance`       | Cleanup, tech debt, DX improvements            |
+| `merge-supervisor`  | Git merge conflict resolution                  |
+| `optimizer`         | Context and LLM optimization                   |
+| `prd`               | Product Requirements Documents                 |
+| `reverse-engineer`  | Binary analysis (authorized use only)          |
+| `skill-auditor`     | SKILL.md compliance audits                     |
 
 **32 Skills** (`claude/skills/`):
 
