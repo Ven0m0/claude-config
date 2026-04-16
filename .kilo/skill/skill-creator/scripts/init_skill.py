@@ -314,8 +314,12 @@ def init_skill(skill_name, path):
     # Print next steps
     print(f"\n✅ Skill '{skill_name}' initialized successfully at {skill_dir}")
     print("\nNext steps:")
-    print("1. Edit SKILL.md to complete the placeholder items and update the description")
-    print("2. Customize or delete the example files in scripts/, references/, and assets/")
+    print(
+        "1. Edit SKILL.md to complete the placeholder items and update the description",
+    )
+    print(
+        "2. Customize or delete the example files in scripts/, references/, and assets/",
+    )
     print("3. Run the validator when ready to check the skill structure")
 
     return skill_dir
