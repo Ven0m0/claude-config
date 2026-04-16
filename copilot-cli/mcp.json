@@ -16,7 +16,7 @@
       "type": "http",
       "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
       "tools": ["*"],
-      "headers": {"EXA_API_KEY": "${EXA_API_KEY}"}
+      "headers": { "EXA_API_KEY": "${EXA_API_KEY}" }
     },
     "ref-tools": {
       "type": "http",

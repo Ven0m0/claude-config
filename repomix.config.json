@@ -31,9 +31,15 @@
     "useDotIgnore": true,
     "useDefaultPatterns": true,
     "customPatterns": [
-      "**/*.tmp", "**/tmp/", "**/*.bak", "**/*.log",
-      "**/*.db", "**/.git/", "**/repomix.config.json", "**/repomix-output.xml"
-    ],
+      "**/*.tmp",
+      "**/tmp/",
+      "**/*.bak",
+      "**/*.log",
+      "**/*.db",
+      "**/.git/",
+      "**/repomix.config.json",
+      "**/repomix-output.xml"
+    ]
   },
   "security": { "enableSecurityCheck": true },
   "tokenCount": { "encoding": "o200k_base" }

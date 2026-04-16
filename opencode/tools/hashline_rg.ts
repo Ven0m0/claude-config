@@ -5,10 +5,10 @@
  * Uses the same hash algorithm as hashline_edit.ts via shared utilities.
  */
 
+import { existsSync, readdirSync, statSync } from 'node:fs';
+import { extname, isAbsolute, join, relative, resolve } from 'node:path';
 import { tool } from '@opencode-ai/plugin';
 import { spawn } from 'bun';
-import { existsSync, readdirSync, statSync } from 'fs';
-import { extname, isAbsolute, join, relative, resolve } from 'path';
 import { computeHash, formatHashLines } from './hashline_utils.ts';
 
 // ── Binary detection ────────────────────────────────────────────────────────
@@ -70,7 +70,7 @@ async function dirListing(dir: string, indent = ''): Promise<string> {
     const full = join(dir, e.name);
     if (e.isDirectory()) {
       lines.push(`${indent}${e.name}/`);
-      lines.push(await dirListing(full, indent + '  '));
+      lines.push(await dirListing(full, `${indent}  `));
     } else {
       try {
         const count = (await Bun.file(full).text()).split('\n').length;
@@ -126,7 +126,7 @@ export const read = tool({
     const startIdx = offset - 1;
     const slice = allLines
       .slice(startIdx, startIdx + limit)
-      .map((l) => (l.length > 2000 ? l.slice(0, 2000) + '...[truncated]' : l));
+      .map((l) => (l.length > 2000 ? `${l.slice(0, 2000)}...[truncated]` : l));
 
     const annotated = formatHashLines(slice.join('\n'), offset);
 
@@ -165,7 +165,12 @@ function formatGrepResults(matches: GrepMatch[], base: string): string {
   for (const m of matches) {
     const rel = isAbsolute(m.file) ? relative(base, m.file) : m.file;
     const key = rel || m.file;
-    (byFile.get(key) ?? (byFile.set(key, []), byFile.get(key)!)).push({ ...m, file: key });
+    let fileMatches = byFile.get(key);
+    if (!fileMatches) {
+      fileMatches = [];
+      byFile.set(key, fileMatches);
+    }
+    fileMatches.push({ ...m, file: key });
   }
   return [...byFile.entries()]
     .map(([file, ms]) => {

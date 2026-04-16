@@ -8,8 +8,13 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "ruff",
+  "basedpyright",
   "claudelint",
+  "pytest",
+  "ruff",
+  "tombi",
+  "ty",
+  "vulture",
 ]
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.

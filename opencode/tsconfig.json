@@ -16,10 +16,6 @@
     "verbatimModuleSyntax": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": [
-    "plugins/**/*.ts",
-    "tools/**/*.ts",
-    "index.ts"
-  ],
+  "include": ["plugins/**/*.ts", "tools/**/*.ts", "index.ts"],
   "exclude": ["node_modules", "dist", "test"]
 }

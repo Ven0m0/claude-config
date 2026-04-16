@@ -1,7 +1,30 @@
+import * as path from 'node:path';
 import type { Plugin } from '@opencode-ai/plugin';
-import * as path from 'path';
 
 const LINE_RANGE_RE = /^(\d+)(?:\s*-\s*(\d+))?$/;
+
+interface ToolDefinitionInput {
+  toolID?: string;
+}
+
+interface ToolDefinitionOutput {
+  description?: string;
+}
+
+interface ToolExecutionInput {
+  tool?: string;
+}
+
+interface ToolExecutionOutput {
+  output: string;
+}
+
+interface ToolExecuteBeforeOutput {
+  args: {
+    oldString?: string;
+    filePath?: string;
+  };
+}
 
 export const OpenSlimeditPlugin: Plugin = async ({ directory }) => {
   function resolvePath(filePath: string): string {
@@ -11,7 +34,7 @@ export const OpenSlimeditPlugin: Plugin = async ({ directory }) => {
 
   return {
     // Shorten tool descriptions + strip parameter descriptions
-    'tool.definition': async (input: any, output: any) => {
+    'tool.definition': async (input: ToolDefinitionInput, output: ToolDefinitionOutput) => {
       const SLIM: Record<string, string> = {
         read: 'Read file content.',
         edit: "Edit file. oldString can be line range '55-64'.",
@@ -29,7 +52,7 @@ export const OpenSlimeditPlugin: Plugin = async ({ directory }) => {
     },
 
     // Compact tool output: shorten read paths, strip footer, compress edit results
-    'tool.execute.after': async (input, output) => {
+    'tool.execute.after': async (input: ToolExecutionInput, output: ToolExecutionOutput) => {
       // Compress edit output
       if (input.tool === 'edit') {
         if (output.output.startsWith('Edit applied successfully.')) {
@@ -55,7 +78,7 @@ export const OpenSlimeditPlugin: Plugin = async ({ directory }) => {
     },
 
     // Expand line ranges in oldString
-    'tool.execute.before': async (input, output) => {
+    'tool.execute.before': async (input: ToolExecutionInput, output: ToolExecuteBeforeOutput) => {
       if (input.tool !== 'edit') return;
       const args = output.args;
       if (!args.oldString || !args.filePath) return;
@@ -81,7 +104,7 @@ export const OpenSlimeditPlugin: Plugin = async ({ directory }) => {
         args.oldString = lines.slice(startLine - 1, endLine).join('\n');
       }
     },
-  } as any;
+  };
 };
 
 export default OpenSlimeditPlugin;

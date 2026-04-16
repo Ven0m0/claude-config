@@ -57,12 +57,7 @@
       "repository": "https://github.com/severity1/claude-code-prompt-improver",
       "license": "MIT",
       "source": "prompt-improver",
-      "keywords": [
-        "prompt",
-        "optimization",
-        "clarification",
-        "user-experience"
-      ],
+      "keywords": ["prompt", "optimization", "clarification", "user-experience"],
       "category": "productivity"
     },
     {
