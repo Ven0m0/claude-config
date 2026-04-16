@@ -176,7 +176,7 @@ def normalize_skill_metadata(skill_path: Path) -> bool:
     return False
 
 
-def extract_keywords_from_name(skill_name: str, description: str) -> list:
+def extract_keywords_from_name(skill_name: str, description: str) -> list[str]:
     """Extract auto-trigger keywords from skill name and description."""
     # Use a set for O(1) membership checking and deduplication
     keywords = set()
