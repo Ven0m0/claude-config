@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "@opencode-ai/plugin": "1.4.3",
+    "@opencode-ai/plugin": "1.4.6",
     "cachebro": "^0.2.0",
     "codemogger": "^0.1.4",
-    "diff": "^8.0.0",
+    "diff": "^9.0.0",
     "memelord": "^0.1.0",
     "opencode-rtk-rewrite": "github:itertea/opencode-rtk-rewrite",
     "repair-json-stream": "^1.3.1"
@@ -11,7 +11,7 @@
   "devDependencies": {
     "@opencode-ai/sdk": "^1.2.10",
     "@types/bun": "latest",
-    "oxfmt": "^0.44.0",
+    "oxfmt": "^0.45.0",
     "typescript": "^6.0.0"
   },
   "packageManager": "bun@*"
