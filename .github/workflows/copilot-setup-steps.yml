@@ -21,12 +21,14 @@ jobs:
       - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
+          cache-dependency-glob: |
+            uv.lock
+            pyproject.toml
 
       - uses: oven-sh/setup-bun@v2
 
       - name: Install project Python dependencies
-        run: uv sync --frozen
-
+        run: uv sync --all-extras --all-packages --all-groups --frozen && source .venv/bin/activate
       - name: Preinstall uv tools
         run: |
           uv tool install basedpyright
@@ -35,12 +37,6 @@ jobs:
 
       - name: Install project JS/TS dependencies
         run: bun install --frozen-lockfile
-
       - name: Preinstall bun global packages
         run: |
-          bun add -g \
-            vscode-langservers-extracted \
-            bash-language-server \
-            yaml-language-server \
-            @ast-grep/cli \
-            @biomejs/biome
+          bun i -g vscode-langservers-extracted yaml-language-server bash-language-server @ast-grep/cli @biomejs/biome typescript @vtsls/language-server
