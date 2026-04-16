@@ -24,11 +24,35 @@ import { join } from 'node:path';
 import type { Plugin } from '@opencode-ai/plugin';
 import { tool } from '@opencode-ai/plugin';
 
+interface QuietTextCommand {
+  quiet(): {
+    nothrow(): {
+      text(): Promise<string>;
+    };
+  };
+}
+
+type ShellExecutor = (strings: TemplateStringsArray, ...values: unknown[]) => QuietTextCommand;
+
+interface PathPayload {
+  path?: string;
+}
+
+interface SessionEventPayload {
+  event?: {
+    type?: string;
+  };
+}
+
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
 // ── DB path resolution (keyed by git remote → stable across worktrees) ───────
 
 const projectKeyCache = new Map<string, string>();
 
-async function getProjectKey(worktree: string, $: any): Promise<string> {
+async function getProjectKey(worktree: string, $: ShellExecutor): Promise<string> {
   const cached = projectKeyCache.get(worktree);
   if (cached) return cached;
 
@@ -43,7 +67,7 @@ async function getProjectKey(worktree: string, $: any): Promise<string> {
   return key;
 }
 
-async function resolveDbPath(worktree: string, $: any): Promise<string> {
+async function resolveDbPath(worktree: string, $: ShellExecutor): Promise<string> {
   const key = await getProjectKey(worktree, $);
   const dir = join(homedir(), '.config', 'cachebro', 'projects', key);
   mkdirSync(dir, { recursive: true });
@@ -58,28 +82,29 @@ const CachebroPlugin: Plugin = async ({ worktree, $ }) => {
 
   const { createCache } = (await import('cachebro')) as typeof import('cachebro');
   const { cache, watcher } = createCache({ dbPath, sessionId, watchPaths: [worktree] });
+  const invalidatingCache = cache as typeof cache & { onFileChanged(filePath: string): Promise<void> };
   await cache.init();
 
   return {
     // ── Invalidate cache when the agent edits a file ────────────────────────
-    'file.edited': async ({ path: filePath }: any) => {
+    'file.edited': async ({ path: filePath }: PathPayload) => {
       if (!filePath) return;
       try {
-        await (cache as any).onFileChanged(filePath);
+        await invalidatingCache.onFileChanged(filePath);
       } catch {}
     },
 
     // ── Invalidate cache when an external change is detected ────────────────
-    'file.watcher.updated': async ({ path: filePath }: any) => {
+    'file.watcher.updated': async ({ path: filePath }: PathPayload) => {
       if (!filePath) return;
       try {
-        await (cache as any).onFileChanged(filePath);
+        await invalidatingCache.onFileChanged(filePath);
       } catch {}
     },
 
     // ── Clean up file watcher when session ends ─────────────────────────────
-    event: async ({ event }: any) => {
-      if (event.type === 'session.deleted') {
+    event: async ({ event }: SessionEventPayload) => {
+      if (event?.type === 'session.deleted') {
         watcher.close();
       }
     },
@@ -122,8 +147,8 @@ const CachebroPlugin: Plugin = async ({ worktree, $ }) => {
             }
 
             return text;
-          } catch (e: any) {
-            return `Error: ${e.message}`;
+          } catch (error: unknown) {
+            return `Error: ${getErrorMessage(error)}`;
           }
         },
       }),
@@ -152,8 +177,8 @@ const CachebroPlugin: Plugin = async ({ worktree, $ }) => {
               } else {
                 parts.push(`=== ${p} ===\n${result.content}`);
               }
-            } catch (e: any) {
-              parts.push(`=== ${p} ===\nError: ${e.message}`);
+            } catch (error: unknown) {
+              parts.push(`=== ${p} ===\nError: ${getErrorMessage(error)}`);
             }
           }
 
@@ -180,8 +205,8 @@ const CachebroPlugin: Plugin = async ({ worktree, $ }) => {
               `  Tokens saved (session): ~${s.sessionTokensSaved.toLocaleString()}`,
               `  Tokens saved (total):   ~${s.tokensSaved.toLocaleString()}`,
             ].join('\n');
-          } catch (e: any) {
-            return `Error: ${e.message}`;
+          } catch (error: unknown) {
+            return `Error: ${getErrorMessage(error)}`;
           }
         },
       }),
@@ -193,8 +218,8 @@ const CachebroPlugin: Plugin = async ({ worktree, $ }) => {
           try {
             await cache.clear();
             return 'Cache cleared.';
-          } catch (e: any) {
-            return `Error: ${e.message}`;
+          } catch (error: unknown) {
+            return `Error: ${getErrorMessage(error)}`;
           }
         },
       }),

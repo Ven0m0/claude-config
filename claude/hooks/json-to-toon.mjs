@@ -1,19 +1,19 @@
 #!/usr/bin/env bun
 
-import { encode } from "./toon.mjs";
+import { encode } from './toon.mjs';
 
 // Read input from stdin
-let inputData = "";
-process.stdin.setEncoding("utf8");
+let inputData = '';
+process.stdin.setEncoding('utf8');
 
-process.stdin.on("data", (chunk) => {
+process.stdin.on('data', (chunk) => {
   inputData += chunk;
 });
 
-process.stdin.on("end", () => {
+process.stdin.on('end', () => {
   try {
     const input = JSON.parse(inputData);
-    const prompt = input.prompt || "";
+    const prompt = input.prompt || '';
 
     // Process the prompt to find and replace JSON blocks
     const processedPrompt = replaceJsonWithToon(prompt);
@@ -28,9 +28,9 @@ process.stdin.on("end", () => {
     });
     try {
       const input = JSON.parse(inputData);
-      console.log(input.prompt || "");
+      console.log(input.prompt || '');
     } catch {
-      console.log("");
+      console.log('');
     }
     process.exit(0);
   }
@@ -41,12 +41,9 @@ process.stdin.on("end", () => {
  */
 function replaceJsonWithToon(text) {
   // Pattern 1: Code blocks with csv/CSV language identifier
-  text = text.replace(
-    /```(?:csv|CSV)\s*\n([\s\S]*?)\n```/g,
-    (_match, csvContent) => {
-      return convertCsvToToon(csvContent.trim(), true);
-    },
-  );
+  text = text.replace(/```(?:csv|CSV)\s*\n([\s\S]*?)\n```/g, (_match, csvContent) => {
+    return convertCsvToToon(csvContent.trim(), true);
+  });
 
   // Pattern 2: Markdown tables (must come before CSV to avoid conflicts)
   // Match markdown tables as complete blocks (header + separator + rows)
@@ -58,12 +55,9 @@ function replaceJsonWithToon(text) {
   });
 
   // Pattern 3: Code blocks with json/JSON language identifier
-  text = text.replace(
-    /```(?:json|JSON)\s*\n([\s\S]*?)\n```/g,
-    (_match, jsonContent) => {
-      return convertJsonToToon(jsonContent.trim(), true);
-    },
-  );
+  text = text.replace(/```(?:json|JSON)\s*\n([\s\S]*?)\n```/g, (_match, jsonContent) => {
+    return convertJsonToToon(jsonContent.trim(), true);
+  });
 
   // Pattern 4: Code blocks without language identifier that contain valid JSON or CSV
   text = text.replace(/```\s*\n([\s\S]*?)\n```/g, (match, content) => {
@@ -79,16 +73,13 @@ function replaceJsonWithToon(text) {
 
   // Pattern 5: Inline JSON objects/arrays (be conservative to avoid false positives)
   // Use a more robust approach: try to find complete JSON structures
-  text = text.replace(
-    /(\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}|\[[^[\]]*(?:\[[^[\]]*\][^[\]]*)*\])/g,
-    (match) => {
-      // Only convert if it's valid JSON, looks like data (not code), and is substantial
-      if (match.length >= 30 && looksLikeJson(match) && !looksLikeCode(match)) {
-        return convertJsonToToon(match, false);
-      }
-      return match;
-    },
-  );
+  text = text.replace(/(\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}|\[[^[\]]*(?:\[[^[\]]*\][^[\]]*)*\])/g, (match) => {
+    // Only convert if it's valid JSON, looks like data (not code), and is substantial
+    if (match.length >= 30 && looksLikeJson(match) && !looksLikeCode(match)) {
+      return convertJsonToToon(match, false);
+    }
+    return match;
+  });
 
   return text;
 }
@@ -121,7 +112,7 @@ function looksLikeJson(str) {
   if (!trimmed) return false;
 
   // Must start with { or [
-  if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) {
+  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) {
     return false;
   }
 
@@ -157,18 +148,18 @@ function looksLikeCode(str) {
  * Infers the type of a string value (number, boolean, or string)
  */
 function inferType(value) {
-  if (value === "" || value == null) return value;
+  if (value === '' || value == null) return value;
 
   // Try to parse as number
   const num = Number(value);
-  if (!Number.isNaN(num) && value.trim() !== "") {
+  if (!Number.isNaN(num) && value.trim() !== '') {
     return num;
   }
 
   // Check for boolean
   const lower = value.toLowerCase();
-  if (lower === "true") return true;
-  if (lower === "false") return false;
+  if (lower === 'true') return true;
+  if (lower === 'false') return false;
 
   // Otherwise return as string
   return value;
@@ -181,20 +172,14 @@ function inferType(value) {
 function generateToonTable(headers, rows) {
   // Format cell value for TOON (add quotes if needed)
   const formatCell = (value) => {
-    if (value == null || value === "") return "";
-    if (typeof value === "number" || typeof value === "boolean")
-      return String(value);
+    if (value == null || value === '') return '';
+    if (typeof value === 'number' || typeof value === 'boolean') return String(value);
 
     const str = String(value);
     // Quote if contains comma, colon, or looks like a number/boolean
-    if (
-      str.includes(",") ||
-      str.includes(":") ||
-      str.includes("-") ||
-      /^(true|false|\d+)$/i.test(str.trim())
-    ) {
+    if (str.includes(',') || str.includes(':') || str.includes('-') || /^(true|false|\d+)$/i.test(str.trim())) {
       // Escape backslashes first, then double quotes for TOON format
-      const escaped = str.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+      const escaped = str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
       return `"${escaped}"`;
     }
     return str;
@@ -202,21 +187,21 @@ function generateToonTable(headers, rows) {
 
   // Build TOON format
   const rowCount = rows.length;
-  const headerLine = `[${rowCount}]{${headers.join(",")}}:`;
+  const headerLine = `[${rowCount}]{${headers.join(',')}}:`;
 
   const dataLines = rows.map((row) => {
     const formattedCells = row.map(formatCell);
-    return `  ${formattedCells.join(",")}`;
+    return `  ${formattedCells.join(',')}`;
   });
 
-  return [headerLine, ...dataLines].join("\n");
+  return [headerLine, ...dataLines].join('\n');
 }
 
 /**
  * Checks if a string looks like CSV
  */
 function looksLikeCsv(str) {
-  const lines = str.trim().split("\n");
+  const lines = str.trim().split('\n');
   if (lines.length < 2) return false;
 
   // Check if first line has delimiters (comma, tab, or pipe)
@@ -244,12 +229,12 @@ function looksLikeCsv(str) {
  * Detects the delimiter used in a CSV line
  */
 function detectDelimiter(line) {
-  const delimiters = [",", "\t", "|"];
+  const delimiters = [',', '\t', '|'];
   let maxCount = 0;
-  let bestDelimiter = ",";
+  let bestDelimiter = ',';
 
   for (const delim of delimiters) {
-    const count = (line.match(new RegExp(`\\${delim}`, "g")) || []).length;
+    const count = (line.match(new RegExp(`\\${delim}`, 'g')) || []).length;
     if (count > maxCount) {
       maxCount = count;
       bestDelimiter = delim;
@@ -262,9 +247,9 @@ function detectDelimiter(line) {
 /**
  * Parses a single CSV line, handling quoted fields
  */
-function parseCsvLine(line, delimiter = ",") {
+function parseCsvLine(line, delimiter = ',') {
   const fields = [];
-  let current = "";
+  let current = '';
   let inQuotes = false;
 
   for (let i = 0; i < line.length; i++) {
@@ -283,7 +268,7 @@ function parseCsvLine(line, delimiter = ",") {
     } else if (char === delimiter && !inQuotes) {
       // End of field
       fields.push(current.trim());
-      current = "";
+      current = '';
     } else {
       current += char;
     }
@@ -302,10 +287,9 @@ function convertCsvToToon(csvString, isCodeBlock) {
   try {
     const lines = csvString
       .trim()
-      .split("\n")
+      .split('\n')
       .filter((line) => line.trim());
-    if (lines.length < 2)
-      return isCodeBlock ? `\`\`\`csv\n${csvString}\n\`\`\`` : csvString;
+    if (lines.length < 2) return isCodeBlock ? `\`\`\`csv\n${csvString}\n\`\`\`` : csvString;
 
     const delimiter = detectDelimiter(lines[0]);
     const headers = parseCsvLine(lines[0], delimiter);
@@ -345,7 +329,7 @@ function looksLikeMarkdownTable(str) {
   // All lines should start and end with |
   const hasPipes = lines.every((line) => {
     const trimmed = line.trim();
-    return trimmed.startsWith("|") && trimmed.endsWith("|");
+    return trimmed.startsWith('|') && trimmed.endsWith('|');
   });
   if (!hasPipes) return false;
 
@@ -363,7 +347,7 @@ function looksLikeMarkdownTable(str) {
  */
 function parseMarkdownTableRow(line) {
   return line
-    .split("|")
+    .split('|')
     .slice(1, -1) // Remove first and last empty elements from split
     .map((cell) => cell.trim());
 }
@@ -375,7 +359,7 @@ function convertMarkdownTableToToon(tableString) {
   try {
     const lines = tableString
       .trim()
-      .split("\n")
+      .split('\n')
       .filter((line) => line.trim());
     if (lines.length < 3) return tableString;
 

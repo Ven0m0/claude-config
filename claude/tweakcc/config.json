@@ -477,24 +477,11 @@
     ],
     "thinkingVerbs": {
       "format": "{}… ",
-      "verbs": [
-        "working"
-      ]
+      "verbs": ["working"]
     },
     "thinkingStyle": {
       "updateInterval": 120,
-      "phases": [
-        "⠋",
-        "⠙",
-        "⠹",
-        "⠸",
-        "⠼",
-        "⠴",
-        "⠦",
-        "⠧",
-        "⠇",
-        "⠏"
-      ],
+      "phases": ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"],
       "reverseMirror": false
     },
     "userMessageDisplay": {

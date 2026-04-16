@@ -30,9 +30,65 @@ import { tool } from '@opencode-ai/plugin';
 // ── Local embedder (all-MiniLM-L6-v2, 384-dim, q8) ───────────────────────────
 // Same model as codemogger — shares the HuggingFace cache at ~/.cache/huggingface
 
-let _pipe: any = null;
+interface PipelineResult {
+  tolist(): unknown;
+}
 
-async function getEmbedPipeline(): Promise<any> {
+type FeatureExtractionPipeline = (
+  inputs: string[],
+  options: { pooling: 'mean'; normalize: boolean }
+) => Promise<PipelineResult>;
+
+interface MemorySummary {
+  id: string;
+  category: string;
+  content: string;
+  weight: number;
+  score: number;
+  retrievalCount?: number;
+}
+
+interface ExtendedMemoryStore extends MemoryStore {
+  insertRawMemory(content: string, category: string, weight: number): Promise<void>;
+  penalizeMemory(id: string, factor: number): Promise<void>;
+  contradictMemory(id: string, correction?: string): Promise<{ deleted: boolean; correctionId?: string }>;
+}
+
+interface SessionEventRecord {
+  type?: string;
+  properties?: Record<string, unknown>;
+}
+
+interface ToolExecuteInput {
+  sessionID?: string;
+  session_id?: string;
+  tool?: string;
+  toolID?: string;
+}
+
+interface ToolExecuteOutput {
+  output?: unknown;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function asString(value: unknown): string | undefined {
+  return typeof value === 'string' ? value : undefined;
+}
+
+function getSessionId(properties?: Record<string, unknown>): string {
+  return asString(properties?.sessionID) ?? asString(properties?.id) ?? '';
+}
+
+function asExtendedMemoryStore(store: MemoryStore): ExtendedMemoryStore {
+  return store as ExtendedMemoryStore;
+}
+
+let _pipe: FeatureExtractionPipeline | null = null;
+
+async function getEmbedPipeline(): Promise<FeatureExtractionPipeline> {
   if (!_pipe) {
     const { pipeline } = await import('@huggingface/transformers');
     _pipe = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', { dtype: 'q8' });
@@ -44,7 +100,11 @@ async function getEmbedPipeline(): Promise<any> {
 async function embed(text: string): Promise<Float32Array> {
   const pipe = await getEmbedPipeline();
   const output = await pipe([text], { pooling: 'mean', normalize: true });
-  return new Float32Array((output.tolist() as number[][])[0]!);
+  const rows = output.tolist();
+  if (!Array.isArray(rows) || !Array.isArray(rows[0])) {
+    throw new Error('Unexpected embedding output');
+  }
+  return new Float32Array(rows[0].map((value) => Number(value)));
 }
 
 // ── Per-project store singletons ──────────────────────────────────────────────
@@ -59,7 +119,7 @@ interface StoreEntry {
 const stores = new Map<string, StoreEntry>();
 
 async function getStore(worktree: string, sessionId: string): Promise<MemoryStore> {
-  const { createMemoryStore } = (await import('memelord')) as any;
+  const { createMemoryStore } = await import('memelord');
   const key = resolve(worktree);
   const existing = stores.get(key);
   if (existing) return existing.store;
@@ -97,10 +157,12 @@ interface ToolCall {
   failed: boolean;
 }
 
-function extractToolSequence(parts: any[]): ToolCall[] {
+function extractToolSequence(parts: unknown[]): ToolCall[] {
   const seq: ToolCall[] = [];
   for (const part of parts) {
-    if (part.type === 'tool' && part.tool) {
+    if (!isRecord(part)) continue;
+
+    if (part.type === 'tool' && typeof part.tool === 'string') {
       const input = typeof part.input === 'string' ? part.input : JSON.stringify(part.input ?? {}).slice(0, 300);
       seq.push({ tool: part.tool, input, failed: false });
     }
@@ -113,7 +175,10 @@ function extractToolSequence(parts: any[]): ToolCall[] {
         text.includes('command not found') ||
         text.includes('No such file') ||
         text.includes('Permission denied');
-      seq[seq.length - 1]!.failed = failed;
+      const lastCall = seq.at(-1);
+      if (lastCall) {
+        lastCall.failed = failed;
+      }
     }
   }
   return seq;
@@ -141,7 +206,7 @@ function detectCorrections(seq: ToolCall[]): Correction[] {
 
 // ── Context string injected at session start ──────────────────────────────────
 
-function buildInjectionContext(memories: any[]): string {
+function buildInjectionContext(memories: MemorySummary[]): string {
   let ctx = '';
 
   if (memories.length > 0) {
@@ -184,12 +249,12 @@ const MemelordPlugin: Plugin = async ({ worktree, client }) => {
 
   return {
     // ── session.created: inject top memories + instructions ─────────────────
-    event: async ({ event }: any) => {
-      const ev = event as { type: string; properties?: Record<string, any> };
+    event: async ({ event }: { event: unknown }) => {
+      const ev: SessionEventRecord = isRecord(event) ? event : {};
 
       // ── session.created ────────────────────────────────────────────────────
       if (ev.type === 'session.created') {
-        const sessionId: string = ev.properties?.sessionID ?? ev.properties?.id ?? '';
+        const sessionId = getSessionId(ev.properties);
         if (!sessionId) return;
 
         // Register session state
@@ -206,14 +271,16 @@ const MemelordPlugin: Plugin = async ({ worktree, client }) => {
 
         try {
           const store = await getStore(root, sessionId);
-          const memories = await store.getTopByWeight(5);
+          const memories = (await store.getTopByWeight(5)) as MemorySummary[];
           if (memories.length === 0 && !existsSync(dbPath)) return;
 
           const context = buildInjectionContext(memories);
 
           // Track injected IDs for potential penalization
-          const state = sessions.get(sessionId)!;
-          state.injectedMemoryIds = memories.map((m: any) => m.id);
+          const state = sessions.get(sessionId);
+          if (state) {
+            state.injectedMemoryIds = memories.map((m) => m.id);
+          }
 
           // Inject as context-only message (no AI reply triggered)
           await client.session.prompt({
@@ -230,7 +297,7 @@ const MemelordPlugin: Plugin = async ({ worktree, client }) => {
 
       // ── session.idle: analyze transcript, auto-detect corrections ──────────
       if (ev.type === 'session.idle') {
-        const sessionId: string = ev.properties?.sessionID ?? ev.properties?.id ?? '';
+        const sessionId = getSessionId(ev.properties);
         if (!sessionId) return;
 
         const state = sessions.get(sessionId);
@@ -241,12 +308,16 @@ const MemelordPlugin: Plugin = async ({ worktree, client }) => {
 
         try {
           const store = await getStore(root, sessionId);
+          const extendedStore = asExtendedMemoryStore(store);
 
           // Get all message parts from the session
           const msgList = await client.session.messages({ path: { id: sessionId } });
-          const allParts: any[] = [];
-          for (const { parts } of (msgList.data ?? []) as any[]) {
-            if (Array.isArray(parts)) allParts.push(...parts);
+          const allParts: unknown[] = [];
+          const messages = Array.isArray(msgList.data) ? msgList.data : [];
+          for (const message of messages) {
+            if (isRecord(message) && Array.isArray(message.parts)) {
+              allParts.push(...message.parts);
+            }
           }
 
           if (allParts.length === 0) return;
@@ -257,7 +328,7 @@ const MemelordPlugin: Plugin = async ({ worktree, client }) => {
           const corrections = detectCorrections(seq);
           for (const c of corrections) {
             const content = `Auto-detected correction with ${c.tool}:\n\nFailed approach: ${c.failedInput}\nWorking approach: ${c.succeededInput}`;
-            await (store as any).insertRawMemory(content, 'correction', 1.5);
+            await extendedStore.insertRawMemory(content, 'correction', 1.5);
           }
 
           // Failure pattern detection from in-process failure log
@@ -273,7 +344,7 @@ const MemelordPlugin: Plugin = async ({ worktree, client }) => {
                 .slice(0, 2)
                 .map((f) => f.error.slice(0, 100))
                 .join('; ');
-              await (store as any).insertRawMemory(
+              await extendedStore.insertRawMemory(
                 `Repeated failures with ${toolName} (${count}x in session): ${examples}`,
                 'correction',
                 1.0
@@ -283,13 +354,15 @@ const MemelordPlugin: Plugin = async ({ worktree, client }) => {
 
           // Token estimation: penalize injected memories if session was expensive
           // Heuristic: each assistant text block ≈ 500 tokens, each tool use ≈ 200
-          const textBlocks = allParts.filter((p: any) => p.type === 'text' && typeof p.text === 'string');
-          const toolUses = allParts.filter((p: any) => p.type === 'tool');
+          const textBlocks = allParts.filter(
+            (part) => isRecord(part) && part.type === 'text' && typeof part.text === 'string'
+          );
+          const toolUses = allParts.filter((part) => isRecord(part) && part.type === 'tool');
           const tokenEstimate = textBlocks.length * 500 + toolUses.length * 200;
 
           if (tokenEstimate >= 20_000 && state.injectedMemoryIds.length > 0) {
             for (const id of state.injectedMemoryIds) {
-              await (store as any).penalizeMemory(id, 0.999);
+              await extendedStore.penalizeMemory(id, 0.999);
             }
           }
         } catch {
@@ -299,12 +372,12 @@ const MemelordPlugin: Plugin = async ({ worktree, client }) => {
 
       // ── session.deleted: embed pending memories + decay ────────────────────
       if (ev.type === 'session.deleted') {
-        const sessionId: string = ev.properties?.sessionID ?? ev.properties?.id ?? '';
+        const sessionId = getSessionId(ev.properties);
         if (!existsSync(dbPath)) return;
 
         try {
           // Need a fresh store with real embedder for this
-          const { createMemoryStore } = (await import('memelord')) as any;
+          const { createMemoryStore } = await import('memelord');
           const tempStore: MemoryStore = createMemoryStore({ dbPath, sessionId: sessionId || 'cleanup', embed });
           await tempStore.init();
           await tempStore.embedPending();
@@ -319,14 +392,14 @@ const MemelordPlugin: Plugin = async ({ worktree, client }) => {
     },
 
     // ── tool.execute.after: record failures ───────────────────────────────────
-    'tool.execute.after': async (input: any, output: any) => {
-      const sessionId: string = input.sessionID ?? input.session_id ?? '';
+    'tool.execute.after': async (input: ToolExecuteInput, output: ToolExecuteOutput) => {
+      const sessionId = input.sessionID ?? input.session_id ?? '';
       if (!sessionId) return;
 
       const state = sessions.get(sessionId);
       if (!state) return;
 
-      const text: string = typeof output.output === 'string' ? output.output : JSON.stringify(output.output ?? '');
+      const text = typeof output.output === 'string' ? output.output : JSON.stringify(output.output ?? '');
 
       const failed =
         text.startsWith('Error:') ||
@@ -472,7 +545,7 @@ const MemelordPlugin: Plugin = async ({ worktree, client }) => {
           const sessionId = ctx.sessionID ?? ctx.session_id ?? 'unknown';
           const store = await getStore(root, sessionId);
 
-          const result = await (store as any).contradictMemory(args.memory_id, args.correction);
+          const result = await asExtendedMemoryStore(store).contradictMemory(args.memory_id, args.correction);
 
           if (!result.deleted) return `Memory ${args.memory_id} not found.`;
           if (result.correctionId)

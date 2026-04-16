@@ -165,7 +165,12 @@ function formatGrepResults(matches: GrepMatch[], base: string): string {
   for (const m of matches) {
     const rel = isAbsolute(m.file) ? relative(base, m.file) : m.file;
     const key = rel || m.file;
-    (byFile.get(key) ?? (byFile.set(key, []), byFile.get(key)!)).push({ ...m, file: key });
+    let fileMatches = byFile.get(key);
+    if (!fileMatches) {
+      fileMatches = [];
+      byFile.set(key, fileMatches);
+    }
+    fileMatches.push({ ...m, file: key });
   }
   return [...byFile.entries()]
     .map(([file, ms]) => {

@@ -156,7 +156,8 @@ async function runSgReplace(opts: {
   const result = await runSg({ ...opts, updateAll: false });
   if (result.error || result.matches.length === 0) return result;
 
-  const sg = findSg()!;
+  const sg = findSg();
+  if (!sg) return { ...result, error: 'sg binary not found' };
   const args = ['run', '-p', opts.pattern, '--lang', opts.lang, '-r', opts.rewrite, '--update-all'];
   if (opts.globs) for (const g of opts.globs) args.push('--globs', g);
   args.push(...(opts.paths.length ? opts.paths : ['.']));

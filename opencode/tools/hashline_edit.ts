@@ -174,7 +174,11 @@ function normalizeEdits(raw: RawEdit[]): Edit[] {
 
 function getLineNum(e: Edit): number {
   try {
-    if (e.op === 'replace') return parseRef(e.end ?? e.pos!).line;
+    if (e.op === 'replace') {
+      const anchor = e.end ?? e.pos;
+      if (!anchor) throw new Error('replace requires pos or end');
+      return parseRef(anchor).line;
+    }
     return e.pos ? parseRef(e.pos).line : Number.NEGATIVE_INFINITY;
   } catch {
     return Number.POSITIVE_INFINITY;
@@ -197,7 +201,8 @@ function applyEdits(content: string, edits: Edit[]): string {
   for (let i = 0; i < edits.length; i++) {
     const ed = edits[i];
     if (ed.op === 'replace' && ed.end) {
-      const s = parseRef(ed.pos!).line;
+      if (!ed.pos) throw new Error(`Edit ${i + 1}: replace requires pos`);
+      const s = parseRef(ed.pos).line;
       const e = parseRef(ed.end).line;
       ranges.push({ s, e, idx: i });
     }
@@ -263,7 +268,8 @@ function applyEdits(content: string, edits: Edit[]): string {
   for (const e of sorted) {
     switch (e.op) {
       case 'replace':
-        lines = e.end ? applyReplaceRange(lines, e.pos!, e.end, e.lines) : applySetLine(lines, e.pos!, e.lines);
+        if (!e.pos) throw new Error('replace requires pos');
+        lines = e.end ? applyReplaceRange(lines, e.pos, e.end, e.lines) : applySetLine(lines, e.pos, e.lines);
         break;
       case 'append':
         lines = e.pos ? applyInsertAfter(lines, e.pos, e.lines) : [...lines, ...toLines(e.lines)];

@@ -74,9 +74,9 @@ export default tool({
     // ── collect all inputs ───────────────────────────────────────────────────
     let texts: string[];
     try {
-      texts = args.inputs ? args.inputs.map(resolve) : [resolve(args.input!)];
-    } catch (e: any) {
-      return `Error: ${e.message}`;
+      texts = args.inputs ? args.inputs.map(resolve) : args.input ? [resolve(args.input)] : [];
+    } catch (error: unknown) {
+      return `Error: ${error instanceof Error ? error.message : String(error)}`;
     }
 
     // ── build runner script ──────────────────────────────────────────────────
@@ -173,8 +173,12 @@ if (results.length === 1) {
     try {
       const result = await Bun.$`bun run ${scriptPath}`.text();
       return result.trim();
-    } catch (err: any) {
-      return `Error: ${err?.stderr ? String(err.stderr).trim() : String(err)}`;
+    } catch (error: unknown) {
+      const stderr =
+        typeof error === 'object' && error !== null && 'stderr' in error
+          ? String((error as { stderr?: unknown }).stderr ?? '').trim()
+          : '';
+      return `Error: ${stderr || String(error)}`;
     } finally {
       for (const p of [scriptPath, inputPath]) {
         try {
