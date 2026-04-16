@@ -12,6 +12,7 @@ BASH_BLOCK_PATTERN = (
 )
 
 
+
 def extract_code_blocks(markdown_content: str) -> dict[str, list[tuple[str, str]]]:
     """Extract code blocks from markdown content.
 

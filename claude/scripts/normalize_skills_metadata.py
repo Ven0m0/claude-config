@@ -178,11 +178,12 @@ def normalize_skill_metadata(skill_path: Path) -> bool:
 
 def extract_keywords_from_name(skill_name: str, description: str) -> list:
     """Extract auto-trigger keywords from skill name and description."""
-    keywords = []
+    # Use a set for O(1) membership checking and deduplication
+    keywords = set()
 
     # Extract from name
     parts = skill_name.replace("moai-", "").split("-")
-    keywords.extend(parts)
+    keywords.update(parts)
 
     # Add common keywords from description
     if description:
@@ -200,12 +201,10 @@ def extract_keywords_from_name(skill_name: str, description: str) -> list:
 
         for keyword, variants in common_keywords.items():
             if any(v in desc_lower for v in variants):
-                if keyword not in keywords:
-                    keywords.append(keyword)
+                keywords.add(keyword)
 
-    # Deduplicate and limit
-    keywords = list(set(keywords))[:10]
-    return sorted(keywords) if keywords else []
+    # Sort before limiting to keep output deterministic
+    return sorted(keywords)[:10] if keywords else []
 
 
 def main() -> None:
