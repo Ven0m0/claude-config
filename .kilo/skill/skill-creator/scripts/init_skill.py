@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Skill Initializer - Creates a new skill from template
+"""Skill Initializer - Creates a new skill from template.
 
 Usage:
     init_skill.py <skill-name> --path <path>
@@ -9,26 +8,26 @@ Examples:
     init_skill.py my-new-skill --path skills/public
     init_skill.py my-api-helper --path skills/private
     init_skill.py custom-skill --path /custom/location
+
 """
 
 import sys
 from pathlib import Path
 
-
 SKILL_TEMPLATE = """---
 name: {skill_name}
-description: [TODO: Complete and informative explanation of what the skill does and when to use it. Include WHEN to use this skill - specific scenarios, file types, or tasks that trigger it.]
+description: [PLACEHOLDER: Complete and informative explanation of what the skill does and when to use it. Include WHEN to use this skill - specific scenarios, file types, or tasks that trigger it.]
 ---
 
 # {skill_title}
 
 ## Overview
 
-[TODO: 1-2 sentences explaining what this skill enables]
+[PLACEHOLDER: 1-2 sentences explaining what this skill enables]
 
 ## Structuring This Skill
 
-[TODO: Choose the structure that best fits this skill's purpose. Common patterns:
+[PLACEHOLDER: Choose the structure that best fits this skill's purpose. Common patterns:
 
 **1. Workflow-Based** (best for sequential processes)
 - Works well when there are clear step-by-step procedures
@@ -56,7 +55,7 @@ Delete this entire "Structuring This Skill" section when done - it's just guidan
 
 ## First Main Section
 
-[TODO: Add content here. See examples in existing skills:
+[PLACEHOLDER: Add content here. See examples in existing skills:
 - Code samples for technical skills
 - Decision trees for complex workflows
 - Concrete examples with realistic user requests
@@ -129,7 +128,7 @@ def process_path(target_path: Path, verbose: bool = False) -> int:
             print(f"Processing: {{target_path.absolute()}}")
 
         # EXAMPLE LOGIC: List files in the directory
-        # TODO: Replace with actual script logic for {skill_name}
+        # PLACEHOLDER: Replace with actual script logic for {skill_name}
         if target_path.is_dir():
             print(f"Contents of {{target_path}}:")
             for item in target_path.iterdir():
@@ -244,8 +243,7 @@ def title_case_skill_name(skill_name):
 
 
 def init_skill(skill_name, path):
-    """
-    Initialize a new skill directory with template SKILL.md.
+    """Initialize a new skill directory with template SKILL.md.
 
     Args:
         skill_name: Name of the skill
@@ -253,6 +251,7 @@ def init_skill(skill_name, path):
 
     Returns:
         Path to created skill directory, or None if error
+
     """
     # Determine skill directory path
     skill_dir = Path(path).resolve() / skill_name
@@ -273,7 +272,8 @@ def init_skill(skill_name, path):
     # Create SKILL.md from template
     skill_title = title_case_skill_name(skill_name)
     skill_content = SKILL_TEMPLATE.format(
-        skill_name=skill_name, skill_title=skill_title
+        skill_name=skill_name,
+        skill_title=skill_title,
     )
 
     skill_md_path = skill_dir / "SKILL.md"
@@ -314,9 +314,11 @@ def init_skill(skill_name, path):
     # Print next steps
     print(f"\n✅ Skill '{skill_name}' initialized successfully at {skill_dir}")
     print("\nNext steps:")
-    print("1. Edit SKILL.md to complete the TODO items and update the description")
     print(
-        "2. Customize or delete the example files in scripts/, references/, and assets/"
+        "1. Edit SKILL.md to complete the placeholder items and update the description",
+    )
+    print(
+        "2. Customize or delete the example files in scripts/, references/, and assets/",
     )
     print("3. Run the validator when ready to check the skill structure")
 

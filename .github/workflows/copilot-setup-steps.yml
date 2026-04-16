@@ -36,4 +36,4 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Preinstall bun global packages
         run: |
-          bun i -g @zed-industries/vscode-langservers-extracted yaml-language-server bash-language-server @ast-grep/cli @biomejs/biome typescript @vtsls/language-server
+          bun i -g @zed-industries/vscode-langservers-extracted yaml-language-server bash-language-server @ast-grep/cli @biomejs/biome oxlint oxfmt typescript @vtsls/language-server
