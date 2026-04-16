@@ -4,6 +4,7 @@
     "@biomejs/biome": "2.4.12",
     "agnix": "0.17.0",
     "claude-code-lint": "^0.3.0",
+    "oxc": "*",
     "oxfmt": "0.45.0",
     "oxlint": "1.60.0",
     "ultracite": "^7.4.2"
