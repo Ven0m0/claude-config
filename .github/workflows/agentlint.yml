@@ -19,11 +19,11 @@ jobs:
       - name: Run claudelint
         run: uv tool run "claudelint@${CLAUDELINT_VERSION}" --strict .
 
-      - name: Validate agent configs
+      - name: Validate Claude Code agent configs
         uses: agent-sh/agnix@v0
-      - uses: agent-sh/agnix@v0
         with:
           target: 'claude-code'
-      - uses: agent-sh/agnix@v0
+      - name: Validate Cursor agent configs
+        uses: agent-sh/agnix@v0
         with:
           target: 'cursor'
