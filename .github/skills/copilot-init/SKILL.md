@@ -1,7 +1,7 @@
 ---
 name: copilot-init
 description: Bootstrap Copilot guidance for any repository by creating or updating `.github/workflows/copilot-setup-steps.yml`, focused lint/check/test workflows, `.github/instructions/*.instructions.md`, and `.github/skills/*/SKILL.md`. Use when asked to initialize Copilot guidance, scaffold repo instructions or skills, create or update `copilot-setup-steps`, or add Copilot-facing validation workflows.
-allowed-tools: "Read, Write, Edit, Glob, Grep, Bash"
+allowed-tools: 'Read, Write, Edit, Glob, Grep, Bash'
 ---
 
 # Copilot init

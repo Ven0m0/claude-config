@@ -204,6 +204,7 @@ Animates a single attribute over time.
 ```
 
 Common easing curves:
+
 - Ease: 0.25 0.1 0.25 1
 - Ease-in: 0.42 0 1 1
 - Ease-out: 0 0 0.58 1
@@ -343,15 +344,18 @@ Modern API for complex animations.
 ```javascript
 const circle = document.querySelector('circle');
 
-circle.animate([
-  { transform: 'scale(1)', opacity: 1 },
-  { transform: 'scale(1.5)', opacity: 0.5 },
-  { transform: 'scale(1)', opacity: 1 }
-], {
-  duration: 2000,
-  iterations: Infinity,
-  easing: 'ease-in-out'
-});
+circle.animate(
+  [
+    { transform: 'scale(1)', opacity: 1 },
+    { transform: 'scale(1.5)', opacity: 0.5 },
+    { transform: 'scale(1)', opacity: 1 },
+  ],
+  {
+    duration: 2000,
+    iterations: Infinity,
+    easing: 'ease-in-out',
+  }
+);
 ```
 
 ### Path Animation with JavaScript
@@ -413,7 +417,7 @@ gsap.to('.circle', {
   duration: 2,
   attr: { cx: 200, r: 50 },
   fill: '#e74c3c',
-  ease: 'elastic.out(1, 0.3)'
+  ease: 'elastic.out(1, 0.3)',
 });
 
 // Timeline for sequenced animations
@@ -600,7 +604,9 @@ SMIL is deprecated in Chrome/Edge but still works. For maximum compatibility, us
 ```css
 /* Feature detection for CSS animations */
 @supports (animation: name) {
-  .animated { animation: pulse 2s infinite; }
+  .animated {
+    animation: pulse 2s infinite;
+  }
 }
 
 /* Fallback for older browsers */

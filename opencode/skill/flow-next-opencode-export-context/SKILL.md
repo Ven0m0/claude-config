@@ -10,6 +10,7 @@ Build RepoPrompt context and export to a markdown file for use with external LLM
 **Use case**: When you want Carmack-level review but prefer to use an external model.
 
 **CRITICAL: flowctl is BUNDLED — NOT installed globally.** `which flowctl` will fail (expected). Always use:
+
 ```bash
 ROOT="$(git rev-parse --show-toplevel)"
 OPENCODE_DIR="$ROOT/.opencode"
@@ -23,10 +24,12 @@ Arguments: $ARGUMENTS
 Format: `<type> <target> [focus areas]`
 
 Types:
+
 - `plan <epic-id>` - Export plan review context
 - `impl` - Export implementation review context (current branch)
 
 Examples:
+
 - `/flow-next:export-context plan fn-1 focus on security`
 - `/flow-next:export-context impl focus on the auth changes`
 
@@ -48,12 +51,14 @@ Parse arguments to determine if this is a plan or impl export.
 ### Step 2: Gather Content
 
 **For plan export:**
+
 ```bash
 $FLOWCTL show <epic-id> --json
 $FLOWCTL cat <epic-id>
 ```
 
 **For impl export:**
+
 ```bash
 git branch --show-current
 git log main..HEAD --oneline 2>/dev/null || git log master..HEAD --oneline
@@ -78,6 +83,7 @@ $FLOWCTL rp select-add --window "$W" --tab "$T" <files>
 ### Step 5: Build Review Prompt
 
 Get builder's handoff:
+
 ```bash
 $FLOWCTL rp prompt-get --window "$W" --tab "$T"
 ```
@@ -85,6 +91,7 @@ $FLOWCTL rp prompt-get --window "$W" --tab "$T"
 Build combined prompt with review criteria (same as plan-review or impl-review).
 
 Set the prompt:
+
 ```bash
 cat > /tmp/export-prompt.md << 'EOF'
 [COMBINED PROMPT WITH REVIEW CRITERIA]

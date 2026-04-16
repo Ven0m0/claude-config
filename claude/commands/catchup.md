@@ -27,6 +27,7 @@ Show the user what will be loaded.
 3. **Read the file** - Use Read tool to load content
 
 **Implementation**:
+
 ```bash
 # Get list of changed files (exclude deleted)
 git diff --name-only HEAD
@@ -34,6 +35,7 @@ git ls-files --others --exclude-standard
 ```
 
 For each file:
+
 - Skip if binary or too large
 - Use Read tool to load into context
 
@@ -65,5 +67,6 @@ Ready to continue where you left off.
 ---
 
 **Sources:**
+
 - [How I Use Every Claude Code Feature](https://blog.sshh.io/p/how-i-use-every-claude-code-feature)
 - [Claude Code Custom Commands: 3 Practical Examples](https://www.aiengineering.report/p/claude-code-custom-commands-3-practical)

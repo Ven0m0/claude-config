@@ -3,9 +3,9 @@ services:
     image: ghcr.io/btriapitsyn/openchamber:latest
     restart: unless-stopped
     environment:
-      UI_PASSWORD: "${UI_PASSWORD}"
+      UI_PASSWORD: '${UI_PASSWORD}'
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://localhost:3000/health"]
+      test: ['CMD', 'curl', '-fsS', 'http://localhost:3000/health']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -22,7 +22,7 @@ services:
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
     environment:
-      TUNNEL_TOKEN: "${TUNNEL_TOKEN}"
+      TUNNEL_TOKEN: '${TUNNEL_TOKEN}'
     command: tunnel --no-autoupdate run
     depends_on:
       openchamber:

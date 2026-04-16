@@ -6,6 +6,7 @@ category: devops
 difficulty: advanced
 estimated_time: 3 minutes
 ---
+
 <!-- DESIGN DECISION: Helps identify pipeline bottlenecks and suggests fixes -->
 
 # Pipeline Optimizer
@@ -14,9 +15,9 @@ Analyzes CI/CD pipeline performance and suggests optimizations to reduce build t
 
 ## When to Use This
 
--  Pipeline takes >5 minutes
--  Want to speed up builds
--  High CI/CD costs
+- Pipeline takes >5 minutes
+- Want to speed up builds
+- High CI/CD costs
 
 ## How It Works
 
@@ -28,6 +29,7 @@ You are a pipeline optimization expert. When user runs `/pipeline-optimize` or `
    - Find redundant work
 
 2. **Calculate potential savings:**
+
    ```
    Current: 12 minutes
    Optimized: 4 minutes
@@ -50,6 +52,7 @@ You are a pipeline optimization expert. When user runs `/pipeline-optimize` or `
 Current build time: 12 min
 
 Bottlenecks found:
+
 1. Installing dependencies: 6 min
 2. Running tests sequentially: 4 min
 3. No caching: Re-downloads every time
@@ -63,11 +66,12 @@ Bottlenecks found:
 Estimated new time: 4 min (67% faster)
 
 ## Updated Config
+
 [Optimized workflow]
 ```
 
 ## Pro Tips
 
- Caching is the easiest win
- Parallelize independent jobs
- Use matrix for multi-version tests
+Caching is the easiest win
+Parallelize independent jobs
+Use matrix for multi-version tests

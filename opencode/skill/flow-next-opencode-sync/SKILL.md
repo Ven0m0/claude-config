@@ -8,6 +8,7 @@ description: Manually trigger plan-sync to update downstream task specs after im
 Manually trigger plan-sync to update downstream task specs.
 
 **CRITICAL: flowctl is BUNDLED — NOT installed globally.** Always use:
+
 ```bash
 ROOT="$(git rev-parse --show-toplevel)"
 OPENCODE_DIR="$ROOT/.opencode"
@@ -33,10 +34,12 @@ FLOWCTL="$OPENCODE_DIR/bin/flowctl"
 ```
 
 Parse $ARGUMENTS for:
+
 - First positional arg = `ID`
 - `--dry-run` flag = `DRY_RUN` (true/false)
 
 Get cross-epic config (defaults to false):
+
 ```bash
 CROSS_EPIC="$($FLOWCTL config get planSync.crossEpic --json 2>/dev/null | jq -r '.value // empty')"
 if [[ -z "$CROSS_EPIC" || "$CROSS_EPIC" == "null" ]]; then
@@ -45,11 +48,13 @@ fi
 ```
 
 **Validate ID format:**
+
 - Must start with `fn-`
 - If no ID: "Usage: /flow-next:sync <id> [--dry-run]"
 - If invalid: "Invalid ID format. Use fn-N (epic) or fn-N.M (task)."
 
 Detect ID type:
+
 - Contains `.` (e.g., fn-1.2) → task ID
 - No `.` (e.g., fn-1) → epic ID
 
@@ -68,6 +73,7 @@ $FLOWCTL show <ID> --json
 ```
 
 If fails:
+
 - Task: "Task <id> not found. Run `flowctl list` to see available."
 - Epic: "Epic <id> not found. Run `flowctl epics` to see available."
 
@@ -76,6 +82,7 @@ Stop on failure.
 ### Step 4: Find Downstream Tasks
 
 **For task ID input:**
+
 ```bash
 # Extract epic from task ID
 EPIC=$(echo "<task-id>" | sed 's/\.[0-9]*$//')
@@ -87,6 +94,7 @@ $FLOWCTL tasks --epic "$EPIC" --json
 Filter to `status: todo` or `status: blocked`. Exclude source task.
 
 **For epic ID input:**
+
 ```bash
 $FLOWCTL tasks --epic "<epic-id>" --json
 ```
@@ -99,9 +107,11 @@ $FLOWCTL tasks --epic "<epic-id>" --json
 2. Filter remaining to `status: todo` or `status: blocked` (downstream).
 
 **If no downstream tasks:**
+
 ```
 No downstream tasks to sync (all done or none exist).
 ```
+
 Stop (success).
 
 ### Step 5: Spawn Plan-Sync Agent
@@ -128,6 +138,7 @@ Use Task tool with `subagent_type: flow-next:plan-sync`
 ### Step 6: Report Results
 
 **Normal mode:**
+
 ```
 Plan-sync: <source> -> downstream tasks
 
@@ -136,6 +147,7 @@ Scanned: N tasks (<list>)
 ```
 
 **Dry-run mode:**
+
 ```
 Plan-sync: <source> -> downstream tasks (DRY RUN)
 
@@ -146,15 +158,15 @@ No files modified.
 
 ## Error Messages
 
-| Case | Message |
-|------|---------|
-| No ID | "Usage: /flow-next:sync <id> [--dry-run]" |
-| No `.flow/` | "No .flow/ found. Run `flowctl init` first." |
-| Invalid format | "Invalid ID format. Use fn-N (epic) or fn-N.M (task)." |
-| Task not found | "Task <id> not found. Run `flowctl list` to see available." |
+| Case           | Message                                                      |
+| -------------- | ------------------------------------------------------------ |
+| No ID          | "Usage: /flow-next:sync <id> [--dry-run]"                    |
+| No `.flow/`    | "No .flow/ found. Run `flowctl init` first."                 |
+| Invalid format | "Invalid ID format. Use fn-N (epic) or fn-N.M (task)."       |
+| Task not found | "Task <id> not found. Run `flowctl list` to see available."  |
 | Epic not found | "Epic <id> not found. Run `flowctl epics` to see available." |
-| No source | "No completed or in-progress tasks to sync from." |
-| No downstream | "No downstream tasks to sync (all done or none exist)." |
+| No source      | "No completed or in-progress tasks to sync from."            |
+| No downstream  | "No downstream tasks to sync (all done or none exist)."      |
 
 ## Rules
 

@@ -1,4 +1,5 @@
 > ## Documentation Index
+>
 > Fetch the complete documentation index at: https://code.claude.com/docs/llms.txt
 > Use this file to discover all available pages before exploring further.
 
@@ -18,11 +19,11 @@ to help you complete software engineering tasks efficiently.
 There are two additional built-in output styles focused on teaching you the
 codebase and how Claude operates:
 
-* **Explanatory**: Provides educational "Insights" in between helping you
+- **Explanatory**: Provides educational "Insights" in between helping you
   complete software engineering tasks. Helps you understand implementation
   choices and codebase patterns.
 
-* **Learning**: Collaborative, learn-by-doing mode where Claude will not only
+- **Learning**: Collaborative, learn-by-doing mode where Claude will not only
   share "Insights" while coding, but also ask you to contribute small, strategic
   pieces of code yourself. Claude Code will add `TODO(human)` markers in your
   code for you to implement.
@@ -31,23 +32,23 @@ codebase and how Claude operates:
 
 Output styles directly modify Claude Code's system prompt.
 
-* All output styles exclude instructions for efficient output (such as
+- All output styles exclude instructions for efficient output (such as
   responding concisely).
-* Custom output styles exclude instructions for coding (such as verifying code
+- Custom output styles exclude instructions for coding (such as verifying code
   with tests), unless `keep-coding-instructions` is true.
-* All output styles have their own custom instructions added to the end of the
+- All output styles have their own custom instructions added to the end of the
   system prompt.
-* All output styles trigger reminders for Claude to adhere to the output style
+- All output styles trigger reminders for Claude to adhere to the output style
   instructions during the conversation.
 
 ## Change your output style
 
 You can either:
 
-* Run `/output-style` to access a menu and select your output style (this can
+- Run `/output-style` to access a menu and select your output style (this can
   also be accessed from the `/config` menu)
 
-* Run `/output-style [style]`, such as `/output-style explanatory`, to directly
+- Run `/output-style [style]`, such as `/output-style explanatory`, to directly
   switch to a style
 
 These changes apply to the [local project level](/en/settings) and are saved in
@@ -59,11 +60,10 @@ field in a settings file at a different level.
 Custom output styles are Markdown files with frontmatter and the text that will
 be added to the system prompt:
 
-```markdown  theme={null}
+```markdown theme={null}
 ---
 name: My Custom Style
-description:
-  A brief description of what this style does, to be displayed to the user
+description: A brief description of what this style does, to be displayed to the user
 ---
 
 # Custom Style Instructions
@@ -97,7 +97,7 @@ command:
 Output styles completely "turn off" the parts of Claude Code's default system
 prompt specific to software engineering. Neither CLAUDE.md nor
 `--append-system-prompt` edit Claude Code's default system prompt. CLAUDE.md
-adds the contents as a user message *following* Claude Code's default system
+adds the contents as a user message _following_ Claude Code's default system
 prompt. `--append-system-prompt` appends the content to the system prompt.
 
 ### Output Styles vs. [Agents](/en/sub-agents)

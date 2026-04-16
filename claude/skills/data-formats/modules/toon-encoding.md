@@ -252,6 +252,7 @@ def demonstrate_toon_optimization():
 ## TOON Format Specification
 
 ### Type Markers
+
 - string: No marker (default)
 - number: # prefix
 - boolean: ! prefix (!t, !f)
@@ -260,12 +261,14 @@ def demonstrate_toon_optimization():
 - json-fallback: $ prefix (JSON-encoded)
 
 ### Structure Rules
+
 - Objects: `{key1:value1,key2:value2}`
 - Arrays: `[item1|item2|item3]`
 - Escaping: Backslash `\` for special characters
 - Separators: `,` for objects, `|` for arrays
 
 ### Performance Characteristics
+
 - Token Reduction: 40-60% vs JSON for typical data
 - Parsing Speed: 2-3x faster than JSON for simple structures
 - Size Reduction: 30-50% smaller than JSON for most use cases

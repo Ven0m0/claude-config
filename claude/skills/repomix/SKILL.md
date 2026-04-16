@@ -227,31 +227,26 @@ repomix --no-security-check
 When user requests repository packaging:
 
 1. **Assess Requirements**
-
    - Identify target repository (local/remote)
    - Determine output format needed
    - Check for sensitive data concerns
 
 1. **Configure Filters**
-
    - Set include patterns for relevant files
    - Add ignore patterns for unnecessary files
    - Enable/disable comment removal
 
 1. **Execute Packaging**
-
    - Run repomix with appropriate options
    - Monitor token counts
    - Verify security checks
 
 1. **Validate Output**
-
    - Review generated file
    - Confirm no sensitive data
    - Check token limits for target LLM
 
 1. **Deliver Context**
-
    - Provide packaged file to user
    - Include token count summary
    - Note any warnings or issues

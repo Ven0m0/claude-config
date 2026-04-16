@@ -1,5 +1,5 @@
 ---
-applyTo: "**/*.py"
+applyTo: '**/*.py'
 ---
 
 Python in this repository targets `>=3.14`. All tooling runs through `uv`.

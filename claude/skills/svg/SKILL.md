@@ -9,14 +9,14 @@ compatibility: Designed for Claude Code
 allowed-tools: Read Grep Glob Bash(svgo:*) Bash(npx:*) WebFetch
 user-invocable: false
 metadata:
-  version: "1.0.0"
-  category: "tool"
-  modularized: "true"
-  status: "active"
-  updated: "2026-01-26"
-  tags: "svg, vector, graphics, svgo, optimization, animation, icons"
-  related-skills: "moai-domain-frontend, moai-docs-generation"
-  context7-libraries: "/nicolo-ribaudo/svgo"
+  version: '1.0.0'
+  category: 'tool'
+  modularized: 'true'
+  status: 'active'
+  updated: '2026-01-26'
+  tags: 'svg, vector, graphics, svgo, optimization, animation, icons'
+  related-skills: 'moai-domain-frontend, moai-docs-generation'
+  context7-libraries: '/nicolo-ribaudo/svgo'
 ---
 
 # SVG Creation and Optimization Specialist
@@ -54,6 +54,7 @@ Polygon: `<polygon points="50,10 90,90 10,90" />`
 ### Path Commands Quick Reference
 
 Movement Commands:
+
 - M x y: Move to absolute position
 - m dx dy: Move relative
 - L x y: Line to absolute
@@ -65,6 +66,7 @@ Movement Commands:
 - Z: Close path
 
 Curve Commands:
+
 - C x1 y1 x2 y2 x y: Cubic bezier (two control points)
 - S x2 y2 x y: Smooth cubic (reflects previous control)
 - Q x1 y1 x y: Quadratic bezier (one control point)
@@ -197,16 +199,16 @@ export default {
     {
       name: 'sortAttrs',
       params: {
-        xmlnsOrder: 'alphabetical'
-      }
+        xmlnsOrder: 'alphabetical',
+      },
     },
     {
       name: 'removeAttrs',
       params: {
-        attrs: ['data-name', 'class']
-      }
-    }
-  ]
+        attrs: ['data-name', 'class'],
+      },
+    },
+  ],
 };
 ```
 
@@ -222,12 +224,12 @@ export default {
         overrides: {
           removeViewBox: false,
           cleanupIds: {
-            preserve: ['icon-', 'logo-']
-          }
-        }
-      }
-    }
-  ]
+            preserve: ['icon-', 'logo-'],
+          },
+        },
+      },
+    },
+  ],
 };
 ```
 
@@ -342,8 +344,15 @@ Keyframe animation for SVG elements:
 
 ```css
 @keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.1); opacity: 0.8; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
 }
 
 .animated-circle {
@@ -362,7 +371,9 @@ Stroke drawing animation:
 }
 
 @keyframes draw {
-  to { stroke-dashoffset: 0; }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 ```
 

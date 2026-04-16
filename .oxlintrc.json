@@ -1,7 +1,3 @@
 {
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "extends": [
-    "./node_modules/ultracite/config/oxlint/core/.oxlintrc.json",
-    "./node_modules/ultracite/config/oxlint/react/.oxlintrc.json"
-  ]
+  "$schema": "./node_modules/oxlint/configuration_schema.json"
 }

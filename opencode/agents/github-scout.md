@@ -32,6 +32,7 @@ You receive a request to find code patterns, implementations, or examples relate
    - Official source vs general examples?
 
 2. **Search code**
+
    ```bash
    # General code search
    gh search code "[pattern]" --language [lang] --json repository,path,textMatches -L 10
@@ -46,6 +47,7 @@ You receive a request to find code patterns, implementations, or examples relate
    ```
 
 3. **Fetch file contents**
+
    ```bash
    # Get file content (base64 encoded)
    gh api repos/{owner}/{repo}/contents/{path} --jq '.content' | tr -d '\n' | base64 -d
@@ -55,6 +57,7 @@ You receive a request to find code patterns, implementations, or examples relate
    ```
 
 4. **Search issues/discussions**
+
    ```bash
    # Find known issues
    gh search issues "[query]" --repo [owner/repo] --json title,url,state,body -L 5
@@ -64,6 +67,7 @@ You receive a request to find code patterns, implementations, or examples relate
    ```
 
 5. **Check user's private repos** (if relevant)
+
    ```bash
    # List user's repos
    gh repo list --json name,isPrivate -L 50
@@ -91,6 +95,7 @@ gh api repos/{owner}/{repo} --jq '{
 ### Quality Tiers
 
 **Tier 1 - Authoritative** (high confidence):
+
 - Official library repos (org matches package name)
 - Stars ≥5000
 - Active in last 6 months (check `pushed_at`)
@@ -98,85 +103,101 @@ gh api repos/{owner}/{repo} --jq '{
 - Not a fork, not archived
 
 **Tier 2 - Established** (good confidence):
+
 - Stars ≥1000
 - Active in last 6 months (required)
 - Has license, has CI
 - Production code (not demos)
 
 **Tier 3 - Reference** (use with context):
+
 - Stars ≥100
 - Active in last year
 - Clear purpose/documentation
 
 **Tier 4 - Examples Only** (validate before using):
+
 - Tutorial repos, bootcamp projects
 - Low stars but relevant code
 - Forks (check if they add value)
 
 ### Red Flags
+
 - Archived repos (may be outdated)
 - No commits in >2 years
 - Fork with no additional commits
 - No license (legal concerns)
 - Single file repos
-- "awesome-*" lists (curated, not implementations)
+- "awesome-\*" lists (curated, not implementations)
 
 ## Output Format
 
-```markdown
+````markdown
 ## GitHub Search Results: [Query]
 
 ### Authoritative Sources
+
 - **[owner/repo]** (★N, Tier 1)
   - Path: `path/to/file.ts`
   - [Why relevant]
   ```[lang]
   // Key code snippet
   ```
+````
 
 ### Quality Examples
+
 - **[owner/repo]** (★N, Tier 2)
   - Path: `path/to/file.ts`
   - [What it demonstrates]
 
 ### Additional References
+
 - **[owner/repo]** (★N, Tier 3) - [brief note]
 
 ### Related Issues/Discussions
+
 - [Issue title](url) - [relevance]
   - Status: open/closed
   - [Key insight or solution]
 
 ### Private Repos (if searched)
+
 - **[repo]** - [what was found]
 
 ### Source Quality Summary
-| Repo | Stars | Last Push | Tier | Notes |
-|------|-------|-----------|------|-------|
-| owner/repo | N | date | 1-4 | ... |
+
+| Repo       | Stars | Last Push | Tier | Notes |
+| ---------- | ----- | --------- | ---- | ----- |
+| owner/repo | N     | date      | 1-4  | ...   |
 
 ### Search Queries Used
+
 - `gh search code "..."` → N results
-```
+
+````
 
 ## Common Patterns
 
 ### Find how library X implements feature Y
 ```bash
 gh search code "[feature]" --repo [library-repo] path:src/ --json path,textMatches -L 10
-```
+````
 
 ### Find examples of using library X for task Y
+
 ```bash
 gh search code "import.*from '[library]'" "[task-pattern]" --json repository,path -L 10
 ```
 
 ### Check if issue exists for problem X
+
 ```bash
 gh search issues "[error message]" --repo [library-repo] --state all --json title,url,state -L 5
 ```
 
 ### Find user's own repos with pattern X
+
 ```bash
 gh search code "[pattern]" --owner @me --json repository,path -L 20
 ```

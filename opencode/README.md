@@ -1,4 +1,5 @@
 # OpenCode
+
 > [awesome-opencode](https://github.com/awesome-opencode/awesome-opencode)
 
 OpenCode configuration, agent prompts, local package setup, plus lean plugin, LSP, and formatter guidance.
@@ -35,14 +36,14 @@ The tracked config now stays intentionally lean and relies on built-in OpenCode 
 
 ## Plugins (6 total)
 
-| Plugin | Purpose |
-|---|---|
-| `oh-my-opencode@3.16.0` | Broad OpenCode orchestration bundle |
-| `opencode-image-compress@0.3.2` | Image compression |
-| `opencode-ignore@1.1.0` | Ignore rules |
-| `opencode-pty@0.3.2` | PTY integration |
-| `opencode-session-handoff@1.1.6` | Session handoff |
-| `opencode-websearch@0.5.0` | Web search |
+| Plugin                           | Purpose                             |
+| -------------------------------- | ----------------------------------- |
+| `oh-my-opencode@3.16.0`          | Broad OpenCode orchestration bundle |
+| `opencode-image-compress@0.3.2`  | Image compression                   |
+| `opencode-ignore@1.1.0`          | Ignore rules                        |
+| `opencode-pty@0.3.2`             | PTY integration                     |
+| `opencode-session-handoff@1.1.6` | Session handoff                     |
+| `opencode-websearch@0.5.0`       | Web search                          |
 
 ## Providers and Model Strategy
 
@@ -67,12 +68,12 @@ Provider auth stays in the config through env variables and cache-friendly provi
 
 The tracked MCP set is now all-remote so the same JSON works on Linux and Windows 10/11 without shell-specific wrappers.
 
-| MCP | Purpose | Auth |
-|---|---|---|
+| MCP                 | Purpose                      | Auth                                       |
+| ------------------- | ---------------------------- | ------------------------------------------ |
 | `github-mcp-server` | GitHub tools via Copilot MCP | `Authorization: Bearer {env:GITHUB_TOKEN}` |
-| `ref-tools` | Docs and reference search | `x-ref-api-key: {env:REF_API_KEY}` |
-| `exa` | Web and code search | `x-api-key: {env:EXA_API_KEY}` |
-| `gh_grep` | Public code search | none |
+| `ref-tools`         | Docs and reference search    | `x-ref-api-key: {env:REF_API_KEY}`         |
+| `exa`               | Web and code search          | `x-api-key: {env:EXA_API_KEY}`             |
+| `gh_grep`           | Public code search           | none                                       |
 
 Removed from the baseline:
 

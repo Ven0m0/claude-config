@@ -2,8 +2,8 @@
 name: docker
 description: Run Docker commands within a container environment, including starting the Docker daemon and managing containers. Use when building, running, or managing Docker containers and images.
 triggers:
-- docker
-- container
+  - docker
+  - container
 ---
 
 # Docker Usage Guide

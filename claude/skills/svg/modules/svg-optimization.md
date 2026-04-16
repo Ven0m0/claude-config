@@ -87,9 +87,7 @@ Create svgo.config.mjs in project root:
 ```javascript
 export default {
   multipass: true,
-  plugins: [
-    'preset-default'
-  ]
+  plugins: ['preset-default'],
 };
 ```
 
@@ -113,15 +111,15 @@ export default {
           // Customize plugins
           cleanupIds: {
             minify: true,
-            preserve: ['logo', 'icon-']
+            preserve: ['logo', 'icon-'],
           },
           convertPathData: {
-            floatPrecision: 2
-          }
-        }
-      }
-    }
-  ]
+            floatPrecision: 2,
+          },
+        },
+      },
+    },
+  ],
 };
 ```
 
@@ -138,29 +136,26 @@ export default {
       name: 'prefixIds',
       params: {
         prefix: 'app-',
-        delim: '-'
-      }
+        delim: '-',
+      },
     },
 
     // Remove specific attributes
     {
       name: 'removeAttrs',
       params: {
-        attrs: ['data-name', 'class', 'style']
-      }
+        attrs: ['data-name', 'class', 'style'],
+      },
     },
 
     // Add attributes to root SVG
     {
       name: 'addAttributesToSVGElement',
       params: {
-        attributes: [
-          { 'aria-hidden': 'true' },
-          { focusable: 'false' }
-        ]
-      }
-    }
-  ]
+        attributes: [{ 'aria-hidden': 'true' }, { focusable: 'false' }],
+      },
+    },
+  ],
 };
 ```
 
@@ -177,25 +172,25 @@ export default {
       params: {
         overrides: {
           removeViewBox: false,
-          cleanupIds: false
-        }
-      }
+          cleanupIds: false,
+        },
+      },
     },
     'removeXMLNS',
     'removeDimensions',
     {
       name: 'removeAttrs',
       params: {
-        attrs: ['class', 'data-name', 'fill', 'stroke']
-      }
+        attrs: ['class', 'data-name', 'fill', 'stroke'],
+      },
     },
     {
       name: 'addAttributesToSVGElement',
       params: {
-        attributes: [{ fill: 'currentColor' }]
-      }
-    }
-  ]
+        attributes: [{ fill: 'currentColor' }],
+      },
+    },
+  ],
 };
 ```
 
@@ -213,18 +208,18 @@ export default {
           removeTitle: false,
           removeDesc: false,
           cleanupIds: {
-            preserve: ['logo', 'brand']
-          }
-        }
-      }
+            preserve: ['logo', 'brand'],
+          },
+        },
+      },
     },
     {
       name: 'prefixIds',
       params: {
-        prefix: 'logo'
-      }
-    }
-  ]
+        prefix: 'logo',
+      },
+    },
+  ],
 };
 ```
 

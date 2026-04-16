@@ -45,15 +45,15 @@ If test framework detected by testing-scout, verify tests are runnable using the
 
 **Common examples** (adapt to whatever framework is detected):
 
-| Framework | Verification Command |
-|-----------|---------------------|
-| pytest | `pytest --collect-only` |
-| Jest | `npx jest --listTests` |
-| Vitest | `npx vitest --run --reporter=dot` |
-| Mocha | `npx mocha --dry-run` |
-| Go test | `go test ./... -list .` |
-| Cargo test | `cargo test --no-run` |
-| PHPUnit | `phpunit --list-tests` |
+| Framework  | Verification Command              |
+| ---------- | --------------------------------- |
+| pytest     | `pytest --collect-only`           |
+| Jest       | `npx jest --listTests`            |
+| Vitest     | `npx vitest --run --reporter=dot` |
+| Mocha      | `npx mocha --dry-run`             |
+| Go test    | `go test ./... -list .`           |
+| Cargo test | `cargo test --no-run`             |
+| PHPUnit    | `phpunit --list-tests`            |
 
 These are examples. For other frameworks, find the equivalent "list tests" or "dry run" command. The goal is to verify tests are discoverable without actually running them.
 
@@ -62,6 +62,7 @@ These are examples. For other frameworks, find the equivalent "list tests" or "d
 **Adapt to project**: Use the package manager detected (pnpm/npm/yarn/bun). If venv detected for Python, activate it first.
 
 Example:
+
 ```bash
 # Python with venv
 cd apps/api && source .venv/bin/activate && pytest --collect-only 2>&1 | head -20
@@ -91,20 +92,24 @@ Read [pillars.md](pillars.md) for pillar definitions and criteria.
 ### Agent Readiness Score (Pillars 1-5)
 
 For each pillar (1-5):
+
 1. Map scout findings to criteria (pass/fail)
 2. Calculate pillar score: `(passed / total) * 100`
 
 Calculate:
+
 - **Agent Readiness Score**: average of Pillars 1-5 scores
 - **Maturity Level**: based on thresholds in pillars.md
 
 ### Production Readiness Score (Pillars 6-8)
 
 For each pillar (6-8):
+
 1. Map scout findings to criteria (pass/fail)
 2. Calculate pillar score: `(passed / total) * 100`
 
 Calculate:
+
 - **Production Readiness Score**: average of Pillars 6-8 scores
 
 ### Overall Score
@@ -114,6 +119,7 @@ Calculate:
 ### Prioritize Recommendations
 
 Generate prioritized recommendations from **Pillars 1-5 only**:
+
 1. Critical first (CLAUDE.md, .env.example)
 2. High impact second (pre-commit hooks, lint commands)
 3. Medium last (build scripts, .gitignore)
@@ -132,43 +138,43 @@ Generate prioritized recommendations from **Pillars 1-5 only**:
 
 ## Scores Summary
 
-| Category | Score | Level |
-|----------|-------|-------|
-| **Agent Readiness** (Pillars 1-5) | X% | Level N - [Name] |
-| Production Readiness (Pillars 6-8) | X% | — |
-| **Overall** | X% | — |
+| Category                           | Score | Level            |
+| ---------------------------------- | ----- | ---------------- |
+| **Agent Readiness** (Pillars 1-5)  | X%    | Level N - [Name] |
+| Production Readiness (Pillars 6-8) | X%    | —                |
+| **Overall**                        | X%    | —                |
 
 ## Agent Readiness (Pillars 1-5)
 
 These affect your maturity level and are eligible for fixes.
 
-| Pillar | Score | Status |
-|--------|-------|--------|
+| Pillar             | Score    | Status                        |
+| ------------------ | -------- | ----------------------------- |
 | Style & Validation | X% (N/6) | ✅ ≥80% / ⚠️ 40-79% / ❌ <40% |
-| Build System | X% (N/6) | ✅/⚠️/❌ |
-| Testing | X% (N/6) | ✅/⚠️/❌ |
-| Documentation | X% (N/6) | ✅/⚠️/❌ |
-| Dev Environment | X% (N/6) | ✅/⚠️/❌ |
+| Build System       | X% (N/6) | ✅/⚠️/❌                      |
+| Testing            | X% (N/6) | ✅/⚠️/❌                      |
+| Documentation      | X% (N/6) | ✅/⚠️/❌                      |
+| Dev Environment    | X% (N/6) | ✅/⚠️/❌                      |
 
 ## Production Readiness (Pillars 6-8)
 
 Informational only. No fixes offered — address independently if desired.
 
-| Pillar | Score | Status |
-|--------|-------|--------|
-| Observability | X% (N/6) | ✅/⚠️/❌ |
-| Security | X% (N/6) | ✅/⚠️/❌ |
+| Pillar             | Score    | Status   |
+| ------------------ | -------- | -------- |
+| Observability      | X% (N/6) | ✅/⚠️/❌ |
+| Security           | X% (N/6) | ✅/⚠️/❌ |
 | Workflow & Process | X% (N/6) | ✅/⚠️/❌ |
 
 ## Detailed Findings
 
 ### Pillar 1: Style & Validation (X%)
 
-| Criterion | Status | Evidence |
-|-----------|--------|----------|
-| SV1: Linter | ✅/❌ | [details] |
-| SV2: Formatter | ✅/❌ | [details] |
-| ... | ... | ... |
+| Criterion      | Status | Evidence  |
+| -------------- | ------ | --------- |
+| SV1: Linter    | ✅/❌  | [details] |
+| SV2: Formatter | ✅/❌  | [details] |
+| ...            | ...    | ...       |
 
 [Repeat for each pillar]
 
@@ -196,6 +202,7 @@ Informational only. No fixes offered — address independently if desired.
 ### Using AskUserQuestion Correctly
 
 The tool provides an interactive UI. Each question should:
+
 - Have a clear header (max 12 chars)
 - Explain what each option does and WHY it helps agents
 - Use `multiSelect: true` so users can pick multiple items
@@ -209,21 +216,23 @@ Ask ONE question per category that has recommendations. Skip categories with no 
 
 ```json
 {
-  "questions": [{
-    "question": "Which documentation improvements should I create? These help agents understand your project without guessing.",
-    "header": "Docs",
-    "multiSelect": true,
-    "options": [
-      {
-        "label": "Create CLAUDE.md (Recommended)",
-        "description": "Agent instruction file with commands, conventions, and project structure. Critical for agents to work effectively."
-      },
-      {
-        "label": "Create .env.example",
-        "description": "Template with [N] detected env vars. Prevents agents from guessing required configuration."
-      }
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Which documentation improvements should I create? These help agents understand your project without guessing.",
+      "header": "Docs",
+      "multiSelect": true,
+      "options": [
+        {
+          "label": "Create CLAUDE.md (Recommended)",
+          "description": "Agent instruction file with commands, conventions, and project structure. Critical for agents to work effectively."
+        },
+        {
+          "label": "Create .env.example",
+          "description": "Template with [N] detected env vars. Prevents agents from guessing required configuration."
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -231,29 +240,31 @@ Ask ONE question per category that has recommendations. Skip categories with no 
 
 ```json
 {
-  "questions": [{
-    "question": "Which tooling improvements should I add? These give agents instant feedback instead of waiting for CI.",
-    "header": "Tooling",
-    "multiSelect": true,
-    "options": [
-      {
-        "label": "Add pre-commit hooks (Recommended)",
-        "description": "Husky + lint-staged for instant lint/format feedback. Catches errors in 5 seconds instead of 10 minutes."
-      },
-      {
-        "label": "Add linter config",
-        "description": "[Tool] configuration for code quality checks. Agents can run lint to verify their changes."
-      },
-      {
-        "label": "Add formatter config",
-        "description": "[Tool] configuration for consistent code style. Prevents style drift across agent sessions."
-      },
-      {
-        "label": "Add runtime version file",
-        "description": "Pin [runtime] version. Ensures consistent environment across machines."
-      }
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Which tooling improvements should I add? These give agents instant feedback instead of waiting for CI.",
+      "header": "Tooling",
+      "multiSelect": true,
+      "options": [
+        {
+          "label": "Add pre-commit hooks (Recommended)",
+          "description": "Husky + lint-staged for instant lint/format feedback. Catches errors in 5 seconds instead of 10 minutes."
+        },
+        {
+          "label": "Add linter config",
+          "description": "[Tool] configuration for code quality checks. Agents can run lint to verify their changes."
+        },
+        {
+          "label": "Add formatter config",
+          "description": "[Tool] configuration for consistent code style. Prevents style drift across agent sessions."
+        },
+        {
+          "label": "Add runtime version file",
+          "description": "Pin [runtime] version. Ensures consistent environment across machines."
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -261,21 +272,23 @@ Ask ONE question per category that has recommendations. Skip categories with no 
 
 ```json
 {
-  "questions": [{
-    "question": "Which testing improvements should I add? These let agents verify their work.",
-    "header": "Testing",
-    "multiSelect": true,
-    "options": [
-      {
-        "label": "Add test config (Recommended)",
-        "description": "[Framework] configuration file. Enables test command for agents to verify changes."
-      },
-      {
-        "label": "Add test script",
-        "description": "Adds 'test' command that agents can discover and run."
-      }
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Which testing improvements should I add? These let agents verify their work.",
+      "header": "Testing",
+      "multiSelect": true,
+      "options": [
+        {
+          "label": "Add test config (Recommended)",
+          "description": "[Framework] configuration file. Enables test command for agents to verify changes."
+        },
+        {
+          "label": "Add test script",
+          "description": "Adds 'test' command that agents can discover and run."
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -283,21 +296,23 @@ Ask ONE question per category that has recommendations. Skip categories with no 
 
 ```json
 {
-  "questions": [{
-    "question": "Which environment improvements should I add?",
-    "header": "Environment",
-    "multiSelect": true,
-    "options": [
-      {
-        "label": "Add .gitignore entries (Recommended)",
-        "description": "Ignore .env, build outputs, node_modules. Prevents accidental commits of sensitive data."
-      },
-      {
-        "label": "Create devcontainer (Bonus)",
-        "description": "VS Code devcontainer config for reproducible environment. Nice-to-have, not essential for agents."
-      }
-    ]
-  }]
+  "questions": [
+    {
+      "question": "Which environment improvements should I add?",
+      "header": "Environment",
+      "multiSelect": true,
+      "options": [
+        {
+          "label": "Add .gitignore entries (Recommended)",
+          "description": "Ignore .env, build outputs, node_modules. Prevents accidental commits of sensitive data."
+        },
+        {
+          "label": "Create devcontainer (Bonus)",
+          "description": "VS Code devcontainer config for reproducible environment. Nice-to-have, not essential for agents."
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -316,6 +331,7 @@ Ask ONE question per category that has recommendations. Skip categories with no 
 ## Phase 6: Apply Fixes
 
 For each approved fix:
+
 1. Read [remediation.md](remediation.md) for the template
 2. Detect project conventions (indent style, quote style, etc.)
 3. Adapt template to match conventions
@@ -325,6 +341,7 @@ For each approved fix:
 5. Report what was created/modified
 
 **Non-destructive rules:**
+
 - Never overwrite without explicit consent
 - Merge with existing configs when possible
 - Use detected project style
@@ -340,16 +357,20 @@ After fixes applied:
 ## Changes Applied
 
 ### Created
+
 - `CLAUDE.md` — Project conventions for agents
 - `.env.example` — Environment variable template
 
 ### Modified
+
 - `package.json` — Added lint-staged config
 
 ### Skipped (user declined)
+
 - Pre-commit hooks
 
 ### Not Offered (production readiness)
+
 - CI/CD, PR templates, observability, security — address independently if desired
 ```
 
@@ -360,6 +381,7 @@ Run assessment again to see updated score?
 ```
 
 If yes, run Phase 1-4 again and show:
+
 - New Agent Readiness score and maturity level
 - Score changes per pillar
 - Remaining recommendations

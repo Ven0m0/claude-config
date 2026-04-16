@@ -1,59 +1,58 @@
 # .markdownlint.yaml - Markdown linting rules
 
-# Disable overly strict rules for technical documentation
-MD013: false # Line length - code examples often exceed 80 chars
-MD041: false # First line heading - not required for all files
-MD024: false # Duplicate headings - allow for long pages
-MD025: false # Multiple top-level headings - acceptable in long docs
-MD029: false # Ordered list item prefix - allow flexible numbering
-MD033: false # Allow inline HTML for special formatting
-MD034: false # Allow bare URLs in documentation
-MD035: false # Horizontal rule style - allow any style
-MD036: false # Emphasis as heading - allow for examples/notes
-MD040: false # Fenced code language - not always applicable
-MD046: false # Code block style - allow both fenced and indented
-
 default: true
 
-# Disable line length checking for better documentation readability
+# Line length - code examples often exceed 80 chars
 MD013: false
-
-# Allow inline HTML where needed for documentation
-MD033:
-  allowed_elements: ["br", "img", "a", "ul", "li", "ol", "p", "div", "span", "skill"]
-
-# Allow both asterisk and underscore emphasis
-MD049: false
-
-# Allow any ordered list prefix style (not just 1/2/3)
-MD029: false
-
-# Allow lists without blank lines around them (common in docs)
-MD032: false
-
-# Allow headings without blank lines (for denser documentation)
-MD022: false
-
-# Allow bare URLs
-MD034: false
-
-# Allow duplicate headings (some sections repeat in different contexts)
-MD024: false
-
-# Don't require blank lines around fenced code blocks
-MD031: false
-
-# Don't require single trailing newline
-MD047: false
-
-# Allow code fences without language specification
-MD040: false
 
 # Allow heading level skips (common in docs)
 MD001: false
 
-# Allow emphasis used as headings (for step-by-step guides)
-MD036: false
+# Allow headings without blank lines (for denser documentation)
+MD022: false
+
+# Duplicate headings - allow for long pages
+MD024: false
+
+# Multiple top-level headings - acceptable in long docs
+MD025: false
 
 # Allow trailing punctuation in headings
 MD026: false
+
+# Ordered list item prefix - allow flexible numbering
+MD029: false
+
+# Don't require blank lines around fenced code blocks
+MD031: false
+
+# Allow lists without blank lines around them (common in docs)
+MD032: false
+
+# Allow inline HTML where needed for documentation
+MD033:
+  allowed_elements: ['br', 'img', 'a', 'ul', 'li', 'ol', 'p', 'div', 'span', 'skill']
+
+# Allow bare URLs in documentation
+MD034: false
+
+# Horizontal rule style - allow any style
+MD035: false
+
+# Emphasis as heading - allow for examples/notes
+MD036: false
+
+# Allow code fences without language specification
+MD040: false
+
+# First line heading - not required for all files
+MD041: false
+
+# Code block style - allow both fenced and indented
+MD046: false
+
+# Don't require single trailing newline
+MD047: false
+
+# Allow both asterisk and underscore emphasis
+MD049: false

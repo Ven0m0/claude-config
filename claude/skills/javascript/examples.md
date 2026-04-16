@@ -3,14 +3,14 @@
 ## API route with validation
 
 ```js
-import { z } from "zod";
+import { z } from 'zod';
 
 const payloadSchema = z.object({ name: z.string().min(1) });
 
 export async function createUser(req, res) {
   const parsed = payloadSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: "invalid_payload" });
+    res.status(400).json({ error: 'invalid_payload' });
     return;
   }
 
@@ -38,11 +38,11 @@ export async function retry(fn, attempts = 3) {
 ## Vitest test pattern
 
 ```js
-import { describe, expect, it } from "vitest";
-import { retry } from "./retry.js";
+import { describe, expect, it } from 'vitest';
+import { retry } from './retry.js';
 
-describe("retry", () => {
-  it("returns on first success", async () => {
+describe('retry', () => {
+  it('returns on first success', async () => {
     const result = await retry(async () => 42);
     expect(result).toBe(42);
   });

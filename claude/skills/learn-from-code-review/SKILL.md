@@ -2,9 +2,9 @@
 name: learn-from-code-review
 description: Distill code review feedback from GitHub PRs into reusable skills and guidelines. This skill should be used when users ask to "learn from code reviews", "distill PR feedback", "improve coding standards", "extract learnings from reviews", or want to generate skills/guidelines from historical review comments.
 triggers:
-- /learn-from-reviews
-- learn from code review
-- distill reviews
+  - /learn-from-reviews
+  - learn from code review
+  - distill reviews
 ---
 
 # Learn from Code Review
@@ -61,12 +61,14 @@ gh api repos/{owner}/{repo}/pulls/{pr_number}/reviews \
 Apply noise filtering to keep only meaningful feedback:
 
 **Exclude:**
+
 - Bot comments (dependabot, copilot, github-actions, etc.)
 - Low-signal responses ("LGTM", "+1", "looks good", "thanks", "nice")
 - Comments shorter than 30 characters
 - Auto-generated comments (CI status, coverage reports)
 
 **Categorize remaining comments by:**
+
 - Security concerns
 - Performance patterns
 - Code style/conventions
@@ -109,6 +111,7 @@ Prefer skills over AGENTS.md updates, since AGENTS.md typically already contains
 ### Step 6: Create Draft PR (if applicable)
 
 Use the `create_pr` tool to open a draft PR with the proposed changes. The PR description should include:
+
 - Number of PRs analyzed
 - Number of comments processed
 - Categories of patterns found
@@ -118,7 +121,7 @@ Use the `create_pr` tool to open a draft PR with the proposed changes. The PR de
 
 ### Sample Skill: API Error Handling
 
-```yaml
+````yaml
 ---
 name: api-error-handling
 description: API error handling patterns for this repository.
@@ -131,9 +134,10 @@ description: API error handling patterns for this repository.
 ❌ Avoid:
 ```python
 return {"error": str(e)}
-```
+````
 
 ✅ Prefer:
+
 ```python
 return {
     "error": {
@@ -150,6 +154,7 @@ return {
 logger.error(f"API error in {endpoint}: {e}", exc_info=True)
 return error_response(e)
 ```
+
 ```
 
 ## Defaults
@@ -184,3 +189,4 @@ Handle these common edge cases gracefully:
 
 For posting structured code reviews, see the `github-pr-review` skill.
 For creating new skills, see the `skill-creator` skill.
+```

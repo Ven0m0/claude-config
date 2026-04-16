@@ -38,12 +38,12 @@ python3 scripts/collect.py <root> [--include GLOB …] [--output raw.json]
 
 Each raw item contains:
 
-| Field | Description |
-|-------|-------------|
-| `file` | Repo-relative file path |
-| `line` | 1-indexed line number |
-| `marker` | `TODO \| FIXME \| HACK \| NOTE \| OPTIMIZE \| SECURITY \| DEBT` |
-| `text` | Full comment text, stripped of leading `#`, `//`, `/*` markers |
+| Field     | Description                                                               |
+| --------- | ------------------------------------------------------------------------- |
+| `file`    | Repo-relative file path                                                   |
+| `line`    | 1-indexed line number                                                     |
+| `marker`  | `TODO \| FIXME \| HACK \| NOTE \| OPTIMIZE \| SECURITY \| DEBT`           |
+| `text`    | Full comment text, stripped of leading `#`, `//`, `/*` markers            |
 | `context` | 5 lines before + target line + 5 lines after (indices relative to `line`) |
 
 ### Phase 2 — Deduplicate
@@ -59,10 +59,10 @@ Keep the item with the more complete `text`. Discard the other. Log merged pairs
 
 For each surviving item, read the surrounding context and set:
 
-| Field | How to determine |
-|-------|-----------------|
-| `intent` | One sentence: what was the author trying to accomplish? Infer from function name, variable names, and adjacent comments. |
-| `category` | `bug \| performance \| refactor \| feature \| security \| debt \| docs` — pick exactly one. |
+| Field            | How to determine                                                                                                                                  |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `intent`         | One sentence: what was the author trying to accomplish? Infer from function name, variable names, and adjacent comments.                          |
+| `category`       | `bug \| performance \| refactor \| feature \| security \| debt \| docs` — pick exactly one.                                                       |
 | `blocking_paths` | List of `file:line` references that must change before this item can be addressed (e.g. an interface definition, a config key, a shared utility). |
 
 Rules:
@@ -75,12 +75,12 @@ Rules:
 
 Assign exactly one severity per item:
 
-| Severity | Criteria |
-|----------|----------|
-| `critical` | data loss risk, security hole, crash path, broken public API contract |
-| `high` | incorrect observable behavior, major perf regression (>2×), missing error handling on external I/O |
-| `medium` | code smell, partial implementation, outdated abstraction, silent failure |
-| `low` | docs gap, naming, style, optional improvement, informational NOTE |
+| Severity   | Criteria                                                                                           |
+| ---------- | -------------------------------------------------------------------------------------------------- |
+| `critical` | data loss risk, security hole, crash path, broken public API contract                              |
+| `high`     | incorrect observable behavior, major perf regression (>2×), missing error handling on external I/O |
+| `medium`   | code smell, partial implementation, outdated abstraction, silent failure                           |
+| `low`      | docs gap, naming, style, optional improvement, informational NOTE                                  |
 
 Use marker as a prior: `FIXME → high`, `HACK → medium`, `TODO → low`, `SECURITY → critical`, `OPTIMIZE → medium`, `DEBT → medium`, `NOTE → low`. Escalate when context evidence demands it; never downgrade below the marker prior.
 
@@ -119,19 +119,19 @@ Emit one record per task in the sorted order. Use this exact schema:
 
 Field rules:
 
-| Field | Constraint |
-|-------|-----------|
-| `id` | `T\d{4}`, unique, zero-padded, assigned in topo-sort order |
-| `wave` | Integer ≥ 0 |
-| `title` | Imperative, ≤72 chars, no pronouns |
-| `anchor` | `file:line` — the exact location of the original comment |
-| `severity` | One of: `critical`, `high`, `medium`, `low` |
-| `category` | One of: `bug`, `performance`, `refactor`, `feature`, `security`, `debt`, `docs` |
-| `intent` | One sentence, past-tense ("was trying to …") — do not use "maybe" or "consider" |
-| `acceptance_criteria` | 2–5 bullets, each testable, anchored to `file:line`, no vague language |
-| `implementation_hint` | Exact function/type/pattern to use, with `file:line`; no prose explanations |
-| `loc_delta` | `S` (<20 LOC), `M` (20–100), `L` (100–300), `XL` (300+) |
-| `blocking_ids` | List of `T\d{4}` strings; empty list `[]` if none |
+| Field                 | Constraint                                                                      |
+| --------------------- | ------------------------------------------------------------------------------- |
+| `id`                  | `T\d{4}`, unique, zero-padded, assigned in topo-sort order                      |
+| `wave`                | Integer ≥ 0                                                                     |
+| `title`               | Imperative, ≤72 chars, no pronouns                                              |
+| `anchor`              | `file:line` — the exact location of the original comment                        |
+| `severity`            | One of: `critical`, `high`, `medium`, `low`                                     |
+| `category`            | One of: `bug`, `performance`, `refactor`, `feature`, `security`, `debt`, `docs` |
+| `intent`              | One sentence, past-tense ("was trying to …") — do not use "maybe" or "consider" |
+| `acceptance_criteria` | 2–5 bullets, each testable, anchored to `file:line`, no vague language          |
+| `implementation_hint` | Exact function/type/pattern to use, with `file:line`; no prose explanations     |
+| `loc_delta`           | `S` (<20 LOC), `M` (20–100), `L` (100–300), `XL` (300+)                         |
+| `blocking_ids`        | List of `T\d{4}` strings; empty list `[]` if none                               |
 
 ---
 

@@ -6,6 +6,7 @@ description: Structural rules and conventions for authoring installable plugins 
 # Plugin Conventions
 
 Each plugin lives under `plugins/<name>/` and must contain:
+
 - `README.md` — purpose, slash commands exposed, install instructions
 - `PLUGIN.md` or `plugin.json` — machine-readable manifest
 - `tests/` — at least one test file appropriate to the plugin's language
@@ -20,6 +21,7 @@ Each plugin lives under `plugins/<name>/` and must contain:
 ## Manifest Fields
 
 Required in plugin manifest:
+
 - `name` — matches directory name exactly
 - `version` — semver
 - `description` — one sentence, no trailing period
@@ -35,6 +37,7 @@ Required in plugin manifest:
 ## Validation
 
 Run after any plugin change:
+
 ```
 uv tool run "claudelint@0.3.3" --strict plugins/<name>/
 node plugins/plugin-validator/test.js

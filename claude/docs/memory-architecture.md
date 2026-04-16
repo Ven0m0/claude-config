@@ -24,12 +24,13 @@ Next session: session-start.sh surfaces recent knowledge
 
 Agents write knowledge through the existing `bd comment` interface with two recognized prefixes:
 
-| Prefix | Who writes | Purpose |
-|--------|-----------|---------|
-| `INVESTIGATION:` | Orchestrator | Root cause analysis, file:line pointers, fix strategy |
-| `LEARNED:` | Supervisors | Conventions, gotchas, patterns discovered during implementation |
+| Prefix           | Who writes   | Purpose                                                         |
+| ---------------- | ------------ | --------------------------------------------------------------- |
+| `INVESTIGATION:` | Orchestrator | Root cause analysis, file:line pointers, fix strategy           |
+| `LEARNED:`       | Supervisors  | Conventions, gotchas, patterns discovered during implementation |
 
 Example:
+
 ```bash
 bd comment BD-001 "LEARNED: TaskGroup requires @Sendable closures in strict concurrency mode."
 ```
@@ -41,18 +42,26 @@ An async `PostToolUse` hook on the Bash tool intercepts these commands and extra
 `.beads/memory/knowledge.jsonl` -- one JSON object per line:
 
 ```json
-{"key":"learned-taskgroup-requires-sendable-closures","type":"learned","content":"TaskGroup requires @Sendable closures in strict concurrency mode.","source":"supervisor","tags":["learned","async","concurrency"],"ts":1706360000,"bead":"BD-001"}
+{
+  "key": "learned-taskgroup-requires-sendable-closures",
+  "type": "learned",
+  "content": "TaskGroup requires @Sendable closures in strict concurrency mode.",
+  "source": "supervisor",
+  "tags": ["learned", "async", "concurrency"],
+  "ts": 1706360000,
+  "bead": "BD-001"
+}
 ```
 
-| Field | Description |
-|-------|-------------|
-| `key` | Auto-generated slug from type + first 60 chars of content |
-| `type` | `learned` or `investigation` |
-| `content` | The raw insight text |
-| `source` | `orchestrator` or `supervisor` (detected from CWD) |
-| `tags` | Auto-detected from content via keyword scan |
-| `ts` | Unix timestamp |
-| `bead` | The bead ID that produced this knowledge |
+| Field     | Description                                               |
+| --------- | --------------------------------------------------------- |
+| `key`     | Auto-generated slug from type + first 60 chars of content |
+| `type`    | `learned` or `investigation`                              |
+| `content` | The raw insight text                                      |
+| `source`  | `orchestrator` or `supervisor` (detected from CWD)        |
+| `tags`    | Auto-detected from content via keyword scan               |
+| `ts`      | Unix timestamp                                            |
+| `bead`    | The bead ID that produced this knowledge                  |
 
 Same key = latest entry wins (deduplication on read).
 

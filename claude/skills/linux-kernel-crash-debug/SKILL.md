@@ -16,11 +16,13 @@ This skill guides you through analyzing Linux kernel crash dumps using the crash
 ## Installation
 
 ### Claude Code
+
 ```bash
 claude skill install linux-kernel-crash-debug.skill
 ```
 
 ### OpenClaw
+
 ```bash
 # Method 1: Install via ClawHub
 clawhub install linux-kernel-crash-debug
@@ -57,10 +59,10 @@ crash vmlinux ddr.bin --ram_start=0x80000000
 
 ## Prerequisites
 
-| Item | Requirement |
-|------|-------------|
-| **vmlinux** | Must have debug symbols (`CONFIG_DEBUG_INFO=y`) |
-| **vmcore** | kdump/netdump/diskdump/ELF format |
+| Item        | Requirement                                          |
+| ----------- | ---------------------------------------------------- |
+| **vmlinux** | Must have debug symbols (`CONFIG_DEBUG_INFO=y`)      |
+| **vmcore**  | kdump/netdump/diskdump/ELF format                    |
 | **Version** | vmlinux must exactly match the vmcore kernel version |
 
 ### Package Installation
@@ -120,33 +122,33 @@ crash /usr/lib/debug/lib/modules/$(uname -r)/vmlinux /proc/kcore
 
 ### Debugging Analysis
 
-| Command | Purpose | Example |
-|---------|---------|---------|
-| `sys` | System info/panic reason | `sys`, `sys -i` |
-| `log` | Kernel message buffer | `log`, `log \| tail` |
-| `bt` | Stack backtrace | `bt`, `bt -a`, `bt -f` |
-| `struct` | View structures | `struct task_struct <addr>` |
-| `p/px/pd` | Print variables | `p jiffies`, `px current` |
-| `kmem` | Memory analysis | `kmem -i`, `kmem -S <cache>` |
+| Command   | Purpose                  | Example                      |
+| --------- | ------------------------ | ---------------------------- |
+| `sys`     | System info/panic reason | `sys`, `sys -i`              |
+| `log`     | Kernel message buffer    | `log`, `log \| tail`         |
+| `bt`      | Stack backtrace          | `bt`, `bt -a`, `bt -f`       |
+| `struct`  | View structures          | `struct task_struct <addr>`  |
+| `p/px/pd` | Print variables          | `p jiffies`, `px current`    |
+| `kmem`    | Memory analysis          | `kmem -i`, `kmem -S <cache>` |
 
 ### Tasks and Processes
 
-| Command | Purpose | Example |
-|---------|---------|---------|
-| `ps` | Process list | `ps`, `ps -m \| grep UN` |
-| `set` | Switch context | `set <pid>`, `set -p` |
+| Command   | Purpose               | Example                       |
+| --------- | --------------------- | ----------------------------- |
+| `ps`      | Process list          | `ps`, `ps -m \| grep UN`      |
+| `set`     | Switch context        | `set <pid>`, `set -p`         |
 | `foreach` | Batch task operations | `foreach bt`, `foreach UN bt` |
-| `task` | task_struct contents | `task <pid>` |
-| `files` | Open files | `files <pid>` |
+| `task`    | task_struct contents  | `task <pid>`                  |
+| `files`   | Open files            | `files <pid>`                 |
 
 ### Memory Operations
 
-| Command | Purpose | Example |
-|---------|---------|---------|
-| `rd` | Read memory | `rd <addr>`, `rd -p <phys>` |
-| `search` | Search memory | `search -k deadbeef` |
-| `vtop` | Address translation | `vtop <addr>` |
-| `list` | Traverse linked lists | `list task_struct.tasks -h <addr>` |
+| Command  | Purpose               | Example                            |
+| -------- | --------------------- | ---------------------------------- |
+| `rd`     | Read memory           | `rd <addr>`, `rd -p <phys>`        |
+| `search` | Search memory         | `search -k deadbeef`               |
+| `vtop`   | Address translation   | `vtop <addr>`                      |
+| `list`   | Traverse linked lists | `list task_struct.tasks -h <addr>` |
 
 ## bt Command Details
 
@@ -260,13 +262,14 @@ crash> list -h <addr> -s dentry.d_name.name
 
 For detailed information, refer to the following reference files:
 
-| File | Content |
-|------|---------|
-| `references/advanced-commands.md` | Advanced commands: list, rd, search, vtop, kmem, foreach |
-| `references/vmcore-format.md` | vmcore file format, ELF structure, VMCOREINFO |
-| `references/case-studies.md` | Detailed debugging cases: kernel BUG, deadlock, OOM, NULL pointer, stack overflow |
+| File                              | Content                                                                           |
+| --------------------------------- | --------------------------------------------------------------------------------- |
+| `references/advanced-commands.md` | Advanced commands: list, rd, search, vtop, kmem, foreach                          |
+| `references/vmcore-format.md`     | vmcore file format, ELF structure, VMCOREINFO                                     |
+| `references/case-studies.md`      | Detailed debugging cases: kernel BUG, deadlock, OOM, NULL pointer, stack overflow |
 
 Usage:
+
 ```
 crash> help <command>        # Built-in help
 # Or ask Claude to view reference files
@@ -291,10 +294,10 @@ crash: cannot resolve symbol
 
 The following commands can cause system damage or data loss:
 
-| Command | Risk | Recommendation |
-|---------|------|----------------|
-| `wr` | Writes to live kernel memory | **NEVER use on production systems** - can crash or corrupt running kernel |
-| GDB passthrough | Unrestricted memory access | Use with caution, may modify memory or registers |
+| Command         | Risk                         | Recommendation                                                            |
+| --------------- | ---------------------------- | ------------------------------------------------------------------------- |
+| `wr`            | Writes to live kernel memory | **NEVER use on production systems** - can crash or corrupt running kernel |
+| GDB passthrough | Unrestricted memory access   | Use with caution, may modify memory or registers                          |
 
 🔒 **Sensitive Data Handling**
 

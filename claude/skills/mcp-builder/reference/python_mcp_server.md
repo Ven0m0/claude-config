@@ -4,7 +4,7 @@
 
 This document provides Python-specific best practices and examples for implementing MCP servers using the MCP Python SDK. It covers server setup, tool registration patterns, input validation with Pydantic, error handling, and complete working examples.
 
-______________________________________________________________________
+---
 
 ## Quick Reference
 
@@ -33,7 +33,7 @@ async def tool_function(params: InputModel) -> str:
     pass
 ```
 
-______________________________________________________________________
+---
 
 ## MCP Python SDK and FastMCP
 
@@ -507,7 +507,7 @@ if __name__ == "__main__":
     mcp.run()
 ```
 
-______________________________________________________________________
+---
 
 ## Advanced FastMCP Features
 
@@ -678,7 +678,7 @@ if __name__ == "__main__":
 - **HTTP**: Web services, remote access, multiple clients
 - **SSE**: Real-time updates, push notifications
 
-______________________________________________________________________
+---
 
 ## Code Best Practices
 
@@ -687,7 +687,6 @@ ______________________________________________________________________
 Your implementation MUST prioritize composability and code reuse:
 
 1. **Extract Common Functionality**:
-
    - Create reusable helper functions for operations used across multiple tools
    - Build shared API clients for HTTP requests instead of duplicating code
    - Centralize error handling logic in utility functions
@@ -695,7 +694,6 @@ Your implementation MUST prioritize composability and code reuse:
    - Extract shared markdown or JSON field selection & formatting functionality
 
 1. **Avoid Duplication**:
-
    - NEVER copy-paste similar code between tools
    - If you find yourself writing similar logic twice, extract it into a function
    - Common operations like pagination, filtering, field selection, and formatting should be shared

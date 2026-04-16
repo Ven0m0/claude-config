@@ -34,11 +34,11 @@ export PARALLEL_API_KEY="your-key-here"
 
 ## Search modes
 
-| Mode | Use case | Tradeoff |
-|------|----------|----------|
-| `one-shot` | Default, most queries | Balanced accuracy and speed |
-| `fast` | Quick lookups, cost-sensitive | Lower latency, may sacrifice depth |
-| `agentic` | Complex multi-hop research | Higher accuracy, more expensive |
+| Mode       | Use case                      | Tradeoff                           |
+| ---------- | ----------------------------- | ---------------------------------- |
+| `one-shot` | Default, most queries         | Balanced accuracy and speed        |
+| `fast`     | Quick lookups, cost-sensitive | Lower latency, may sacrifice depth |
+| `agentic`  | Complex multi-hop research    | Higher accuracy, more expensive    |
 
 ## How it works
 

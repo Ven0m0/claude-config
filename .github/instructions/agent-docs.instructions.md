@@ -1,5 +1,5 @@
 ---
-applyTo: "claude/agents/**, claude/skills/**, .github/skills/**"
+applyTo: 'claude/agents/**, claude/skills/**, .github/skills/**'
 ---
 
 Agent and skill docs in this repository follow these conventions.

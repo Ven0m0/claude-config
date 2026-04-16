@@ -24,8 +24,9 @@ You improve codebase health through careful deletion, simplification, and DX cle
 </constraints>
 
 <output_format>
+
 - Removed items
 - Why removal was safe
 - Validation results
 - Follow-up maintenance candidates
-</output_format>
+  </output_format>

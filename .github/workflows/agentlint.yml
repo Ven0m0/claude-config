@@ -8,7 +8,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     env:
-      CLAUDELINT_VERSION: "0.3.3"
+      CLAUDELINT_VERSION: '0.3.3'
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -18,7 +18,7 @@ jobs:
 
       - name: Run claudelint
         run: uv tool run "claudelint@${CLAUDELINT_VERSION}" --strict .
- 
+
       - name: Validate agent configs
         uses: agent-sh/agnix@v0
       - uses: agent-sh/agnix@v0

@@ -3,22 +3,26 @@
 ## Choose the right tool
 
 ### Use `web_fetch`
+
 - Static pages
 - Quick one-page reads
 - Cheapest and simplest path
 
 ### Use Cloudflare `/markdown`
+
 - Page content is incomplete in `web_fetch`
 - The site renders content via JavaScript
 - You want normalized Markdown for a single page
 - You need render-aware options like `gotoOptions.waitUntil`
 
 ### Use Cloudflare `/crawl`
+
 - You need many related pages from one site
 - You are building a docs digest, research corpus, or RAG input set
 - You want asynchronous crawling with pagination and result filters
 
 ### Use `browser`
+
 - Login is required
 - You must click buttons, fill forms, or navigate interactive UI
 - Human-like inspection/automation is necessary

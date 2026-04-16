@@ -3,6 +3,7 @@
 ## Files and Secrets — MUST NOT READ OR WRITE
 
 Never read, write, or pass to any tool:
+
 - `.env`, `.env.*` (except `.env.example`)
 - `secrets/`, `credentials/`
 - `*.pem`, `*.key`, `*.pfx`, `*.p12`, `*.jks`

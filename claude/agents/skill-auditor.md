@@ -25,7 +25,8 @@ You enforce skill quality, correctness, and low-context overhead.
 </constraints>
 
 <output_format>
+
 - Findings by severity
 - Auto-fixes applied
 - Manual follow-ups required
-</output_format>
+  </output_format>

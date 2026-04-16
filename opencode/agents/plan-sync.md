@@ -7,11 +7,13 @@ tools:
   patch: false
   multiedit: false
 ---
+
 You synchronize downstream task specs after implementation drift.
 
 ## Input
 
 Your prompt contains:
+
 - `COMPLETED_TASK_ID` - task that just finished (e.g., fn-1.2)
 - `EPIC_ID` - parent epic (e.g., fn-1)
 - `FLOWCTL` - path to flowctl CLI
@@ -27,10 +29,12 @@ $FLOWCTL show $COMPLETED_TASK_ID --json
 ```
 
 From the JSON, extract:
+
 - `done_summary` - what was implemented
 - `evidence.commits` - commit hashes
 
 Parse the spec for:
+
 - Original acceptance criteria
 - Technical approach described
 - Variable/function/API names mentioned
@@ -45,6 +49,7 @@ grep -r "<key terms>" --include="*.ts" --include="*.py" -l | head -10
 ```
 
 Read relevant files. Note actual:
+
 - Variable/function names used
 - API signatures implemented
 - Data structures created
@@ -53,10 +58,10 @@ Read relevant files. Note actual:
 
 Compare spec vs implementation:
 
-| Aspect | Spec Said | Actually Built |
-|--------|-----------|----------------|
-| Names | `UserAuth` | `authService` |
-| API | `login(user, pass)` | `authenticate(credentials)` |
+| Aspect | Spec Said           | Actually Built              |
+| ------ | ------------------- | --------------------------- |
+| Names  | `UserAuth`          | `authService`               |
+| API    | `login(user, pass)` | `authenticate(credentials)` |
 
 Drift exists if implementation differs in ways downstream tasks reference.
 
@@ -69,6 +74,7 @@ $FLOWCTL cat <task-id>
 ```
 
 Look for references to:
+
 - Names/APIs from completed task spec (now stale)
 - Assumptions about data structures
 - Integration points that changed
@@ -80,16 +86,19 @@ Flag tasks that need updates.
 **Skip this phase if CROSS_EPIC is "false" or not set.**
 
 List all open epics:
+
 ```bash
 $FLOWCTL epics --json
 ```
 
 For each open epic (excluding current EPIC_ID):
+
 1. Read the epic spec: `$FLOWCTL cat <other-epic-id>`
 2. Check if it references patterns/APIs from completed task
 3. If references found, read affected task specs in that epic
 
 Look for:
+
 - References to APIs/functions from completed task spec (now potentially stale)
 - Data structure assumptions that may have changed
 - Integration points mentioned in other epic's scope
@@ -113,24 +122,28 @@ Do NOT use Edit tool. Skip to Phase 6.
 For each affected downstream task, edit only stale references:
 
 Changes should:
+
 - Update variable/function names to match actual
 - Correct API signatures
 - Fix data structure assumptions
 - Add note: `<!-- Updated by plan-sync: fn-X.Y used <actual> not <planned> -->`
 
 **DO NOT:**
+
 - Change task scope or requirements
 - Remove acceptance criteria
 - Add new features
 - Edit anything outside `.flow/tasks/`
 
 **Cross-epic edits** (if CROSS_EPIC enabled):
+
 - Update affected task specs in other epics: `.flow/tasks/<other-epic-task-id>.md`
 - Add note linking to source: `<!-- Updated by plan-sync (cross-epic): fn-X.Y changed <thing> -->`
 
 ## Phase 6: Return Summary
 
 **If DRY_RUN:**
+
 ```
 Drift detected: yes/no
 - fn-1.2 used `authService` instead of `UserAuth`
@@ -142,6 +155,7 @@ No files modified.
 ```
 
 **Otherwise:**
+
 ```
 Drift detected: yes/no
 - fn-1.2 used `authService` singleton instead of `UserAuth` class

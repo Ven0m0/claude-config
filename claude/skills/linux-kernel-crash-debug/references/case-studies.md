@@ -90,6 +90,7 @@ crash> foreach bt | grep -B10 "pipe_read"
 ### Root Cause Analysis
 
 `pipe_inode_info.mutex.count = 2` indicates semaphore count anomaly, possibly:
+
 - Double free
 - Race condition
 - Use after free

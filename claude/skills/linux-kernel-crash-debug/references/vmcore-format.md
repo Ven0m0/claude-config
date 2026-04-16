@@ -59,15 +59,15 @@ crash> p *vmcoreinfo_data
 
 ### Key Fields
 
-| Field | Description |
-|-------|-------------|
-| `OSRELEASE` | Kernel version string |
-| `PAGESIZE` | Page size |
-| `init_uts_ns.name.release` | Kernel version |
-| `phys_base` | Physical address base (x86_64) |
-| `VA_BITS` | Virtual address bits (ARM64) |
-| `KERNELOFFSET` | Kernel offset (KASLR) |
-| `CRASHTIME` | Crash timestamp |
+| Field                      | Description                    |
+| -------------------------- | ------------------------------ |
+| `OSRELEASE`                | Kernel version string          |
+| `PAGESIZE`                 | Page size                      |
+| `init_uts_ns.name.release` | Kernel version                 |
+| `phys_base`                | Physical address base (x86_64) |
+| `VA_BITS`                  | Virtual address bits (ARM64)   |
+| `KERNELOFFSET`             | Kernel offset (KASLR)          |
+| `CRASHTIME`                | Crash timestamp                |
 
 ### Structure Information
 

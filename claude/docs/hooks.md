@@ -1,4 +1,5 @@
 > ## Documentation Index
+>
 > Fetch the complete documentation index at: https://code.claude.com/docs/llms.txt
 > Use this file to discover all available pages before exploring further.
 
@@ -11,6 +12,7 @@ Claude Code hooks are user-defined shell commands that execute at various points
 <Tip>For reference documentation on hooks, see [Hooks reference](/en/hooks).</Tip>
 
 Example use cases for hooks include:
+
 - **Notifications**: Customize how you get notified when Claude Code is awaiting your input or permission to run something.
 - **Automatic formatting**: Run `prettier` on .ts files, `gofmt` on .go files, etc. after every file edit.
 - **Logging**: Track and count all executed commands for compliance or debugging.
@@ -30,6 +32,7 @@ By encoding these rules as hooks rather than prompting instructions, you turn su
 ## Hook Events Overview
 
 Claude Code provides several hook events that run at different points in the workflow:
+
 - **PreToolUse**: Runs before tool calls (can block them)
 - **PermissionRequest**: Runs when a permission dialog is shown (can allow or deny)
 - **PostToolUse**: Runs after tool calls complete
@@ -49,38 +52,63 @@ Each event receives different data and can control Claude's behavior in differen
 In this quickstart, you'll add a hook that logs the shell commands that Claude Code runs.
 
 ### Prerequisites
+
 Install `jq` for JSON processing in the command line.
 
 ### Step 1: Open hooks configuration
+
 Run the `/hooks` command and select the `PreToolUse` hook event.
 `PreToolUse` hooks run before tool calls and can block them while providing Claude feedback on what to do differently.
 
 ### Step 2: Add a matcher
+
 Select `+ Add new matcher…` to run your hook only on Bash tool calls.
 Type `Bash` for the matcher.
 <Note>You can use `*` to match all tools.</Note>
 
 ### Step 3: Add the hook
+
 Select `+ Add new hook…` and enter this command:
+
 ```bash
 jq -r '"\(.tool_input.command) - \(.tool_input.description // "No description")"' >> ~/.claude/bash-command-log.txt
 ```
 
 ### Step 4: Save your configuration
+
 For storage location, select `User settings` since you're logging to your home directory. This hook will then apply to all projects, not just your current project.
 Then press `Esc` until you return to the REPL. Your hook is now registered.
 
 ### Step 5: Verify your hook
+
 Run `/hooks` again or check `~/.claude/settings.json` to see your configuration:
+
 ```json
-{"hooks": {"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": "jq -r '\"\\(.tool_input.command) - \\(.tool_input.description // \"No description\")\"' >> ~/.claude/bash-command-log.txt"}]}]}}
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '\"\\(.tool_input.command) - \\(.tool_input.description // \"No description\")\"' >> ~/.claude/bash-command-log.txt"
+          }
+        ]
+      }
+    ]
+  }
+}
 ```
 
 ### Step 6: Test your hook
+
 Ask Claude to run a simple command like `ls` and check your log file:
+
 ```bash
 cat ~/.claude/bash-command-log.txt
 ```
+
 You should see entries like: `ls - Lists files and directories`
 
 ## More Examples
@@ -90,18 +118,44 @@ You should see entries like: `ls - Lists files and directories`
 ### Code Formatting Hook
 
 Automatically format TypeScript files after editing:
+
 ```json
-{"hooks": {"PostToolUse": [{"matcher": "Edit|Write", "hooks": [{"type": "command", "command": "jq -r '.tool_input.file_path' | { read file_path; if echo \"$file_path\" | grep -q '\\.ts$'; then npx prettier --write \"$file_path\"; fi; }"}]}]}}
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | { read file_path; if echo \"$file_path\" | grep -q '\\.ts$'; then npx prettier --write \"$file_path\"; fi; }"
+          }
+        ]
+      }
+    ]
+  }
+}
 ```
 
 ### Markdown Formatting Hook
 
 Automatically fix missing language tags and formatting issues in markdown files:
+
 ```json
-{"hooks": {"PostToolUse": [{"matcher": "Edit|Write", "hooks": [{"type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/markdown_formatter.py"}]}]}}
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{ "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/markdown_formatter.py" }]
+      }
+    ]
+  }
+}
 ```
 
 Create `.claude/hooks/markdown_formatter.py` with this content:
+
 ````python
 #!/usr/bin/env python3
 """Markdown formatter for Claude Code output. Fixes missing language tags and spacing issues while preserving code content."""
@@ -159,6 +213,7 @@ except Exception as e:
 Make the script executable: `chmod +x .claude/hooks/markdown_formatter.py`
 
 This hook automatically:
+
 - Detects programming languages in unlabeled code blocks
 - Adds appropriate language tags for syntax highlighting
 - Fixes excessive blank lines while preserving code content
@@ -167,15 +222,37 @@ This hook automatically:
 ### Custom Notification Hook
 
 Get desktop notifications when Claude needs input:
+
 ```json
-{"hooks": {"Notification": [{"matcher": "", "hooks": [{"type": "command", "command": "notify-send 'Claude Code' 'Awaiting your input'"}]}]}}
+{
+  "hooks": {
+    "Notification": [
+      { "matcher": "", "hooks": [{ "type": "command", "command": "notify-send 'Claude Code' 'Awaiting your input'" }] }
+    ]
+  }
+}
 ```
 
 ### File Protection Hook
 
 Block edits to sensitive files:
+
 ```json
-{"hooks": {"PreToolUse": [{"matcher": "Edit|Write", "hooks": [{"type": "command", "command": "python3 -c \"import json, sys; data=json.load(sys.stdin); path=data.get('tool_input',{}).get('file_path',''); sys.exit(2 if any(p in path for p in ['.env', 'package-lock.json', '.git/']) else 0)\""}]}]}}
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import json, sys; data=json.load(sys.stdin); path=data.get('tool_input',{}).get('file_path',''); sys.exit(2 if any(p in path for p in ['.env', 'package-lock.json', '.git/']) else 0)\""
+          }
+        ]
+      }
+    ]
+  }
+}
 ```
 
 ## Learn more

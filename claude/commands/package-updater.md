@@ -25,7 +25,7 @@ class PackageAnalyzer {
 
     const updates = { patch: [], minor: [], major: [], latest: data['dist-tags'].latest };
 
-    versions.forEach(version => {
+    versions.forEach((version) => {
       if (semver.valid(version) && semver.gt(version, currentVersion)) {
         const diff = semver.diff(version, currentVersion);
         if (diff === 'patch') updates.patch.push(version);
@@ -52,7 +52,7 @@ class PackageAnalyzer {
       deprecated: versionInfo.deprecated || false,
       dependencies: versionInfo.dependencies || {},
       peerDependencies: versionInfo.peerDependencies || {},
-      breaking: semver.diff(currentVersion, targetVersion) === 'major'
+      breaking: semver.diff(currentVersion, targetVersion) === 'major',
     };
   }
 }
@@ -83,7 +83,7 @@ class PackageManagerInterface {
     const commands = {
       npm: `npm install ${packageName}@${version}`,
       yarn: `yarn upgrade ${packageName}@${version}`,
-      pnpm: `pnpm update ${packageName}@${version}`
+      pnpm: `pnpm update ${packageName}@${version}`,
     };
     return execSync(commands[manager], { encoding: 'utf8' });
   }
@@ -131,9 +131,9 @@ class UpdateStrategy {
     const audit = this.pm.audit();
     const vulnerablePackages = new Set();
 
-    Object.values(audit.vulnerabilities || {}).forEach(vuln => {
+    Object.values(audit.vulnerabilities || {}).forEach((vuln) => {
       if (vuln.via) {
-        vuln.via.forEach(v => {
+        vuln.via.forEach((v) => {
           if (typeof v === 'object' && v.name) vulnerablePackages.add(v.name);
         });
       }

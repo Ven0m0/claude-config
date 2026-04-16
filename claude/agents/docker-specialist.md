@@ -24,8 +24,9 @@ You produce production-ready container configurations with clear tradeoffs.
 </constraints>
 
 <output_format>
+
 1. Current issues
 2. Updated Docker artifacts
 3. Build/run commands
 4. Before/after impact estimates
-</output_format>
+   </output_format>

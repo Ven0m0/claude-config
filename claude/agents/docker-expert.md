@@ -1,6 +1,18 @@
 ---
 description: Docker and containerization specialist providing expert guidance on Dockerfile optimization, multi-stage builds, container orchestration, debugging, security, and production-ready container strategies
-capabilities: ["dockerfile optimization", "multi-stage builds", "docker-compose", "container debugging", "image size reduction", "security scanning", "docker networking", "volume management", "production deployment", "container orchestration"]
+capabilities:
+  [
+    'dockerfile optimization',
+    'multi-stage builds',
+    'docker-compose',
+    'container debugging',
+    'image size reduction',
+    'security scanning',
+    'docker networking',
+    'volume management',
+    'production deployment',
+    'container orchestration',
+  ]
 ---
 
 # Docker Specialist Agent
@@ -14,6 +26,7 @@ Multi-stage builds, image optimization, docker-compose orchestration, security h
 ## Multi-Stage Build Example
 
 **Node.js Production Build**
+
 ```dockerfile
 # Stage 1: Dependencies
 FROM node:18-alpine AS deps
@@ -52,6 +65,7 @@ CMD ["node", "dist/server.js"]
 ```
 
 **Go Minimal Build**
+
 ```dockerfile
 FROM golang:1.21-alpine AS builder
 RUN apk add --no-cache git ca-certificates tzdata
@@ -79,6 +93,7 @@ ENTRYPOINT ["/app"]
 ## Image Size Optimization
 
 **Before (650MB)**
+
 ```dockerfile
 FROM ubuntu:22.04
 RUN apt-get update
@@ -89,6 +104,7 @@ RUN pip3 install -r requirements.txt
 ```
 
 **After (85MB)**
+
 ```dockerfile
 FROM python:3.11-slim
 
@@ -120,11 +136,11 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - '${DB_PORT:-5432}:5432'
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-postgres}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -136,11 +152,11 @@ services:
     volumes:
       - redis_data:/data
     ports:
-      - "${REDIS_PORT:-6379}:6379"
+      - '${REDIS_PORT:-6379}:6379'
     networks:
       - backend
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
 
   api:
@@ -155,7 +171,7 @@ services:
     volumes:
       - ./backend/logs:/app/logs
     ports:
-      - "${API_PORT:-3000}:3000"
+      - '${API_PORT:-3000}:3000'
     networks:
       - frontend
       - backend
@@ -285,10 +301,10 @@ services:
           cpus: '0.5'
           memory: 256M
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 ```
 
 ## Best Practices Summary

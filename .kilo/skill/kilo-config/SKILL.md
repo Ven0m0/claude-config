@@ -7,10 +7,10 @@ description: Help users configure and troubleshoot Kilo CLI, KiloCode Gateway, a
 
 ## Configuration File Locations
 
-| Scope | Path |
-|-------|------|
+| Scope   | Path                                             |
+| ------- | ------------------------------------------------ |
 | Project | `./.kilo/kilo.jsonc` (preferred), `./kilo.jsonc` |
-| Global | `~/.config/kilo/kilo.jsonc` |
+| Global  | `~/.config/kilo/kilo.jsonc`                      |
 
 `.kilocode/` is kept only as a legacy compatibility path. The shared project config lives in `.kilo/`.
 
@@ -27,6 +27,7 @@ Kilo Gateway uses `provider/model-name` format:
 ## Available Model Categories
 
 **Repo baseline**:
+
 - `github-copilot/gpt-5` - default and planning
 - `github-copilot/gpt-5-mini` - lightweight path
 - `github-copilot/gpt-5.1-codex` - build, code, and debug
@@ -35,6 +36,7 @@ Kilo Gateway uses `provider/model-name` format:
 - `github-copilot/claude-sonnet-4.5` - review
 
 **Fallback providers kept in config**:
+
 - `anthropic/*` via `ANTHROPIC_API_KEY`
 - `gemini/*` via `GEMINI_API_KEY`
 - `kilo/*` via `KILO_API_KEY`
@@ -42,6 +44,7 @@ Kilo Gateway uses `provider/model-name` format:
 ## MCP Server Configuration
 
 Local server:
+
 ```json
 {
   "mcp": {
@@ -54,6 +57,7 @@ Local server:
 ```
 
 Remote server:
+
 ```json
 {
   "mcp": {

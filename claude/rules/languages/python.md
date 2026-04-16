@@ -1,8 +1,8 @@
 ---
 paths:
-  - "**/*.py"
-  - "**/pyproject.toml"
-  - "**/requirements.txt"
+  - '**/*.py'
+  - '**/pyproject.toml'
+  - '**/requirements.txt'
 ---
 
 # Python Rules
@@ -24,12 +24,12 @@ uv run pytest
 
 ## Tooling
 
-| Tool | Purpose | Command |
-|------|---------|---------|
-| ruff | Linting + formatting (replaces flake8, isort, black) | `ruff check . --fix && ruff format .` |
-| basedpyright | Type checking (strict mode) | `basedpyright src` |
-| pytest | Testing (>=80% coverage) | `uv run pytest -q` |
-| bandit | Security scanning | `bandit -r src/` |
+| Tool         | Purpose                                              | Command                               |
+| ------------ | ---------------------------------------------------- | ------------------------------------- |
+| ruff         | Linting + formatting (replaces flake8, isort, black) | `ruff check . --fix && ruff format .` |
+| basedpyright | Type checking (strict mode)                          | `basedpyright src`                    |
+| pytest       | Testing (>=80% coverage)                             | `uv run pytest -q`                    |
+| bandit       | Security scanning                                    | `bandit -r src/`                      |
 
 ## Ruff Configuration
 
@@ -84,16 +84,16 @@ Before completing Python work:
 
 ## Quick Reference
 
-| Task | Command |
-|------|---------|
-| Install package | `uv pip install package-name` |
-| Run tests | `uv run pytest -q` |
-| Coverage | `uv run pytest --cov=src` |
-| Format | `ruff format .` |
-| Lint + fix | `ruff check . --fix` |
-| Type check | `basedpyright src` |
-| Security scan | `ruff check --select S && bandit -r src/` |
-| Run script | `uv run python script.py` |
+| Task            | Command                                   |
+| --------------- | ----------------------------------------- |
+| Install package | `uv pip install package-name`             |
+| Run tests       | `uv run pytest -q`                        |
+| Coverage        | `uv run pytest --cov=src`                 |
+| Format          | `ruff format .`                           |
+| Lint + fix      | `ruff check . --fix`                      |
+| Type check      | `basedpyright src`                        |
+| Security scan   | `ruff check --select S && bandit -r src/` |
+| Run script      | `uv run python script.py`                 |
 
 ## Related skills
 

@@ -29,11 +29,13 @@ npm install -g @mariozechner/gmcli
 ### Configure gmcli
 
 First check if already configured:
+
 ```bash
 gmcli accounts list
 ```
 
 If no accounts, guide the user through setup:
+
 1. Ask if they have a Google Cloud project with Gmail API enabled
 2. If not, walk them through the Google Cloud Console steps above
 3. Have them download the OAuth credentials JSON
@@ -45,6 +47,7 @@ If no accounts, guide the user through setup:
 Run `gmcli --help` for full command reference.
 
 Common operations:
+
 - `gmcli <email> search "<query>"` - Search emails using Gmail query syntax
 - `gmcli <email> thread <threadId>` - Read a thread with all messages
 - `gmcli <email> send --to <emails> --subject <s> --body <b>` - Send email

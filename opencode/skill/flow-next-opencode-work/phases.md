@@ -3,11 +3,13 @@
 (Branch question already asked in SKILL.md before reading this file)
 
 **CRITICAL**: If you are about to create:
+
 - a markdown TODO list,
 - a task list outside `.flow/`,
 - or any plan files outside `.flow/`,
 
 **STOP** and instead:
+
 - create/update tasks in `.flow/` using `flowctl`,
 - record details in the epic/task spec markdown.
 
@@ -33,16 +35,19 @@ Detect input type in this order (first match wins):
 ---
 
 **Flow task ID (fn-N.M or fn-N-xxx.M)**:
+
 - Read task: `$FLOWCTL show <id> --json`
 - Read spec: `$FLOWCTL cat <id>`
 - Get epic from task data for context: `$FLOWCTL show <epic-id> --json && $FLOWCTL cat <epic-id>`
 
 **Flow epic ID (fn-N or fn-N-xxx)**:
+
 - Read epic: `$FLOWCTL show <id> --json`
 - Read spec: `$FLOWCTL cat <id>`
 - Get first ready task: `$FLOWCTL ready --epic <id> --json`
 
 **Spec file start (.md path that exists)**:
+
 1. Check file exists: `test -f "<path>"` — if not, treat as idea text
 2. Initialize: `$FLOWCTL init --json`
 3. Read file and extract title from first `# Heading` or use filename
@@ -52,6 +57,7 @@ Detect input type in this order (first match wins):
 7. Continue with epic-id
 
 **Spec-less start (idea text)**:
+
 1. Initialize: `$FLOWCTL init --json`
 2. Create epic: `$FLOWCTL epic create --title "<idea>" --json`
 3. Create single task: `$FLOWCTL task create --epic <epic-id> --title "Implement <idea>" --json`
@@ -105,6 +111,7 @@ $FLOWCTL config get memory.enabled --json
 ```
 
 **If memory.enabled is true**, also run:
+
 - subagent_type: `memory-scout`
 - prompt: `<task-id>: <task-title>`
 
@@ -123,6 +130,7 @@ After step 5, run the smoke command from epic spec's "Quick commands" section.
 **For each task** (one at a time):
 
 1. **Start task**:
+
    ```bash
    $FLOWCTL start <task-id> --json
    ```
@@ -144,6 +152,7 @@ After step 5, run the smoke command from epic spec's "Quick commands" section.
    - Re-run `$FLOWCTL ready --epic <epic-id> --json` to see updated order
 
 4. **Commit implementation** (code changes only):
+
    ```bash
    git add -A   # never list files; include .flow/ and scripts/ralph/ if present
    git status --short
@@ -154,6 +163,7 @@ After step 5, run the smoke command from epic spec's "Quick commands" section.
 
 5. **Complete task** (records done status + evidence):
    Write done summary to temp file (required format):
+
    ```
    - What changed (1-3 bullets)
    - Why (1-2 bullets)
@@ -162,11 +172,13 @@ After step 5, run the smoke command from epic spec's "Quick commands" section.
    ```
 
    Write evidence to temp JSON file **with the commit hash from step 4**:
+
    ```json
-   {"commits":["<COMMIT_HASH>"],"tests":["npm test"],"prs":[]}
+   { "commits": ["<COMMIT_HASH>"], "tests": ["npm test"], "prs": [] }
    ```
 
    Then:
+
    ```bash
    $FLOWCTL done <task-id> --summary-file <summary.md> --evidence-json <evidence.json> --json
    ```
@@ -175,22 +187,27 @@ After step 5, run the smoke command from epic spec's "Quick commands" section.
    If you need to update task text, edit the markdown file directly and use `flowctl done` with summary/evidence.
 
    Verify the task is actually marked done:
+
    ```bash
    $FLOWCTL show <task-id> --json
    ```
+
    If status is not `done`, stop and re-run `flowctl done` before proceeding.
 
 6. **Amend commit** to include .flow/ updates:
+
    ```bash
    git add -A
    git commit --amend --no-edit
    ```
 
 7. **Verify task completion**:
+
    ```bash
    $FLOWCTL validate --epic <epic-id> --json
    git status
    ```
+
    Ensure working tree is clean.
 
 8. **Loop**: Return to Phase 3 for next task.
@@ -209,12 +226,14 @@ After all tasks complete (or periodically for large epics):
 ## Phase 6: Ship
 
 **Verify all tasks done**:
+
 ```bash
 $FLOWCTL show <epic-id> --json
 $FLOWCTL validate --epic <epic-id> --json
 ```
 
 **Final commit** (if any uncommitted changes):
+
 ```bash
    git add -A
 git status
@@ -234,11 +253,13 @@ If user chose "Yes" to review in setup questions or `--review=opencode` / `--rev
 **CRITICAL: You MUST invoke the `/flow-next:impl-review` skill. Do NOT improvise your own review format.**
 
 The impl-review skill:
+
 - Auto-detects backend (OpenCode or RepoPrompt) based on config/availability
 - Uses the correct prompt template requiring `<verdict>SHIP|NEEDS_WORK|MAJOR_RETHINK</verdict>`
 - Handles the fix loop internally
 
 Steps:
+
 1. Invoke `/flow-next:impl-review` (this loads the skill with its workflow.md)
 2. If review returns NEEDS_WORK or MAJOR_RETHINK:
    - **Immediately fix the issues** (do NOT ask for confirmation — user already consented)
@@ -255,6 +276,7 @@ The skill has the correct format; improvised prompts ask for "LGTM" which breaks
 ## Definition of Done
 
 Confirm before ship:
+
 - All tasks have status "done"
 - `$FLOWCTL validate --epic <id>` passes
 - Tests pass

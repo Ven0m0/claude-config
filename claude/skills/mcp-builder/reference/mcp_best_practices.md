@@ -4,7 +4,7 @@
 
 This document compiles essential best practices and guidelines for building Model Context Protocol (MCP) servers. It covers naming conventions, tool design, response formats, pagination, error handling, security, and compliance requirements.
 
-______________________________________________________________________
+---
 
 ## Quick Reference
 
@@ -37,7 +37,7 @@ ______________________________________________________________________
 - Truncate gracefully with clear messages
 - Provide guidance on filtering
 
-______________________________________________________________________
+---
 
 ## Table of Contents
 
@@ -56,7 +56,7 @@ ______________________________________________________________________
 1. Documentation Requirements
 1. Compliance and Monitoring
 
-______________________________________________________________________
+---
 
 ## 1. Server Naming Conventions
 
@@ -77,7 +77,7 @@ The name should be:
 - Easy to infer from the task description
 - Without version numbers or dates
 
-______________________________________________________________________
+---
 
 ## 2. Tool Naming and Design
 
@@ -100,7 +100,7 @@ ______________________________________________________________________
 - Should provide tool annotations (readOnlyHint, destructiveHint, idempotentHint, openWorldHint)
 - Keep tool operations focused and atomic
 
-______________________________________________________________________
+---
 
 ## 3. Response Format Guidelines
 
@@ -124,7 +124,7 @@ All tools that return data should support multiple formats for flexibility:
 - Group related information logically
 - Use for when presenting information to users
 
-______________________________________________________________________
+---
 
 ## 4. Pagination Best Practices
 
@@ -150,7 +150,7 @@ Example pagination response structure:
 }
 ```
 
-______________________________________________________________________
+---
 
 ## 5. Character Limits and Truncation
 
@@ -176,7 +176,7 @@ if len(result) > CHARACTER_LIMIT:
     )
 ```
 
-______________________________________________________________________
+---
 
 ## 6. Transport Options
 
@@ -246,7 +246,7 @@ MCP servers support multiple transport mechanisms for different deployment scena
 | **Complexity**    | Low           | Medium           | Medium-High |
 | **Real-time**     | No            | No               | Yes         |
 
-______________________________________________________________________
+---
 
 ## 7. Tool Development Best Practices
 
@@ -295,7 +295,7 @@ ______________________________________________________________________
 - Remember annotations are hints, not security guarantees
 - Clients should not make security-critical decisions based solely on annotations
 
-______________________________________________________________________
+---
 
 ## 8. Transport Best Practices
 
@@ -320,7 +320,7 @@ ______________________________________________________________________
 - Use stderr for logging messages
 - Handle standard I/O streams properly
 
-______________________________________________________________________
+---
 
 ## 9. Testing Requirements
 
@@ -346,7 +346,7 @@ A comprehensive testing strategy should cover:
 
 - Ensure proper error reporting and cleanup
 
-______________________________________________________________________
+---
 
 ## 10. OAuth and Security Best Practices
 
@@ -401,7 +401,7 @@ MCP servers that connect to external services should implement proper authentica
 - Use secure transmission (HTTPS) for all network communication
 - Validate certificates for external services
 
-______________________________________________________________________
+---
 
 ## 11. Resource Management Best Practices
 
@@ -411,7 +411,7 @@ ______________________________________________________________________
 1. Respect client control over resources
 1. Use model-controlled primitives (tools) for automatic data exposure
 
-______________________________________________________________________
+---
 
 ## 12. Prompt Management Best Practices
 
@@ -421,7 +421,7 @@ ______________________________________________________________________
 - Users should be able to modify or reject completions
 - Consider costs when using sampling
 
-______________________________________________________________________
+---
 
 ## 13. Error Handling Standards
 
@@ -431,7 +431,7 @@ ______________________________________________________________________
 - Don't expose internal implementation details
 - Clean up resources properly on errors
 
-______________________________________________________________________
+---
 
 ## 14. Documentation Requirements
 
@@ -441,7 +441,7 @@ ______________________________________________________________________
 - Specify required permissions and access levels
 - Document rate limits and performance characteristics
 
-______________________________________________________________________
+---
 
 ## 15. Compliance and Monitoring
 
@@ -451,13 +451,13 @@ ______________________________________________________________________
 - Maintain audit trails for security-relevant operations
 - Be prepared for ongoing compliance reviews
 
-______________________________________________________________________
+---
 
 ## Summary
 
 These best practices represent the comprehensive guidelines for building secure, efficient, and compliant MCP servers that work well within the ecosystem. Developers should follow these guidelines to ensure their MCP servers meet the standards for inclusion in the MCP directory and provide a safe, reliable experience for users.
 
-______________________________________________________________________
+---
 
 # Tools
 

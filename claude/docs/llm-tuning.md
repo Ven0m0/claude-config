@@ -4,11 +4,11 @@ Evidence-based parameter settings for different agent tasks. See `claude/skills/
 
 ## Quick reference
 
-| Task type | max_tokens | temperature | top_p | Notes |
-|-----------|------------|-------------|-------|--------|
-| Theorem proving / formal reasoning | 4096 | 0.6 | 0.95 | Request proof plan before tactics; parallel sampling for hard proofs |
-| Code generation | 2048 | 0.2–0.4 | — | Prefer deterministic output |
-| Creative / exploration | 4096 | 0.8–1.0 | — | Space for exploration |
+| Task type                          | max_tokens | temperature | top_p | Notes                                                                |
+| ---------------------------------- | ---------- | ----------- | ----- | -------------------------------------------------------------------- |
+| Theorem proving / formal reasoning | 4096       | 0.6         | 0.95  | Request proof plan before tactics; parallel sampling for hard proofs |
+| Code generation                    | 2048       | 0.2–0.4     | —     | Prefer deterministic output                                          |
+| Creative / exploration             | 4096       | 0.8–1.0     | —     | Space for exploration                                                |
 
 ## Anti-patterns
 

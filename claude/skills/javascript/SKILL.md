@@ -6,10 +6,10 @@ compatibility: Designed for Claude Code
 allowed-tools: Read, Grep, Glob, Bash
 user-invocable: false
 metadata:
-  version: "2.0.0"
-  category: "language"
-  status: "active"
-  updated: "2026-02-22"
+  version: '2.0.0'
+  category: 'language'
+  status: 'active'
+  updated: '2026-02-22'
 ---
 
 # JavaScript Development (Lean)

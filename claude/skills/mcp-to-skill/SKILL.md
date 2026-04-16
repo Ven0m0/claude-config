@@ -53,6 +53,7 @@ python /path/to/skill-dir/mcp_inspector.py "<MCP command>" --output /tmp/mcp-ins
 ```
 
 Example output:
+
 ```
 ✓ Written to /tmp/mcp-inspector-output.json: 12 tools, source: /tmp/mcp-to-skill-cache/server-github
 ```
@@ -67,6 +68,7 @@ Read the inspector output (or the schema file from Step 1B).
 
 **If source_path is not null:**
 Use Read / Grep tools to read the source files, locate the implementation for each tool, and extract:
+
 - HTTP endpoint (URL, method, headers, body structure)
 - or CLI invocation pattern
 
@@ -74,6 +76,7 @@ Use Read / Grep tools to read the source files, locate the implementation for ea
 Infer reasonable equivalent commands based solely on each tool's `description` and `inputSchema`.
 
 Write a command draft for each tool with a confidence marker:
+
 - `[VERIFIED]` — confirmed by source code (only when source is available)
 - `[INFERRED]` — AI-inferred, logically sound but untested (max level when source_path is null)
 - `[TODO]` — cannot be auto-generated, leave a placeholder with explanation
@@ -108,6 +111,7 @@ Create the skill directory in the user's current working directory (or a user-sp
 ```
 
 **Progressive disclosure rules:**
+
 - tool count ≤ 8: write all tools into the SKILL.md quick-reference section
 - tool count > 8: SKILL.md lists only the 8 most common tools; the rest go into `helpers/tools-extended.md`; add a note at the bottom of SKILL.md: "More tools: see helpers/tools-extended.md"
 
@@ -127,6 +131,7 @@ description: |
 **Config file separation (secret safety):**
 
 `config.json` — public config only, safe to commit:
+
 ```json
 {
   "endpoint": "<base URL extracted from source, or leave as placeholder>"
@@ -134,6 +139,7 @@ description: |
 ```
 
 `secrets.json` — secrets only, **must be gitignored**:
+
 ```json
 {
   "auth_token": "<actual token>"
@@ -141,6 +147,7 @@ description: |
 ```
 
 `secrets.json.example` — secrets template, safe to commit, for onboarding:
+
 ```json
 {
   "auth_token": "your-api-token-here"
@@ -148,6 +155,7 @@ description: |
 ```
 
 `.gitignore` — contents:
+
 ```
 secrets.json
 ```
@@ -168,19 +176,25 @@ Pass the analysis results (tool list + inferred commands + confidence markers) t
 Goal: register the generated skill directory so it is immediately available. Probe in order and use the first that works:
 
 1. Check if `npx skills` is available:
+
    ```bash
    which npx && npx skills --version 2>/dev/null
    ```
+
    If available: `npx skills add <skill-path> -g -y`
 
 2. Check if running in Claude Code:
+
    ```bash
    claude --version 2>/dev/null
    ```
+
    If available: symlink to `~/.claude/skills/<skill-name>`:
+
    ```bash
    ln -sf <skill-path> ~/.claude/skills/<skill-name>
    ```
+
    Note: `/add-dir` is an interactive slash command and cannot be called via Bash.
 
 3. If neither applies: output the skill path and tell the user how to register manually:

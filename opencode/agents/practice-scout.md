@@ -47,6 +47,7 @@ You receive a feature/change request. Find what the community recommends - NOT h
 ## WebFetch Usage
 
 When you find promising URLs:
+
 ```
 WebFetch: https://docs.example.com/security
 Prompt: "Extract the key security recommendations for [feature]"
@@ -80,6 +81,7 @@ gh search code "[pattern]" path:examples/ --json repository,path -L 5
 | From known orgs | vercel, facebook, google, microsoft, etc. | Medium |
 
 **Lower-quality sources** (use cautiously):
+
 - Tutorial repos, bootcamp projects (often simplified)
 - Forks without significant changes
 - Repos with <100 stars (unless official)
@@ -87,6 +89,7 @@ gh search code "[pattern]" path:examples/ --json repository,path -L 5
 - Old repos (check `pushed_at` date)
 
 **Validation pattern:**
+
 ```bash
 # Quick quality check for a repo
 gh api repos/{owner}/{repo} --jq '{stars: .stargazers_count, fork: .fork, pushed: .pushed_at, archived: .archived}'
@@ -95,6 +98,7 @@ gh api repos/{owner}/{repo} --jq '{stars: .stargazers_count, fork: .fork, pushed
 ### Cross-Reference Pattern
 
 When you find a practice:
+
 1. Find 2-3 repos using it → higher confidence
 2. Check if official examples use it → authoritative
 3. Look for counter-examples → understand tradeoffs
@@ -105,30 +109,37 @@ When you find a practice:
 ## Best Practices for [Feature]
 
 ### Do
+
 - [Practice]: [why, with source link]
   - Used by: [repo1], [repo2] (★ count)
 - [Practice]: [why, with source link]
 
 ### Don't
+
 - [Anti-pattern]: [why it's bad, with source]
 - [Deprecated approach]: [what to use instead]
 
 ### Real-World Examples
+
 - [`owner/repo`](url) (★N) - [how they implement it]
   > Key code snippet
 - [`owner/repo`](url) (★N) - [alternative approach]
 
 ### Security
+
 - [Consideration]: [guidance]
 
 ### Performance
+
 - [Tip]: [impact]
 
 ### Source Quality Notes
+
 - High confidence: [practices seen in multiple quality sources]
 - Lower confidence: [practices with limited evidence]
 
 ### Sources
+
 - [Title](url) - [what it covers]
 ```
 
@@ -151,6 +162,7 @@ When you find a practice:
 - Link to sources so implementer can dive deeper if needed
 
 **When to include code examples:**
+
 - Non-obvious gotchas that would cause bugs
 - Patterns that differ from common/expected approaches
 - Recent best practices (2025+) that contradict older guidance

@@ -159,7 +159,7 @@ Compare current vs target library, analyze usage patterns
     repomix --style markdown -o release-snapshot.md
 - name: Upload Artifact
   uses: actions/upload-artifact@v3
-  with: {name: repo-snapshot, path: release-snapshot.md}
+  with: { name: repo-snapshot, path: release-snapshot.md }
 ```
 
 **Use:** Release docs, compliance archives, change tracking, audit trails
@@ -176,7 +176,12 @@ repomix --include "$(cat staged-files.txt | tr '\n' ',')" -o .context/latest.xml
 ### IDE (VS Code)
 
 ```json
-{"version": "2.0.0", "tasks": [{"label": "Package for AI", "type": "shell", "command": "repomix --include 'src/**' --remove-comments --copy"}]}
+{
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "Package for AI", "type": "shell", "command": "repomix --include 'src/**' --remove-comments --copy" }
+  ]
+}
 ```
 
 ### Claude Code

@@ -54,6 +54,7 @@ git.git_commit('feat: refactor code')
 ## Examples
 
 **Bulk refactor (50 files):**
+
 ```python
 from execution_runtime import transform
 result = transform.rename_identifier('.', 'oldName', 'newName', '**/*.py')
@@ -61,6 +62,7 @@ result = transform.rename_identifier('.', 'oldName', 'newName', '**/*.py')
 ```
 
 **Extract functions:**
+
 ```python
 from execution_runtime import code, fs
 
@@ -73,6 +75,7 @@ result = {'functions_moved': len(functions)}
 ```
 
 **Code audit (100 files):**
+
 ```python
 from execution_runtime import code
 from pathlib import Path
@@ -102,7 +105,7 @@ result = {'files_audited': len(files), 'high_complexity': len(issues)}
 ## Token Savings
 
 | Files | Traditional | Execution | Savings |
-|-------|-------------|-----------|---------|
-| 10 | 5K tokens | 500 | 90% |
-| 50 | 25K tokens | 600 | 97.6% |
-| 100 | 150K tokens | 1K | 99.3% |
+| ----- | ----------- | --------- | ------- |
+| 10    | 5K tokens   | 500       | 90%     |
+| 50    | 25K tokens  | 600       | 97.6%   |
+| 100   | 150K tokens | 1K        | 99.3%   |

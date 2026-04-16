@@ -9,6 +9,7 @@ allowed-tools: Read, Bash(npm *), Bash(bun *), Bash(cargo *), Bash(uv *), Bash(u
 Update and audit project dependencies in `$ARGUMENTS`.
 
 **Modes:**
+
 - `audit`: Security vulnerability scan
 - `update` or no args: Update dependencies safely
 - `rust`: Rust-specific dependency update
@@ -66,6 +67,7 @@ Update and audit project dependencies in `$ARGUMENTS`.
 - Keep lock files in version control
 
 **Output:**
+
 - List of updated packages (old → new version)
 - Security issues found/resolved
 - Breaking changes requiring code updates

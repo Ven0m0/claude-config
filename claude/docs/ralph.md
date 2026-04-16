@@ -23,6 +23,7 @@ Ralph is an autonomous coding agent that implements features from a PRD (Product
 ### Session Continuity
 
 Ralph maintains Claude session context across stories within a single run:
+
 - **First story**: Fresh session with full prompt
 - **Subsequent stories**: `--continue` with delta prompt (just new story context)
 - **Retries**: Same session, remembers previous attempts
@@ -33,13 +34,13 @@ This means Claude remembers what it built in TASK-001 when working on TASK-002.
 
 Ralph reads from multiple files to give Claude full context:
 
-| File | Purpose |
-|------|---------|
-| `.ralph/prd.json` | Stories to implement (the work) |
-| `PROMPT.md` | Base instructions for Claude (how to code) |
-| `.ralph/config.json` | Project settings (URLs, commands, paths) |
-| `.ralph/signs.json` | Learned patterns from past runs |
-| `~/.claude/DNA.md` | Your personal coding preferences |
+| File                      | Purpose                                    |
+| ------------------------- | ------------------------------------------ |
+| `.ralph/prd.json`         | Stories to implement (the work)            |
+| `PROMPT.md`               | Base instructions for Claude (how to code) |
+| `.ralph/config.json`      | Project settings (URLs, commands, paths)   |
+| `.ralph/signs.json`       | Learned patterns from past runs            |
+| `~/.claude/DNA.md`        | Your personal coding preferences           |
 | `.ralph/last_failure.txt` | Accumulated failure history across retries |
 
 ### prd.json (The Work)
@@ -62,13 +63,10 @@ The PRD is the **single source of truth** - everything Claude needs is here.
   },
   "testing": {
     "approach": "TDD",
-    "unit": {"frontend": "vitest", "backend": "pytest"},
+    "unit": { "frontend": "vitest", "backend": "pytest" },
     "e2e": "playwright"
   },
-  "globalConstraints": [
-    "All API calls must have error handling",
-    "No console.log in production code"
-  ],
+  "globalConstraints": ["All API calls must have error handling", "No console.log in production code"],
   "stories": [
     {
       "id": "TASK-001",
@@ -79,10 +77,7 @@ The PRD is the **single source of truth** - everything Claude needs is here.
         "create": ["src/components/Dashboard.tsx"],
         "modify": ["src/App.tsx"]
       },
-      "acceptanceCriteria": [
-        "Shows user name in header",
-        "Responsive layout"
-      ],
+      "acceptanceCriteria": ["Shows user name in header", "Responsive layout"],
       "testing": {
         "types": ["unit", "e2e"],
         "approach": "TDD",
@@ -91,23 +86,18 @@ The PRD is the **single source of truth** - everything Claude needs is here.
           "e2e": ["tests/e2e/dashboard.spec.ts"]
         }
       },
-      "testSteps": [
-        "npx tsc --noEmit",
-        "npm test -- Dashboard",
-        "npx playwright test tests/e2e/dashboard.spec.ts"
-      ],
+      "testSteps": ["npx tsc --noEmit", "npm test -- Dashboard", "npx playwright test tests/e2e/dashboard.spec.ts"],
       "testUrl": "{config.urls.frontend}/dashboard",
       "mcp": ["playwright", "devtools"],
       "contextFiles": ["docs/ideas/dashboard.md"],
-      "skills": [
-        {"name": "styleguide", "usage": "Reference for UI components"}
-      ]
+      "skills": [{ "name": "styleguide", "usage": "Reference for UI components" }]
     }
   ]
 }
 ```
 
 Key fields:
+
 - `type` - Story type: `frontend` or `backend` (keep stories atomic)
 - `testing` - Test types, approach (TDD/test-after), files to create
 - `testSteps` - Executable shell commands (use `{config.urls.backend}` for URLs)
@@ -126,16 +116,19 @@ Base instructions that apply to every story:
 # Project Coding Guide
 
 ## Stack
+
 - Next.js 14 with App Router
 - TypeScript strict mode
 - Tailwind CSS
 
 ## Patterns
+
 - Use server components by default
 - Client components only for interactivity
 - All API routes in app/api/
 
 ## Testing
+
 - Jest for unit tests
 - Playwright for e2e
 ```
@@ -239,6 +232,7 @@ Patterns Ralph learned from failures:
 ```
 
 Add signs manually when you notice patterns:
+
 ```bash
 npx ralph sign "Always run migrations before seeding" backend
 ```
@@ -256,14 +250,15 @@ Ralph uses a **lean prompt** approach inspired by [Anthropic's guidance](https:/
 
 Instead of injecting thousands of tokens, Claude **reads files during orientation**:
 
-| Injected into Prompt | Claude Reads During Orient |
-|---------------------|---------------------------|
-| PROMPT.md (7-step framework) | `.ralph/prd.json` (full story details) |
-| Story ID | `story.contextFiles[]` (idea files, styleguides) |
-| Signs (learned patterns) | `CLAUDE.md` (project conventions) |
-| Failure context (if retrying) | `~/.claude/DNA.md` (personal preferences) |
+| Injected into Prompt          | Claude Reads During Orient                       |
+| ----------------------------- | ------------------------------------------------ |
+| PROMPT.md (7-step framework)  | `.ralph/prd.json` (full story details)           |
+| Story ID                      | `story.contextFiles[]` (idea files, styleguides) |
+| Signs (learned patterns)      | `CLAUDE.md` (project conventions)                |
+| Failure context (if retrying) | `~/.claude/DNA.md` (personal preferences)        |
 
 The prompt is piped to Claude:
+
 ```bash
 echo "$prompt" | claude -p --dangerously-skip-permissions
 ```
@@ -343,6 +338,7 @@ ERROR: relation "users" does not exist
 This helps Claude identify patterns like "same error 3 times = structural issue, try something different."
 
 If any step fails:
+
 1. Error is appended to `.ralph/last_failure.txt`
 2. Story stays `passes: false`
 3. Ralph retries with accumulated failure context in the prompt
@@ -367,6 +363,7 @@ Next story...
 ```
 
 For persistent issues, add a sign:
+
 ```bash
 npx ralph sign "Import from @/lib/utils not @/utils" frontend
 ```
@@ -377,23 +374,23 @@ Now every future story will see this pattern.
 
 ## Commands
 
-| Command | What it does |
-|---------|--------------|
-| `npx agentic-loop run` | Start the loop |
-| `npx agentic-loop run --story TASK-001` | Run specific story only |
-| `npx agentic-loop run --max 5` | Limit to 5 iterations |
-| `npx agentic-loop stop` | Stop after current story |
-| `npx agentic-loop status` | Show story progress |
-| `npx agentic-loop check` | Run verification without Claude |
-| `npx agentic-loop verify TASK-001` | Verify specific story |
-| `npx agentic-loop test` | Run full test suite + PRD tests (for nightly CI) |
-| `npx agentic-loop test prd` | Run only PRD testSteps |
-| `npx agentic-loop coverage` | Generate test coverage report |
-| `npx agentic-loop ci` | Install GitHub Actions workflows |
-| `npx agentic-loop signs` | List learned patterns |
-| `npx agentic-loop sign "pattern" category` | Add a pattern |
-| `npx agentic-loop unsign "pattern"` | Remove a pattern |
-| `npx agentic-loop progress` | Show recent log entries |
+| Command                                    | What it does                                     |
+| ------------------------------------------ | ------------------------------------------------ |
+| `npx agentic-loop run`                     | Start the loop                                   |
+| `npx agentic-loop run --story TASK-001`    | Run specific story only                          |
+| `npx agentic-loop run --max 5`             | Limit to 5 iterations                            |
+| `npx agentic-loop stop`                    | Stop after current story                         |
+| `npx agentic-loop status`                  | Show story progress                              |
+| `npx agentic-loop check`                   | Run verification without Claude                  |
+| `npx agentic-loop verify TASK-001`         | Verify specific story                            |
+| `npx agentic-loop test`                    | Run full test suite + PRD tests (for nightly CI) |
+| `npx agentic-loop test prd`                | Run only PRD testSteps                           |
+| `npx agentic-loop coverage`                | Generate test coverage report                    |
+| `npx agentic-loop ci`                      | Install GitHub Actions workflows                 |
+| `npx agentic-loop signs`                   | List learned patterns                            |
+| `npx agentic-loop sign "pattern" category` | Add a pattern                                    |
+| `npx agentic-loop unsign "pattern"`        | Remove a pattern                                 |
+| `npx agentic-loop progress`                | Show recent log entries                          |
 
 ## Configuration Reference
 
@@ -434,12 +431,12 @@ Now every future story will see this pattern.
 }
 ```
 
-| Field | Default | Description |
-|-------|---------|-------------|
-| `paths.frontend` | `"."` | Frontend source directory |
-| `paths.backend` | `""` | Backend source directory |
-| `urls.frontend` | `"http://localhost:3000"` | Frontend dev server URL |
-| `urls.testUrlBase` | (frontend URL) | Base URL for relative testUrl paths |
+| Field              | Default                   | Description                         |
+| ------------------ | ------------------------- | ----------------------------------- |
+| `paths.frontend`   | `"."`                     | Frontend source directory           |
+| `paths.backend`    | `""`                      | Backend source directory            |
+| `urls.frontend`    | `"http://localhost:3000"` | Frontend dev server URL             |
+| `urls.testUrlBase` | (frontend URL)            | Base URL for relative testUrl paths |
 
 ### URL Expansion
 
@@ -452,6 +449,7 @@ Use `{config.urls.backend}` and `{config.urls.frontend}` in testSteps. Ralph exp
 // Ralph expands to
 "testSteps": ["curl -s http://localhost:8000/users | jq '.data'"]
 ```
+
 | `checks.build` | `"npm run build"` | Build command |
 | `checks.test` | `true` | Run tests (`true`, `false`, or `"final"`) |
 | `checks.testCommand` | (auto-detect) | Custom test command |
@@ -480,6 +478,7 @@ Ralph auto-detects your test setup during `init`:
 ```
 
 If no tests are found, Ralph warns you. To silence the warning:
+
 ```json
 { "checks": { "requireTests": false } }
 ```
@@ -487,6 +486,7 @@ If no tests are found, Ralph warns you. To silence the warning:
 ### Test Modes
 
 The `checks.test` field supports:
+
 - `true` - Run tests on every story (default)
 - `false` - Skip tests entirely
 - `"final"` - Only run tests on the last story (faster iteration)
@@ -510,14 +510,14 @@ your-project/
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| "Invalid API key" | Remove `ANTHROPIC_API_KEY` from `.env` - Ralph uses Claude Max subscription |
-| "jq: command not found" | Install jq: `brew install jq` (macOS) or `apt install jq` (Linux) |
-| Browser verification skipped | Install Playwright: `npm install playwright && npx playwright install chromium` |
-| "pre-commit: command not found" | Install pre-commit: `pip install pre-commit` then `pre-commit install` |
-| Story keeps failing | Check `.ralph/last_failure.txt` for the error |
-| Claude times out | Increase `maxSessionSeconds` in config.json |
+| Issue                           | Solution                                                                        |
+| ------------------------------- | ------------------------------------------------------------------------------- |
+| "Invalid API key"               | Remove `ANTHROPIC_API_KEY` from `.env` - Ralph uses Claude Max subscription     |
+| "jq: command not found"         | Install jq: `brew install jq` (macOS) or `apt install jq` (Linux)               |
+| Browser verification skipped    | Install Playwright: `npm install playwright && npx playwright install chromium` |
+| "pre-commit: command not found" | Install pre-commit: `pip install pre-commit` then `pre-commit install`          |
+| Story keeps failing             | Check `.ralph/last_failure.txt` for the error                                   |
+| Claude times out                | Increase `maxSessionSeconds` in config.json                                     |
 
 ## Tips
 
@@ -564,9 +564,9 @@ npx agentic-loop ci install
 
 This creates two workflows:
 
-| Workflow | Trigger | What it runs |
-|----------|---------|--------------|
-| `.github/workflows/pr.yml` | Pull requests | Fast lint + typecheck + build |
+| Workflow                        | Trigger          | What it runs                    |
+| ------------------------------- | ---------------- | ------------------------------- |
+| `.github/workflows/pr.yml`      | Pull requests    | Fast lint + typecheck + build   |
 | `.github/workflows/nightly.yml` | Daily at 3am UTC | Full test suite + PRD testSteps |
 
 ### Running Nightly Tests Locally

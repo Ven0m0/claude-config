@@ -3,7 +3,7 @@
 id: unchecked-error
 language: go
 severity: error
-message: "Error is being ignored. Handle or explicitly ignore with comment."
+message: 'Error is being ignored. Handle or explicitly ignore with comment.'
 rule:
   pattern: $RESULT, _ := $FUNC($$$ARGS)
 
@@ -11,7 +11,7 @@ rule:
 id: error-without-wrap
 language: go
 severity: warning
-message: "Consider wrapping error with context using fmt.Errorf or errors.Wrap"
+message: 'Consider wrapping error with context using fmt.Errorf or errors.Wrap'
 rule:
   pattern: return $ERR
   inside:
@@ -24,7 +24,7 @@ rule:
 id: defer-in-loop
 language: go
 severity: warning
-message: "defer inside loop may cause resource leak. Consider moving outside."
+message: 'defer inside loop may cause resource leak. Consider moving outside.'
 rule:
   pattern: defer $FUNC($$$ARGS)
   inside:
@@ -36,7 +36,7 @@ rule:
 id: context-first-param
 language: go
 severity: warning
-message: "Context should be the first parameter by convention"
+message: 'Context should be the first parameter by convention'
 rule:
   pattern: func $NAME($$$BEFORE, ctx context.Context, $$$AFTER)
 
@@ -44,7 +44,7 @@ rule:
 id: mutex-not-deferred
 language: go
 severity: warning
-message: "Consider using defer for Unlock() to prevent deadlocks"
+message: 'Consider using defer for Unlock() to prevent deadlocks'
 rule:
   pattern: $MU.Lock()
   not:
@@ -63,7 +63,7 @@ rule:
 id: time-now-sub
 language: go
 severity: info
-message: "Use time.Since() instead of time.Now().Sub()"
+message: 'Use time.Since() instead of time.Now().Sub()'
 rule:
   pattern: time.Now().Sub($TIME)
 fix: time.Since($TIME)
@@ -72,7 +72,7 @@ fix: time.Since($TIME)
 id: bytes-compare
 language: go
 severity: info
-message: "Use bytes.Equal() for comparing byte slices"
+message: 'Use bytes.Equal() for comparing byte slices'
 rule:
   any:
     - pattern: bytes.Compare($A, $B) == 0
@@ -83,8 +83,8 @@ fix: bytes.Equal($A, $B)
 id: string-bytes-conversion
 language: go
 severity: info
-message: "Unnecessary string/[]byte conversion may impact performance"
+message: 'Unnecessary string/[]byte conversion may impact performance'
 rule:
   any:
     - pattern: string([]byte($STR))
-    - pattern: "[]byte(string($BYTES))"
+    - pattern: '[]byte(string($BYTES))'

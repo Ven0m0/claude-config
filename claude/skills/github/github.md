@@ -2,8 +2,8 @@
 name: github
 description: Interact with GitHub repositories, pull requests, issues, and workflows using the GITHUB_TOKEN environment variable and GitHub CLI. Use when working with code hosted on GitHub or managing GitHub resources.
 triggers:
-- github
-- git
+  - github
+  - git
 ---
 
 You have access to an environment variable, `GITHUB_TOKEN`, which allows you to interact with
@@ -22,15 +22,17 @@ Examples:
 If you encounter authentication issues when pushing to GitHub (such as password prompts or permission errors), the old token may have expired. In such case, update the remote URL to include the current token: `git remote set-url origin https://${GITHUB_TOKEN}@github.com/username/repo.git`
 
 Here are some instructions for pushing, but ONLY do this if the user asks you to:
-* NEVER push directly to the `main` or `master` branch
-* Git config (username and email) is pre-set. Do not modify.
-* You may already be on a branch starting with `openhands-workspace`. Create a new branch with a better name before pushing.
-* Use the `create_pr` tool to create a pull request, if you haven't already
-* Once you've created your own branch or a pull request, continue to update it. Do NOT create a new one unless you are explicitly asked to. Update the PR title and description as necessary, but don't change the branch name.
-* Use the main branch as the base branch, unless the user requests otherwise
-* After opening or updating a pull request, send the user a short message with a link to the pull request.
-* Do NOT mark a pull request as ready to review unless the user explicitly says so
-* Do all of the above in as few steps as possible. E.g. you could push changes with one step by running the following bash commands:
+
+- NEVER push directly to the `main` or `master` branch
+- Git config (username and email) is pre-set. Do not modify.
+- You may already be on a branch starting with `openhands-workspace`. Create a new branch with a better name before pushing.
+- Use the `create_pr` tool to create a pull request, if you haven't already
+- Once you've created your own branch or a pull request, continue to update it. Do NOT create a new one unless you are explicitly asked to. Update the PR title and description as necessary, but don't change the branch name.
+- Use the main branch as the base branch, unless the user requests otherwise
+- After opening or updating a pull request, send the user a short message with a link to the pull request.
+- Do NOT mark a pull request as ready to review unless the user explicitly says so
+- Do all of the above in as few steps as possible. E.g. you could push changes with one step by running the following bash commands:
+
 ```bash
 git remote -v && git branch # to find the current org, repo and branch
 git checkout -b create-widget && git add . && git commit -m "Create widget" && git push -u origin create-widget
@@ -54,6 +56,7 @@ git checkout -b create-widget && git add . && git commit -m "Create widget" && g
 To resolve existing review threads programmatically:
 
 1. Get the thread IDs (replace `<OWNER>`, `<REPO>`, `<PR_NUMBER>`):
+
 ```bash
 gh api graphql -f query='
 {
@@ -74,6 +77,7 @@ gh api graphql -f query='
 ```
 
 2. Reply to the thread explaining how the feedback was addressed:
+
 ```bash
 gh api graphql -f query='
 mutation {
@@ -87,6 +91,7 @@ mutation {
 ```
 
 3. Resolve the thread:
+
 ```bash
 gh api graphql -f query='
 mutation {
@@ -97,6 +102,7 @@ mutation {
 ```
 
 4. Get the failed workflow run ID and rerun it:
+
 ```bash
 # Find the run ID from the failed check URL, or use:
 gh run list --repo <OWNER>/<REPO> --branch <BRANCH> --limit 5

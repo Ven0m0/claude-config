@@ -7,6 +7,7 @@
 Token-Optimized Object Notation encoder for LLM communication.
 
 Initialization:
+
 ```python
 from moai_formats_data import TOONEncoder
 
@@ -21,21 +22,25 @@ encoder = TOONEncoder(
 Methods:
 
 encode(data):
+
 - Parameters: data (dict, list, or primitive)
 - Returns: str - TOON encoded string
 - Achieves 40-60% token reduction vs JSON
 
 decode(toon_string):
+
 - Parameters: toon_string (str)
 - Returns: dict/list/primitive - Original data
 - Lossless round-trip decoding
 
 encode_batch(data_list):
+
 - Parameters: data_list (list of dicts)
 - Returns: list of TOON encoded strings
 - Optimized for batch processing
 
 Type Markers:
+
 ```
 # - Number (integer or float)
 ! - Boolean
@@ -46,6 +51,7 @@ $ - UUID (custom extension)
 ```
 
 Example:
+
 ```python
 encoder = TOONEncoder()
 
@@ -72,6 +78,7 @@ decoded = encoder.decode(encoded)
 High-performance JSON processing with orjson.
 
 Initialization:
+
 ```python
 from moai_formats_data import JSONOptimizer
 
@@ -86,24 +93,29 @@ optimizer = JSONOptimizer(
 Methods:
 
 serialize_fast(data):
+
 - Parameters: data (any serializable object)
 - Returns: bytes - JSON encoded bytes
 - 2-5x faster than standard json module
 
 deserialize_fast(json_bytes):
+
 - Parameters: json_bytes (bytes or str)
 - Returns: dict/list - Parsed data
 
 compress_schema(schema):
+
 - Parameters: schema (dict) - JSON Schema
 - Returns: bytes - Compressed schema for reuse
 
 stream_parse(file_path, item_callback):
+
 - Parameters: file_path (str), item_callback (callable)
 - Returns: int - Number of items processed
 - Memory-efficient streaming for large files
 
 Example:
+
 ```python
 optimizer = JSONOptimizer()
 
@@ -127,6 +139,7 @@ print(f"Processed {count} users")
 Schema validation with custom rules.
 
 Initialization:
+
 ```python
 from moai_formats_data import DataValidator
 
@@ -140,18 +153,22 @@ validator = DataValidator(
 Methods:
 
 create_schema(rules):
+
 - Parameters: rules (dict) - Field validation rules
 - Returns: Schema object for validation
 
 validate(data, schema):
+
 - Parameters: data (dict), schema (Schema object)
 - Returns: dict with keys: valid, errors, sanitized_data
 
 add_custom_validator(name, validator_func):
+
 - Parameters: name (str), validator_func (callable)
 - Registers custom validation function
 
 Rule Types:
+
 ```python
 schema = validator.create_schema({
     # String validation
@@ -268,22 +285,22 @@ processor.process_csv_stream("data.csv", handle_item, infer_types=True)
 encoding:
   use_type_markers: true
   compress_keys: false
-  key_separator: ":"
-  field_separator: "|"
-  array_separator: ","
+  key_separator: ':'
+  field_separator: '|'
+  array_separator: ','
 
 types:
-  number_marker: "#"
-  boolean_marker: "!"
-  timestamp_marker: "@"
-  null_marker: "~"
-  uuid_marker: "$"
-  decimal_marker: "&"
+  number_marker: '#'
+  boolean_marker: '!'
+  timestamp_marker: '@'
+  null_marker: '~'
+  uuid_marker: '$'
+  decimal_marker: '&'
 
 datetime:
-  format: "iso"               # iso, unix, custom
-  timezone: "UTC"
-  custom_format: "%Y-%m-%dT%H:%M:%S%z"
+  format: 'iso' # iso, unix, custom
+  timezone: 'UTC'
+  custom_format: '%Y-%m-%dT%H:%M:%S%z'
 
 performance:
   batch_size: 1000
@@ -296,20 +313,20 @@ performance:
 ```yaml
 # config/json.yaml
 serialization:
-  library: "orjson"           # orjson, ujson, standard
+  library: 'orjson' # orjson, ujson, standard
   sort_keys: false
   ensure_ascii: false
   indent: null
 
 deserialization:
-  parse_float: "float"        # float, decimal
-  parse_int: "int"            # int, str
+  parse_float: 'float' # float, decimal
+  parse_int: 'int' # int, str
   strict: false
 
 streaming:
   chunk_size: 8192
   buffer_size: 65536
-  use_mmap: true              # Memory-mapped file reading
+  use_mmap: true # Memory-mapped file reading
 
 caching:
   enabled: true
@@ -335,10 +352,10 @@ defaults:
 custom_types:
   phone:
     pattern: "^\\+?[1-9]\\d{1,14}$"
-    message: "Invalid phone number format"
+    message: 'Invalid phone number format'
   postal_code:
-    pattern: "^[0-9]{5}(-[0-9]{4})?$"
-    message: "Invalid postal code"
+    pattern: '^[0-9]{5}(-[0-9]{4})?$'
+    message: 'Invalid postal code'
 
 performance:
   compile_patterns: true
@@ -484,6 +501,7 @@ class DatabaseCache:
 Issue: Decode fails with "Invalid type marker"
 Symptoms: ValueError during decode
 Solution:
+
 - Check for unsupported data types in input
 - Ensure encode/decode use same TOONEncoder configuration
 - Verify no data corruption during transmission
@@ -492,6 +510,7 @@ Solution:
 Issue: Large token savings not achieved
 Symptoms: Only 10-20% reduction instead of 40-60%
 Solution:
+
 - Check data structure (nested objects benefit most)
 - Enable key compression for repeated keys
 - Remove redundant whitespace in string values
@@ -502,6 +521,7 @@ Solution:
 Issue: Serialization slower than expected
 Symptoms: High CPU usage, slow response times
 Solution:
+
 - Verify orjson is installed: pip install orjson
 - Check for non-serializable types requiring fallback
 - Use bytes output instead of string when possible
@@ -510,6 +530,7 @@ Solution:
 Issue: Memory exhaustion with large files
 Symptoms: MemoryError, system slowdown
 Solution:
+
 - Use streaming parser (ijson) for large files
 - Process in chunks with StreamProcessor
 - Enable memory-mapped file reading
@@ -520,6 +541,7 @@ Solution:
 Issue: Custom validator not triggered
 Symptoms: Custom rules ignored during validation
 Solution:
+
 - Verify validator registered before schema creation
 - Check validator function signature (must accept value, return bool)
 - Ensure field type matches custom validator name
@@ -528,6 +550,7 @@ Solution:
 Issue: Schema evolution breaks existing data
 Symptoms: Validation failures after schema update
 Solution:
+
 - Use SchemaEvolution for versioned migrations
 - Implement data migration functions between versions
 - Add backwards-compatible default values
@@ -536,12 +559,14 @@ Solution:
 ### Performance Optimization
 
 Large Dataset Processing:
+
 - Use NDJSON format for line-by-line processing
 - Enable parallel processing for independent items
 - Implement early termination for search operations
 - Cache compiled regex patterns and schemas
 
 Memory Management:
+
 - Use generators instead of lists for streaming
 - Clear cache periodically with cache.clear()
 - Monitor memory with process.memory_info()
@@ -552,29 +577,34 @@ Memory Management:
 ## External Resources
 
 ### Core Libraries
+
 - orjson: https://github.com/ijl/orjson
 - ujson: https://github.com/ultrajson/ultrajson
 - ijson: https://github.com/ICRAR/ijson
 - PyYAML: https://pyyaml.org/wiki/PyYAMLDocumentation
 
 ### Validation Libraries
+
 - Pydantic: https://docs.pydantic.dev/
 - Cerberus: https://docs.python-cerberus.org/
 - Marshmallow: https://marshmallow.readthedocs.io/
 - JSON Schema: https://json-schema.org/
 
 ### Performance Tools
+
 - memory_profiler: https://pypi.org/project/memory-profiler/
 - line_profiler: https://github.com/pyutils/line_profiler
 - py-spy: https://github.com/benfred/py-spy
 
 ### Serialization Standards
+
 - JSON Specification: https://www.json.org/
 - YAML Specification: https://yaml.org/spec/
 - MessagePack: https://msgpack.org/
 - Protocol Buffers: https://protobuf.dev/
 
 ### Best Practices
+
 - Google JSON Style Guide: https://google.github.io/styleguide/jsoncstyleguide.xml
 - JSON API Specification: https://jsonapi.org/
 - OpenAPI Data Types: https://swagger.io/docs/specification/data-models/

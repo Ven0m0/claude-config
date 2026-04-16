@@ -51,36 +51,36 @@ Two credential types supported:
 
 ## Environment Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `CLOUDFLARE_API_TOKEN` | Yes | API Token or Global API Key |
-| `CLOUDFLARE_EMAIL` | If Global Key | Account email (Global API Key only) |
-| `UI_PASSWORD` | Yes | Password for the openchamber web UI |
-| `TUNNEL_HOSTNAME` | Yes | Public hostname (e.g. opencode.example.com) |
-| `TUNNEL_NAME` | Yes | Unique tunnel name in your CF account |
-| `INSTALL_MODE` | No | `local` (default) or `docker` |
-| `OPENCHAMBER_PORT` | Local only | Port for local mode (default: 3000) |
-| `ANTHROPIC_API_KEY` | opencode-container | LLM provider key for opencode-container mode |
-| `GITHUB_TOKEN` | opencode-container | GitHub token for opencode-container MCP access |
+| Variable               | Required           | Description                                    |
+| ---------------------- | ------------------ | ---------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN` | Yes                | API Token or Global API Key                    |
+| `CLOUDFLARE_EMAIL`     | If Global Key      | Account email (Global API Key only)            |
+| `UI_PASSWORD`          | Yes                | Password for the openchamber web UI            |
+| `TUNNEL_HOSTNAME`      | Yes                | Public hostname (e.g. opencode.example.com)    |
+| `TUNNEL_NAME`          | Yes                | Unique tunnel name in your CF account          |
+| `INSTALL_MODE`         | No                 | `local` (default) or `docker`                  |
+| `OPENCHAMBER_PORT`     | Local only         | Port for local mode (default: 3000)            |
+| `ANTHROPIC_API_KEY`    | opencode-container | LLM provider key for opencode-container mode   |
+| `GITHUB_TOKEN`         | opencode-container | GitHub token for opencode-container MCP access |
 
 ## Make Targets
 
-| Target | Description |
-|--------|-------------|
-| `make setup` | Provision Cloudflare tunnel and DNS |
-| `make setup-local` | Full local install (tunnel + systemd services) |
-| `make setup-docker` | Provision tunnel + start Docker services |
-| `make start` | Start systemd services (local mode) |
-| `make stop` | Stop systemd services (local mode) |
-| `make up` | Start openchamber Docker services |
-| `make down` | Stop openchamber Docker services |
-| `make logs` | Follow openchamber Docker logs |
-| `make up-opencode` | Start opencode-container Docker services |
-| `make down-opencode` | Stop opencode-container Docker services |
-| `make logs-opencode` | Follow opencode-container Docker logs |
-| `make pull-opencode` | Pull latest opencode-container image |
-| `make status` | Show service status (Docker + systemd) |
-| `make restart` | Restart all services |
+| Target               | Description                                    |
+| -------------------- | ---------------------------------------------- |
+| `make setup`         | Provision Cloudflare tunnel and DNS            |
+| `make setup-local`   | Full local install (tunnel + systemd services) |
+| `make setup-docker`  | Provision tunnel + start Docker services       |
+| `make start`         | Start systemd services (local mode)            |
+| `make stop`          | Stop systemd services (local mode)             |
+| `make up`            | Start openchamber Docker services              |
+| `make down`          | Stop openchamber Docker services               |
+| `make logs`          | Follow openchamber Docker logs                 |
+| `make up-opencode`   | Start opencode-container Docker services       |
+| `make down-opencode` | Stop opencode-container Docker services        |
+| `make logs-opencode` | Follow opencode-container Docker logs          |
+| `make pull-opencode` | Pull latest opencode-container image           |
+| `make status`        | Show service status (Docker + systemd)         |
+| `make restart`       | Restart all services                           |
 
 ## Advanced: sandboxed.sh
 
@@ -90,12 +90,12 @@ a single always-on OpenCode server.
 
 Key differences from this setup:
 
-| | opencode-remote | sandboxed.sh |
-|---|---|---|
-| UI | openchamber web UI or raw HTTP API | Next.js dashboard + iOS app |
-| Workspaces | Single shared session | Isolated per-mission containers |
-| Runtimes | OpenCode | Claude Code, OpenCode, Amp |
-| Cloudflare Tunnel | Included | Add alongside its port 3000 |
+|                   | opencode-remote                    | sandboxed.sh                    |
+| ----------------- | ---------------------------------- | ------------------------------- |
+| UI                | openchamber web UI or raw HTTP API | Next.js dashboard + iOS app     |
+| Workspaces        | Single shared session              | Isolated per-mission containers |
+| Runtimes          | OpenCode                           | Claude Code, OpenCode, Amp      |
+| Cloudflare Tunnel | Included                           | Add alongside its port 3000     |
 
 To run sandboxed.sh behind a Cloudflare Tunnel, point the tunnel at `localhost:3000` (its
 web UI port) using the same `setup.sh` from this repo, then start its services separately

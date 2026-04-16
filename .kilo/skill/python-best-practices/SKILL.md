@@ -15,6 +15,7 @@ def process_data(items: list[dict[str, Any]]) -> dict[str, int]:
 ```
 
 Use:
+
 - `list[T]` instead of `List[T]` (Python 3.9+)
 - `dict[K, V]` instead of `Dict[K, V]`
 - `|` for unions instead of `Union` (Python 3.10+)
@@ -41,18 +42,21 @@ except:  # Too broad
 ## Tooling
 
 **Ruff** - Modern Python linter and formatter:
+
 ```bash
 ruff check .
 ruff format .
 ```
 
 **uv** - Fast Python package manager:
+
 ```bash
 uv sync --dev
 uv run pytest
 ```
 
 **BasedPyright** - Type checker:
+
 ```bash
 basedpyright
 ```
@@ -98,10 +102,10 @@ Use pytest with descriptive test names:
 def test_process_data_returns_expected_result() -> None:
     # Arrange
     data = {"key": "value"}
-    
+
     # Act
     result = process_data(data)
-    
+
     # Assert
     assert result == expected
 ```

@@ -10,11 +10,13 @@ description: 使用 crash 工具调试 Linux 内核崩溃。当用户提到 kern
 ## 安装
 
 ### Claude Code
+
 ```bash
 claude skill install linux-kernel-crash-debug.skill
 ```
 
 ### OpenClaw
+
 ```bash
 # 方式一：通过 ClawHub 安装
 clawhub install linux-kernel-crash-debug
@@ -51,13 +53,14 @@ crash vmlinux ddr.bin --ram_start=0x80000000
 
 ## 前置要求
 
-| 项目 | 要求 |
-|------|------|
+| 项目        | 要求                                         |
+| ----------- | -------------------------------------------- |
 | **vmlinux** | 必须带 debug symbols (`CONFIG_DEBUG_INFO=y`) |
-| **vmcore** | kdump/netdump/diskdump/ELF 格式 |
-| **版本** | vmlinux 必须与 vmcore 内核版本完全匹配 |
+| **vmcore**  | kdump/netdump/diskdump/ELF 格式              |
+| **版本**    | vmlinux 必须与 vmcore 内核版本完全匹配       |
 
 获取 debuginfo：
+
 ```bash
 # RHEL/CentOS
 yum install kernel-debuginfo
@@ -70,33 +73,33 @@ make menuconfig  # 启用 CONFIG_DEBUG_INFO
 
 ### 调试分析
 
-| 命令 | 用途 | 示例 |
-|------|------|------|
-| `sys` | 系统信息/panic 原因 | `sys`, `sys -i` |
-| `log` | 内核消息缓冲区 | `log`, `log \| tail` |
-| `bt` | 调用栈回溯 | `bt`, `bt -a`, `bt -f` |
-| `struct` | 结构体查看 | `struct task_struct <addr>` |
-| `p/px/pd` | 打印变量 | `p jiffies`, `px current` |
-| `kmem` | 内存分析 | `kmem -i`, `kmem -S <cache>` |
+| 命令      | 用途                | 示例                         |
+| --------- | ------------------- | ---------------------------- |
+| `sys`     | 系统信息/panic 原因 | `sys`, `sys -i`              |
+| `log`     | 内核消息缓冲区      | `log`, `log \| tail`         |
+| `bt`      | 调用栈回溯          | `bt`, `bt -a`, `bt -f`       |
+| `struct`  | 结构体查看          | `struct task_struct <addr>`  |
+| `p/px/pd` | 打印变量            | `p jiffies`, `px current`    |
+| `kmem`    | 内存分析            | `kmem -i`, `kmem -S <cache>` |
 
 ### 任务和进程
 
-| 命令 | 用途 | 示例 |
-|------|------|------|
-| `ps` | 进程列表 | `ps`, `ps -m \| grep UN` |
-| `set` | 切换上下文 | `set <pid>`, `set -p` |
-| `foreach` | 批量任务操作 | `foreach bt`, `foreach UN bt` |
-| `task` | task_struct 内容 | `task <pid>` |
-| `files` | 打开的文件 | `files <pid>` |
+| 命令      | 用途             | 示例                          |
+| --------- | ---------------- | ----------------------------- |
+| `ps`      | 进程列表         | `ps`, `ps -m \| grep UN`      |
+| `set`     | 切换上下文       | `set <pid>`, `set -p`         |
+| `foreach` | 批量任务操作     | `foreach bt`, `foreach UN bt` |
+| `task`    | task_struct 内容 | `task <pid>`                  |
+| `files`   | 打开的文件       | `files <pid>`                 |
 
 ### 内存操作
 
-| 命令 | 用途 | 示例 |
-|------|------|------|
-| `rd` | 读取内存 | `rd <addr>`, `rd -p <phys>` |
-| `search` | 搜索内存 | `search -k deadbeef` |
-| `vtop` | 地址翻译 | `vtop <addr>` |
-| `list` | 遍历链表 | `list task_struct.tasks -h <addr>` |
+| 命令     | 用途     | 示例                               |
+| -------- | -------- | ---------------------------------- |
+| `rd`     | 读取内存 | `rd <addr>`, `rd -p <phys>`        |
+| `search` | 搜索内存 | `search -k deadbeef`               |
+| `vtop`   | 地址翻译 | `vtop <addr>`                      |
+| `list`   | 遍历链表 | `list task_struct.tasks -h <addr>` |
 
 ## bt 命令详解
 
@@ -210,13 +213,14 @@ crash> list -h <addr> -s dentry.d_name.name
 
 详细信息请查阅以下参考文件：
 
-| 文件 | 内容 |
-|------|------|
-| `references/advanced-commands.md` | 高级命令详解：list, rd, search, vtop, kmem, foreach |
-| `references/vmcore-format.md` | vmcore 文件格式、ELF 结构、VMCOREINFO |
-| `references/case-studies.md` | 详细调试案例：kernel BUG、死锁、OOM、NULL指针、栈溢出 |
+| 文件                              | 内容                                                  |
+| --------------------------------- | ----------------------------------------------------- |
+| `references/advanced-commands.md` | 高级命令详解：list, rd, search, vtop, kmem, foreach   |
+| `references/vmcore-format.md`     | vmcore 文件格式、ELF 结构、VMCOREINFO                 |
+| `references/case-studies.md`      | 详细调试案例：kernel BUG、死锁、OOM、NULL指针、栈溢出 |
 
 使用方式：
+
 ```
 crash> help <command>        # 内置帮助
 # 或在 Claude 中请求查看参考文件

@@ -12,6 +12,7 @@ Follow this skill and linked workflows exactly. Deviations cause drift, bad gate
 **IMPORTANT**: This plugin uses `.flow/` for ALL task tracking. Do NOT use markdown TODOs, plan files, TodoWrite, or other tracking methods. All task state must be read and written via `flowctl`.
 
 **CRITICAL: flowctl is BUNDLED — NOT installed globally.** `which flowctl` will fail (expected). Always use:
+
 ```bash
 ROOT="$(git rev-parse --show-toplevel)"
 OPENCODE_DIR="$ROOT/.opencode"
@@ -20,6 +21,7 @@ $FLOWCTL <command>
 ```
 
 **Hard requirements (non-negotiable):**
+
 - You MUST run `flowctl done` for each completed task and verify the task status is `done`.
 - You MUST stage with `git add -A` (never list files). This ensures `.flow/` and `scripts/ralph/` (if present) are included.
 - Do NOT claim completion until `flowctl show <task>` reports `status: done`.
@@ -31,6 +33,7 @@ $FLOWCTL <command>
 ## Ralph Mode Rules (always follow)
 
 If `REVIEW_RECEIPT_PATH` is set or `FLOW_RALPH=1`:
+
 - **Must** use `flowctl done` and verify task status is `done` before committing.
 - **Must** stage with `git add -A` (never list files).
 - **Do NOT** use TodoWrite for tracking.
@@ -40,6 +43,7 @@ If `REVIEW_RECEIPT_PATH` is set or `FLOW_RALPH=1`:
 Full request: $ARGUMENTS
 
 Accepts:
+
 - Flow epic ID `fn-N` to work through all tasks
 - Flow task ID `fn-N.M` to work on single task
 - Markdown spec file path (creates epic from file, then executes)
@@ -47,6 +51,7 @@ Accepts:
 - Chained instructions like "then review with /flow-next:impl-review"
 
 Examples:
+
 - `/flow-next:work fn-1`
 - `/flow-next:work fn-1.3`
 - `/flow-next:work docs/my-feature-spec.md`
@@ -58,6 +63,7 @@ If no input provided, ask for it.
 ## FIRST: Parse Options or Ask Questions
 
 Check available backends and configured preference:
+
 ```bash
 HAVE_RP=0;
 if command -v rp-cli >/dev/null 2>&1; then
@@ -80,11 +86,13 @@ fi
 Parse the arguments for these patterns. If found, use them and skip corresponding questions:
 
 **Branch mode**:
+
 - `--branch=current` or `--current` or "current branch" or "stay on this branch" → current branch
 - `--branch=new` or `--new-branch` or "new branch" or "create branch" → new branch
 - `--branch=worktree` or `--worktree` or "isolated worktree" or "worktree" → isolated worktree
 
 **Review mode**:
+
 - `--review=opencode` or "opencode review" or "use opencode" → OpenCode review (GPT-5.2, reasoning high)
 - `--review=rp` or "review with rp" or "rp chat" or "repoprompt review" → RepoPrompt chat (via `flowctl rp chat-send`)
 - `--review=export` or "export review" or "external llm" → export for external LLM
@@ -106,6 +114,7 @@ a) Current branch  b) New branch  c) Isolated worktree
 **Otherwise**, output questions based on available backends:
 
 **If rp-cli available:**
+
 ```
 Quick setup before starting:
 
@@ -124,6 +133,7 @@ Quick setup before starting:
 ```
 
 **If rp-cli not available:**
+
 ```
 Quick setup before starting:
 
@@ -143,10 +153,12 @@ Quick setup before starting:
 Wait for response. Parse naturally — user may reply terse or ramble via voice.
 
 **Defaults when empty/ambiguous:**
+
 - Branch = `new`
 - Review = configured backend if set, else `opencode`, else `rp` if available, else `none`
 
 **Defaults when no review backend available:**
+
 - Branch = `new`
 - Review = `none`
 
@@ -156,6 +168,7 @@ Wait for response. Parse naturally — user may reply terse or ramble via voice.
 
 After setup questions are answered, read `opencode/skill/flow-next-opencode-work/phases.md` and execute each phase in order.
 If user chose review:
+
 - Option 2a: run `/flow-next:impl-review` after Phase 6, fix issues until it passes
 - Option 2b: run `/flow-next:impl-review` with export mode after Phase 6
 

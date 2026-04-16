@@ -119,6 +119,7 @@ Z or z: Closes current subpath by drawing line to starting point.
 ### Cubic Bezier Commands
 
 C x1 y1 x2 y2 x y: Cubic bezier curve.
+
 - (x1, y1): First control point
 - (x2, y2): Second control point
 - (x, y): End point
@@ -126,6 +127,7 @@ C x1 y1 x2 y2 x y: Cubic bezier curve.
 c: Relative version with all offsets.
 
 S x2 y2 x y: Smooth cubic bezier.
+
 - First control point reflected from previous curve
 - (x2, y2): Second control point
 - (x, y): End point
@@ -135,12 +137,14 @@ s: Relative version.
 ### Quadratic Bezier Commands
 
 Q x1 y1 x y: Quadratic bezier curve.
+
 - (x1, y1): Control point
 - (x, y): End point
 
 q: Relative version.
 
 T x y: Smooth quadratic bezier.
+
 - Control point reflected from previous curve
 - (x, y): End point
 
@@ -149,6 +153,7 @@ t: Relative version.
 ### Arc Command
 
 A rx ry rotation large-arc sweep x y: Elliptical arc.
+
 - rx: X-axis radius
 - ry: Y-axis radius
 - rotation: X-axis rotation in degrees
@@ -199,6 +204,7 @@ Linear color transition along a line.
 Direction attributes: x1, y1 (start), x2, y2 (end). Values 0% to 100% or absolute units.
 
 Common directions:
+
 - Horizontal: x1="0%" y1="0%" x2="100%" y2="0%"
 - Vertical: x1="0%" y1="0%" x2="0%" y2="100%"
 - Diagonal: x1="0%" y1="0%" x2="100%" y2="100%"
@@ -242,57 +248,69 @@ primitiveUnits: userSpaceOnUse or objectBoundingBox for child primitives.
 ### Filter Primitives
 
 **feGaussianBlur**: Blur effect.
+
 - in: Input (SourceGraphic, SourceAlpha, or previous result)
 - stdDeviation: Blur amount (single value or "x y")
 - result: Output name
 
 **feOffset**: Offset transformation.
+
 - in: Input
 - dx, dy: Offset amounts
 - result: Output name
 
 **feColorMatrix**: Color transformation.
+
 - in: Input
 - type: matrix, saturate, hueRotate, luminanceToAlpha
 - values: Matrix values or single value for non-matrix types
 
 **feBlend**: Blend two inputs.
+
 - in, in2: Two inputs
 - mode: normal, multiply, screen, darken, lighten, overlay
 
 **feComposite**: Combine two inputs using Porter-Duff operations.
+
 - in, in2: Two inputs
 - operator: over, in, out, atop, xor, arithmetic
 
 **feMerge**: Layer multiple inputs.
+
 - Contains feMergeNode children, each with in attribute
 - Renders in order (first at bottom)
 
 **feDropShadow**: Shorthand for drop shadow effect.
+
 - dx, dy: Shadow offset
 - stdDeviation: Blur amount
 - flood-color: Shadow color
 - flood-opacity: Shadow opacity
 
 **feFlood**: Fill with solid color.
+
 - flood-color: Color value
 - flood-opacity: Opacity value
 
 **feImage**: Insert external image or SVG reference.
+
 - href: Image source
 - preserveAspectRatio: Aspect ratio handling
 
 **feMorphology**: Erode or dilate shapes.
+
 - operator: erode, dilate
 - radius: Effect amount
 
 **feTurbulence**: Generate noise pattern.
+
 - type: turbulence, fractalNoise
 - baseFrequency: Noise frequency
 - numOctaves: Detail level
 - seed: Random seed
 
 **feDisplacementMap**: Distort using another image.
+
 - in: Input to distort
 - in2: Displacement map
 - scale: Distortion amount
@@ -331,6 +349,7 @@ Usage: mask="url(#mask-id)" on target element.
 ### preset-default
 
 Collection of safe default optimizations. Includes:
+
 - cleanupAttrs: Remove newlines, trailing spaces
 - removeDoctype: Remove DOCTYPE
 - removeXMLProcInst: Remove XML declaration
@@ -366,16 +385,20 @@ Collection of safe default optimizations. Includes:
 ### Individual Plugins
 
 **prefixIds**: Add prefix to IDs to avoid conflicts.
+
 - prefix: Custom prefix string or function
 - delim: Delimiter between prefix and ID
 
 **removeAttrs**: Remove specific attributes.
+
 - attrs: Array of attribute patterns to remove
 
 **addAttributesToSVGElement**: Add attributes to root svg.
+
 - attributes: Object of attributes to add
 
 **removeAttributesBySelector**: Remove attributes matching selector.
+
 - selector: CSS selector
 - attributes: Attributes to remove
 
@@ -434,6 +457,7 @@ display: Display (inline, block, none)
 transform: Transformation functions
 
 Functions:
+
 - translate(x, y): Move by offset
 - scale(x, y): Scale by factor
 - rotate(angle, cx, cy): Rotate around point
@@ -476,6 +500,7 @@ Defines the coordinate system for SVG content. Content scales to fit width/heigh
 Format: "align meetOrSlice"
 
 Align values:
+
 - none: No uniform scaling
 - xMinYMin: Align to top-left
 - xMidYMin: Align to top-center
@@ -488,6 +513,7 @@ Align values:
 - xMaxYMax: Align to bottom-right
 
 meetOrSlice:
+
 - meet: Entire viewBox visible (letterboxing)
 - slice: Fill viewport (cropping)
 

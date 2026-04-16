@@ -5,6 +5,7 @@ Patterns that Claude Opus 4.5 may not automatically apply due to framework-speci
 ## Pydantic v2
 
 ### ConfigDict vs class Config
+
 ```python
 # OLD (v1) - WRONG
 class User(BaseModel):
@@ -17,6 +18,7 @@ class User(BaseModel):
 ```
 
 ### model_validate vs parse_obj
+
 ```python
 # OLD (v1) - DEPRECATED
 user = User.parse_obj(data)
@@ -29,6 +31,7 @@ user = User.model_validate_json(json_string)
 ```
 
 ### Field Validators Changed
+
 ```python
 # OLD (v1)
 from pydantic import validator
@@ -47,6 +50,7 @@ def validate_name(cls, v: str) -> str:
 ```
 
 ### model_dump vs dict
+
 ```python
 # OLD (v1)
 data = user.dict()
@@ -59,6 +63,7 @@ data = user.model_dump_json()  # Direct to JSON
 ## SQLAlchemy 2.0
 
 ### Query API Removed
+
 ```python
 # OLD (1.x) - DEPRECATED
 users = session.query(User).filter(User.name == "test").all()
@@ -72,6 +77,7 @@ users = result.scalars().all()
 ```
 
 ### Mapped Columns
+
 ```python
 # OLD (1.x) - Column directly
 class User(Base):
@@ -85,6 +91,7 @@ class User(Base):
 ```
 
 ### Async Session Gotchas
+
 ```python
 # GOTCHA: Lazy loading blocks in async
 # This will raise MissingGreenlet error:
@@ -100,6 +107,7 @@ async def good_get_user(session: AsyncSession, id: int):
 ```
 
 ### expire_on_commit Default
+
 ```python
 # GOTCHA: Objects expire after commit (extra queries!)
 async_session_maker = async_sessionmaker(
@@ -111,6 +119,7 @@ async_session_maker = async_sessionmaker(
 ## FastAPI
 
 ### Lifespan vs on_event
+
 ```python
 # OLD - DEPRECATED
 @app.on_event("startup")
@@ -132,6 +141,7 @@ app = FastAPI(lifespan=lifespan)
 ```
 
 ### Dependency Override Scope
+
 ```python
 # GOTCHA: Override must match exact dependency function
 def get_db():
@@ -143,6 +153,7 @@ app.dependency_overrides[get_db] = lambda: mock_db
 ```
 
 ### Path Parameter Coercion
+
 ```python
 # GOTCHA: Path parameters are strings by default
 @router.get("/{item_id}")
@@ -158,6 +169,7 @@ async def get_item(item_id: int):  # Now coerced to int
 ## pytest-asyncio
 
 ### asyncio_mode Configuration
+
 ```python
 # GOTCHA: Must configure mode in conftest.py or pyproject.toml
 
@@ -172,6 +184,7 @@ async def test_something():
 ```
 
 ### Fixture Scope with async
+
 ```python
 # GOTCHA: async fixtures with session scope need event_loop fixture
 
@@ -192,6 +205,7 @@ async def database():
 ## returns Library
 
 ### Result is Not Exception
+
 ```python
 # GOTCHA: Result doesn't catch exceptions automatically
 from returns.result import Result, Success, Failure
@@ -214,6 +228,7 @@ def safe_divide(a: int, b: int) -> float:
 ```
 
 ### Unwrap Safety
+
 ```python
 # GOTCHA: unwrap() raises UnwrapFailedError on Failure
 result = some_operation()
@@ -231,6 +246,7 @@ value = result.value_or(default_value)
 ```
 
 ### IOResult vs Result
+
 ```python
 # Result: Pure computations
 # IOResult: Side effects (logging, random, etc.)
@@ -249,6 +265,7 @@ def read_config() -> IOResult[Config, str]:
 ## Type Hints
 
 ### Callable vs Protocol
+
 ```python
 # GOTCHA: Callable doesn't support keyword arguments
 from typing import Callable
@@ -264,6 +281,7 @@ class Callback(Protocol):
 ```
 
 ### Generic Variance
+
 ```python
 from typing import TypeVar, Generic
 
@@ -281,6 +299,7 @@ process_animals(dogs)  # Works with Sequence, not List
 ```
 
 ### ParamSpec for Decorators
+
 ```python
 from typing import ParamSpec, TypeVar, Callable
 
@@ -297,6 +316,7 @@ def logged(func: Callable[P, R]) -> Callable[P, R]:
 ## Async Patterns
 
 ### asyncio.gather Exception Handling
+
 ```python
 # GOTCHA: gather() with return_exceptions=False raises first exception
 # Other tasks may be cancelled mid-execution
@@ -309,6 +329,7 @@ for result in results:
 ```
 
 ### Context Variables
+
 ```python
 # GOTCHA: Regular variables don't work across await points for request context
 from contextvars import ContextVar
@@ -324,6 +345,7 @@ async def process():
 ```
 
 ### TaskGroup vs gather
+
 ```python
 # Python 3.11+ - Prefer TaskGroup for proper cancellation
 async with asyncio.TaskGroup() as tg:
@@ -335,6 +357,7 @@ async with asyncio.TaskGroup() as tg:
 ## structlog
 
 ### Binding Context
+
 ```python
 # GOTCHA: bind() returns new logger, doesn't modify in place
 log = structlog.get_logger()
@@ -349,6 +372,7 @@ log.info("message")  # user_id included
 ```
 
 ### Async Logging
+
 ```python
 # GOTCHA: Standard structlog is sync
 # Use structlog with async processor for high-throughput
@@ -364,6 +388,7 @@ structlog.configure(
 ## pytest
 
 ### Fixture Dependency
+
 ```python
 # GOTCHA: Fixtures can depend on other fixtures, but order matters
 @pytest.fixture
@@ -381,6 +406,7 @@ def dynamic_fixture(request):
 ```
 
 ### Parametrize with Fixtures
+
 ```python
 # GOTCHA: Can't directly parametrize with fixture values
 # Use indirect parametrization

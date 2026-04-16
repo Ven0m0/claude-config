@@ -1,13 +1,13 @@
 ---
 name: cloudflare-browser-rendering
-description: "Use Cloudflare Browser Rendering REST APIs to extract rendered webpage content as Markdown or crawl whole sites asynchronously. Use when normal web_fetch is insufficient because pages are JavaScript-heavy, require render-time extraction, or you need multi-page site crawling for docs, research, monitoring, or RAG preparation. Prefer this skill for: (1) converting a rendered page to Markdown with /markdown, (2) crawling a documentation site or knowledge base with /crawl, (3) controlling render/load behavior via gotoOptions, cookies, auth, userAgent, or request filtering. Do not use it for interactive login/button-click workflows; use browser for those."
+description: 'Use Cloudflare Browser Rendering REST APIs to extract rendered webpage content as Markdown or crawl whole sites asynchronously. Use when normal web_fetch is insufficient because pages are JavaScript-heavy, require render-time extraction, or you need multi-page site crawling for docs, research, monitoring, or RAG preparation. Prefer this skill for: (1) converting a rendered page to Markdown with /markdown, (2) crawling a documentation site or knowledge base with /crawl, (3) controlling render/load behavior via gotoOptions, cookies, auth, userAgent, or request filtering. Do not use it for interactive login/button-click workflows; use browser for those.'
 metadata:
   {
-    "openclaw":
+    'openclaw':
       {
-        "requires": { "bins": ["python3"], "env": ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"] },
-        "primaryEnv": "CLOUDFLARE_API_TOKEN",
-        "homepage": "https://github.com/cytwyatt/cloudflare-browser-rendering-skill",
+        'requires': { 'bins': ['python3'], 'env': ['CLOUDFLARE_API_TOKEN', 'CLOUDFLARE_ACCOUNT_ID'] },
+        'primaryEnv': 'CLOUDFLARE_API_TOKEN',
+        'homepage': 'https://github.com/cytwyatt/cloudflare-browser-rendering-skill',
       },
   }
 ---
@@ -19,6 +19,7 @@ metadata:
 Use this skill to bridge the gap between lightweight `web_fetch` and full interactive browser automation.
 
 Routing rule:
+
 - Use `web_fetch` for simple static pages and quick reads.
 - Use this skill when content depends on JavaScript rendering or when you need to crawl many related pages.
 - Use `browser` when the task requires interaction such as login, clicking, typing, or manual flow control.
@@ -37,6 +38,7 @@ Read `references/decision-guide.md` for routing details and `references/*.md` fo
 ## Prerequisites
 
 Expect these environment variables to be available before running the scripts:
+
 - `CLOUDFLARE_API_TOKEN`
 - `CLOUDFLARE_ACCOUNT_ID`
 
@@ -61,6 +63,7 @@ python3 scripts/cf_markdown.py --url https://example.com --reject-request-patter
 ```
 
 Guidelines:
+
 - Prefer `--wait-until networkidle0` or `networkidle2` for SPA/JS-heavy pages.
 - If a JS-heavy page times out, first raise `--timeout-ms` (for example `60000`), then consider falling back to `domcontentloaded` if full idle waiting is too slow.
 - Use `--cache-ttl 0` when freshness matters more than speed.
@@ -83,6 +86,7 @@ python3 scripts/cf_crawl.py start --url https://example.com --source links --got
 ```
 
 Guidelines:
+
 - Keep initial crawls small: low `depth` and modest `limit`.
 - Use `run --wait` for one-shot jobs.
 - Use `run --wait --fetch-results` when you want a full one-command workflow.
@@ -94,6 +98,7 @@ Guidelines:
 ## Output handling
 
 For large crawls:
+
 - First inspect summary fields: job status, total, finished, browser seconds used.
 - Then fetch filtered results, usually `status=completed`.
 - Avoid dumping huge markdown blobs into chat; summarize and point to saved output if needed.

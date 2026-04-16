@@ -11,6 +11,7 @@ Lint agent configurations before they break your workflow. Validates Skills, Hoo
 ## When to Use
 
 Invoke when user asks to:
+
 - "Lint my agent configs"
 - "Validate my skills"
 - "Check my CLAUDE.md"
@@ -20,14 +21,14 @@ Invoke when user asks to:
 
 ## Supported Files
 
-| File Type | Examples |
-|-----------|----------|
-| Skills | `SKILL.md` |
-| Memory | `CLAUDE.md`, `AGENTS.md` |
-| Hooks | `.claude/settings.json` |
-| MCP | `*.mcp.json` |
-| Cursor | `.cursor/rules/*.mdc` |
-| Copilot | `.github/copilot-instructions.md` |
+| File Type | Examples                          |
+| --------- | --------------------------------- |
+| Skills    | `SKILL.md`                        |
+| Memory    | `CLAUDE.md`, `AGENTS.md`          |
+| Hooks     | `.claude/settings.json`           |
+| MCP       | `*.mcp.json`                      |
+| Cursor    | `.cursor/rules/*.mdc`             |
+| Copilot   | `.github/copilot-instructions.md` |
 
 ## Execution
 
@@ -38,6 +39,7 @@ agnix --version
 ```
 
 If not found, install:
+
 ```bash
 cargo install agnix-cli
 ```
@@ -62,15 +64,15 @@ agnix .
 
 ## CLI Reference
 
-| Command | Description |
-|---------|-------------|
-| `agnix .` | Validate current project |
-| `agnix --fix .` | Auto-fix issues |
-| `agnix --strict .` | Treat warnings as errors |
-| `agnix --target claude-code .` | Only Claude Code rules |
-| `agnix --target cursor .` | Only Cursor rules |
-| `agnix --watch .` | Watch mode |
-| `agnix --format json .` | JSON output |
+| Command                        | Description              |
+| ------------------------------ | ------------------------ |
+| `agnix .`                      | Validate current project |
+| `agnix --fix .`                | Auto-fix issues          |
+| `agnix --strict .`             | Treat warnings as errors |
+| `agnix --target claude-code .` | Only Claude Code rules   |
+| `agnix --target cursor .`      | Only Cursor rules        |
+| `agnix --watch .`              | Watch mode               |
+| `agnix --format json .`        | JSON output              |
 
 ## Output Format
 
@@ -86,11 +88,11 @@ Found 1 error, 1 warning (2 fixable)
 
 ## Common Issues & Fixes
 
-| Issue | Solution |
-|-------|----------|
-| Invalid skill name | Use lowercase with hyphens: `my-skill` |
-| Generic instructions | Remove "be helpful", "be accurate" |
-| Missing trigger phrase | Add "Use when..." to description |
+| Issue                   | Solution                                |
+| ----------------------- | --------------------------------------- |
+| Invalid skill name      | Use lowercase with hyphens: `my-skill`  |
+| Generic instructions    | Remove "be helpful", "be accurate"      |
+| Missing trigger phrase  | Add "Use when..." to description        |
 | Directory/name mismatch | Rename directory to match `name:` field |
 
 ## Links

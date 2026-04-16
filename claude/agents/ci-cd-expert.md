@@ -24,8 +24,9 @@ You create reliable, secure pipelines with fast feedback loops.
 </constraints>
 
 <output_format>
+
 1. Pipeline plan
 2. Complete config file(s)
 3. Setup and validation commands
 4. Risk and performance notes
-</output_format>
+   </output_format>

@@ -1,4 +1,5 @@
 # Implementation Plan
+
 _Updated: 2026-04-04 · 16 tracked tasks · 9 open · Est. 300–1020 LOC remaining_
 
 ## Sources
@@ -44,56 +45,64 @@ Open dependency edges:
 
 ## Task Index
 
-| # | ID | Title | Sev | Cat | Size | Blocking IDs | Status |
-|---|----|-------|-----|-----|------|--------------|--------|
-| 1 | T001 | Wire systemctl cowork service behind opt-in flag | — | feature | S | — | done |
-| 2 | T002 | Implement scaffold script template body | — | feature | S | — | done |
-| 3 | T003 | Add Copilot CLI config once format stabilizes | — | feature | S | — | done |
-| 4 | T004 | Register 5 pending MCP servers in settings | — | feature | S | — | done |
-| 5 | T005 | Phase 1 — inventory and classify external candidates | — | feature | M | — | done |
-| 6 | T006 | Phase 2a/b — integrate skills, hooks, and prompts | medium | feature | L | — | open |
-| 7 | T007 | Phase 2c — evaluate plugin and ecosystem candidates | medium | feature | L | — | open |
-| 8 | T008 | Phase 3 — ship vetted items and update marketplace.json | — | feature | XL | T006, T007 | done |
-| 9 | T009 | Mirror opencode triage results into opencode/TODO.md | — | docs | S | T008 | done |
-| 10 | T010 | Add missing fast-apply skill document | medium | bug | S | — | open |
-| 11 | T011 | Triage aggreggator fork note | low | docs | S | — | open |
-| 12 | T012 | Create codebase indexer skill | medium | feature | L | T014 | open |
-| 13 | T013 | Decide all-for-claudecode disposition | low | feature | S | — | open |
-| 14 | T014 | Classify token-pilot reference | low | docs | S | — | open |
-| 15 | T015 | Restructure claude TODO backlog | low | debt | S | T013, T014 | open |
-| 16 | T016 | Mark opencode defer status correctly | low | debt | S | T011 | open |
+| #   | ID   | Title                                                   | Sev    | Cat     | Size | Blocking IDs | Status |
+| --- | ---- | ------------------------------------------------------- | ------ | ------- | ---- | ------------ | ------ |
+| 1   | T001 | Wire systemctl cowork service behind opt-in flag        | —      | feature | S    | —            | done   |
+| 2   | T002 | Implement scaffold script template body                 | —      | feature | S    | —            | done   |
+| 3   | T003 | Add Copilot CLI config once format stabilizes           | —      | feature | S    | —            | done   |
+| 4   | T004 | Register 5 pending MCP servers in settings              | —      | feature | S    | —            | done   |
+| 5   | T005 | Phase 1 — inventory and classify external candidates    | —      | feature | M    | —            | done   |
+| 6   | T006 | Phase 2a/b — integrate skills, hooks, and prompts       | medium | feature | L    | —            | open   |
+| 7   | T007 | Phase 2c — evaluate plugin and ecosystem candidates     | medium | feature | L    | —            | open   |
+| 8   | T008 | Phase 3 — ship vetted items and update marketplace.json | —      | feature | XL   | T006, T007   | done   |
+| 9   | T009 | Mirror opencode triage results into opencode/TODO.md    | —      | docs    | S    | T008         | done   |
+| 10  | T010 | Add missing fast-apply skill document                   | medium | bug     | S    | —            | open   |
+| 11  | T011 | Triage aggreggator fork note                            | low    | docs    | S    | —            | open   |
+| 12  | T012 | Create codebase indexer skill                           | medium | feature | L    | T014         | open   |
+| 13  | T013 | Decide all-for-claudecode disposition                   | low    | feature | S    | —            | open   |
+| 14  | T014 | Classify token-pilot reference                          | low    | docs    | S    | —            | open   |
+| 15  | T015 | Restructure claude TODO backlog                         | low    | debt    | S    | T013, T014   | open   |
+| 16  | T016 | Mark opencode defer status correctly                    | low    | debt    | S    | T011         | open   |
 
 ## Completed Tasks
 
 ### T001 · Wire systemctl cowork service behind opt-in flag
+
 - **File:** `setup.sh`
 - **Status:** complete
 
 ### T002 · Implement scaffold script template body
+
 - **File:** `plugins/config-wizard/skills/designing-claude-skills/scripts/init_skill.py`
 - **Status:** complete
 
 ### T003 · Add Copilot CLI config once format stabilizes
+
 - **File:** `copilot-cli/config.json`
 - **Status:** complete
 
 ### T004 · Register 5 pending MCP servers in settings
+
 - **File:** `claude/settings.json`
 - **Status:** complete
 
 ### T005 · Phase 1 — inventory and classify external candidates
+
 - **File:** `docs/external-integration-triage.md`
 - **Status:** complete
 
 ### T008 · Phase 3 — ship vetted items and update marketplace.json
+
 - **Status:** complete
 
 ### T009 · Mirror opencode triage results into opencode/TODO.md
+
 - **Status:** complete
 
 ## Open Tasks
 
 ### T006 · Phase 2a/b — integrate skills, hooks, and prompts
+
 - **File:** `TODO.md:28`
 - **Severity:** medium
 - **Category:** feature
@@ -108,6 +117,7 @@ Open dependency edges:
 - **Implementation hint:** Use existing `claude/skills/*/SKILL.md` and `claude/hooks/warden/` layouts as the implementation baseline.
 
 ### T007 · Phase 2c — evaluate plugin and ecosystem candidates
+
 - **File:** `TODO.md:55`
 - **Severity:** medium
 - **Category:** feature
@@ -122,6 +132,7 @@ Open dependency edges:
 - **Implementation hint:** Use `plugins/conserve/` or `plugins/dependency-blocker/` as the structural reference for any new plugin.
 
 ### T010 · Add missing fast-apply skill document
+
 - **File:** `opencode/TODO.md:49`
 - **Severity:** medium
 - **Category:** bug
@@ -136,6 +147,7 @@ Open dependency edges:
 - **Implementation hint:** Mirror the structure used by `opencode/skill/codebase-index/SKILL.md` and focus on `rg` or `sd` anchored replacements.
 
 ### T011 · Triage aggreggator fork note
+
 - **File:** `opencode/TODO.md:22`
 - **Severity:** low
 - **Category:** docs
@@ -150,6 +162,7 @@ Open dependency edges:
 - **Implementation hint:** Compare the fork against upstream OpenCode and record the outcome as a single table row.
 
 ### T012 · Create codebase indexer skill
+
 - **File:** `claude/TODO.md:1`
 - **Severity:** medium
 - **Category:** feature
@@ -165,6 +178,7 @@ Open dependency edges:
 - **Implementation hint:** Prefer a skill unless the workflow needs agent-only orchestration.
 
 ### T013 · Decide all-for-claudecode disposition
+
 - **File:** `claude/TODO.md:8`
 - **Severity:** low
 - **Category:** feature
@@ -178,6 +192,7 @@ Open dependency edges:
 - **Implementation hint:** Use `claude/settings.json` as the only install target if the plugin is adopted.
 
 ### T014 · Classify token-pilot reference
+
 - **File:** `claude/TODO.md:3`
 - **Severity:** low
 - **Category:** docs
@@ -191,6 +206,7 @@ Open dependency edges:
 - **Implementation hint:** Reference it from the codebase-indexer skill only if it contributes token-budget handling.
 
 ### T015 · Restructure claude TODO backlog
+
 - **File:** `claude/TODO.md:13`
 - **Severity:** low
 - **Category:** debt
@@ -205,6 +221,7 @@ Open dependency edges:
 - **Implementation hint:** Use `opencode/TODO.md` as the formatting baseline and verify the LSP item against `claude/.lsp.json`.
 
 ### T016 · Mark opencode defer status correctly
+
 - **File:** `opencode/TODO.md:9`
 - **Severity:** low
 - **Category:** debt

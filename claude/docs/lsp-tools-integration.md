@@ -32,6 +32,7 @@ The core skill that enforces LSP-first semantic code intelligence. It provides:
 - **Search Operations:** workspaceSymbol (search across codebase)
 
 **When to Use:**
+
 - Navigating unfamiliar code
 - Understanding function implementations
 - Finding all references before refactoring
@@ -39,6 +40,7 @@ The core skill that enforces LSP-first semantic code intelligence. It provides:
 - Analyzing code dependencies
 
 **Reference Documentation:**
+
 - `references/lsp-operations-guide.md` - Complete guide to all LSP operations
 - `references/lsp-enforcement-protocol.md` - Enforcement rules and protocols
 - `references/lsp-decision-matrix.md` - When to use LSP vs grep/glob
@@ -51,6 +53,7 @@ The core skill that enforces LSP-first semantic code intelligence. It provides:
 Automated Language Server Protocol toolchain setup for projects.
 
 **What It Does:**
+
 1. Detects languages used in the project (auto or explicit)
 2. Checks system prerequisites (package managers, runtimes)
 3. Verifies each required LSP server is installed
@@ -59,6 +62,7 @@ Automated Language Server Protocol toolchain setup for projects.
 6. Optionally appends LSP guidance to `CLAUDE.md`
 
 **Usage Examples:**
+
 ```bash
 /lsp-setup                      # Auto-detect and full setup
 /lsp-setup typescript python    # Setup specific languages
@@ -73,12 +77,14 @@ Automated Language Server Protocol toolchain setup for projects.
 **Location:** `claude/skills/lsp-enable/references/*-hooks.json`
 
 Each supported language has hook configurations for:
+
 - **Format-on-edit:** Automatic code formatting after edits
 - **Lint-on-edit:** Validation and linting after edits
 - **Type-checking:** Verify types after modifications
 - **Pre-commit gates:** Block commits on quality failures
 
 **Available Hook Files:**
+
 - `typescript-hooks.json` - TypeScript/JavaScript hooks
 - `python-hooks.json` - Python hooks (ruff, pyright)
 - `rust-hooks.json` - Rust hooks (rustfmt, clippy)
@@ -89,12 +95,14 @@ Each supported language has hook configurations for:
 **Location:** `claude/skills/lsp-enable/references/*-lsp-section.md`
 
 Comprehensive LSP workflow guidance for each language, including:
+
 - Navigation and verification workflows
 - Pre-edit checklists
 - Language-specific quality gates
 - Tool-specific configurations
 
 **Available Sections:**
+
 - TypeScript/JavaScript
 - Python
 - Rust
@@ -103,17 +111,17 @@ Comprehensive LSP workflow guidance for each language, including:
 
 ## The Nine LSP Operations
 
-| Operation | Purpose | Use Before |
-|-----------|---------|------------|
-| `goToDefinition` | Jump to where symbol is defined | Modifying unfamiliar code |
-| `findReferences` | Find all usages of a symbol | Refactoring, renaming |
-| `goToImplementation` | Find interface implementations | Working with polymorphism |
-| `hover` | Get type info, docs, signatures | Understanding APIs |
-| `documentSymbol` | List all symbols in a file | Understanding large files |
-| `workspaceSymbol` | Search symbols across codebase | Finding related code |
-| `prepareCallHierarchy` | Get call hierarchy info | Analyzing call graphs |
-| `incomingCalls` | Find callers of a function | Impact analysis |
-| `outgoingCalls` | Find functions called by target | Dependency tracing |
+| Operation              | Purpose                         | Use Before                |
+| ---------------------- | ------------------------------- | ------------------------- |
+| `goToDefinition`       | Jump to where symbol is defined | Modifying unfamiliar code |
+| `findReferences`       | Find all usages of a symbol     | Refactoring, renaming     |
+| `goToImplementation`   | Find interface implementations  | Working with polymorphism |
+| `hover`                | Get type info, docs, signatures | Understanding APIs        |
+| `documentSymbol`       | List all symbols in a file      | Understanding large files |
+| `workspaceSymbol`      | Search symbols across codebase  | Finding related code      |
+| `prepareCallHierarchy` | Get call hierarchy info         | Analyzing call graphs     |
+| `incomingCalls`        | Find callers of a function      | Impact analysis           |
+| `outgoingCalls`        | Find functions called by target | Dependency tracing        |
 
 ## Pre-Edit Protocol (Mandatory)
 
@@ -169,15 +177,16 @@ WHAT DO YOU NEED?
 
 ## Why LSP Over Grep
 
-| Metric | LSP | Grep |
-|--------|-----|------|
-| **Speed (large codebase)** | ~50ms | 45+ seconds |
-| **Accuracy** | Exact semantic matches | Text patterns (false positives) |
-| **Token usage** | ~500 tokens (precise) | Burns tokens on irrelevant matches |
-| **Type resolution** | Follows aliases, re-exports | Text only |
-| **Scope awareness** | Understands variable scope | Matches all text |
+| Metric                     | LSP                         | Grep                               |
+| -------------------------- | --------------------------- | ---------------------------------- |
+| **Speed (large codebase)** | ~50ms                       | 45+ seconds                        |
+| **Accuracy**               | Exact semantic matches      | Text patterns (false positives)    |
+| **Token usage**            | ~500 tokens (precise)       | Burns tokens on irrelevant matches |
+| **Type resolution**        | Follows aliases, re-exports | Text only                          |
+| **Scope awareness**        | Understands variable scope  | Matches all text                   |
 
 **Example:**
+
 ```
 Grep "getUserById" → 500+ matches (comments, strings, similar names)
 LSP findReferences → 23 matches (exact function usages only)
@@ -202,12 +211,14 @@ export ENABLE_LSP_TOOL=1
 ## Integration with Existing Setup
 
 The current `.claude/.lsp.json` already includes comprehensive LSP server configurations for:
+
 - Bash, Python, TypeScript, Rust, JSON, YAML, HTML, CSS
 - Markdown, Dockerfile, Go, C/C++, Java, Kotlin, Swift
 - C#, Ruby, PHP, Elixir, Scala, R, Dart, Fish
 - Biome, Ruff, TOML, Typos, Markdown-oxide
 
 The LSP tools integration adds:
+
 - **Enforcement protocols** for safe code modifications
 - **Automated hooks** for format/lint/typecheck on edit
 - **Language-specific workflows** for optimal LSP usage
@@ -231,10 +242,10 @@ The LSP tools integration adds:
 
 **LSP is more expensive per-call but cheaper overall:**
 
-| Scenario | Grep Cost | LSP Cost |
-|----------|-----------|----------|
+| Scenario                               | Grep Cost                      | LSP Cost                   |
+| -------------------------------------- | ------------------------------ | -------------------------- |
 | Find method usages in 100-file project | 2000+ tokens (scanning output) | 500 tokens (exact matches) |
-| Navigate to definition | Multiple grep attempts | Single LSP call |
-| Understand type signatures | Read multiple files | Single hover call |
+| Navigate to definition                 | Multiple grep attempts         | Single LSP call            |
+| Understand type signatures             | Read multiple files            | Single hover call          |
 
 **Rule:** When codebase > 20 files, LSP saves tokens vs grep.

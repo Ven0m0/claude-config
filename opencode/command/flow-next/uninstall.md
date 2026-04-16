@@ -7,12 +7,14 @@ description: Remove flow-next files from project
 Ask the user to confirm in normal chat text:
 
 **Question 1:** "Remove flow-next from this project?"
+
 - "Yes, uninstall"
 - "Cancel"
 
 If cancel → stop.
 
 **Question 2:** "Keep your .flow/ tasks and epics?"
+
 - "Yes, keep tasks" → only remove .flow/bin/, .flow/usage.md
 - "No, remove everything" → remove entire .flow/
 

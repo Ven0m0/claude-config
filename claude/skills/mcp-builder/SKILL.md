@@ -16,7 +16,7 @@ Use the workflow and reference library below when you need full build guidance.
 
 <!-- progressive: mcp-workflow -->
 
-______________________________________________________________________
+---
 
 # Process
 
@@ -132,7 +132,7 @@ Based on your research, create a detailed plan that includes:
 - Consider rate limiting and timeout scenarios
 - Handle authentication and authorization errors
 
-______________________________________________________________________
+---
 
 ### Phase 2: Implementation
 
@@ -221,7 +221,7 @@ For each tool in the plan:
 - Explicit Promise<T> return types
 - Build process configured (`bun run build`)
 
-______________________________________________________________________
+---
 
 ### Phase 3: Review and Refine
 
@@ -269,7 +269,7 @@ To verify implementation quality, load the appropriate checklist from the langua
 - Python: see "Quality Checklist" in [🐍 Python Guide](./reference/python_mcp_server.md)
 - Node/TypeScript: see "Quality Checklist" in [⚡ TypeScript Guide](./reference/node_mcp_server.md)
 
-______________________________________________________________________
+---
 
 ### Phase 4: Create Evaluations
 
@@ -315,7 +315,7 @@ Create an XML file with this structure:
 </evaluation>
 ```
 
-______________________________________________________________________
+---
 
 # Reference Files
 
@@ -342,7 +342,6 @@ Load these resources as needed during development:
 ### Language-Specific Implementation Guides (Load During Phase 2)
 
 - [🐍 Python Implementation Guide](./reference/python_mcp_server.md) - Complete Python/FastMCP guide with:
-
   - Server initialization patterns
   - Pydantic model examples
   - Tool registration with `@mcp.tool`
@@ -350,7 +349,6 @@ Load these resources as needed during development:
   - Quality checklist
 
 - [⚡ TypeScript Implementation Guide](./reference/node_mcp_server.md) - Complete TypeScript guide with:
-
   - Project structure
   - Zod schema patterns
   - Tool registration with `server.registerTool`

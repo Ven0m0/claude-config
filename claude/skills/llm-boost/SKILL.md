@@ -17,10 +17,10 @@ Optimize all LLM-facing content: documentation, skills, prompts, and parameters.
 
 ## Quick Reference
 
-| Area | Key Metric | Target |
-|------|-----------|--------|
-| c7score | Question-Snippet Match | 80% weight |
-| Skills | SKILL.md size | <=500 lines |
+| Area       | Key Metric                | Target           |
+| ---------- | ------------------------- | ---------------- |
+| c7score    | Question-Snippet Match    | 80% weight       |
+| Skills     | SKILL.md size             | <=500 lines      |
 | LLM Tuning | Task-appropriate settings | See tuning table |
 
 ---
@@ -29,18 +29,18 @@ Optimize all LLM-facing content: documentation, skills, prompts, and parameters.
 
 <workflow>
 
-1. **Analyze**: Read README.md, docs/*.md
+1. **Analyze**: Read README.md, docs/\*.md
 2. **Generate questions**: Create 15-20 "How do I..." questions covering setup, auth, basic usage, errors, advanced features, integrations
 3. **Map questions to snippets**: Mark complete, partial, or missing (prioritize missing)
 4. **Optimize** by priority:
 
-| Priority | Weight | Action |
-|----------|--------|--------|
-| P1: Question coverage | 80% | Add complete code for unanswered questions |
-| P2: Remove duplicates | 5% | Consolidate similar snippets |
-| P3: Fix formatting | 5% | Proper language tags, TITLE/DESCRIPTION/CODE |
-| P4: Remove metadata | 5% | Strip licensing, directory trees, citations |
-| P5: Enhance init | 5% | Combine import-only with usage examples |
+| Priority              | Weight | Action                                       |
+| --------------------- | ------ | -------------------------------------------- |
+| P1: Question coverage | 80%    | Add complete code for unanswered questions   |
+| P2: Remove duplicates | 5%     | Consolidate similar snippets                 |
+| P3: Fix formatting    | 5%     | Proper language tags, TITLE/DESCRIPTION/CODE |
+| P4: Remove metadata   | 5%     | Strip licensing, directory trees, citations  |
+| P5: Enhance init      | 5%     | Combine import-only with usage examples      |
 
 5. **Validate** each snippet: runs standalone, answers specific question, proper format, includes imports
 6. **Score** before vs after across all 5 metrics
@@ -61,19 +61,20 @@ For detailed patterns: [references/optimization_patterns.md](references/optimiza
 ## llms.txt Generation
 
 <format_rules>
+
 - H1 title required, H2 sections only (no H3+)
 - Full URLs with protocol, prefer .md files
 - `- [Title](url): description` link format
 - "Optional" section = skippable for shorter context
 - No code blocks, images, or complex formatting
 - Place at repo root as `/llms.txt`
-</format_rules>
+  </format_rules>
 
-| Project Type | Must Have | Should Have |
-|-------------|----------|-------------|
-| Library | Documentation, API Reference, Examples | Getting Started, Development |
-| CLI Tool | Getting Started, Commands, Examples | Configuration, Development |
-| Framework | Documentation, Guides, API Reference, Examples | Integrations |
+| Project Type | Must Have                                      | Should Have                  |
+| ------------ | ---------------------------------------------- | ---------------------------- |
+| Library      | Documentation, API Reference, Examples         | Getting Started, Development |
+| CLI Tool     | Getting Started, Commands, Examples            | Configuration, Development   |
+| Framework    | Documentation, Guides, API Reference, Examples | Integrations                 |
 
 For templates: [examples/sample_llmstxt.md](examples/sample_llmstxt.md)
 
@@ -88,12 +89,12 @@ For templates: [examples/sample_llmstxt.md](examples/sample_llmstxt.md)
 
 ### Optimization Modes
 
-| Mode | Size | Action |
-|------|------|--------|
-| Light | <3K tokens | Tighten wording, add YAML if missing |
-| Standard | 3K-6K | Consolidate, tables over prose, one example |
-| Aggressive | 6K-10K | Table everything, strip filler |
-| Split | >=10K | Propose 3-4 files + index |
+| Mode       | Size       | Action                                      |
+| ---------- | ---------- | ------------------------------------------- |
+| Light      | <3K tokens | Tighten wording, add YAML if missing        |
+| Standard   | 3K-6K      | Consolidate, tables over prose, one example |
+| Aggressive | 6K-10K     | Table everything, strip filler              |
+| Split      | >=10K      | Propose 3-4 files + index                   |
 
 ### YAML Frontmatter
 
@@ -103,6 +104,7 @@ Description field (max 1024 chars) must include: what the skill does, when to us
 
 ```markdown
 ## Topic Overview
+
 Brief explanation (2-3 sentences).
 
 **Quick Example:**
@@ -117,12 +119,12 @@ Brief explanation (2-3 sentences).
 
 <design_principles>
 
-| Principle | Guideline |
-|-----------|-----------|
-| Semantic naming | Tag names describe content: `<contract>`, `<rubric>` |
-| Consistency | Same tag names throughout; reference by name in instructions |
-| Nesting | `<outer><inner></inner></outer>` for hierarchy |
-| No canonical tags | No "best" tags - name for your use case |
+| Principle          | Guideline                                                            |
+| ------------------ | -------------------------------------------------------------------- |
+| Semantic naming    | Tag names describe content: `<contract>`, `<rubric>`                 |
+| Consistency        | Same tag names throughout; reference by name in instructions         |
+| Nesting            | `<outer><inner></inner></outer>` for hierarchy                       |
+| No canonical tags  | No "best" tags - name for your use case                              |
 | Combine techniques | Pair with CoT (`<thinking>`/`<answer>`) and multishot (`<examples>`) |
 
 </design_principles>
@@ -155,28 +157,28 @@ For comprehensive tag catalog: [references/xml_tags.md](references/xml_tags.md)
 
 ## LLM Parameter Tuning
 
-| Task | max_tokens | temperature | top_p | Rationale |
-|------|------------|-------------|-------|-----------|
-| Theorem proving | 4096 | 0.6 | 0.95 | CoT needs space; higher temp explores tactics |
-| Code generation | 2048 | 0.2-0.4 | - | Deterministic preferred |
-| Creative/exploration | 4096 | 0.8-1.0 | - | Maximum diversity |
-| Classification | 256 | 0.0-0.1 | - | Consistency over creativity |
-| Summarization | 1024 | 0.3 | - | Faithful to source |
+| Task                 | max_tokens | temperature | top_p | Rationale                                     |
+| -------------------- | ---------- | ----------- | ----- | --------------------------------------------- |
+| Theorem proving      | 4096       | 0.6         | 0.95  | CoT needs space; higher temp explores tactics |
+| Code generation      | 2048       | 0.2-0.4     | -     | Deterministic preferred                       |
+| Creative/exploration | 4096       | 0.8-1.0     | -     | Maximum diversity                             |
+| Classification       | 256        | 0.0-0.1     | -     | Consistency over creativity                   |
+| Summarization        | 1024       | 0.3         | -     | Faithful to source                            |
 
 ---
 
 ## CLAUDE.md Audit Checklist
 
-| Check | How |
-|-------|-----|
-| Tech stack claims | `Read("package.json\|Cargo.toml")` |
-| File path references | `Glob("claimed/path")` |
-| Command references | `Grep("script", glob="package.json")` |
-| Testing framework | `Glob("**/*.test.*")` |
-| Linting config | `Glob("**/biome.json\|**/.eslintrc*")` |
-| Line count | `wc -l CLAUDE.md` - target <300 |
-| No code duplication | Uses file:line pointers |
-| WHAT/WHY/HOW structure | Manual review |
+| Check                  | How                                    |
+| ---------------------- | -------------------------------------- |
+| Tech stack claims      | `Read("package.json\|Cargo.toml")`     |
+| File path references   | `Glob("claimed/path")`                 |
+| Command references     | `Grep("script", glob="package.json")`  |
+| Testing framework      | `Glob("**/*.test.*")`                  |
+| Linting config         | `Glob("**/biome.json\|**/.eslintrc*")` |
+| Line count             | `wc -l CLAUDE.md` - target <300        |
+| No code duplication    | Uses file:line pointers                |
+| WHAT/WHY/HOW structure | Manual review                          |
 
 ---
 

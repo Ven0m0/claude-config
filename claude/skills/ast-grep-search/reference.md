@@ -2,11 +2,11 @@
 
 ## Capture syntax
 
-| Token | Meaning |
-|---|---|
-| `$X` | single captured node |
+| Token  | Meaning                       |
+| ------ | ----------------------------- |
+| `$X`   | single captured node          |
 | `$$$X` | variadic capture (0..n nodes) |
-| `$_` | wildcard node, not captured |
+| `$_`   | wildcard node, not captured   |
 
 ## Common language codes
 

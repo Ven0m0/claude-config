@@ -33,10 +33,13 @@ Target: $ARGUMENTS (if specified, otherwise analyze current directory)
 ### Detection Actions
 
 **Find All Unused Code:**
+
 ```bash
 /unused-code-finder scan --path=src/ --recursive --exclude=test
 ```
+
 Performs comprehensive scan for:
+
 - Unused functions and methods
 - Unused variables and constants
 - Unused class definitions
@@ -47,10 +50,13 @@ Performs comprehensive scan for:
 - Unused parameters
 
 **Find Unused Exports:**
+
 ```bash
 /unused-code-finder exports --entry=src/index.ts --follow-imports
 ```
+
 Analyzes exports and finds:
+
 - Exported functions never imported
 - Unused named exports
 - Unused default exports
@@ -61,10 +67,13 @@ Analyzes exports and finds:
 - Entry point analysis
 
 **Detect Unreachable Code:**
+
 ```bash
 /unused-code-finder unreachable --file=src/utils.ts
 ```
+
 Identifies unreachable code including:
+
 - Code after return statements
 - Code after throw statements
 - Impossible conditional branches
@@ -75,10 +84,13 @@ Identifies unreachable code including:
 - Exception handling gaps
 
 **Coverage-Based Analysis:**
+
 ```bash
 /unused-code-finder coverage --report=coverage/lcov.info --threshold=80
 ```
+
 Finds code with low/no coverage:
+
 - Functions never executed in tests
 - Branches never taken
 - Lines never covered
@@ -125,7 +137,7 @@ class UnusedCodeFinder {
 
   constructor(tsConfigPath?: string) {
     this.project = new Project({
-      tsConfigFilePath: tsConfigPath || './tsconfig.json'
+      tsConfigFilePath: tsConfigPath || './tsconfig.json',
     });
   }
 
@@ -180,16 +192,17 @@ class UnusedCodeFinder {
         const references = declaration.findReferences();
 
         // Check if variable is used (more than just declaration)
-        const usageCount = references.flatMap(ref => ref.getReferences()).length;
+        const usageCount = references.flatMap((ref) => ref.getReferences()).length;
 
-        if (usageCount <= 1) {  // Only the declaration itself
+        if (usageCount <= 1) {
+          // Only the declaration itself
           this.addUnusedItem({
             type: 'variable',
             name,
             location: this.getLocation(declaration),
             reason: 'Variable is declared but never used',
             canSafelyRemove: true,
-            dependencies: []
+            dependencies: [],
           });
         }
       }
@@ -208,7 +221,7 @@ class UnusedCodeFinder {
 
       // Find references to this function
       const references = func.findReferences();
-      const usageCount = references.flatMap(ref => ref.getReferences()).length;
+      const usageCount = references.flatMap((ref) => ref.getReferences()).length;
 
       // If not exported and only referenced once (declaration), it's unused
       if (!isExported && usageCount <= 1) {
@@ -218,7 +231,7 @@ class UnusedCodeFinder {
           location: this.getLocation(func),
           reason: 'Function is defined but never called',
           canSafelyRemove: true,
-          dependencies: this.getFunctionDependencies(func)
+          dependencies: this.getFunctionDependencies(func),
         });
       }
 
@@ -240,20 +253,22 @@ class UnusedCodeFinder {
 
       // Find references within function body
       const references = param.findReferences();
-      const usageInBody = references.flatMap(ref => ref.getReferences())
-        .filter(ref => {
+      const usageInBody = references
+        .flatMap((ref) => ref.getReferences())
+        .filter((ref) => {
           const refSourceFile = ref.getSourceFile();
           return refSourceFile === func.getSourceFile();
         });
 
-      if (usageInBody.length <= 1) {  // Only the parameter declaration
+      if (usageInBody.length <= 1) {
+        // Only the parameter declaration
         this.addUnusedItem({
           type: 'parameter',
           name,
           location: this.getLocation(param),
           reason: `Parameter '${name}' is never used in function body`,
-          canSafelyRemove: false,  // Removing parameters can break signatures
-          dependencies: []
+          canSafelyRemove: false, // Removing parameters can break signatures
+          dependencies: [],
         });
       }
     }
@@ -268,7 +283,7 @@ class UnusedCodeFinder {
 
       const isExported = cls.isExported();
       const references = cls.findReferences();
-      const usageCount = references.flatMap(ref => ref.getReferences()).length;
+      const usageCount = references.flatMap((ref) => ref.getReferences()).length;
 
       if (!isExported && usageCount <= 1) {
         this.addUnusedItem({
@@ -277,7 +292,7 @@ class UnusedCodeFinder {
           location: this.getLocation(cls),
           reason: 'Class is defined but never instantiated or referenced',
           canSafelyRemove: true,
-          dependencies: []
+          dependencies: [],
         });
       }
     }
@@ -292,7 +307,7 @@ class UnusedCodeFinder {
       for (const namedImport of namedImports) {
         const name = namedImport.getName();
         const references = namedImport.findReferences();
-        const usageCount = references.flatMap(ref => ref.getReferences()).length;
+        const usageCount = references.flatMap((ref) => ref.getReferences()).length;
 
         if (usageCount <= 1) {
           this.addUnusedItem({
@@ -301,7 +316,7 @@ class UnusedCodeFinder {
             location: this.getLocation(namedImport),
             reason: `Import '${name}' is never used`,
             canSafelyRemove: true,
-            dependencies: []
+            dependencies: [],
           });
         }
       }
@@ -310,7 +325,7 @@ class UnusedCodeFinder {
       const defaultImport = importDecl.getDefaultImport();
       if (defaultImport) {
         const references = defaultImport.findReferences();
-        const usageCount = references.flatMap(ref => ref.getReferences()).length;
+        const usageCount = references.flatMap((ref) => ref.getReferences()).length;
 
         if (usageCount <= 1) {
           this.addUnusedItem({
@@ -319,7 +334,7 @@ class UnusedCodeFinder {
             location: this.getLocation(defaultImport),
             reason: 'Default import is never used',
             canSafelyRemove: true,
-            dependencies: []
+            dependencies: [],
           });
         }
       }
@@ -334,8 +349,9 @@ class UnusedCodeFinder {
         const references = declaration.findReferences();
 
         // Filter references to find external usage
-        const externalUsage = references.flatMap(ref => ref.getReferences())
-          .filter(ref => {
+        const externalUsage = references
+          .flatMap((ref) => ref.getReferences())
+          .filter((ref) => {
             const refFile = ref.getSourceFile();
             return refFile !== sourceFile;
           });
@@ -347,7 +363,7 @@ class UnusedCodeFinder {
             location: this.getLocation(declaration),
             reason: 'Exported but never imported or used externally',
             canSafelyRemove: true,
-            dependencies: []
+            dependencies: [],
           });
         }
       }
@@ -385,12 +401,12 @@ class UnusedCodeFinder {
       const nextStatement = statements[nodeIndex + 1];
 
       this.addUnusedItem({
-        type: 'function',  // Generic type for unreachable code
+        type: 'function', // Generic type for unreachable code
         name: `Unreachable code after ${exitType}`,
         location: this.getLocation(nextStatement),
         reason: `Code is unreachable because it comes after ${exitType} statement`,
         canSafelyRemove: true,
-        dependencies: []
+        dependencies: [],
       });
     }
   }
@@ -409,7 +425,7 @@ class UnusedCodeFinder {
           location: this.getLocation(elseStatement),
           reason: 'Else branch is unreachable because condition is always true',
           canSafelyRemove: true,
-          dependencies: []
+          dependencies: [],
         });
       }
     } else if (expressionText === 'false') {
@@ -420,7 +436,7 @@ class UnusedCodeFinder {
         location: this.getLocation(thenStatement),
         reason: 'Then branch is unreachable because condition is always false',
         canSafelyRemove: true,
-        dependencies: []
+        dependencies: [],
       });
     }
   }
@@ -437,7 +453,7 @@ class UnusedCodeFinder {
       });
     }
 
-    return [...new Set(dependencies)];  // Remove duplicates
+    return [...new Set(dependencies)]; // Remove duplicates
   }
 
   private getLocation(node: any): UnusedCodeItem['location'] {
@@ -448,12 +464,12 @@ class UnusedCodeFinder {
     return {
       file: sourceFile.getFilePath(),
       line,
-      column
+      column,
     };
   }
 
   private isExcluded(filePath: string, excludePaths: string[]): boolean {
-    return excludePaths.some(exclude => filePath.includes(exclude));
+    return excludePaths.some((exclude) => filePath.includes(exclude));
   }
 
   private addUnusedItem(item: UnusedCodeItem): void {
@@ -509,7 +525,7 @@ const unusedCode = finder.scan({
   excludePaths: ['node_modules', 'dist', 'test', '.test.', '.spec.'],
   checkExports: true,
   checkUnreachable: true,
-  followImports: true
+  followImports: true,
 });
 
 console.log(`Found ${unusedCode.length} unused code items`);
@@ -520,7 +536,7 @@ fs.writeFileSync('unused-code-report.md', report);
 console.log('Report saved to unused-code-report.md');
 
 // Show summary
-const safeToRemove = unusedCode.filter(item => item.canSafelyRemove);
+const safeToRemove = unusedCode.filter((item) => item.canSafelyRemove);
 console.log(`\n${safeToRemove.length} items can be safely removed`);
 ```
 
@@ -566,8 +582,8 @@ class CoverageUnusedFinder {
         details: {
           lines: coverage.line,
           functions: coverage.function,
-          branches: coverage.branch
-        }
+          branches: coverage.branch,
+        },
       });
     }
 
@@ -581,7 +597,7 @@ class CoverageUnusedFinder {
           line: func.line,
           coverage: 0,
           reason: 'Function is never executed in tests',
-          canSafelyRemove: false  // Need manual review
+          canSafelyRemove: false, // Need manual review
         });
       }
     }
@@ -595,7 +611,7 @@ class CoverageUnusedFinder {
           line: branch.line,
           coverage: 0,
           reason: 'Branch is never taken in tests',
-          canSafelyRemove: false
+          canSafelyRemove: false,
         });
       }
     }
@@ -604,14 +620,12 @@ class CoverageUnusedFinder {
   calculateCoverage(fileData) {
     const lineCoverage = (fileData.lines.hit / fileData.lines.found) * 100;
     const functionCoverage = (fileData.functions.hit / fileData.functions.found) * 100;
-    const branchCoverage = fileData.branches.found > 0
-      ? (fileData.branches.hit / fileData.branches.found) * 100
-      : 100;
+    const branchCoverage = fileData.branches.found > 0 ? (fileData.branches.hit / fileData.branches.found) * 100 : 100;
 
     return {
       line: Math.round(lineCoverage * 100) / 100,
       function: Math.round(functionCoverage * 100) / 100,
-      branch: Math.round(branchCoverage * 100) / 100
+      branch: Math.round(branchCoverage * 100) / 100,
     };
   }
 
@@ -652,7 +666,7 @@ class CoverageUnusedFinder {
 // Usage
 const coverageFinder = new CoverageUnusedFinder('./coverage/lcov.info');
 
-coverageFinder.analyze(50).then(results => {
+coverageFinder.analyze(50).then((results) => {
   console.log(`Found ${results.length} items with low or no coverage`);
 
   const report = coverageFinder.generateReport();
@@ -664,6 +678,7 @@ coverageFinder.analyze(50).then(results => {
 ## Best Practices
 
 ### Detection Strategy
+
 - **Regular Scans**: Run unused code detection regularly (weekly/monthly)
 - **Pre-Deployment**: Check for unused code before major releases
 - **Coverage Integration**: Combine static analysis with coverage reports
@@ -671,6 +686,7 @@ coverageFinder.analyze(50).then(results => {
 - **Incremental Removal**: Remove unused code gradually, not all at once
 
 ### Safe Removal
+
 - **Version Control**: Always commit before removing code
 - **Feature Branches**: Remove unused code in dedicated branches
 - **Comprehensive Testing**: Run full test suite after removal
@@ -678,6 +694,7 @@ coverageFinder.analyze(50).then(results => {
 - **Rollback Plan**: Be prepared to revert if issues arise
 
 ### Code Quality
+
 - **Bundle Size**: Track bundle size improvements after removal
 - **Performance**: Monitor performance impact of code removal
 - **Documentation**: Update documentation when removing public APIs

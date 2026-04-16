@@ -29,11 +29,13 @@ npm install -g @mariozechner/gdcli
 ### Configure gdcli
 
 First check if already configured:
+
 ```bash
 gdcli accounts list
 ```
 
 If no accounts, guide the user through setup:
+
 1. Ask if they have a Google Cloud project with Drive API enabled
 2. If not, walk them through the Google Cloud Console steps above
 3. Have them download the OAuth credentials JSON
@@ -45,6 +47,7 @@ If no accounts, guide the user through setup:
 Run `gdcli --help` for full command reference.
 
 Common operations:
+
 - `gdcli <email> ls [folderId]` - List files/folders
 - `gdcli <email> ls --query "<query>"` - List with Drive query filter
 - `gdcli <email> search "<text>"` - Full-text content search
@@ -56,6 +59,7 @@ Common operations:
 ## Search
 
 **Two different commands:**
+
 - `search "<text>"` - Searches inside file contents (fullText)
 - `ls --query "<query>"` - Filters by metadata (name, type, date, etc.)
 
@@ -68,6 +72,7 @@ Format: `field operator value`. Combine with `and`/`or`, group with `()`.
 **Operators:** `=`, `!=`, `contains`, `<`, `>`, `<=`, `>=`
 
 **Examples:**
+
 ```bash
 # By filename
 ls --query "name = 'report.pdf'"           # exact match

@@ -2,26 +2,26 @@
 
 ## Runtime selection
 
-| Situation | Preferred runtime |
-|---|---|
-| Existing Bun lockfile / scripts | Bun |
-| Existing npm/pnpm ecosystem only | Node.js |
-| Deno-native project | Deno |
+| Situation                        | Preferred runtime |
+| -------------------------------- | ----------------- |
+| Existing Bun lockfile / scripts  | Bun               |
+| Existing npm/pnpm ecosystem only | Node.js           |
+| Deno-native project              | Deno              |
 
 ## Lint/format
 
-| Tool | Use |
-|---|---|
-| Biome | Fast lint + format baseline |
+| Tool   | Use                                    |
+| ------ | -------------------------------------- |
+| Biome  | Fast lint + format baseline            |
 | ESLint | Existing ecosystem or custom rule sets |
 
 ## Testing
 
-| Scope | Tool |
-|---|---|
+| Scope            | Tool               |
+| ---------------- | ------------------ |
 | Unit/integration | Vitest or Bun test |
-| Legacy/compat | Jest |
-| E2E browser | Playwright |
+| Legacy/compat    | Jest               |
+| E2E browser      | Playwright         |
 
 ## API patterns
 

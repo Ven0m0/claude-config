@@ -2,8 +2,8 @@
 name: vercel
 description: Deploy and manage applications on Vercel, including preview deployments and deployment protection. Use when working with Vercel-hosted projects or configuring Vercel deployments.
 triggers:
-- vercel
-- preview deployment
+  - vercel
+  - preview deployment
 ---
 
 # Vercel Deployment Guide
@@ -15,6 +15,7 @@ Vercel deployments may have **Deployment Protection** enabled, which requires au
 ### Identifying Protected Deployments
 
 If you encounter a login page or authentication requirement when accessing a Vercel preview URL, the deployment has protection enabled. Signs include:
+
 - Redirect to `vercel.com/login` or SSO login page
 - 401/403 errors when accessing the deployment
 - Preview URLs that require Vercel team membership
@@ -33,15 +34,17 @@ To allow agents and automated systems to access protected deployments, users nee
    - Copy the generated secret securely
 
 3. **Using the Bypass Secret**
-   
+
    The secret can be used in two ways:
-   
+
    **As a Header:**
+
    ```bash
    curl -H "x-vercel-protection-bypass: <secret>" https://your-preview-url.vercel.app
    ```
-   
+
    **As a Query Parameter:**
+
    ```
    https://your-preview-url.vercel.app?x-vercel-protection-bypass=<secret>
    ```
@@ -74,6 +77,7 @@ vercel env add MY_SECRET
 ```
 
 Access in your application:
+
 ```typescript
 const secret = process.env.MY_SECRET;
 ```

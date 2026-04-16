@@ -20,6 +20,7 @@ FLOWCTL="$OPENCODE_DIR/bin/flowctl"
 Then run commands with `$FLOWCTL <command>`.
 
 **Discover all commands/options:**
+
 ```bash
 $FLOWCTL --help
 $FLOWCTL <command> --help   # e.g., $FLOWCTL task --help
@@ -85,6 +86,7 @@ $FLOWCTL validate --all --json
 ### "Add a task for X"
 
 1. Find relevant epic:
+
    ```bash
    # List all epics
    $FLOWCTL epics --json
@@ -94,11 +96,13 @@ $FLOWCTL validate --all --json
    ```
 
 2. Create task:
+
    ```bash
    $FLOWCTL task create --epic fn-N --title "Short title" --json
    ```
 
 3. Add description:
+
    ```bash
    cat > /tmp/desc.md << 'EOF'
    **Bug/Feature:** Brief description

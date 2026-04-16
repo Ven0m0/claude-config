@@ -11,8 +11,8 @@ Agent definitions live in `claude/agents/` as `hyphenated-name.md` files.
 
 ```yaml
 ---
-name: kebab-case-name        # matches filename without .md
-description: one sentence    # ≤512 chars; should make the agent self-select correctly
+name: kebab-case-name # matches filename without .md
+description: one sentence # ≤512 chars; should make the agent self-select correctly
 ---
 ```
 
