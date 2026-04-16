@@ -1,5 +1,5 @@
+import * as path from 'node:path';
 import type { Plugin } from '@opencode-ai/plugin';
-import * as path from 'path';
 
 const LINE_RANGE_RE = /^(\d+)(?:\s*-\s*(\d+))?$/;
 

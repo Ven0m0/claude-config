@@ -5,8 +5,10 @@
     "command": "bash-language-server",
     "args": ["start"],
     "extensionToLanguage": {
-      ".sh": "shellscript", ".bash": "shellscript",
-      ".zsh": "shellscript", ".ksh": "shellscript"
+      ".sh": "shellscript",
+      ".bash": "shellscript",
+      ".zsh": "shellscript",
+      ".ksh": "shellscript"
     },
     "transport": "stdio",
     "maxRestarts": 3
@@ -29,10 +31,14 @@
     "command": "vtsls",
     "args": ["--stdio"],
     "extensionToLanguage": {
-      ".ts": "typescript", ".tsx": "typescriptreact",
-      ".js": "javascript",  ".jsx": "javascriptreact",
-      ".mts": "typescript", ".cts": "typescript",
-      ".mjs": "javascript", ".cjs": "javascript"
+      ".ts": "typescript",
+      ".tsx": "typescriptreact",
+      ".js": "javascript",
+      ".jsx": "javascriptreact",
+      ".mts": "typescript",
+      ".cts": "typescript",
+      ".mjs": "javascript",
+      ".cjs": "javascript"
     },
     "transport": "stdio",
     "initializationOptions": {
@@ -104,7 +110,8 @@
     "command": "dockerfile-language-server-nodejs",
     "args": ["--stdio"],
     "extensionToLanguage": {
-      "Dockerfile": "dockerfile", ".dockerfile": "dockerfile"
+      "Dockerfile": "dockerfile",
+      ".dockerfile": "dockerfile"
     },
     "transport": "stdio",
     "maxRestarts": 3

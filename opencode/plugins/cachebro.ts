@@ -17,12 +17,12 @@
  * Requires: "cachebro": "^0.1.0"
  */
 
+import { createHash, randomUUID } from 'node:crypto';
+import { mkdirSync } from 'node:fs';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
 import type { Plugin } from '@opencode-ai/plugin';
 import { tool } from '@opencode-ai/plugin';
-import { createHash, randomUUID } from 'crypto';
-import { existsSync, mkdirSync } from 'fs';
-import { homedir } from 'os';
-import { join } from 'path';
 
 // ── DB path resolution (keyed by git remote → stable across worktrees) ───────
 

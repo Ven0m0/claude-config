@@ -14,9 +14,9 @@
  * Output: JSON object with metrics
  */
 
-import * as fs from "node:fs";
-import * as path from "node:path";
-import * as readline from "node:readline";
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import * as readline from 'node:readline';
 
 interface AggressiveLanguageResult {
   count: number;
@@ -123,9 +123,9 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
   let lineIndex = 0;
 
   // Pre-compile regexes for performance optimization
-  const aggressiveRegex = new RegExp(AGGRESSIVE_WORDS.source, "g");
-  const xmlRegex = new RegExp(XML_TAG_PATTERN.source, "g");
-  const linkRegex = new RegExp(EXTERNAL_LINK.source, "g");
+  const aggressiveRegex = new RegExp(AGGRESSIVE_WORDS.source, 'g');
+  const xmlRegex = new RegExp(XML_TAG_PATTERN.source, 'g');
+  const linkRegex = new RegExp(EXTERNAL_LINK.source, 'g');
 
   // Compute characterCount from the raw file size to avoid newline handling discrepancies.
   // This provides deterministic parity with the previous content.length-based approach.
@@ -151,22 +151,23 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
     if (inCodeBlock) continue;
 
     // Check for aggressive language
-    let match;
-
-    aggressiveRegex.lastIndex = 0;
-    while ((match = aggressiveRegex.exec(line)) !== null) {
+    let match: RegExpExecArray | null = aggressiveRegex.exec(line);
+    while (match !== null) {
       result.aggressiveLanguage.count++;
       result.aggressiveLanguage.instances.push({
         word: match[0],
         line: lineNum,
         context: line.trim().substring(0, 80),
       });
+      match = aggressiveRegex.exec(line);
     }
 
     // Check for XML tags
     xmlRegex.lastIndex = 0;
-    while ((match = xmlRegex.exec(line)) !== null) {
+    match = xmlRegex.exec(line);
+    while (match !== null) {
       xmlTagsSet.add(match[1]);
+      match = xmlRegex.exec(line);
     }
 
     // Check for markdown headers
@@ -181,23 +182,16 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
 
       // Check for boundaries-related sections
       const lowerTitle = title.toLowerCase();
-      if (
-        lowerTitle.includes("boundaries") ||
-        lowerTitle.includes("action boundaries")
-      ) {
+      if (lowerTitle.includes('boundaries') || lowerTitle.includes('action boundaries')) {
         result.hasBoundariesSection = true;
       }
-      if (lowerTitle.includes("always do") || lowerTitle.includes("✅")) {
+      if (lowerTitle.includes('always do') || lowerTitle.includes('✅')) {
         result.hasAlwaysDoSection = true;
       }
-      if (lowerTitle.includes("ask first") || lowerTitle.includes("⚠️")) {
+      if (lowerTitle.includes('ask first') || lowerTitle.includes('⚠️')) {
         result.hasAskFirstSection = true;
       }
-      if (
-        lowerTitle.includes("avoid") ||
-        lowerTitle.includes("never do") ||
-        lowerTitle.includes("❌")
-      ) {
+      if (lowerTitle.includes('avoid') || lowerTitle.includes('never do') || lowerTitle.includes('❌')) {
         result.hasAvoidSection = true;
       }
     }
@@ -215,11 +209,13 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
 
     // Check for external links
     linkRegex.lastIndex = 0;
-    while ((match = linkRegex.exec(line)) !== null) {
+    match = linkRegex.exec(line);
+    while (match !== null) {
       const link = match[1];
       if (!link.startsWith('#')) {
         externalLinksSet.add(link);
       }
+      match = linkRegex.exec(line);
     }
 
     // Check for "Why" context patterns
@@ -262,7 +258,7 @@ async function analyzeFile(filePath: string): Promise<AnalysisResult> {
   return result;
 }
 
-function calculateScores(result: AnalysisResult): AnalysisResult["scores"] {
+function calculateScores(result: AnalysisResult): AnalysisResult['scores'] {
   // Length score (5 points)
   let lengthScore: number;
   if (result.lineCount < 250) lengthScore = 5;
@@ -313,8 +309,8 @@ function calculateScores(result: AnalysisResult): AnalysisResult["scores"] {
 const args = process.argv.slice(2);
 
 if (args.length === 0) {
-  console.error("Usage: npx ts-node analyze.ts <path-to-claudemd>");
-  console.error("Example: npx ts-node analyze.ts ./CLAUDE.md");
+  console.error('Usage: npx ts-node analyze.ts <path-to-claudemd>');
+  console.error('Example: npx ts-node analyze.ts ./CLAUDE.md');
   process.exit(1);
 }
 
@@ -323,7 +319,7 @@ if (args.length === 0) {
     const result = await analyzeFile(args[0]);
     console.log(JSON.stringify(result, null, 2));
   } catch (error) {
-    console.error("Error:", (error as Error).message);
+    console.error('Error:', (error as Error).message);
     process.exit(1);
   }
 })();
