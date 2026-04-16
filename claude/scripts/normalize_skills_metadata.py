@@ -176,6 +176,9 @@ def normalize_skill_metadata(skill_path: Path) -> bool:
     return False
 
 
+MAX_AUTO_TRIGGER_KEYWORDS = 10  # cap keeps YAML metadata compact and focused
+
+
 def extract_keywords_from_name(skill_name: str, description: str) -> list[str]:
     """Extract auto-trigger keywords from skill name and description."""
     # Use a set for O(1) membership checking and deduplication
@@ -204,7 +207,7 @@ def extract_keywords_from_name(skill_name: str, description: str) -> list[str]:
                 keywords.add(keyword)
 
     # Sort before limiting to keep output deterministic
-    return sorted(keywords)[:10] if keywords else []
+    return sorted(keywords)[:MAX_AUTO_TRIGGER_KEYWORDS] if keywords else []
 
 
 def main() -> None:
