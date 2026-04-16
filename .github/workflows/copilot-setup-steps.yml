@@ -43,4 +43,6 @@ jobs:
             bash-language-server \
             yaml-language-server \
             @ast-grep/cli \
-            @biomejs/biome
+            @biomejs/biome \
+            oxlint \
+            oxfmt
