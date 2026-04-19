@@ -164,7 +164,7 @@ class RepomixBatchProcessor:
         cmd = self._build_command(repo_path, output_file, is_remote)
 
         if self.config.verbose:
-            pass
+            print(f"Running command: {' '.join(cmd)}", file=sys.stderr)
 
         try:
             result = subprocess.run(
@@ -367,6 +367,7 @@ def main() -> int:
 
     # Check if repomix is installed
     if not processor.check_repomix_installed():
+        print("Error: repomix is not installed or not in PATH.", file=sys.stderr)
         return 1
 
     # Collect repositories to process
@@ -390,10 +391,14 @@ def main() -> int:
     results = processor.process_batch(repositories)
 
     # Print summary
+    print(f"\nProcessed {len(repositories)} repositories:")
+    print(f"  Success: {len(results['success'])}")
+    print(f"  Failed:  {len(results['failed'])}")
 
     if results["failed"]:
-        for _failure in results["failed"]:
-            pass
+        print("\nFailures:", file=sys.stderr)
+        for failure in results["failed"]:
+            print(f"  - {failure}", file=sys.stderr)
 
     return 0 if not results["failed"] else 1
 
