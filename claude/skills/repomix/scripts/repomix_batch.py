@@ -123,7 +123,7 @@ class RepomixBatchProcessor:
                 env=self.env_vars,
             )
             return result.returncode == 0
-        except subprocess.SubprocessError, FileNotFoundError:
+        except (subprocess.SubprocessError, FileNotFoundError):
             return False
 
     def process_repository(
