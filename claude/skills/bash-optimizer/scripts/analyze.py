@@ -29,7 +29,9 @@ class BashAnalyzer:
 
     def _check_shebang(self) -> None:
         if not self.lines or not self.lines[0].startswith("#!/usr/bin/env bash"):
-            self.issues["critical"].append("Missing/wrong shebang (need: #!/usr/bin/env bash)")
+            self.issues["critical"].append(
+                "Missing/wrong shebang (need: #!/usr/bin/env bash)"
+            )
 
     def _check_options(self) -> None:
         required = {"set -euo pipefail", "shopt -s nullglob", "shopt -s globstar"}
@@ -52,11 +54,15 @@ class BashAnalyzer:
             if re.search(r"\b(cat|echo|ls|which|type|basename|dirname)\b", clean):
                 self.stats["forks"] += 1
                 if "cat" in clean and "|" in clean:
-                    self.issues["performance"].append(f"L{i}: unnecessary cat (use < redirect)")
+                    self.issues["performance"].append(
+                        f"L{i}: unnecessary cat (use < redirect)"
+                    )
                 if "echo" in clean:
                     self.issues["performance"].append(f"L{i}: prefer printf over echo")
                 if "ls" in clean:
-                    self.issues["critical"].append(f"L{i}: parsing ls output (use arrays/globs)")
+                    self.issues["critical"].append(
+                        f"L{i}: parsing ls output (use arrays/globs)"
+                    )
 
     def _check_tool_usage(self) -> None:
         tools = {
@@ -81,7 +87,9 @@ class BashAnalyzer:
             if "eval" in line:
                 self.issues["critical"].append(f"L{i}: avoid eval")
             if re.search(r"function\s+\w+", line):
-                self.issues["standards"].append(f"L{i}: prefer fn(){{}} over function fn")
+                self.issues["standards"].append(
+                    f"L{i}: prefer fn(){{}} over function fn"
+                )
 
     def _check_indentation(self) -> None:
         for i, line in enumerate(self.lines, 1):
