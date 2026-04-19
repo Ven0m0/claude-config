@@ -73,6 +73,9 @@ pull-opencode:
 status:
 	@docker compose ps 2>/dev/null || echo "(Docker services not running)"
 	@echo ""
+	@echo "PM2 services:"
+	@pm2 jlist 2>/dev/null | jq -r '.[] | "  " + .name + ": " + .pm2_env.status' 2>/dev/null || echo "  (PM2 not running or no services)"
+	@echo ""
 	@echo "Systemd services:"
 	@systemctl is-active openchamber 2>/dev/null && echo "  openchamber: active" || echo "  openchamber: inactive"
 	@systemctl is-active cloudflared-openchamber 2>/dev/null && echo "  cloudflared-openchamber: active" || echo "  cloudflared-openchamber: inactive"
@@ -80,6 +83,8 @@ status:
 restart:
 	@if docker compose ps -q 2>/dev/null | grep -q .; then \
 	  docker compose restart; \
+	elif pm2 jlist 2>/dev/null | jq -e '.[] | select(.name == "openchamber")' >/dev/null; then \
+	  pm2 restart openchamber cloudflared-openchamber; \
 	else \
 	  systemctl restart openchamber cloudflared-openchamber 2>/dev/null || echo "No services running"; \
 	fi
@@ -87,10 +92,18 @@ restart:
 # ── Local / systemd targets ───────────────────────────────────────────────────
 
 start:
-	systemctl start openchamber cloudflared-openchamber
+	@if pm2 jlist 2>/dev/null | jq -e '.[] | select(.name == "openchamber")' >/dev/null; then \
+	  pm2 start openchamber cloudflared-openchamber; \
+	else \
+	  systemctl start openchamber cloudflared-openchamber; \
+	fi
 
 stop:
-	systemctl stop openchamber cloudflared-openchamber
+	@if pm2 jlist 2>/dev/null | jq -e '.[] | select(.name == "openchamber")' >/dev/null; then \
+	  pm2 stop openchamber cloudflared-openchamber; \
+	else \
+	  systemctl stop openchamber cloudflared-openchamber; \
+	fi
 
 enable:
 	systemctl enable openchamber cloudflared-openchamber

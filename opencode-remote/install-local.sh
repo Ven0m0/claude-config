@@ -139,6 +139,54 @@ provision_tunnel() {
   TUNNEL_ID=$(jq -r '.TunnelID' "$SCRIPT_DIR/cloudflared/credentials.json")
 }
 
+prepare_local_env() {
+  current_user="${SUDO_USER:-$USER}"
+  if ! command -v getent &>/dev/null; then
+    echo "ERROR: getent is required to resolve the home directory for user $current_user" >&2
+    exit 1
+  fi
+  if ! current_home=$(getent passwd "$current_user" | cut -d: -f6); then
+    echo "ERROR: Could not resolve home directory for user $current_user" >&2
+    exit 1
+  fi
+  [[ -n "$current_home" ]] || { echo "ERROR: Could not resolve home directory for user $current_user" >&2; exit 1; }
+
+  # Resolve openchamber server script path
+  local openchamber_bin
+  openchamber_bin=$(readlink -f "$(command -v openchamber)")
+  openchamber_server=$(dirname "$(dirname "$openchamber_bin")")/server/index.js
+  node_bin=$(command -v node)
+
+  if [[ ! -f "$openchamber_server" ]]; then
+    echo "ERROR: Could not find openchamber server script at $openchamber_server" >&2
+    exit 1
+  fi
+  echo "  Server script: $openchamber_server"
+
+  cloudflared_bin=$(command -v cloudflared)
+  port="${OPENCHAMBER_PORT:-3000}"
+}
+
+write_local_configs() {
+  echo "  Writing configuration files..."
+  # Write secrets to restricted env file
+  local env_target="/etc/openchamber/env"
+  install -d -m 700 /etc/openchamber
+  install -m 600 /dev/null "$env_target"
+  cat > "$env_target" << EOF
+OPENCHAMBER_UI_PASSWORD=$UI_PASSWORD
+TUNNEL_TOKEN=$TUNNEL_TOKEN
+EOF
+  echo "  Wrote: $env_target (chmod 600)"
+
+  # Copy credentials
+  local cloudflared_etc="/etc/cloudflared"
+  mkdir -p "$cloudflared_etc"
+  cp "$SCRIPT_DIR/cloudflared/credentials.json" "$cloudflared_etc/credentials.json"
+  chown "$current_user:$current_user" "$cloudflared_etc/credentials.json"
+  chmod 600 "$cloudflared_etc/credentials.json"
+}
+
 install_systemd_services() {
   echo "[4/4] Installing systemd services..."
 
@@ -153,43 +201,8 @@ install_systemd_services() {
     exit 0
   fi
 
-  local current_user="${SUDO_USER:-$USER}"
-  local current_home
-  if ! command -v getent &>/dev/null; then
-    echo "ERROR: getent is required to resolve the home directory for user $current_user" >&2
-    exit 1
-  fi
-  if ! current_home=$(getent passwd "$current_user" | cut -d: -f6); then
-    echo "ERROR: Could not resolve home directory for user $current_user" >&2
-    exit 1
-  fi
-  [[ -n "$current_home" ]] || { echo "ERROR: Could not resolve home directory for user $current_user" >&2; exit 1; }
-
-  # Resolve openchamber server script path
-  local openchamber_bin openchamber_server node_bin
-  openchamber_bin=$(readlink -f "$(command -v openchamber)")
-  openchamber_server=$(dirname "$(dirname "$openchamber_bin")")/server/index.js
-  node_bin=$(command -v node)
-
-  if [[ ! -f "$openchamber_server" ]]; then
-    echo "ERROR: Could not find openchamber server script at $openchamber_server" >&2
-    exit 1
-  fi
-  echo "  Server script: $openchamber_server"
-
-  # Write secrets to restricted env file
-  local env_target="/etc/openchamber/env"
-  install -d -m 700 /etc/openchamber
-  install -m 600 /dev/null "$env_target"
-  cat > "$env_target" << EOF
-OPENCHAMBER_UI_PASSWORD=$UI_PASSWORD
-TUNNEL_TOKEN=$TUNNEL_TOKEN
-EOF
-  echo "  Wrote: $env_target (chmod 600)"
-
-  local cloudflared_bin
-  cloudflared_bin=$(command -v cloudflared)
-  local port="${OPENCHAMBER_PORT:-3000}"
+  prepare_local_env
+  write_local_configs
 
   # openchamber service
   cat > "$SYSTEMD_DIR/openchamber.service" << EOF
@@ -212,12 +225,6 @@ EOF
   echo "  Wrote: $SYSTEMD_DIR/openchamber.service"
 
   # cloudflared service
-  local cloudflared_etc="/etc/cloudflared"
-  mkdir -p "$cloudflared_etc"
-  cp "$SCRIPT_DIR/cloudflared/credentials.json" "$cloudflared_etc/credentials.json"
-  chown "$current_user:$current_user" "$cloudflared_etc/credentials.json"
-  chmod 600 "$cloudflared_etc/credentials.json"
-
   cat > "$SYSTEMD_DIR/cloudflared-openchamber.service" << EOF
 [Unit]
 Description=Cloudflare Tunnel for openchamber
@@ -228,7 +235,7 @@ Requires=openchamber.service
 Type=simple
 User=$current_user
 EnvironmentFile=/etc/openchamber/env
-ExecStart=$cloudflared_bin tunnel --no-autoupdate run --credentials-file=$cloudflared_etc/credentials.json --url=http://localhost:$port $TUNNEL_ID
+ExecStart=$cloudflared_bin tunnel --no-autoupdate run --credentials-file=/etc/cloudflared/credentials.json --url=http://localhost:$port $TUNNEL_ID
 Restart=on-failure
 RestartSec=5
 
@@ -240,6 +247,27 @@ EOF
   systemctl daemon-reload
   systemctl enable openchamber.service cloudflared-openchamber.service
   systemctl start openchamber.service cloudflared-openchamber.service
+}
+
+install_pm2_services() {
+  echo "[4/4] Installing PM2 services..."
+
+  if ! command -v pm2 &>/dev/null; then
+    install_global pm2
+  fi
+
+  prepare_local_env
+  write_local_configs
+
+  # Start openchamber
+  sudo -u "$current_user" pm2 delete openchamber 2>/dev/null || true
+  sudo -u "$current_user" OPENCHAMBER_UI_PASSWORD="$UI_PASSWORD" pm2 start "$node_bin" --name openchamber -- "$openchamber_server" --port "$port"
+
+  # Start cloudflared
+  sudo -u "$current_user" pm2 delete cloudflared-openchamber 2>/dev/null || true
+  sudo -u "$current_user" TUNNEL_TOKEN="$TUNNEL_TOKEN" pm2 start "$cloudflared_bin" --name cloudflared-openchamber -- tunnel --no-autoupdate run --credentials-file=/etc/cloudflared/credentials.json --url=http://localhost:"$port" "$TUNNEL_ID"
+
+  sudo -u "$current_user" pm2 save
 }
 
 print_summary() {
@@ -265,7 +293,13 @@ main() {
   install_openchamber
   install_cloudflared
   provision_tunnel
-  install_systemd_services
+
+  if [[ "${USE_PM2:-false}" == "true" ]]; then
+    install_pm2_services
+  else
+    install_systemd_services
+  fi
+
   print_summary
 }
 
