@@ -1,14 +1,36 @@
 # Implementation Plan
 
-_Updated: 2026-04-04 · 16 tracked tasks · 9 open · Est. 300–1020 LOC remaining_
+_Updated: 2026-04-20 · 12 open tasks · Est. 345–1065 LOC remaining_
 
-## Sources
+## Supplemental Marker Scan Results
 
-This plan is derived from the structured backlogs in:
+**Scan date:** 2026-04-20
+**Patterns searched:** `TODO`, `FIXME`, `HACK`, `XXX`, `WARN`, `DEPRECATED`, `NOTE(`
+**File types:** `.py`, `.sh`, `.bash`, `.js`, `.ts`, `.tsx`, `.mjs`, `.md`, `.yaml`, `.yml`, `.toml`, `.json`
+**Directories excluded:** `.venv`, `node_modules`, `.git`
 
-- `TODO.md`
-- `claude/TODO.md`
-- `opencode/TODO.md`
+### Findings (All Migrated)
+
+| File | Line | Marker | Comment | Severity |
+|------|------|--------|---------|----------|
+| `opencode-remote/install.sh` | 201 | TODO | `# TODO: add pm2 support` | medium |
+
+### Zero-Occurrence Markers (No Action Needed)
+| Marker | Count |
+|--------|-------|
+| FIXME | 0 |
+| HACK | 0 |
+| XXX (comment marker) | 0 |
+| NOTE( | 0 |
+| DEPRECATED (comment) | 0 |
+
+### Filtered Noise
+- `mktemp ... XXXXXX` patterns (shell temp file naming)
+- `WARN` in shell echo/printf (runtime output, not comment markers)
+- `WARN` in YAML/JSON (configuration values, e.g., `DISABLE_COST_WARNINGS`)
+- Documentation references to `TODO.md`, `PLAN.md` files
+- Markdown skill files describing TODO workflows
+- Meta-code: `claude/skills/todo-triage/scripts/collect.py` defines MARKERS constant
 
 ## Legend
 
@@ -18,9 +40,11 @@ This plan is derived from the structured backlogs in:
 
 ## Summary
 
-The root backlog still has two large open Phase 2 integration tracks (`T006`, `T007`).
-The Claude-specific backlog adds three implementation tasks and two housekeeping tasks (`T012`–`T015`).
-The OpenCode backlog adds one broken reference fix, one fork-triage task, and one status-table cleanup task (`T010`, `T011`, `T016`).
+The root backlog has two large open Phase 2 integration tracks (`T006`, `T007`).
+The Claude-specific backlog adds implementation and housekeeping tasks (`T012`–`T015`).
+The OpenCode backlog adds a broken reference fix, fork-triage, and status-table cleanup (`T010`, `T011`, `T016`).
+The opencode-remote backlog adds Docker image pull targets (`T018`).
+Two GitHub issues are tracked for follow-up (`T019`).
 
 ## Dependency Graph
 
@@ -35,6 +59,9 @@ Topological order for the open work:
 7. `T016`
 8. `T012`
 9. `T015`
+10. `T017`
+11. `T018`
+12. `T019`
 
 Open dependency edges:
 
@@ -45,61 +72,22 @@ Open dependency edges:
 
 ## Task Index
 
-| #   | ID   | Title                                                   | Sev    | Cat     | Size | Blocking IDs | Status |
-| --- | ---- | ------------------------------------------------------- | ------ | ------- | ---- | ------------ | ------ |
-| 1   | T001 | Wire systemctl cowork service behind opt-in flag        | —      | feature | S    | —            | done   |
-| 2   | T002 | Implement scaffold script template body                 | —      | feature | S    | —            | done   |
-| 3   | T003 | Add Copilot CLI config once format stabilizes           | —      | feature | S    | —            | done   |
-| 4   | T004 | Register 5 pending MCP servers in settings              | —      | feature | S    | —            | done   |
-| 5   | T005 | Phase 1 — inventory and classify external candidates    | —      | feature | M    | —            | done   |
-| 6   | T006 | Phase 2a/b — integrate skills, hooks, and prompts       | medium | feature | L    | —            | open   |
-| 7   | T007 | Phase 2c — evaluate plugin and ecosystem candidates     | medium | feature | L    | —            | open   |
-| 8   | T008 | Phase 3 — ship vetted items and update marketplace.json | —      | feature | XL   | T006, T007   | done   |
-| 9   | T009 | Mirror opencode triage results into opencode/TODO.md    | —      | docs    | S    | T008         | done   |
-| 10  | T010 | Add missing fast-apply skill document                   | medium | bug     | S    | —            | open   |
-| 11  | T011 | Triage aggreggator fork note                            | low    | docs    | S    | —            | open   |
-| 12  | T012 | Create codebase indexer skill                           | medium | feature | L    | T014         | open   |
-| 13  | T013 | Decide all-for-claudecode disposition                   | low    | feature | S    | —            | open   |
-| 14  | T014 | Classify token-pilot reference                          | low    | docs    | S    | —            | open   |
-| 15  | T015 | Restructure claude TODO backlog                         | low    | debt    | S    | T013, T014   | open   |
-| 16  | T016 | Mark opencode defer status correctly                    | low    | debt    | S    | T011         | open   |
+| #   | ID   | Title                                                   | Sev    | Cat     | Size | Blocking IDs |
+| --- | ---- | ------------------------------------------------------- | ------ | ------- | ---- | ------------ |
+| 1   | T006 | Phase 2a/b — integrate skills, hooks, and prompts       | medium | feature | L    | —            |
+| 2   | T007 | Phase 2c — evaluate plugin and ecosystem candidates       | medium | feature | L    | —            |
+| 3   | T010 | Add missing fast-apply skill document                   | medium | bug     | S    | —            |
+| 4   | T011 | Triage aggreggator fork note                            | low    | docs    | S    | —            |
+| 5   | T012 | Create codebase indexer skill                           | medium | feature | L    | T014         |
+| 6   | T013 | Decide all-for-claudecode disposition                   | low    | feature | S    | —            |
+| 7   | T014 | Classify token-pilot reference                          | low    | docs    | S    | —            |
+| 8   | T015 | Restructure claude TODO backlog                         | low    | debt    | S    | T013, T014   |
+| 9   | T016 | Mark opencode defer status correctly                    | low    | debt    | S    | T011         |
+| 10  | T017 | Add PM2 support to opencode-remote installer           | medium | feature | S    | —            |
+| 11  | T018 | Implement opencode-container Docker image pull targets  | low    | feature | S    | —            |
+| 12  | T019 | Track Ven0m0/claude-config#114 and #116              | low    | docs    | S    | —            |
 
-## Completed Tasks
-
-### T001 · Wire systemctl cowork service behind opt-in flag
-
-- **File:** `setup.sh`
-- **Status:** complete
-
-### T002 · Implement scaffold script template body
-
-- **File:** `plugins/config-wizard/skills/designing-claude-skills/scripts/init_skill.py`
-- **Status:** complete
-
-### T003 · Add Copilot CLI config once format stabilizes
-
-- **File:** `copilot-cli/config.json`
-- **Status:** complete
-
-### T004 · Register 5 pending MCP servers in settings
-
-- **File:** `claude/settings.json`
-- **Status:** complete
-
-### T005 · Phase 1 — inventory and classify external candidates
-
-- **File:** `docs/external-integration-triage.md`
-- **Status:** complete
-
-### T008 · Phase 3 — ship vetted items and update marketplace.json
-
-- **Status:** complete
-
-### T009 · Mirror opencode triage results into opencode/TODO.md
-
-- **Status:** complete
-
-## Open Tasks
+## Tasks
 
 ### T006 · Phase 2a/b — integrate skills, hooks, and prompts
 
@@ -233,3 +221,49 @@ Open dependency edges:
   - Update the Defer count after `T011` finishes.
   - Run agent-doc lint on `opencode/TODO.md`.
 - **Implementation hint:** Edit the status row only after the fork-note triage is complete.
+
+### T017 · Add PM2 support to opencode-remote installer
+
+- **File:** `opencode-remote/install.sh:201`
+- **Severity:** medium
+- **Category:** feature
+- **Size:** S
+- **Blocking IDs:** `[]`
+- **Intent:** The installer lacks PM2 process manager support as an alternative for environments without systemd.
+- **Acceptance criteria:**
+  - Add `install_pm2()` function that installs PM2 globally via npm.
+  - Add `start_pm2_services()` function that starts openchamber via PM2 with auto-restart.
+  - Add PM2 configuration for cloudflared tunnel management.
+  - Document PM2 as alternative in install output when systemd is unavailable.
+  - Ensure PM2 commands work post-installation.
+- **Implementation hint:** See `opencode-remote/install.sh:201` for commented stub; implement `install_pm2()` and `start_pm2_services()` following the existing `install_systemd_services()` pattern.
+- **Estimated LOC delta:** ~25 lines
+
+### T018 · Implement opencode-container Docker image pull targets
+
+- **File:** `opencode-remote/TODO.md:3`
+- **Severity:** low
+- **Category:** feature
+- **Size:** S
+- **Blocking IDs:** `[]`
+- **Intent:** Add make targets for pulling the opencode-container Docker variant images (base, superpowers, ralph, oh-my-opencode, get-shit-done).
+- **Acceptance criteria:**
+  - Add `make pull-opencode-container` target that pulls all opencode-container variant images.
+  - Add individual `make pull-opencode-container-BASE`, `make pull-opencode-container-SUPERPOWERS`, etc. targets for each variant.
+  - Update README to document the new targets.
+  - Verify all images pull successfully.
+- **Implementation hint:** Add to `opencode-remote/Makefile` following the existing `pull-opencode` pattern. Use `docker pull ghcr.io/spiermar/opencode-container-{variant}:latest` for each variant.
+
+### T019 · Track Ven0m0/claude-config#114 and #116
+
+- **File:** `TODO.md:3-4` and `opencode/TODO.md:3`
+- **Severity:** low
+- **Category:** docs
+- **Size:** S
+- **Blocking IDs:** `[]`
+- **Intent:** Ensure two open GitHub issues are tracked and resolved or moved to the appropriate backlog.
+- **Acceptance criteria:**
+  - Investigate the status of `Ven0m0/claude-config#114` and `Ven0m0/claude-config#116`.
+  - Either close with fix, link to an existing task, or defer with rationale.
+  - Remove the bare issue references from `TODO.md` and `opencode/TODO.md`.
+- **Implementation hint:** Use `gh issue view 114 --repo Ven0m0/claude-config` and `gh issue view 116 --repo Ven0m0/claude-config` to inspect each issue, then decide disposition.
