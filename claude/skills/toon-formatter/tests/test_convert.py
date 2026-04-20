@@ -1,14 +1,19 @@
-import pytest
 import os
 import sys
 
+import pytest
+
 # Ensure module is in path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import importlib.util
 
-spec = importlib.util.spec_from_file_location("toon_convert", "claude/skills/toon-formatter/toon-convert.py")
+spec = importlib.util.spec_from_file_location(
+    "toon_convert",
+    "claude/skills/toon-formatter/toon-convert.py",
+)
 toon_convert = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(toon_convert)
+
 
 def test_needs_quote():
     assert toon_convert.needs_quote(None, ",") == False
@@ -31,6 +36,7 @@ def test_needs_quote():
     assert toon_convert.needs_quote("123", ",") == True
     assert toon_convert.needs_quote("-123", ",") == True
     assert toon_convert.needs_quote("-", ",") == True
+
 
 def test_fmt():
     assert toon_convert.fmt(None, ",") == "null"

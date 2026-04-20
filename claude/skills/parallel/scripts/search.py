@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-"""
-Parallel.ai Search API
+"""Parallel.ai Search API
 Usage: python3 search.py <query> [--max-results N] [--mode one-shot|agentic]
 """
 
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
 
 from parallel import Parallel
 
@@ -20,14 +19,16 @@ def get_api_key() -> str:
         raise RuntimeError(msg)
     return api_key
 
+
 def search(objective: str, max_results: int = 10, mode: str = "one-shot"):
     """Search using Parallel SDK."""
     client = Parallel(api_key=get_api_key())
     return client.beta.search(
         mode=mode,
         max_results=max_results,
-        objective=objective
+        objective=objective,
     )
+
 
 def format_results(response) -> str:
     """Format search results for display."""
@@ -54,11 +55,17 @@ def format_results(response) -> str:
 
     return "\n".join(output)
 
+
 def main():
     parser = argparse.ArgumentParser(description="Parallel.ai Search")
     parser.add_argument("query", nargs="*", help="Search query")
     parser.add_argument("--max-results", "-n", type=int, default=10)
-    parser.add_argument("--mode", "-m", default="one-shot", choices=["one-shot", "agentic", "fast"])
+    parser.add_argument(
+        "--mode",
+        "-m",
+        default="one-shot",
+        choices=["one-shot", "agentic", "fast"],
+    )
     parser.add_argument("--json", "-j", action="store_true", help="Output raw JSON")
 
     args = parser.parse_args()
@@ -72,20 +79,26 @@ def main():
 
     if args.json:
         # Convert to dict for JSON output
-        print(json.dumps({
-            "search_id": response.search_id,
-            "results": [
+        print(
+            json.dumps(
                 {
-                    "url": r.url,
-                    "title": r.title,
-                    "publish_date": r.publish_date,
-                    "excerpts": r.excerpts
-                }
-                for r in response.results
-            ]
-        }, indent=2))
+                    "search_id": response.search_id,
+                    "results": [
+                        {
+                            "url": r.url,
+                            "title": r.title,
+                            "publish_date": r.publish_date,
+                            "excerpts": r.excerpts,
+                        }
+                        for r in response.results
+                    ],
+                },
+                indent=2,
+            ),
+        )
     else:
         print(format_results(response))
+
 
 if __name__ == "__main__":
     main()

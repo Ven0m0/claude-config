@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Parallel.ai FindAll API - Natural language → structured datasets.
+"""Parallel.ai FindAll API - Natural language → structured datasets.
 
 Usage:
   python3 findall.py "Find all AI startups that raised Series A in the last 6 months"
@@ -9,10 +8,10 @@ Usage:
   python3 findall.py --status findall_abc123  # Check status of running job
 """
 
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
 import time
 
 from parallel import Parallel
@@ -59,18 +58,20 @@ def poll_findall(client: Parallel, findall_id: str, timeout: int = 600) -> dict:
     start = time.time()
     while time.time() - start < timeout:
         result = client.beta.findall.retrieve(findall_id)
-        status = result.status.status if hasattr(result.status, 'status') else result.status
+        status = (
+            result.status.status if hasattr(result.status, "status") else result.status
+        )
 
         if status == "completed":
             return result
-        elif status == "failed":
+        if status == "failed":
             raise Exception(f"FindAll failed: {result}")
 
         # Show progress
-        if hasattr(result.status, 'metrics'):
+        if hasattr(result.status, "metrics"):
             m = result.status.metrics
-            gen = getattr(m, 'generated_candidates_count', 0)
-            matched = getattr(m, 'matched_candidates_count', 0)
+            gen = getattr(m, "generated_candidates_count", 0)
+            matched = getattr(m, "matched_candidates_count", 0)
             print(f"⏳ Progress: {matched} matched / {gen} generated", file=sys.stderr)
 
         time.sleep(5)
@@ -82,24 +83,24 @@ def format_result(result) -> str:
     output = []
 
     findall_id = result.findall_id
-    status = result.status.status if hasattr(result.status, 'status') else result.status
-    metrics = result.status.metrics if hasattr(result.status, 'metrics') else None
+    status = result.status.status if hasattr(result.status, "status") else result.status
+    metrics = result.status.metrics if hasattr(result.status, "metrics") else None
 
     output.append(f"🔍 FindAll: {findall_id}")
     output.append(f"   Status: {status}")
 
     if metrics:
-        gen = getattr(metrics, 'generated_candidates_count', 0)
-        matched = getattr(metrics, 'matched_candidates_count', 0)
+        gen = getattr(metrics, "generated_candidates_count", 0)
+        matched = getattr(metrics, "matched_candidates_count", 0)
         output.append(f"   Candidates: {matched} matched / {gen} generated")
     output.append("")
 
-    if hasattr(result, 'candidates') and result.candidates:
+    if hasattr(result, "candidates") and result.candidates:
         output.append("**Matched Entities:**")
         for i, candidate in enumerate(result.candidates, 1):
-            name = getattr(candidate, 'name', 'Unknown')
-            url = getattr(candidate, 'url', '')
-            desc = getattr(candidate, 'description', '')[:150]
+            name = getattr(candidate, "name", "Unknown")
+            url = getattr(candidate, "url", "")
+            desc = getattr(candidate, "description", "")[:150]
 
             output.append(f"\n**{i}. {name}**")
             if url:
@@ -108,7 +109,7 @@ def format_result(result) -> str:
                 output.append(f"   {desc}")
 
             # Show enrichments if present
-            if hasattr(candidate, 'enrichments') and candidate.enrichments:
+            if hasattr(candidate, "enrichments") and candidate.enrichments:
                 for key, val in candidate.enrichments.items():
                     val_str = str(val)[:100]
                     output.append(f"   • {key}: {val_str}")
@@ -119,21 +120,45 @@ def format_result(result) -> str:
 def main():
     parser = argparse.ArgumentParser(description="Parallel.ai FindAll API")
     parser.add_argument("query", nargs="*", help="Natural language query")
-    parser.add_argument("--generator", "-g", default="core",
-                       choices=["base", "core", "pro"],
-                       help="Generator tier (base=budget, core=balanced, pro=comprehensive)")
-    parser.add_argument("--limit", "-l", type=int, default=25,
-                       help="Maximum matched entities to return")
-    parser.add_argument("--enrich", "-e", metavar="FIELDS",
-                       help="Comma-separated enrichment fields (e.g., 'funding,employee_count')")
-    parser.add_argument("--status", "-s", metavar="ID",
-                       help="Check status of existing FindAll job")
-    parser.add_argument("--timeout", "-t", type=int, default=600,
-                       help="Timeout in seconds (default: 600)")
-    parser.add_argument("--json", "-j", action="store_true",
-                       help="Output raw JSON")
-    parser.add_argument("--no-wait", action="store_true",
-                       help="Don't wait for completion, just return findall_id")
+    parser.add_argument(
+        "--generator",
+        "-g",
+        default="core",
+        choices=["base", "core", "pro"],
+        help="Generator tier (base=budget, core=balanced, pro=comprehensive)",
+    )
+    parser.add_argument(
+        "--limit",
+        "-l",
+        type=int,
+        default=25,
+        help="Maximum matched entities to return",
+    )
+    parser.add_argument(
+        "--enrich",
+        "-e",
+        metavar="FIELDS",
+        help="Comma-separated enrichment fields (e.g., 'funding,employee_count')",
+    )
+    parser.add_argument(
+        "--status",
+        "-s",
+        metavar="ID",
+        help="Check status of existing FindAll job",
+    )
+    parser.add_argument(
+        "--timeout",
+        "-t",
+        type=int,
+        default=600,
+        help="Timeout in seconds (default: 600)",
+    )
+    parser.add_argument("--json", "-j", action="store_true", help="Output raw JSON")
+    parser.add_argument(
+        "--no-wait",
+        action="store_true",
+        help="Don't wait for completion, just return findall_id",
+    )
 
     args = parser.parse_args()
 
@@ -156,7 +181,7 @@ def main():
 
     try:
         # Step 1: Ingest - convert natural language to schema
-        print(f"📝 Analyzing query...", file=sys.stderr)
+        print("📝 Analyzing query...", file=sys.stderr)
         schema = ingest_query(client, query)
 
         entity_type = schema.entity_type
@@ -177,7 +202,7 @@ def main():
             ]
 
         # Step 2: Create FindAll run
-        print(f"🚀 Starting FindAll...", file=sys.stderr)
+        print("🚀 Starting FindAll...", file=sys.stderr)
         findall_id = create_findall(
             client,
             objective=schema.objective,
@@ -198,16 +223,18 @@ def main():
         if args.json:
             output = {
                 "findall_id": result.findall_id,
-                "status": result.status.status if hasattr(result.status, 'status') else result.status,
+                "status": result.status.status
+                if hasattr(result.status, "status")
+                else result.status,
                 "candidates": [
                     {
-                        "name": getattr(c, 'name', None),
-                        "url": getattr(c, 'url', None),
-                        "description": getattr(c, 'description', None),
-                        "enrichments": getattr(c, 'enrichments', None),
+                        "name": getattr(c, "name", None),
+                        "url": getattr(c, "url", None),
+                        "description": getattr(c, "description", None),
+                        "enrichments": getattr(c, "enrichments", None),
                     }
                     for c in (result.candidates or [])
-                ]
+                ],
             }
             print(json.dumps(output, indent=2, default=str))
         else:

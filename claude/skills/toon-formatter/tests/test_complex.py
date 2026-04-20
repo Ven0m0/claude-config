@@ -1,14 +1,19 @@
-import pytest
 import os
 import sys
 
+import pytest
+
 # Ensure module is in path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import importlib.util
 
-spec = importlib.util.spec_from_file_location("toon_convert", "claude/skills/toon-formatter/toon-convert.py")
+spec = importlib.util.spec_from_file_location(
+    "toon_convert",
+    "claude/skills/toon-formatter/toon-convert.py",
+)
 toon_convert = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(toon_convert)
+
 
 def test_enc():
     data = {
@@ -23,7 +28,7 @@ def test_enc():
         "i": 123.45,
         "j": "123",
         "k": ["true", "false", "null", "other"],
-        "l": {"m": "true"}
+        "l": {"m": "true"},
     }
 
     expected = """a: "true"

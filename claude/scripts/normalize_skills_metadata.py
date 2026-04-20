@@ -107,7 +107,11 @@ def normalize_skill_metadata(skill_path: Path) -> bool:
                     clean_p = " ".join(p.split())
                     if len(clean_p) > 20 and clean_p.lower() not in description.lower():
                         desc_stripped = description.strip()
-                        if desc_stripped and not desc_stripped.endswith((".", "!", "?")):
+                        if desc_stripped and not desc_stripped.endswith((
+                            ".",
+                            "!",
+                            "?",
+                        )):
                             desc_stripped += "."
                         description = f"{desc_stripped} {clean_p}".strip()
                         metadata["description"] = description
@@ -122,7 +126,10 @@ def normalize_skill_metadata(skill_path: Path) -> bool:
 
     # Calculate and add compliance score (required)
     compliance_score = calculate_compliance_score(metadata, description)
-    if "compliance_score" not in metadata or metadata.get("compliance_score") != compliance_score:
+    if (
+        "compliance_score" not in metadata
+        or metadata.get("compliance_score") != compliance_score
+    ):
         metadata["compliance_score"] = compliance_score
         modified = True
 
@@ -216,7 +223,6 @@ def main() -> None:
         total_count += 1
         if normalize_skill_metadata(skill_dir):
             modified_count += 1
-
 
 
 if __name__ == "__main__":

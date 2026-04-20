@@ -10,7 +10,12 @@ from api.code_analysis import analyze_dependencies, find_unused_imports
 # Find all Python files
 files = list(Path().glob("**/*.py"))
 
-issues = {"high_complexity": [], "unused_imports": [], "large_files": [], "no_docstrings": []}
+issues = {
+    "high_complexity": [],
+    "unused_imports": [],
+    "large_files": [],
+    "no_docstrings": [],
+}
 
 total_lines = 0
 
@@ -33,12 +38,20 @@ for file in files:
 
     # Flag large files
     if deps.get("lines", 0) > 500:
-        issues["large_files"].append({"file": file_str, "lines": deps["lines"], "functions": deps["functions"]})
+        issues["large_files"].append({
+            "file": file_str,
+            "lines": deps["lines"],
+            "functions": deps["functions"],
+        })
 
     # Find unused imports
     unused = find_unused_imports(file_str)
     if unused:
-        issues["unused_imports"].append({"file": file_str, "count": len(unused), "imports": unused})
+        issues["unused_imports"].append({
+            "file": file_str,
+            "count": len(unused),
+            "imports": unused,
+        })
 
 # Return summary (NOT all the data!)
 result = {
@@ -49,9 +62,11 @@ result = {
         "unused_imports": len(issues["unused_imports"]),
         "large_files": len(issues["large_files"]),
     },
-    "top_complexity_issues": sorted(issues["high_complexity"], key=lambda x: x["complexity"], reverse=True)[
-        :5
-    ],  # Only top 5
+    "top_complexity_issues": sorted(
+        issues["high_complexity"],
+        key=lambda x: x["complexity"],
+        reverse=True,
+    )[:5],  # Only top 5
 }
 
 

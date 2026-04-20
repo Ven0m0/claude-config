@@ -9,8 +9,16 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-BASE = "https://api.cloudflare.com/client/v4/accounts/{account_id}/browser-rendering/crawl"
-TERMINAL = {"completed", "errored", "cancelled_by_user", "cancelled_due_to_timeout", "cancelled_due_to_limits"}
+BASE = (
+    "https://api.cloudflare.com/client/v4/accounts/{account_id}/browser-rendering/crawl"
+)
+TERMINAL = {
+    "completed",
+    "errored",
+    "cancelled_by_user",
+    "cancelled_due_to_timeout",
+    "cancelled_due_to_limits",
+}
 
 
 def fail(msg: str, code: int = 1):
@@ -90,7 +98,10 @@ def build_create_body(args):
     if args.modified_since is not None:
         body["modifiedSince"] = args.modified_since
     if args.json_options_json is not None:
-        body["jsonOptions"] = load_json_arg(args.json_options_json, "--json-options-json")
+        body["jsonOptions"] = load_json_arg(
+            args.json_options_json,
+            "--json-options-json",
+        )
     return body
 
 
@@ -129,7 +140,15 @@ def cmd_start(args):
     save_json_if_needed(result, args.out_json)
 
 
-def fetch_result(account_id, token, job_id, cursor=None, limit=None, status=None, cache_ttl=None):
+def fetch_result(
+    account_id,
+    token,
+    job_id,
+    cursor=None,
+    limit=None,
+    status=None,
+    cache_ttl=None,
+):
     params = {}
     if cursor is not None:
         params["cursor"] = cursor
@@ -162,7 +181,15 @@ def summarize_payload(payload):
 
 def cmd_results(args):
     account_id, token = env()
-    result = fetch_result(account_id, token, args.job_id, args.cursor, args.limit, args.status, args.cache_ttl)
+    result = fetch_result(
+        account_id,
+        token,
+        args.job_id,
+        args.cursor,
+        args.limit,
+        args.status,
+        args.cache_ttl,
+    )
     payload = result.get("result", {})
     if args.summary:
         print_json(summarize_payload(payload))
@@ -180,17 +207,30 @@ def cmd_wait(args):
         result = fetch_result(account_id, token, args.job_id, limit=1)
         payload = result.get("result", {})
         status = payload.get("status")
-        print(json.dumps({
-            "attempt": attempts,
-            "job_id": args.job_id,
-            "status": status,
-            "finished": payload.get("finished"),
-            "total": payload.get("total"),
-            "browserSecondsUsed": payload.get("browserSecondsUsed"),
-        }, ensure_ascii=False), flush=True)
+        print(
+            json.dumps(
+                {
+                    "attempt": attempts,
+                    "job_id": args.job_id,
+                    "status": status,
+                    "finished": payload.get("finished"),
+                    "total": payload.get("total"),
+                    "browserSecondsUsed": payload.get("browserSecondsUsed"),
+                },
+                ensure_ascii=False,
+            ),
+            flush=True,
+        )
         if status in TERMINAL:
             if args.fetch_results:
-                final_result = fetch_result(account_id, token, args.job_id, limit=args.limit, status=args.status, cache_ttl=args.cache_ttl)
+                final_result = fetch_result(
+                    account_id,
+                    token,
+                    args.job_id,
+                    limit=args.limit,
+                    status=args.status,
+                    cache_ttl=args.cache_ttl,
+                )
                 final_payload = final_result.get("result", {})
                 if args.summary:
                     print_json(summarize_payload(final_payload))
@@ -211,7 +251,12 @@ def cmd_cancel(args):
 
 def cmd_run(args):
     account_id, token = env()
-    start = api_request(BASE.format(account_id=account_id), token, method="POST", body=build_create_body(args))
+    start = api_request(
+        BASE.format(account_id=account_id),
+        token,
+        method="POST",
+        body=build_create_body(args),
+    )
     print_json(start)
     save_json_if_needed(start, args.out_json if not args.wait else None)
     if not args.wait:
@@ -242,10 +287,18 @@ def main():
     common_create.add_argument("--depth", type=int)
     common_create.add_argument("--limit", type=int)
     common_create.add_argument("--format", choices=["markdown", "html", "json"])
-    common_create.add_argument("--render", type=lambda x: x.lower() == "true", choices=[True, False], default=None)
+    common_create.add_argument(
+        "--render",
+        type=lambda x: x.lower() == "true",
+        choices=[True, False],
+        default=None,
+    )
     common_create.add_argument("--include-external-links", action="store_true")
     common_create.add_argument("--include-subdomains", action="store_true")
-    common_create.add_argument("--wait-until", choices=["load", "domcontentloaded", "networkidle0", "networkidle2"])
+    common_create.add_argument(
+        "--wait-until",
+        choices=["load", "domcontentloaded", "networkidle0", "networkidle2"],
+    )
     common_create.add_argument("--goto-options-json")
     common_create.add_argument("--options-json")
     common_create.add_argument("--source", choices=["all", "sitemaps", "links"])
@@ -260,9 +313,23 @@ def main():
     s = sub.add_parser("run", parents=[common_create])
     s.add_argument("--wait", action="store_true")
     s.add_argument("--poll-seconds", type=int, default=5)
-    s.add_argument("--fetch-results", action="store_true", help="After wait, fetch final results")
+    s.add_argument(
+        "--fetch-results",
+        action="store_true",
+        help="After wait, fetch final results",
+    )
     s.add_argument("--results-limit", type=int)
-    s.add_argument("--results-status", choices=["queued", "errored", "completed", "disallowed", "skipped", "cancelled"])
+    s.add_argument(
+        "--results-status",
+        choices=[
+            "queued",
+            "errored",
+            "completed",
+            "disallowed",
+            "skipped",
+            "cancelled",
+        ],
+    )
     s.add_argument("--results-cache-ttl", type=int)
     s.add_argument("--out-markdown")
     s.add_argument("--summary", action="store_true")
@@ -272,7 +339,17 @@ def main():
     s.add_argument("--job-id", required=True)
     s.add_argument("--cursor", type=int)
     s.add_argument("--limit", type=int)
-    s.add_argument("--status", choices=["queued", "errored", "completed", "disallowed", "skipped", "cancelled"])
+    s.add_argument(
+        "--status",
+        choices=[
+            "queued",
+            "errored",
+            "completed",
+            "disallowed",
+            "skipped",
+            "cancelled",
+        ],
+    )
     s.add_argument("--cache-ttl", type=int)
     s.add_argument("--out-json")
     s.add_argument("--out-markdown")
@@ -284,7 +361,17 @@ def main():
     s.add_argument("--poll-seconds", type=int, default=5)
     s.add_argument("--fetch-results", action="store_true")
     s.add_argument("--limit", type=int)
-    s.add_argument("--status", choices=["queued", "errored", "completed", "disallowed", "skipped", "cancelled"])
+    s.add_argument(
+        "--status",
+        choices=[
+            "queued",
+            "errored",
+            "completed",
+            "disallowed",
+            "skipped",
+            "cancelled",
+        ],
+    )
     s.add_argument("--cache-ttl", type=int)
     s.add_argument("--out-json")
     s.add_argument("--out-markdown")

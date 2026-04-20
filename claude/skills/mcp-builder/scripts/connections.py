@@ -74,14 +74,21 @@ class MCPConnection(ABC):
 class MCPConnectionStdio(MCPConnection):
     """MCP connection using standard input/output."""
 
-    def __init__(self, command: str, args: list[str] | None = None, env: dict[str, str] | None = None) -> None:
+    def __init__(
+        self,
+        command: str,
+        args: list[str] | None = None,
+        env: dict[str, str] | None = None,
+    ) -> None:
         super().__init__()
         self.command = command
         self.args = args or []
         self.env = env
 
     def _create_context(self):
-        return stdio_client(StdioServerParameters(command=self.command, args=self.args, env=self.env))
+        return stdio_client(
+            StdioServerParameters(command=self.command, args=self.args, env=self.env),
+        )
 
 
 class MCPConnectionSSE(MCPConnection):

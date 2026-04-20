@@ -48,7 +48,12 @@ def parse_args() -> Config:
         metavar="PATH",
         help="Output file or directory (default: derived from input)",
     )
-    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Enable verbose output",
+    )
     parser.add_argument(
         "-n",
         "--dry-run",

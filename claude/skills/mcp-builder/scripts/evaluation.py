@@ -112,7 +112,11 @@ async def agent_loop(
         tool_start_ts = time.time()
         try:
             tool_result = await connection.call_tool(tool_name, tool_input)
-            tool_response = json.dumps(tool_result) if isinstance(tool_result, (dict, list)) else str(tool_result)
+            tool_response = (
+                json.dumps(tool_result)
+                if isinstance(tool_result, (dict, list))
+                else str(tool_result)
+            )
         except Exception as e:
             tool_response = f"Error executing tool {tool_name}: {e!s}\n"
             tool_response += traceback.format_exc()
@@ -162,7 +166,13 @@ async def evaluate_single_task(
     """Evaluate a single QA pair with the given tools."""
     start_time = time.time()
 
-    response, tool_metrics = await agent_loop(client, model, qa_pair["question"], tools, connection)
+    response, tool_metrics = await agent_loop(
+        client,
+        model,
+        qa_pair["question"],
+        tools,
+        connection,
+    )
 
     response_value = extract_xml_content(response, "response")
     summary = extract_xml_content(response, "summary")
@@ -177,7 +187,9 @@ async def evaluate_single_task(
         "score": int(response_value == qa_pair["answer"]) if response_value else 0,
         "total_duration": duration_seconds,
         "tool_calls": tool_metrics,
-        "num_tool_calls": sum(len(metrics["durations"]) for metrics in tool_metrics.values()),
+        "num_tool_calls": sum(
+            len(metrics["durations"]) for metrics in tool_metrics.values()
+        ),
         "summary": summary,
         "feedback": feedback,
     }
@@ -236,15 +248,26 @@ async def run_evaluation(
 
     async def run_task(i, qa_pair):
         async with semaphore:
-            return await evaluate_single_task(client, model, qa_pair, tools, connection, i)
+            return await evaluate_single_task(
+                client,
+                model,
+                qa_pair,
+                tools,
+                connection,
+                i,
+            )
 
     tasks = [run_task(i, qa_pair) for i, qa_pair in enumerate(qa_pairs)]
     results = await asyncio.gather(*tasks)
 
     correct = sum(r["score"] for r in results)
     accuracy = (correct / len(results)) * 100 if results else 0
-    average_duration_s = sum(r["total_duration"] for r in results) / len(results) if results else 0
-    average_tool_calls = sum(r["num_tool_calls"] for r in results) / len(results) if results else 0
+    average_duration_s = (
+        sum(r["total_duration"] for r in results) / len(results) if results else 0
+    )
+    average_tool_calls = (
+        sum(r["num_tool_calls"] for r in results) / len(results) if results else 0
+    )
     total_tool_calls = sum(r["num_tool_calls"] for r in results)
 
     report = REPORT_HEADER.format(
@@ -321,7 +344,12 @@ Examples:
         """,
     )
 
-    parser.add_argument("--concurrency", type=int, default=5, help="Number of concurrent tasks (default: 5)")
+    parser.add_argument(
+        "--concurrency",
+        type=int,
+        default=5,
+        help="Number of concurrent tasks (default: 5)",
+    )
     parser.add_argument("eval_file", type=Path, help="Path to evaluation XML file")
     parser.add_argument(
         "-t",
@@ -338,8 +366,17 @@ Examples:
     )
 
     stdio_group = parser.add_argument_group("stdio options")
-    stdio_group.add_argument("-c", "--command", help="Command to run MCP server (stdio only)")
-    stdio_group.add_argument("-a", "--args", nargs="+", help="Arguments for the command (stdio only)")
+    stdio_group.add_argument(
+        "-c",
+        "--command",
+        help="Command to run MCP server (stdio only)",
+    )
+    stdio_group.add_argument(
+        "-a",
+        "--args",
+        nargs="+",
+        help="Arguments for the command (stdio only)",
+    )
     stdio_group.add_argument(
         "-e",
         "--env",
@@ -384,9 +421,13 @@ Examples:
     except ValueError:
         sys.exit(1)
 
-
     async with connection:
-        report = await run_evaluation(args.eval_file, connection, args.model, args.concurrency)
+        report = await run_evaluation(
+            args.eval_file,
+            connection,
+            args.model,
+            args.concurrency,
+        )
 
         if args.output:
             args.output.write_text(report)
