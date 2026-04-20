@@ -73,12 +73,19 @@ def fmt(v: Any, delim: str) -> str:
 
 def uniform(arr: list) -> tuple[bool, list]:
     """Check if array is tabular (uniform objects with primitive values)."""
-    if not arr or not all(isinstance(x, dict) for x in arr):
+    if not arr:
         return False, []
-    if any(isinstance(v, (dict, list)) for o in arr for v in o.values()):
-        return False, []
-    keys = list(arr[0].keys())
-    return all(set(o.keys()) == set(keys) for o in arr), keys
+    keys = arr[0].keys()
+    keys_len = len(keys)
+    for x in arr:
+        if type(x) is not dict:
+            return False, []
+        if len(x) != keys_len or x.keys() != keys:
+            return False, []
+        for v in x.values():
+            if type(v) in (dict, list):
+                return False, []
+    return True, list(keys)
 
 
 def arr(a: list, d: int, s: int, delim: str) -> str:
