@@ -1,3 +1,0 @@
-File: claude/skills/cloudflare-browser-rendering-skill/scripts/cf_crawl.py
-
-Summary: Replaced `urllib.request.urlopen` with `http.client.HTTPSConnection` to implement keep-alive connection pooling per host. Handled errors and retries.
