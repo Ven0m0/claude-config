@@ -1,6 +1,6 @@
 # Implementation Plan
 
-_Updated: 2026-04-04 · 16 tracked tasks · 9 open · Est. 300–1020 LOC remaining_
+_Updated: 2026-04-20 · 17 tracked tasks · 10 open · Est. 320–1040 LOC remaining_
 
 ## Sources
 
@@ -9,6 +9,37 @@ This plan is derived from the structured backlogs in:
 - `TODO.md`
 - `claude/TODO.md`
 - `opencode/TODO.md`
+- `opencode-remote/install.sh` (newly discovered TODO)
+
+## Supplemental Marker Scan Results
+
+**Scan date:** 2026-04-20
+**Patterns searched:** `TODO`, `FIXME`, `HACK`, `XXX`, `WARN`, `DEPRECATED`, `NOTE(`
+**File types:** `.py`, `.sh`, `.bash`, `.js`, `.ts`, `.tsx`, `.mjs`, `.md`, `.yaml`, `.yml`, `.toml`, `.json`
+**Directories excluded:** `.venv`, `node_modules`, `.git`
+
+### Findings Not in Existing Plan
+
+| File | Line | Marker | Comment | Severity |
+|------|------|--------|---------|----------|
+| `opencode-remote/install.sh` | 201 | TODO | `# TODO: add pm2 support` | medium |
+
+### Zero-Occurrence Markers (No Action Needed)
+| Marker | Count |
+|--------|-------|
+| FIXME | 0 |
+| HACK | 0 |
+| XXX (comment marker) | 0 |
+| NOTE( | 0 |
+| DEPRECATED (comment) | 0 |
+
+### Filtered Noise
+- `mktemp ... XXXXXX` patterns (shell temp file naming)
+- `WARN` in shell echo/printf (runtime output, not comment markers)
+- `WARN` in YAML/JSON (configuration values, e.g., `DISABLE_COST_WARNINGS`)
+- Documentation references to `TODO.md`, `PLAN.md` files
+- Markdown skill files describing TODO workflows
+- Meta-code: `claude/skills/todo-triage/scripts/collect.py` defines MARKERS constant
 
 ## Legend
 
@@ -35,6 +66,7 @@ Topological order for the open work:
 7. `T016`
 8. `T012`
 9. `T015`
+10. `T017`
 
 Open dependency edges:
 
@@ -63,6 +95,7 @@ Open dependency edges:
 | 14  | T014 | Classify token-pilot reference                          | low    | docs    | S    | —            | open   |
 | 15  | T015 | Restructure claude TODO backlog                         | low    | debt    | S    | T013, T014   | open   |
 | 16  | T016 | Mark opencode defer status correctly                    | low    | debt    | S    | T011         | open   |
+| 17  | T017 | Add PM2 support to opencode-remote installer           | medium | feature | S    | —            | open   |
 
 ## Completed Tasks
 
@@ -233,3 +266,20 @@ Open dependency edges:
   - Update the Defer count after `T011` finishes.
   - Run agent-doc lint on `opencode/TODO.md`.
 - **Implementation hint:** Edit the status row only after the fork-note triage is complete.
+
+### T017 · Add PM2 support to opencode-remote installer
+
+- **File:** `opencode-remote/install.sh:201`
+- **Severity:** medium
+- **Category:** feature
+- **Size:** S
+- **Blocking IDs:** `[]`
+- **Intent:** The installer lacks PM2 process manager support as an alternative for environments without systemd.
+- **Acceptance criteria:**
+  - Add `install_pm2()` function that installs PM2 globally via npm
+  - Add `start_pm2_services()` function that starts openchamber via PM2 with auto-restart
+  - Add PM2 configuration for cloudflared tunnel management
+  - Document PM2 as alternative in install output when systemd is unavailable
+  - Ensure PM2 commands work post-installation
+- **Implementation hint:** See `opencode-remote/install.sh:201` for commented stub; implement `install_pm2()` and `start_pm2_services()` following the existing `install_systemd_services()` pattern.
+- **Estimated LOC delta:** ~25 lines
