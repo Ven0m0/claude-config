@@ -16,7 +16,9 @@ from pathlib import Path
 from quick_validate import validate_skill
 
 
-def package_skill(skill_path, output_dir=None):
+def package_skill(
+    skill_path: str | Path, output_dir: str | Path | None = None
+) -> Path | None:
     """
     Package a skill folder into a zip file.
 
@@ -45,7 +47,7 @@ def package_skill(skill_path, output_dir=None):
         return None
 
     # Run validation before packaging
-    print("Validating skill...")
+    print("[INFO] Validating skill...")
     valid, message = validate_skill(skill_path)
     if not valid:
         print(f"[ERROR] Validation failed: {message}")
@@ -82,7 +84,7 @@ def package_skill(skill_path, output_dir=None):
         return None
 
 
-def main():
+def main() -> None:
     if len(sys.argv) < 2:
         print(
             "Usage: python utils/package_skill.py <path/to/skill-folder> [output-directory]"
