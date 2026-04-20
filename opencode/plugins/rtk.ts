@@ -1,11 +1,5 @@
 import type { Plugin } from '@opencode-ai/plugin';
 
-const SECTION_SEP = '//';
-const FILTER_PRIMITIVES = '// Filtering primitives';
-const CMD_FILTERS = '// Command-specific filters';
-const DISPATCHER = '// Dispatcher';
-const PLUGIN = '// Plugin';
-
 function deduplicateLines(lines: string[]): string[] {
   const counts = new Map<string, number>();
   for (const l of lines) {
