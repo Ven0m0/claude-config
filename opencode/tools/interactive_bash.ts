@@ -1,9 +1,7 @@
 import { tool } from '@opencode-ai/plugin';
 import { spawn } from 'bun';
 
-const DEFAULT_TIMEOUT_MS = 60_000;
-
-const BLOCKED_SUBCOMMANDS = [
+const BLOCKED_SUBCOMMANDS = new Set([
   'capture-pane',
   'capturep',
   'save-buffer',
@@ -12,7 +10,7 @@ const BLOCKED_SUBCOMMANDS = [
   'showb',
   'pipe-pane',
   'pipep',
-];
+]);
 
 function tokenizeCommand(cmd: string): string[] {
   const tokens: string[] = [];
@@ -46,7 +44,9 @@ function tokenizeCommand(cmd: string): string[] {
         tokens.push(current);
         current = '';
       }
-    } else current += char;
+    } else {
+      current += char;
+    }
   }
   if (current) tokens.push(current);
   return tokens;
@@ -61,18 +61,17 @@ export default tool({
     'BLOCKED: capture-pane, save-buffer, show-buffer, pipe-pane — use Bash tool for those.',
   args: {
     tmux_command: tool.schema.string().describe("tmux subcommand and args without 'tmux' prefix"),
+    timeout: tool.schema.number().optional().describe('Timeout in milliseconds (default: 30000)'),
   },
   async execute(args) {
     const parts = tokenizeCommand(args.tmux_command);
     if (parts.length === 0) return 'Error: empty command';
 
     const subcommand = parts[0].toLowerCase();
-    if (BLOCKED_SUBCOMMANDS.includes(subcommand)) {
+    if (BLOCKED_SUBCOMMANDS.has(subcommand)) {
       const tIdx = parts.findIndex((p) => p === '-t' || p.startsWith('-t'));
-      let session = 'session';
-      if (tIdx !== -1) {
-        session = parts[tIdx] === '-t' ? (parts[tIdx + 1] ?? session) : parts[tIdx].slice(2);
-      }
+      const session =
+        tIdx !== -1 ? (parts[tIdx] === '-t' ? (parts[tIdx + 1] ?? 'session') : parts[tIdx].slice(2)) : 'session';
       return (
         `Error: '${parts[0]}' is blocked — use the Bash tool instead:\n` +
         `  tmux capture-pane -p -t ${session}\n` +
@@ -80,6 +79,7 @@ export default tool({
       );
     }
 
+    const timeoutMs = args.timeout ?? 30_000;
     const proc = spawn(['tmux', ...parts], { stdout: 'pipe', stderr: 'pipe' });
 
     const timeout = new Promise<never>((_, reject) => {
@@ -87,8 +87,8 @@ export default tool({
         try {
           proc.kill();
         } catch {}
-        reject(new Error(`Timeout after ${DEFAULT_TIMEOUT_MS}ms`));
-      }, DEFAULT_TIMEOUT_MS);
+        reject(new Error(`Timeout after ${timeoutMs}ms`));
+      }, timeoutMs);
       proc.exited.then(() => clearTimeout(id)).catch(() => clearTimeout(id));
     });
 
