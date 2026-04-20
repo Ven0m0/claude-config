@@ -44,7 +44,9 @@ def _get_connection(host):
     if host not in _conn_pool:
         context = ssl.create_default_context()
         _conn_pool[host] = http.client.HTTPSConnection(
-            host, timeout=180, context=context,
+            host,
+            timeout=180,
+            context=context,
         )
     return _conn_pool[host]
 
@@ -89,7 +91,11 @@ def api_request(url, token, method="GET", body=None, _retries=1):
 
         if _retries > 0:
             return api_request(
-                url, token, method=method, body=body, _retries=_retries - 1,
+                url,
+                token,
+                method=method,
+                body=body,
+                _retries=_retries - 1,
             )
         fail(f"Request failed: {e}")
 

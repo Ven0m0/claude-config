@@ -85,7 +85,9 @@ class EnvLoader:
                     key = key.strip()
                     value = value.strip()
                     # Remove quotes if present
-                    if (value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'")):
+                    if (value.startswith('"') and value.endswith('"')) or (
+                        value.startswith("'") and value.endswith("'")
+                    ):
                         value = value[1:-1]
                     env_vars[key] = value
         except (OSError, UnicodeDecodeError) as exc:
@@ -123,7 +125,7 @@ class RepomixBatchProcessor:
                 env=self.env_vars,
             )
             return result.returncode == 0
-        except (subprocess.SubprocessError, FileNotFoundError):
+        except subprocess.SubprocessError, FileNotFoundError:
             return False
 
     def process_repository(
