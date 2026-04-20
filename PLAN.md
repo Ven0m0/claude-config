@@ -1,15 +1,6 @@
 # Implementation Plan
 
-_Updated: 2026-04-20 · 19 tracked tasks · 12 open · Est. 345–1065 LOC remaining_
-
-## Sources
-
-This plan is derived from the structured backlogs in:
-
-- `TODO.md`
-- `claude/TODO.md`
-- `opencode/TODO.md`
-- `opencode-remote/install.sh` (newly discovered TODO)
+_Updated: 2026-04-20 · 12 open tasks · Est. 345–1065 LOC remaining_
 
 ## Supplemental Marker Scan Results
 
@@ -18,7 +9,7 @@ This plan is derived from the structured backlogs in:
 **File types:** `.py`, `.sh`, `.bash`, `.js`, `.ts`, `.tsx`, `.mjs`, `.md`, `.yaml`, `.yml`, `.toml`, `.json`
 **Directories excluded:** `.venv`, `node_modules`, `.git`
 
-### Findings Not in Existing Plan
+### Findings (All Migrated)
 
 | File | Line | Marker | Comment | Severity |
 |------|------|--------|---------|----------|
@@ -81,64 +72,22 @@ Open dependency edges:
 
 ## Task Index
 
-| #   | ID   | Title                                                   | Sev    | Cat     | Size | Blocking IDs | Status |
-| --- | ---- | ------------------------------------------------------- | ------ | ------- | ---- | ------------ | ------ |
-| 1   | T001 | Wire systemctl cowork service behind opt-in flag        | —      | feature | S    | —            | done   |
-| 2   | T002 | Implement scaffold script template body                 | —      | feature | S    | —            | done   |
-| 3   | T003 | Add Copilot CLI config once format stabilizes           | —      | feature | S    | —            | done   |
-| 4   | T004 | Register 5 pending MCP servers in settings              | —      | feature | S    | —            | done   |
-| 5   | T005 | Phase 1 — inventory and classify external candidates    | —      | feature | M    | —            | done   |
-| 6   | T006 | Phase 2a/b — integrate skills, hooks, and prompts       | medium | feature | L    | —            | open   |
-| 7   | T007 | Phase 2c — evaluate plugin and ecosystem candidates     | medium | feature | L    | —            | open   |
-| 8   | T008 | Phase 3 — ship vetted items and update marketplace.json | —      | feature | XL   | T006, T007   | done   |
-| 9   | T009 | Mirror opencode triage results into opencode/TODO.md    | —      | docs    | S    | T008         | done   |
-| 10  | T010 | Add missing fast-apply skill document                   | medium | bug     | S    | —            | open   |
-| 11  | T011 | Triage aggreggator fork note                            | low    | docs    | S    | —            | open   |
-| 12  | T012 | Create codebase indexer skill                           | medium | feature | L    | T014         | open   |
-| 13  | T013 | Decide all-for-claudecode disposition                   | low    | feature | S    | —            | open   |
-| 14  | T014 | Classify token-pilot reference                          | low    | docs    | S    | —            | open   |
-| 15  | T015 | Restructure claude TODO backlog                         | low    | debt    | S    | T013, T014   | open   |
-| 16  | T016 | Mark opencode defer status correctly                    | low    | debt    | S    | T011         | open   |
-| 17  | T017 | Add PM2 support to opencode-remote installer           | medium | feature | S    | —            | open   |
-| 18  | T018 | Implement opencode-container Docker image pull targets  | low    | feature | S    | —            | open   |
-| 19  | T019 | Track Ven0m0/claude-config#114 and #116              | low    | docs    | S    | —            | open   |
+| #   | ID   | Title                                                   | Sev    | Cat     | Size | Blocking IDs |
+| --- | ---- | ------------------------------------------------------- | ------ | ------- | ---- | ------------ |
+| 1   | T006 | Phase 2a/b — integrate skills, hooks, and prompts       | medium | feature | L    | —            |
+| 2   | T007 | Phase 2c — evaluate plugin and ecosystem candidates       | medium | feature | L    | —            |
+| 3   | T010 | Add missing fast-apply skill document                   | medium | bug     | S    | —            |
+| 4   | T011 | Triage aggreggator fork note                            | low    | docs    | S    | —            |
+| 5   | T012 | Create codebase indexer skill                           | medium | feature | L    | T014         |
+| 6   | T013 | Decide all-for-claudecode disposition                   | low    | feature | S    | —            |
+| 7   | T014 | Classify token-pilot reference                          | low    | docs    | S    | —            |
+| 8   | T015 | Restructure claude TODO backlog                         | low    | debt    | S    | T013, T014   |
+| 9   | T016 | Mark opencode defer status correctly                    | low    | debt    | S    | T011         |
+| 10  | T017 | Add PM2 support to opencode-remote installer           | medium | feature | S    | —            |
+| 11  | T018 | Implement opencode-container Docker image pull targets  | low    | feature | S    | —            |
+| 12  | T019 | Track Ven0m0/claude-config#114 and #116              | low    | docs    | S    | —            |
 
-## Completed Tasks
-
-### T001 · Wire systemctl cowork service behind opt-in flag
-
-- **File:** `setup.sh`
-- **Status:** complete
-
-### T002 · Implement scaffold script template body
-
-- **File:** `plugins/config-wizard/skills/designing-claude-skills/scripts/init_skill.py`
-- **Status:** complete
-
-### T003 · Add Copilot CLI config once format stabilizes
-
-- **File:** `copilot-cli/config.json`
-- **Status:** complete
-
-### T004 · Register 5 pending MCP servers in settings
-
-- **File:** `claude/settings.json`
-- **Status:** complete
-
-### T005 · Phase 1 — inventory and classify external candidates
-
-- **File:** `docs/external-integration-triage.md`
-- **Status:** complete
-
-### T008 · Phase 3 — ship vetted items and update marketplace.json
-
-- **Status:** complete
-
-### T009 · Mirror opencode triage results into opencode/TODO.md
-
-- **Status:** complete
-
-## Open Tasks
+## Tasks
 
 ### T006 · Phase 2a/b — integrate skills, hooks, and prompts
 
@@ -282,11 +231,11 @@ Open dependency edges:
 - **Blocking IDs:** `[]`
 - **Intent:** The installer lacks PM2 process manager support as an alternative for environments without systemd.
 - **Acceptance criteria:**
-  - Add `install_pm2()` function that installs PM2 globally via npm
-  - Add `start_pm2_services()` function that starts openchamber via PM2 with auto-restart
-  - Add PM2 configuration for cloudflared tunnel management
-  - Document PM2 as alternative in install output when systemd is unavailable
-  - Ensure PM2 commands work post-installation
+  - Add `install_pm2()` function that installs PM2 globally via npm.
+  - Add `start_pm2_services()` function that starts openchamber via PM2 with auto-restart.
+  - Add PM2 configuration for cloudflared tunnel management.
+  - Document PM2 as alternative in install output when systemd is unavailable.
+  - Ensure PM2 commands work post-installation.
 - **Implementation hint:** See `opencode-remote/install.sh:201` for commented stub; implement `install_pm2()` and `start_pm2_services()` following the existing `install_systemd_services()` pattern.
 - **Estimated LOC delta:** ~25 lines
 
