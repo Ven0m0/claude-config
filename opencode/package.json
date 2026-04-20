@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@opencode-ai/plugin": "1.4.11",
+    "@opencode-ai/plugin": "1.14.18",
     "cachebro": "^0.2.0",
     "codemogger": "^0.1.4",
     "diff": "^9.0.0",
