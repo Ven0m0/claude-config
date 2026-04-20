@@ -10,6 +10,8 @@ import sys
 import textwrap
 from pathlib import Path
 
+STRUCTURAL_MARKERS = {"|", "-", "*", "+", "└", "├", "│"}
+
 
 def is_google_docstring(docstring: str) -> bool:
     """Check if docstring is Google-style format."""
@@ -45,7 +47,8 @@ def wrap_text(
 
     for line in lines:
         # Detect code blocks
-        if line.strip().startswith("```"):
+        stripped = line.strip()
+        if stripped.startswith("```"):
             in_code_block = not in_code_block
             result.append(line)
             continue
@@ -55,7 +58,7 @@ def wrap_text(
             continue
 
         # Preserve table rows, lists, and tree diagrams
-        if any(line.strip().startswith(x) for x in ["|", "-", "*", "+", "└", "├", "│"]):
+        if stripped and stripped[0] in STRUCTURAL_MARKERS:
             result.append(line)
             continue
 
@@ -65,9 +68,9 @@ def wrap_text(
             continue
 
         # Wrap regular text
-        if line.strip():
+        if stripped:
             wrapped = textwrap.fill(
-                line.strip(),
+                stripped,
                 width=width,
                 initial_indent=initial_indent,
                 subsequent_indent=subsequent_indent,
