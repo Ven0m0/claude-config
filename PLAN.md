@@ -1,6 +1,6 @@
 # Implementation Plan
 
-_Updated: 2026-04-20 · 17 tracked tasks · 10 open · Est. 320–1040 LOC remaining_
+_Updated: 2026-04-20 · 19 tracked tasks · 12 open · Est. 345–1065 LOC remaining_
 
 ## Sources
 
@@ -49,9 +49,11 @@ This plan is derived from the structured backlogs in:
 
 ## Summary
 
-The root backlog still has two large open Phase 2 integration tracks (`T006`, `T007`).
-The Claude-specific backlog adds three implementation tasks and two housekeeping tasks (`T012`–`T015`).
-The OpenCode backlog adds one broken reference fix, one fork-triage task, and one status-table cleanup task (`T010`, `T011`, `T016`).
+The root backlog has two large open Phase 2 integration tracks (`T006`, `T007`).
+The Claude-specific backlog adds implementation and housekeeping tasks (`T012`–`T015`).
+The OpenCode backlog adds a broken reference fix, fork-triage, and status-table cleanup (`T010`, `T011`, `T016`).
+The opencode-remote backlog adds Docker image pull targets (`T018`).
+Two GitHub issues are tracked for follow-up (`T019`).
 
 ## Dependency Graph
 
@@ -67,6 +69,8 @@ Topological order for the open work:
 8. `T012`
 9. `T015`
 10. `T017`
+11. `T018`
+12. `T019`
 
 Open dependency edges:
 
@@ -96,6 +100,8 @@ Open dependency edges:
 | 15  | T015 | Restructure claude TODO backlog                         | low    | debt    | S    | T013, T014   | open   |
 | 16  | T016 | Mark opencode defer status correctly                    | low    | debt    | S    | T011         | open   |
 | 17  | T017 | Add PM2 support to opencode-remote installer           | medium | feature | S    | —            | open   |
+| 18  | T018 | Implement opencode-container Docker image pull targets  | low    | feature | S    | —            | open   |
+| 19  | T019 | Track Ven0m0/claude-config#114 and #116              | low    | docs    | S    | —            | open   |
 
 ## Completed Tasks
 
@@ -283,3 +289,32 @@ Open dependency edges:
   - Ensure PM2 commands work post-installation
 - **Implementation hint:** See `opencode-remote/install.sh:201` for commented stub; implement `install_pm2()` and `start_pm2_services()` following the existing `install_systemd_services()` pattern.
 - **Estimated LOC delta:** ~25 lines
+
+### T018 · Implement opencode-container Docker image pull targets
+
+- **File:** `opencode-remote/TODO.md:3`
+- **Severity:** low
+- **Category:** feature
+- **Size:** S
+- **Blocking IDs:** `[]`
+- **Intent:** Add make targets for pulling the opencode-container Docker variant images (base, superpowers, ralph, oh-my-opencode, get-shit-done).
+- **Acceptance criteria:**
+  - Add `make pull-opencode-container` target that pulls all opencode-container variant images.
+  - Add individual `make pull-opencode-container-BASE`, `make pull-opencode-container-SUPERPOWERS`, etc. targets for each variant.
+  - Update README to document the new targets.
+  - Verify all images pull successfully.
+- **Implementation hint:** Add to `opencode-remote/Makefile` following the existing `pull-opencode` pattern. Use `docker pull ghcr.io/spiermar/opencode-container-{variant}:latest` for each variant.
+
+### T019 · Track Ven0m0/claude-config#114 and #116
+
+- **File:** `TODO.md:3-4` and `opencode/TODO.md:3`
+- **Severity:** low
+- **Category:** docs
+- **Size:** S
+- **Blocking IDs:** `[]`
+- **Intent:** Ensure two open GitHub issues are tracked and resolved or moved to the appropriate backlog.
+- **Acceptance criteria:**
+  - Investigate the status of `Ven0m0/claude-config#114` and `Ven0m0/claude-config#116`.
+  - Either close with fix, link to an existing task, or defer with rationale.
+  - Remove the bare issue references from `TODO.md` and `opencode/TODO.md`.
+- **Implementation hint:** Use `gh issue view 114 --repo Ven0m0/claude-config` and `gh issue view 116 --repo Ven0m0/claude-config` to inspect each issue, then decide disposition.
