@@ -122,7 +122,7 @@ def safe_read(path: Path, encoding: str = "utf-8") -> str | None:
     """
     try:
         return path.read_text(encoding=encoding)
-    except FileNotFoundError, PermissionError, UnicodeDecodeError:
+    except (FileNotFoundError, PermissionError, UnicodeDecodeError):
         return None
 
 
@@ -142,7 +142,7 @@ def safe_write(path: Path, content: str, encoding: str = "utf-8") -> bool:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding=encoding)
         return True
-    except PermissionError, OSError:
+    except (PermissionError, OSError):
         return False
 
 
@@ -175,7 +175,7 @@ def get_file_size(path: Path) -> int:
     """
     try:
         return path.stat().st_size
-    except FileNotFoundError, PermissionError:
+    except (FileNotFoundError, PermissionError):
         return 0
 
 
@@ -194,5 +194,5 @@ def is_binary(path: Path, sample_size: int = 8192) -> bool:
         with path.open("rb") as f:
             chunk = f.read(sample_size)
         return b"\x00" in chunk
-    except FileNotFoundError, PermissionError:
+    except (FileNotFoundError, PermissionError):
         return False
