@@ -42,7 +42,7 @@ python3 -c "from PIL import Image; i=Image.open('input.png'); i.save('output.jpg
 
 ```bash
 # Reduce to max 1200px width, 85% quality
-magick input.png -resize 1200x1200\> -quality 85 output.jpg
+magick input.png -resize 1200x1200/> -quality 85 output.jpg
 ```
 
 ### Batch Compress

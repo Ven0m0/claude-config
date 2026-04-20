@@ -337,7 +337,7 @@ exit 0
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'FILE=$(cat | jq -r \".tool_input.file_path\"); [[ \"$FILE\" == *.py ]] && ruff format \"$FILE\"'"
+            "command": "bash -c 'FILE=$(cat | jq -r /".tool_input.file_path/"); [[ /"$FILE/" == *.py ]] && ruff format \"$FILE\"'"
           }
         ]
       }
@@ -357,7 +357,7 @@ exit 0
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'changes=$(git status --porcelain | wc -l); [ $changes -gt 0 ] && echo \"Reminder: $changes uncommitted changes\"'"
+            "command": "bash -c 'changes=$(git status --porcelain | wc -l); [ $changes -gt 0 ] && echo \"Reminder: $changes uncommitted changes/"'"
           }
         ]
       }
