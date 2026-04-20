@@ -35,26 +35,42 @@ const CLI_LANGUAGES = [
 
 type Lang = (typeof CLI_LANGUAGES)[number];
 
-const DEFAULT_TIMEOUT_MS = 300_000;
-const DEFAULT_MAX_MATCHES = 500;
-const DEFAULT_MAX_BYTES = 1 * 1024 * 1024;
+const DEFAULT_TIMEOUT_MS = 120_000;
+const DEFAULT_MAX_MATCHES = 200;
+const DEFAULT_MAX_BYTES = 512 * 1024;
+
+let _sgPath: string | null | undefined;
 
 function findSg(): string | null {
+  if (_sgPath !== undefined) return _sgPath;
+
   const bin = 'sg';
   const cachePath = join(process.env.XDG_CACHE_HOME ?? join(homedir(), '.cache'), 'oh-my-opencode', 'bin', bin);
-  if (existsSync(cachePath)) return cachePath;
+  if (existsSync(cachePath)) {
+    _sgPath = cachePath;
+    return _sgPath;
+  }
 
   try {
     const req = createRequire(import.meta.url);
     const pkgDir = dirname(req.resolve('@ast-grep/cli/package.json'));
     const p = join(pkgDir, bin);
-    if (existsSync(p)) return p;
+    if (existsSync(p)) {
+      _sgPath = p;
+      return _sgPath;
+    }
   } catch {}
 
-  const { stdout } = Bun.spawnSync(['which', bin], { stdout: 'pipe' });
-  const p = new TextDecoder().decode(stdout).trim();
-  if (p && existsSync(p)) return p;
+  try {
+    const { stdout } = Bun.spawnSync(['which', bin], { stdout: 'pipe' });
+    const p = new TextDecoder().decode(stdout).trim();
+    if (p && existsSync(p)) {
+      _sgPath = p;
+      return _sgPath;
+    }
+  } catch {}
 
+  _sgPath = null;
   return null;
 }
 

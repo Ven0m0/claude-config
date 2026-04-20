@@ -1,5 +1,12 @@
 import { type Plugin, tool } from '@opencode-ai/plugin';
 
+interface GitingestRequest {
+  input_text: string;
+  max_file_size: number;
+  pattern: string;
+  pattern_type: 'include' | 'exclude';
+}
+
 interface GitingestResponse {
   summary: string;
   tree: string;
@@ -12,17 +19,23 @@ async function fetchGitingest(args: {
   pattern?: string;
   patternType?: 'include' | 'exclude';
 }): Promise<string> {
+  const body: GitingestRequest = {
+    input_text: args.url,
+    max_file_size: args.maxFileSize ?? 50000,
+    pattern: args.pattern ?? '',
+    pattern_type: args.patternType ?? 'exclude',
+  };
+
   const response = await fetch('https://gitingest.com/api/ingest', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      input_text: args.url,
-      max_file_size: args.maxFileSize ?? 50000,
-      pattern: args.pattern ?? '',
-      pattern_type: args.patternType ?? 'exclude',
-    }),
+    body: JSON.stringify(body),
   });
-  if (!response.ok) throw new Error(`gitingest API error: ${response.status} ${response.statusText}`);
+
+  if (!response.ok) {
+    throw new Error(`gitingest API error: ${response.status} ${response.statusText}`);
+  }
+
   const data = (await response.json()) as GitingestResponse;
   return `${data.summary}\n\n${data.tree}\n\n${data.content}`;
 }
