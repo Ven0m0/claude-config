@@ -73,10 +73,6 @@ repos:
       - id: check-dependabot
       - id: check-github-actions
       - id: check-github-workflows
-  - repo: https://github.com/mangiucugna/gha-updater-pre-commit
-    rev: v0.1
-    hooks:
-      - id: gha-update
   - repo: https://github.com/koalaman/shellcheck-precommit
     rev: v0.11.0
     hooks:

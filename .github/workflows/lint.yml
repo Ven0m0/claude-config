@@ -10,8 +10,8 @@ jobs:
       contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
       - name: Validate agent configs
-        uses: agent-sh/agnix@v0
+        uses: agent-sh/agnix@v0.18.0
         with:
           target: 'claude-code'
