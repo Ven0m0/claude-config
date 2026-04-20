@@ -342,8 +342,8 @@ def main():
     skill_name = sys.argv[1]
     path = sys.argv[3]
 
-    print(f"Initializing skill: {skill_name}")
-    print(f"   Location: {path}")
+    print(f"[INFO] Initializing skill: {skill_name}")
+    print(f"[INFO] Location: {path}")
     print()
 
     result = init_skill(skill_name, path)
