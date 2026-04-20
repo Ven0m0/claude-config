@@ -1,5 +1,3 @@
-// json_repair — opencode custom tool
-
 import { randomBytes } from 'node:crypto';
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';

@@ -1,11 +1,14 @@
 import { tool } from '@opencode-ai/plugin';
 import { computeHash, parseRef, validateHash } from './hashline_utils.ts';
 
+const CTX = 2;
+const HASHLINE_PREFIX = /^\s*(?:>>>|>>)?\s*\d+\s*#\s*[ZPMQVRWSNKTXJBYH]{2}\|/;
+const DIFF_PLUS = /^[+](?![+])/;
+
 // ── Line ref validation ─────────────────────────────────────────────────────
 
 class HashMismatchError extends Error {
   constructor(mismatches: Array<{ line: number; expected: string }>, fileLines: string[]) {
-    const CTX = 2;
     const displayLines = new Set<number>();
     for (const { line } of mismatches) {
       for (let l = Math.max(1, line - CTX); l <= Math.min(fileLines.length, line + CTX); l++) displayLines.add(l);
@@ -38,9 +41,6 @@ function validateRefs(lines: string[], refs: string[]): void {
 }
 
 // ── Text normalization ──────────────────────────────────────────────────────
-
-const HASHLINE_PREFIX = /^\s*(?:>>>|>>)?\s*\d+\s*#\s*[ZPMQVRWSNKTXJBYH]{2}\|/;
-const DIFF_PLUS = /^[+](?![+])/;
 
 function stripPrefixes(lines: string[]): string[] {
   let hashCount = 0,

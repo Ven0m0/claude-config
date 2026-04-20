@@ -3,6 +3,18 @@ import type { Plugin } from '@opencode-ai/plugin';
 
 const LINE_RANGE_RE = /^(\d+)(?:\s*-\s*(\d+))?$/;
 
+const SLIM_DESCRIPTIONS: Record<string, string> = {
+  read: 'Read file content.',
+  edit: "Edit file. oldString can be line range '55-64'.",
+  apply_patch: 'Apply a patch to files.',
+  write: 'Write file.',
+  bash: 'Run shell command.',
+  glob: 'Find files.',
+  grep: 'Search in files.',
+  list: 'List directory.',
+  fetch: 'Fetch URL.',
+};
+
 interface ToolDefinitionInput {
   toolID?: string;
 }
@@ -33,27 +45,15 @@ export const OpenSlimeditPlugin: Plugin = async ({ directory }) => {
   }
 
   return {
-    // Shorten tool descriptions + strip parameter descriptions
     'tool.definition': async (input: ToolDefinitionInput, output: ToolDefinitionOutput) => {
-      const SLIM: Record<string, string> = {
-        read: 'Read file content.',
-        edit: "Edit file. oldString can be line range '55-64'.",
-        apply_patch: 'Apply a patch to files.',
-        write: 'Write file.',
-        bash: 'Run shell command.',
-        glob: 'Find files.',
-        grep: 'Search in files.',
-        list: 'List directory.',
-        fetch: 'Fetch URL.',
-      };
-      if (SLIM[input.toolID]) {
-        output.description = SLIM[input.toolID];
+      const desc = SLIM_DESCRIPTIONS[input.toolID];
+      if (desc) {
+        output.description = desc;
       }
     },
 
     // Compact tool output: shorten read paths, strip footer, compress edit results
     'tool.execute.after': async (input: ToolExecutionInput, output: ToolExecutionOutput) => {
-      // Compress edit output
       if (input.tool === 'edit') {
         if (output.output.startsWith('Edit applied successfully.')) {
           output.output = 'OK';
@@ -67,12 +67,9 @@ export const OpenSlimeditPlugin: Plugin = async ({ directory }) => {
       const pathMatch = output.output.match(/<path>(.+?)<\/path>/);
       if (!pathMatch) return;
 
-      // Shorten to relative path
       const absPath = path.normalize(pathMatch[1]);
       const relPath = path.relative(directory, absPath);
       output.output = output.output.replace(`<path>${pathMatch[1]}</path>`, `<path>${relPath}</path>`);
-
-      // Remove type tag and footer
       output.output = output.output.replace('<type>file</type>\n', '');
       output.output = output.output.replace(/\n\n\(End of file - total \d+ lines\)\n/, '\n');
     },

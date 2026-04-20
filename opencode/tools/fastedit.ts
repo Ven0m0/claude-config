@@ -7,17 +7,18 @@ function normalizeLF(s: string): string {
   return s.replaceAll('\r\n', '\n');
 }
 
+const NAME_PATTERNS = [
+  /^(?:export\s+)?(?:async\s+)?function\s+(\w+)/gm,
+  /^(?:export\s+)?class\s+(\w+)/gm,
+  /^(?:export\s+)?const\s+(\w+)\s*=/gm,
+  /^def\s+(\w+)/gm,
+  /^class\s+(\w+)/gm,
+];
+
 /** Extract top-level definition names (functions, classes, consts) for duplicate detection. */
 function extractNames(code: string): string[] {
   const names: string[] = [];
-  const patterns = [
-    /^(?:export\s+)?(?:async\s+)?function\s+(\w+)/gm,
-    /^(?:export\s+)?class\s+(\w+)/gm,
-    /^(?:export\s+)?const\s+(\w+)\s*=/gm,
-    /^def\s+(\w+)/gm,
-    /^class\s+(\w+)/gm,
-  ];
-  for (const re of patterns) for (const m of code.matchAll(re)) names.push(m[1]);
+  for (const re of NAME_PATTERNS) for (const m of code.matchAll(re)) names.push(m[1]);
   return names;
 }
 
