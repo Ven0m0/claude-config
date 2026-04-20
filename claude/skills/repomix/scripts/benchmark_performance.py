@@ -25,7 +25,8 @@ def main() -> None:
 
     # 1. Startup Overhead
     npx_version_time = measure_command(
-        ["npx", "repomix", "--version"], "npx repomix --version"
+        ["npx", "repomix", "--version"],
+        "npx repomix --version",
     )
     direct_version_time = measure_command(["repomix", "--version"], "repomix --version")
 

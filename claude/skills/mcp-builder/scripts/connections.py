@@ -87,7 +87,7 @@ class MCPConnectionStdio(MCPConnection):
 
     def _create_context(self):
         return stdio_client(
-            StdioServerParameters(command=self.command, args=self.args, env=self.env)
+            StdioServerParameters(command=self.command, args=self.args, env=self.env),
         )
 
 

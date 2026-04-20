@@ -352,7 +352,9 @@ def main() -> None:
 
     parser = argparse.ArgumentParser(description="Fix all SKILL.md files")
     parser.add_argument(
-        "--dry-run", action="store_true", help="Show changes without applying"
+        "--dry-run",
+        action="store_true",
+        help="Show changes without applying",
     )
     parser.add_argument("--path", default="plugins", help="Path to scan")
     args = parser.parse_args()

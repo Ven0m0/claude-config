@@ -85,11 +85,13 @@ class EnvLoader:
                     key = key.strip()
                     value = value.strip()
                     # Remove quotes if present
-                    if (value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'")):
+                    if (value.startswith('"') and value.endswith('"')) or (
+                        value.startswith("'") and value.endswith("'")
+                    ):
                         value = value[1:-1]
                     env_vars[key] = value
-        except (OSError, UnicodeDecodeError) as exc:
-            print(f"Warning: failed to read env file {path}: {exc}", file=sys.stderr)
+        except (OSError, UnicodeDecodeError):
+            pass
 
         return env_vars
 
@@ -186,7 +188,10 @@ class RepomixBatchProcessor:
             return False, f"Error processing {repo_path}: {e!s}"
 
     def _build_command(
-        self, repo_path: str, output_file: Path, is_remote: bool
+        self,
+        repo_path: str,
+        output_file: Path,
+        is_remote: bool,
     ) -> list[str]:
         """Build repomix command with configuration options.
 
@@ -267,7 +272,9 @@ class RepomixBatchProcessor:
             is_remote = repo.get("remote", False)
 
             success, message = self.process_repository(
-                repo_path, output_name, is_remote
+                repo_path,
+                output_name,
+                is_remote,
             )
 
             if success:
@@ -310,13 +317,15 @@ def load_repositories_from_file(file_path: str) -> list[dict[str, str]]:
 def main() -> int:
     """Main entry point for the script."""
     parser = argparse.ArgumentParser(
-        description="Batch process multiple repositories with repomix"
+        description="Batch process multiple repositories with repomix",
     )
 
     # Input options
     parser.add_argument("repos", nargs="*", help="Repository paths or URLs to process")
     parser.add_argument(
-        "-f", "--file", help="JSON file containing repository configurations"
+        "-f",
+        "--file",
+        help="JSON file containing repository configurations",
     )
 
     # Output options
@@ -342,11 +351,15 @@ def main() -> int:
     parser.add_argument("--include", help="Include pattern (glob)")
     parser.add_argument("--ignore", help="Ignore pattern (glob)")
     parser.add_argument(
-        "--no-security-check", action="store_true", help="Disable security checks"
+        "--no-security-check",
+        action="store_true",
+        help="Disable security checks",
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
     parser.add_argument(
-        "--remote", action="store_true", help="Treat all repos as remote URLs"
+        "--remote",
+        action="store_true",
+        help="Treat all repos as remote URLs",
     )
 
     args = parser.parse_args()

@@ -99,7 +99,8 @@ def build_create_body(args):
         body["modifiedSince"] = args.modified_since
     if args.json_options_json is not None:
         body["jsonOptions"] = load_json_arg(
-            args.json_options_json, "--json-options-json"
+            args.json_options_json,
+            "--json-options-json",
         )
     return body
 
@@ -140,7 +141,13 @@ def cmd_start(args):
 
 
 def fetch_result(
-    account_id, token, job_id, cursor=None, limit=None, status=None, cache_ttl=None
+    account_id,
+    token,
+    job_id,
+    cursor=None,
+    limit=None,
+    status=None,
+    cache_ttl=None,
 ):
     params = {}
     if cursor is not None:
@@ -307,7 +314,9 @@ def main():
     s.add_argument("--wait", action="store_true")
     s.add_argument("--poll-seconds", type=int, default=5)
     s.add_argument(
-        "--fetch-results", action="store_true", help="After wait, fetch final results"
+        "--fetch-results",
+        action="store_true",
+        help="After wait, fetch final results",
     )
     s.add_argument("--results-limit", type=int)
     s.add_argument(

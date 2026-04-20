@@ -34,8 +34,7 @@ def test_standalone_find():
     issues = hook.validate_command("find . -name '*.py'")
     assert len(issues) == 1
     assert (
-        "Use 'fd -g pattern' or 'rg --files -g pattern' instead of 'find'"
-        in issues[0]
+        "Use 'fd -g pattern' or 'rg --files -g pattern' instead of 'find'" in issues[0]
     )
 
 

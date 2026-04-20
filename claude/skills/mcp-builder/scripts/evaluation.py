@@ -167,7 +167,11 @@ async def evaluate_single_task(
     start_time = time.time()
 
     response, tool_metrics = await agent_loop(
-        client, model, qa_pair["question"], tools, connection
+        client,
+        model,
+        qa_pair["question"],
+        tools,
+        connection,
     )
 
     response_value = extract_xml_content(response, "response")
@@ -245,7 +249,12 @@ async def run_evaluation(
     async def run_task(i, qa_pair):
         async with semaphore:
             return await evaluate_single_task(
-                client, model, qa_pair, tools, connection, i
+                client,
+                model,
+                qa_pair,
+                tools,
+                connection,
+                i,
             )
 
     tasks = [run_task(i, qa_pair) for i, qa_pair in enumerate(qa_pairs)]
@@ -358,10 +367,15 @@ Examples:
 
     stdio_group = parser.add_argument_group("stdio options")
     stdio_group.add_argument(
-        "-c", "--command", help="Command to run MCP server (stdio only)"
+        "-c",
+        "--command",
+        help="Command to run MCP server (stdio only)",
     )
     stdio_group.add_argument(
-        "-a", "--args", nargs="+", help="Arguments for the command (stdio only)"
+        "-a",
+        "--args",
+        nargs="+",
+        help="Arguments for the command (stdio only)",
     )
     stdio_group.add_argument(
         "-e",
@@ -409,7 +423,10 @@ Examples:
 
     async with connection:
         report = await run_evaluation(
-            args.eval_file, connection, args.model, args.concurrency
+            args.eval_file,
+            connection,
+            args.model,
+            args.concurrency,
         )
 
         if args.output:

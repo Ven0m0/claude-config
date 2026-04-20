@@ -165,9 +165,9 @@ def output_system_message(message: str) -> None:
                 "hookSpecificOutput": {
                     "hookEventName": "PreCompact",
                     "additionalContext": message,
-                }
+                },
             })
-            + "\n"
+            + "\n",
         )
         sys.stdout.flush()
     except OSError as e:
