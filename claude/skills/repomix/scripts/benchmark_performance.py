@@ -76,7 +76,7 @@ def main() -> None:
         print(f"npx repomix processing: {npx_process_time:.4f}s")
         print(f"repomix processing: {direct_process_time:.4f}s")
         diff = npx_process_time - direct_process_time
-        percentage = (diff / npx_process_time) * 100
+        percentage = (diff / direct_process_time) * 100
         print(f"Difference: {diff:.4f}s ({percentage:.1f}% slower with npx)")
 
     # Cleanup
