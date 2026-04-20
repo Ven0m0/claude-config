@@ -148,8 +148,8 @@ def main() -> None:
             errors.append(f"JS/TS lint errors:\n{js_err}")
 
         if errors:
-            "Quality gate failed:\n" + "\n\n".join(errors)
-            sys.exit(0)
+            print("Quality gate failed:\n" + "\n\n".join(errors), file=sys.stderr)
+            sys.exit(1)
 
     except json.JSONDecodeError:
         # No valid input, allow the operation

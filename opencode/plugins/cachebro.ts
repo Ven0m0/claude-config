@@ -91,7 +91,9 @@ const CachebroPlugin: Plugin = async ({ worktree, $ }) => {
       if (!filePath) return;
       try {
         await invalidatingCache.onFileChanged(filePath);
-      } catch {}
+      } catch (e) {
+        // Silently ignore file change errors
+      }
     },
 
     // ── Invalidate cache when an external change is detected ────────────────
@@ -99,7 +101,9 @@ const CachebroPlugin: Plugin = async ({ worktree, $ }) => {
       if (!filePath) return;
       try {
         await invalidatingCache.onFileChanged(filePath);
-      } catch {}
+      } catch (e) {
+        // Silently ignore file change errors
+      }
     },
 
     // ── Clean up file watcher when session ends ─────────────────────────────

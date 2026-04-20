@@ -309,8 +309,8 @@ export const OpenCodeRtkPlugin: Plugin = async () => {
             rtk: { compacted: true, originalLength: rawOutput.length, compactedLength: result.output.length },
           };
         }
-      } catch {
-        void 0;
+      } catch (e) {
+        console.error('RTK compaction error:', e);
       }
     },
   };

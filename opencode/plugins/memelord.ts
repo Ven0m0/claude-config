@@ -376,14 +376,15 @@ const MemelordPlugin: Plugin = async ({ worktree, client }) => {
         if (!existsSync(dbPath)) return;
 
         try {
-          // Need a fresh store with real embedder for this
           const { createMemoryStore } = await import('memelord');
           const tempStore: MemoryStore = createMemoryStore({ dbPath, sessionId: sessionId || 'cleanup', embed });
           await tempStore.init();
           await tempStore.embedPending();
           await tempStore.decay();
           await tempStore.close();
-        } catch {}
+        } catch (e) {
+          // Silently ignore cleanup errors
+        }
 
         // Clean up in-process state
         if (sessionId) sessions.delete(sessionId);

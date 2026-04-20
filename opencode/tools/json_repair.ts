@@ -181,8 +181,8 @@ if (results.length === 1) {
       for (const p of [scriptPath, inputPath]) {
         try {
           if (existsSync(p)) unlinkSync(p);
-        } catch {
-          /* ignore */
+        } catch (e) {
+          // Silently ignore cleanup errors
         }
       }
     }

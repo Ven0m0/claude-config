@@ -53,7 +53,7 @@ const CodemoggerPlugin: Plugin = async ({ worktree }) => {
     getIndex(root)
       .then((idx) => idx.index(root))
       .catch(() => {
-        /* silent — tool call will surface errors */
+        // silent - tool call will surface errors
       });
   }
 
@@ -77,9 +77,7 @@ const CodemoggerPlugin: Plugin = async ({ worktree }) => {
 
           const idx = await getIndex(root);
           const result = await idx.index(dir, {
-            onProgress: () => {
-              /* no-op — avoid flooding output */
-            },
+            onProgress: () => {},
           });
 
           if (result.errors.length > 0) {
