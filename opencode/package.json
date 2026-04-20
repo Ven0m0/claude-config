@@ -11,7 +11,7 @@
   "devDependencies": {
     "@opencode-ai/sdk": "^1.2.10",
     "@types/bun": "latest",
-    "oxfmt": "^0.45.0",
+    "oxfmt": "^0.46.0",
     "typescript": "^6.0.0"
   },
   "packageManager": "bun@*"
