@@ -27,10 +27,10 @@ def extract_code_blocks(markdown_content: str) -> dict[str, list[tuple[str, str]
 
     """
     python_blocks = re.compile(PYTHON_BLOCK_PATTERN, re.DOTALL | re.MULTILINE).findall(
-        markdown_content
+        markdown_content,
     )
     bash_blocks = re.compile(BASH_BLOCK_PATTERN, re.DOTALL | re.MULTILINE).findall(
-        markdown_content
+        markdown_content,
     )
     return {"python": python_blocks, "bash": bash_blocks}
 
@@ -78,7 +78,8 @@ def format_code_with_ruff(temp_dir: Path) -> None:
     """
     with contextlib.suppress(Exception):
         subprocess.run(
-            ["ruff", "format", "--line-length=120", str(temp_dir)], check=True
+            ["ruff", "format", "--line-length=120", str(temp_dir)],
+            check=True,
         )
 
     with contextlib.suppress(Exception):
@@ -114,7 +115,8 @@ def generate_temp_filename(file_path: Path, index: int, code_type: str) -> str:
         str(file_path.parent).replace("/", "_").replace("\\", "_").replace(" ", "-")
     )
     hash_val = hashlib.md5(
-        f"{file_path}_{index}".encode(), usedforsecurity=False
+        f"{file_path}_{index}".encode(),
+        usedforsecurity=False,
     ).hexdigest()[:6]
     ext = ".py" if code_type == "python" else ".sh"
     filename = f"{stem}_{path_part}_{code_letter}{index}_{hash_val}{ext}"
@@ -158,7 +160,9 @@ def process_markdown_file(
             num_spaces = len(indentation)
             code_without_indentation = remove_indentation(code_block, num_spaces)
             temp_file_path = temp_dir / generate_temp_filename(
-                file_path, i + offset, code_type
+                file_path,
+                i + offset,
+                code_type,
             )
             try:
                 temp_file_path.write_text(code_without_indentation)
@@ -170,7 +174,9 @@ def process_markdown_file(
 
 
 def update_markdown_file(
-    file_path: Path, markdown_content: str, temp_files: list[tuple[int, str, Path, str]]
+    file_path: Path,
+    markdown_content: str,
+    temp_files: list[tuple[int, str, Path, str]],
 ) -> None:
     """Replace markdown code blocks with formatted versions.
 

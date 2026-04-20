@@ -53,7 +53,8 @@ def build_body(args):
         body["authenticate"] = auth
 
     patterns = load_json_arg(
-        args.reject_request_pattern_json, "--reject-request-pattern-json"
+        args.reject_request_pattern_json,
+        "--reject-request-pattern-json",
     )
     if patterns is not None:
         body["rejectRequestPattern"] = patterns
@@ -90,7 +91,7 @@ def request_markdown(account_id, token, cache_ttl, body):
 
 def main():
     p = argparse.ArgumentParser(
-        description="Call Cloudflare Browser Rendering /markdown"
+        description="Call Cloudflare Browser Rendering /markdown",
     )
     src = p.add_mutually_exclusive_group(required=True)
     src.add_argument("--url")
@@ -100,16 +101,20 @@ def main():
         choices=["load", "domcontentloaded", "networkidle0", "networkidle2"],
     )
     p.add_argument(
-        "--timeout-ms", type=int, help="Set gotoOptions.timeout in milliseconds"
+        "--timeout-ms",
+        type=int,
+        help="Set gotoOptions.timeout in milliseconds",
     )
     p.add_argument(
-        "--goto-options-json", help="Raw JSON object merged into gotoOptions"
+        "--goto-options-json",
+        help="Raw JSON object merged into gotoOptions",
     )
     p.add_argument("--user-agent")
     p.add_argument("--cookies-json", help="Raw JSON array for cookies")
     p.add_argument("--authenticate-json", help="Raw JSON object for authenticate")
     p.add_argument(
-        "--reject-request-pattern-json", help="Raw JSON array for rejectRequestPattern"
+        "--reject-request-pattern-json",
+        help="Raw JSON array for rejectRequestPattern",
     )
     p.add_argument("--cache-ttl", type=int, default=None)
     p.add_argument("--json", action="store_true", help="Print full API response JSON")

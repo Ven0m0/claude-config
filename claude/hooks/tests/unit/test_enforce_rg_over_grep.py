@@ -1,6 +1,6 @@
-import unittest
 import importlib.util
 import sys
+import unittest
 from pathlib import Path
 
 # Load enforce_rg_over_grep.py dynamically
@@ -51,7 +51,8 @@ class TestEnforceRgOverGrep(unittest.TestCase):
         # We'll document this behavior or fix it later.
         # For now, let's test what it SHOULD be, which might mean fixing the regex.
         self.assertEqual(
-            len(hook.validate_command("find-something .")), 1
+            len(hook.validate_command("find-something .")),
+            1,
         )  # matches because of \b
 
     def test_multiple_issues(self):

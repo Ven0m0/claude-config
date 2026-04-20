@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Parallel.ai Task API - Deep research, enrichment, and authenticated sources.
+"""Parallel.ai Task API - Deep research, enrichment, and authenticated sources.
 
 Usage:
   python3 task.py "What was France's GDP in 2023?"
@@ -12,10 +11,10 @@ Usage:
   python3 task.py "Extract migration docs from https://nxp.com/products/K66_180"
 """
 
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
 import time
 
 from parallel import Parallel
@@ -26,7 +25,8 @@ def get_api_key() -> str:
     api_key = os.environ.get("PARALLEL_API_KEY")
     if not api_key:
         print(
-            "Error: PARALLEL_API_KEY environment variable is required", file=sys.stderr
+            "Error: PARALLEL_API_KEY environment variable is required",
+            file=sys.stderr,
         )
         sys.exit(1)
     return api_key
@@ -76,7 +76,7 @@ def poll_task(client: Parallel, run_id: str, timeout: int = 300) -> dict:
         result = client.beta.task_run.retrieve(run_id)
         if result.run.status == "completed":
             return result
-        elif result.run.status == "failed":
+        if result.run.status == "failed":
             raise Exception(f"Task failed: {result.run}")
         time.sleep(2)
     raise TimeoutError(f"Task {run_id} did not complete within {timeout}s")
@@ -278,7 +278,7 @@ def main():
                 "url": "https://api.browser-use.com/mcp",
                 "name": "browseruse",
                 "headers": {"Authorization": f"Bearer {browseruse_key}"},
-            }
+            },
         ]
 
     # Create task
