@@ -263,18 +263,18 @@ interface CommandFilter {
 }
 
 const COMMAND_FILTERS: CommandFilter[] = [
-  { pattern: /^git\s+status/, filter: () => filterGitStatus },
-  { pattern: /^git\s+log/, filter: () => filterGitLog },
-  { pattern: /^git\s+diff/, filter: () => filterGitDiff },
-  { pattern: /^(ls|dir|eza|fd)\b/, filter: () => filterLs },
-  { pattern: /^(cat|head|tail|less|more|bat)\b/, filter: () => filterCat },
+  { pattern: /^git\s+status/, filter: filterGitStatus },
+  { pattern: /^git\s+log/, filter: filterGitLog },
+  { pattern: /^git\s+diff/, filter: filterGitDiff },
+  { pattern: /^(ls|dir|eza|fd)\b/, filter: filterLs },
+  { pattern: /^(cat|head|tail|less|more|bat)\b/, filter: (out) => filterCat(out) },
   {
     pattern: /(jest|vitest|pytest|cargo\s+test|go\s+test|npm\s+test|yarn\s+test|bun\s+test)/,
-    filter: () => filterTestOutput,
+    filter: filterTestOutput,
   },
-  { pattern: /(eslint|ruff|clippy|golangci-lint|tsc\s+--noEmit)/, filter: () => filterLintOutput },
-  { pattern: /(cargo\s+build|cargo\s+clippy|npm\s+run\s+build|next\s+build)/, filter: () => filterBuildOutput },
-  { pattern: /^docker\s+ps/, filter: () => filterDockerPs },
+  { pattern: /(eslint|ruff|clippy|golangci-lint|tsc\s+--noEmit)/, filter: filterLintOutput },
+  { pattern: /(cargo\s+build|cargo\s+clippy|npm\s+run\s+build|next\s+build)/, filter: filterBuildOutput },
+  { pattern: /^docker\s+ps/, filter: filterDockerPs },
 ];
 
 function getFilter(command: string): ((output: string, args: string[]) => FilterResult) | null {
