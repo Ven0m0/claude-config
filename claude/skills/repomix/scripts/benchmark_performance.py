@@ -20,12 +20,17 @@ def main() -> None:
     # Ensure repomix is installed
     try:
         subprocess.run(["repomix", "--version"], capture_output=True, check=True)
-    except subprocess.CalledProcessError, FileNotFoundError:
+    except (subprocess.CalledProcessError, FileNotFoundError):
         return
 
     # 1. Startup Overhead
     npx_version_time = measure_command(
+<<<<<<< ours
         ["npx", "repomix", "--version"], "npx repomix --version"
+=======
+        ["npx", "repomix", "--version"],
+        "npx repomix --version",
+>>>>>>> theirs
     )
     direct_version_time = measure_command(["repomix", "--version"], "repomix --version")
 

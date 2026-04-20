@@ -70,7 +70,7 @@ def run_cmd_safe(
     """
     try:
         return run_cmd(cmd, cwd=cwd, timeout=timeout, check=True)
-    except sp.CalledProcessError, sp.TimeoutExpired, FileNotFoundError:
+    except (sp.CalledProcessError, sp.TimeoutExpired, FileNotFoundError):
         return ""
 
 

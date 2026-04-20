@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import argparse
+import http.client
 import json
 import os
+import ssl
 import sys
 import time
 import urllib.error
@@ -35,24 +37,66 @@ def load_json_arg(raw, flag_name):
         fail(f"Invalid JSON for {flag_name}: {e}")
 
 
-def api_request(url, token, method="GET", body=None):
+_conn_pool = {}
+
+
+def _get_connection(host):
+    if host not in _conn_pool:
+        context = ssl.create_default_context()
+        _conn_pool[host] = http.client.HTTPSConnection(
+            host,
+            timeout=180,
+            context=context,
+        )
+    return _conn_pool[host]
+
+
+def api_request(url, token, method="GET", body=None, _retries=1):
     data = json.dumps(body).encode("utf-8") if body is not None else None
-    req = urllib.request.Request(
-        url,
-        data=data,
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json",
-        },
-        method=method,
-    )
+
+    parsed_url = urllib.parse.urlparse(url)
+    host = parsed_url.netloc
+    path = parsed_url.path
+    if parsed_url.query:
+        path += "?" + parsed_url.query
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
+    }
+
+    if data is not None:
+        headers["Content-Length"] = str(len(data))
+
+    conn = _get_connection(host)
+
     try:
-        with urllib.request.urlopen(req, timeout=180) as resp:
-            return json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        detail = e.read().decode("utf-8", errors="replace")
-        fail(f"HTTP {e.code}: {detail}")
-    except urllib.error.URLError as e:
+        conn.request(method, path, body=data, headers=headers)
+        resp = conn.getresponse()
+        resp_data = resp.read()
+
+        if resp.status >= 400:
+            detail = resp_data.decode("utf-8", errors="replace")
+            fail(f"HTTP {resp.status}: {detail}")
+
+        return json.loads(resp_data.decode("utf-8"))
+    except (http.client.HTTPException, OSError) as e:
+        # If the keep-alive connection was closed or broken, remove it and retry
+        if host in _conn_pool:
+            try:
+                _conn_pool[host].close()
+            except Exception:
+                pass
+            del _conn_pool[host]
+
+        if _retries > 0:
+            return api_request(
+                url,
+                token,
+                method=method,
+                body=body,
+                _retries=_retries - 1,
+            )
         fail(f"Request failed: {e}")
 
 
@@ -99,7 +143,8 @@ def build_create_body(args):
         body["modifiedSince"] = args.modified_since
     if args.json_options_json is not None:
         body["jsonOptions"] = load_json_arg(
-            args.json_options_json, "--json-options-json"
+            args.json_options_json,
+            "--json-options-json",
         )
     return body
 
@@ -140,7 +185,13 @@ def cmd_start(args):
 
 
 def fetch_result(
-    account_id, token, job_id, cursor=None, limit=None, status=None, cache_ttl=None
+    account_id,
+    token,
+    job_id,
+    cursor=None,
+    limit=None,
+    status=None,
+    cache_ttl=None,
 ):
     params = {}
     if cursor is not None:
@@ -307,7 +358,9 @@ def main():
     s.add_argument("--wait", action="store_true")
     s.add_argument("--poll-seconds", type=int, default=5)
     s.add_argument(
-        "--fetch-results", action="store_true", help="After wait, fetch final results"
+        "--fetch-results",
+        action="store_true",
+        help="After wait, fetch final results",
     )
     s.add_argument("--results-limit", type=int)
     s.add_argument(

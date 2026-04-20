@@ -18,7 +18,11 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v6
+<<<<<<< ours
       - uses: astral-sh/setup-uv@v7
+=======
+      - uses: astral-sh/setup-uv@v5
+>>>>>>> theirs
         with:
           enable-cache: true
           cache-dependency-glob: |
