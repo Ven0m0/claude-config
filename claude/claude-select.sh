@@ -1,5 +1,4 @@
 #!/usr/bin/env zsh
-
 # Unified Claude launcher with model selection
 # Creates a fake `security` executable to bypass Keychain and use config.json instead
 
@@ -23,21 +22,6 @@ MODELS[3]="kimi-k2-thinking (alt)"
 BASE_URLS[3]="https://api.kimi.com/coding"
 AUTH_TOKENS[3]="your-api-key"
 CONFIG_DIRS[3]="${HOME}/.kimi2"
-
-MODELS[4]="qwen3-coder-plus"
-BASE_URLS[4]="http://localhost:8317"
-AUTH_TOKENS[4]="factory-api-key"
-CONFIG_DIRS[4]="${HOME}/.qwen-claude"
-
-MODELS[5]="gemini-3-pro-preview"
-BASE_URLS[5]="http://localhost:8317"
-AUTH_TOKENS[5]="factory-api-key"
-CONFIG_DIRS[5]="${HOME}/.gemini-claude"
-
-MODELS[6]="gpt-5.2"
-BASE_URLS[6]="http://localhost:8317"
-AUTH_TOKENS[6]="factory-api-key"
-CONFIG_DIRS[6]="${HOME}/.claude-codex"
 
 show_menu() {
     echo ""
