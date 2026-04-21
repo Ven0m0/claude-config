@@ -1,248 +1,128 @@
 {
   "$schema": "https://app.kilo.ai/config.json",
-  "model": "github-copilot/gpt-5",
-  "small_model": "github-copilot/gpt-5-mini",
-  "agent": {
-    "build": {
-      "model": "github-copilot/gpt-5.1-codex",
-      "temperature": 0.1,
-      "options": {
-        "reasoningEffort": "high",
-        "reasoningSummary": "auto",
-        "textVerbosity": "low"
-      }
-    },
-    "code": {
-      "model": "github-copilot/gpt-5.1-codex",
-      "temperature": 0.1,
-      "options": {
-        "reasoningEffort": "medium",
-        "reasoningSummary": "auto",
-        "textVerbosity": "low"
-      }
-    },
-    "explore": {
-      "model": "github-copilot/gpt-5.1-codex-mini",
-      "temperature": 0.1,
-      "options": {
-        "reasoningEffort": "low",
-        "textVerbosity": "low"
-      }
-    },
-    "plan": {
-      "model": "github-copilot/gpt-5",
-      "temperature": 0.2,
-      "options": {
-        "reasoningEffort": "high",
-        "reasoningSummary": "auto",
-        "textVerbosity": "low"
-      }
-    },
-    "researcher": {
-      "model": "github-copilot/gemini-3.1-pro-preview",
-      "temperature": 0.3,
-      "options": {
-        "reasoningEffort": "high"
-      }
-    },
-    "reviewer": {
-      "model": "github-copilot/claude-sonnet-4.5",
-      "temperature": 0.1,
-      "options": {
-        "reasoningEffort": "high",
-        "textVerbosity": "low"
-      }
-    },
-    "scribe": {
-      "model": "github-copilot/gpt-5-mini",
-      "temperature": 0.5,
-      "options": {
-        "reasoningEffort": "low",
-        "textVerbosity": "low"
-      }
-    },
-    "debug": {
-      "model": "github-copilot/gpt-5.1-codex",
-      "temperature": 0.1,
-      "options": {
-        "reasoningEffort": "medium",
-        "reasoningSummary": "auto",
-        "textVerbosity": "low"
-      }
-    },
-    "ask": {
-      "model": "github-copilot/gpt-5-mini",
-      "temperature": 0.2,
-      "options": {
-        "reasoningEffort": "low",
-        "textVerbosity": "low"
-      }
-    }
-  },
-  "default_agent": "build",
   "instructions": [
-    "AGENTS.md",
     ".kilo/rules/*.md",
     "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"
   ],
+  "skills": {
+    "paths": [".kilo/skills", ".opencode/skill", ".claude/skills"]
+  },
   "permission": {
     "*": "allow",
+    "edit": { "dist/**": "deny", "*.lock": "deny", "*": "allow" },
     "sudo *": "deny",
     "rm -rf /": "deny",
     "rm -rf /*": "deny",
     "rm -rf ~": "deny",
     "rm -rf ~/*": "deny",
-    ":(){:|:&}:": "deny",
+    ":(){:|:&};:": "deny",
     "doom_loop": "deny"
   },
-  "compaction": {
-    "auto": true,
-    "prune": true
-  },
-  "share": "manual",
+  "disabled_providers": ["openai"],
   "plugin": [
+    "openslimedit@1.0.4",
     "oh-my-opencode@3.16.0",
-    "opencode-image-compress@0.3.2",
     "opencode-ignore@1.1.0",
-    "opencode-pty@0.3.2",
-    "opencode-session-handoff@1.1.6",
-    "opencode-websearch@0.5.0"
+    "@gotgenes/opencode-agent-identity@3.0.1",
+    "opencode-websearch@0.5.0",
+    "opencode-kcp-plugin@latest",
+    "github:joshuadavidthomas/opencode-agent-memory",
+    "opencode-agent-skills",
+    "github:kdcokenny/opencode-background-agents",
+    "github:spoons-and-mirrors/subtask2"
   ],
-  "lsp": {
-    "typescript": {
-      "command": ["vtsls", "--stdio"],
-      "extensions": [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".mts", ".cts"],
-      "initialization": {
-        "preferences": {
-          "importModuleSpecifierPreference": "relative"
-        }
-      }
+  "formatter": {
+    "biome": {
+      "command": ["npx", "-y", "@biomejs/biome", "check", "--write", "--format-with-errors=true", "$FILE"],
+      "extensions": [".json", ".js"]
     },
-    "pyright": {
+    "ruff": {
+      "command": ["uv", "run", "ruff", "format", "$FILE"],
+      "extensions": [".py", ".pyi"]
+    }
+  },
+  "watcher": { "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**", "__pycache__/**", ".ruff_cache/**"] },
+  "mcp": {
+    "ref-tools": {
+      "type": "remote",
+      "url": "https://api.ref.tools/mcp",
+      "enabled": true
+    },
+    "github": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "enabled": true
+    },
+    "gh_grep": {
+      "type": "remote",
+      "url": "https://mcp.grep.app",
+      "enabled": true
+    },
+    "exa": {
+      "type": "remote",
+      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
+      "enabled": true,
+      "headers": { "x-api-key": "{env:EXA_API_KEY}" }
+    },
+    "fast-filesystem": {
+      "type": "local",
+      "command": ["npx", "-y", "fast-filesystem@latest"],
+      "enabled": false
+    },
+    "serena": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide",
+        "--project-from-cwd"
+      ],
+      "enabled": true
+    },
+    "octocode": {
+      "type": "local",
+      "command": ["npx", "-y", "octocode-mcp@latest"],
+      "enabled": true
+    }
+  },
+  "lsp": {
+    "basedpyright": {
       "command": ["basedpyright-langserver", "--stdio"],
       "extensions": [".py", ".pyw", ".pyi"]
     },
-    "rust": {
-      "command": ["rust-analyzer"],
-      "extensions": [".rs"]
+    "ty": {
+      "command": ["ty", "check"],
+      "extensions": [".py", ".pyw", ".pyi"]
     },
     "bash": {
       "command": ["bash-language-server", "start"],
       "extensions": [".sh", ".bash", ".zsh"]
     },
+    "vtsls": {
+      "command": ["vtsls", "--stdio"],
+      "extensions": [".ts", ".tsx", ".js", ".jsx", ".mjs", ".mts"]
+    },
     "yaml-ls": {
       "command": ["yaml-language-server", "--stdio"],
       "extensions": [".yaml", ".yml"]
     },
-    "markdown-oxide": {
-      "command": ["markdown-oxide"],
-      "extensions": [".md", ".mdx"]
-    },
     "json-ls": {
       "command": ["vscode-json-language-server", "--stdio"],
       "extensions": [".json", ".jsonc"]
-    },
-    "dockerfile-ls": {
-      "command": ["docker-langserver", "--stdio"],
-      "extensions": [".dockerfile"]
-    },
-    "html-ls": {
-      "command": ["vscode-html-language-server", "--stdio"],
-      "extensions": [".html", ".htm"]
-    },
-    "css-ls": {
-      "command": ["vscode-css-language-server", "--stdio"],
-      "extensions": [".css", ".scss", ".less"]
     },
     "tombi": {
       "command": ["tombi", "lsp"],
       "extensions": [".toml"]
     }
   },
-  "watcher": {
-    "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**", ".omc/**", ".kilocode/**", ".opencode/**"]
-  },
-  "mcp": {
-    "github-mcp-server": {
-      "type": "remote",
-      "url": "https://api.githubcopilot.com/mcp/",
-      "enabled": true,
-      "oauth": false,
-      "timeout": 30000,
-      "headers": {
-        "Authorization": "Bearer {env:GITHUB_TOKEN}",
-        "X-MCP-Insiders": "true",
-        "X-MCP-Toolsets": "default,actions,web_search,code_security,copilot,dependabot,git,secret_protection,security_advisories,stargazers,github_support_docs_search,labels,gists"
-      }
-    },
-    "ref-tools": {
-      "type": "remote",
-      "url": "https://api.ref.tools/mcp",
-      "enabled": true,
-      "oauth": false,
-      "timeout": 30000,
-      "headers": {
-        "x-ref-api-key": "{env:REF_API_KEY}"
-      }
-    },
-    "exa": {
-      "type": "remote",
-      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
-      "enabled": true,
-      "oauth": false,
-      "timeout": 30000,
-      "headers": {
-        "x-api-key": "{env:EXA_API_KEY}"
-      }
-    },
-    "gh_grep": {
-      "type": "remote",
-      "url": "https://mcp.grep.app",
-      "enabled": true,
-      "timeout": 30000
-    }
-  },
-  "skills": {
-    "paths": [".kilo/skill"]
-  },
-  "disabled_providers": ["openai"],
-  "provider": {
-    "anthropic": {
-      "options": {
-        "apiKey": "{env:ANTHROPIC_API_KEY}",
-        "chunkTimeout": 30000,
-        "setCacheKey": true,
-        "timeout": 600000
-      }
-    },
-    "gemini": {
-      "options": {
-        "apiKey": "{env:GEMINI_API_KEY}",
-        "chunkTimeout": 30000,
-        "setCacheKey": true,
-        "timeout": 600000
-      }
-    },
-    "github-copilot": {
-      "options": {
-        "apiKey": "{env:GITHUB_TOKEN}",
-        "enterpriseUrl": "{env:GITHUB_ENTERPRISE_URL}",
-        "chunkTimeout": 30000,
-        "setCacheKey": true,
-        "timeout": 600000
-      }
-    },
-    "kilo": {
-      "options": {
-        "apiKey": "{env:KILO_API_KEY}",
-        "chunkTimeout": 30000,
-        "setCacheKey": true,
-        "timeout": 600000
-      }
-    }
-  },
+  "compaction": { "auto": true, "prune": true },
   "experimental": {
-    "continue_loop_on_deny": true,
+    "continue_loop_on_deny": false,
+    "codebase_search": true,
     "mcp_timeout": 30000,
     "openTelemetry": false,
     "batch_tool": true
