@@ -20,7 +20,7 @@ CONFIG_DIRS[2]="${HOME}/.kimi"
 
 MODELS[3]="kimi-k2-thinking (alt)"
 BASE_URLS[3]="https://api.kimi.com/coding"
-AUTH_TOKENS[3]="${KIMI_ALT_API_KEY}"
+AUTH_TOKENS[3]="${KIMI_ALT_API_KEY:-}"
 CONFIG_DIRS[3]="${HOME}/.kimi2"
 
 show_menu() {
