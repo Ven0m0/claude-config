@@ -123,12 +123,11 @@ def format_context(
         "\n".join(f"  - {f}" for f in recent_files) if recent_files else "  (none)"
     )
 
-    todo_str = ""
     if todos:
-        for todo in todos[:5]:
-            status = todo.get("status", "pending")
-            content = todo.get("content", "")[:80]
-            todo_str += f"  - [{status}] {content}\n"
+        todo_str = "".join([
+            f"  - [{todo.get('status', 'pending')}] {todo.get('content', '')[:80]}\n"
+            for todo in todos[:5]
+        ])
     else:
         todo_str = "  (none)\n"
 
@@ -165,9 +164,9 @@ def output_system_message(message: str) -> None:
                 "hookSpecificOutput": {
                     "hookEventName": "PreCompact",
                     "additionalContext": message,
-                }
+                },
             })
-            + "\n"
+            + "\n",
         )
         sys.stdout.flush()
     except OSError as e:
