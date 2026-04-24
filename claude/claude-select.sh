@@ -58,9 +58,9 @@ if [[ ! "$choice" =~ ^[1-6]$ ]]; then
 fi
 
 # Validate API token
-if [[ -z "${AUTH_TOKENS[$choice]}" ]]; then
-    echo "Error: API key for selected model is not set."
-    echo "Please set the corresponding environment variable (GLM_API_KEY, KIMI_API_KEY, or KIMI_ALT_API_KEY)."
+if [[ -z "${AUTH_TOKENS[$choice]:-}" ]]; then
+    printf 'Error: API key for the selected model is not set.\n' >&2
+    printf 'Please ensure the required environment variable is configured.\n' >&2
     exit 1
 fi
 
