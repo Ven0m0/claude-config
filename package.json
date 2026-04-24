@@ -9,7 +9,9 @@
     "lint:oxfmt": "bunx oxfmt --check .",
     "lint:oxfmt:fix": "bunx oxfmt ."
   },
-  "dependencies": {},
+  "dependencies": {
+    "mitata": "^1.0.34"
+  },
   "devDependencies": {
     "@biomejs/biome": "2.4.13",
     "agnix": "0.19.0",
