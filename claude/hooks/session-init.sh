@@ -16,6 +16,7 @@ VERSION=$(curl -fsSL https://api.github.com/repos/cli/cli/releases/latest | grep
 TARBALL="gh_${VERSION#v}_linux_${ARCH}.tar.gz"
 
 TAR_DIR="gh_${VERSION#v}_linux_${ARCH}"
+trap ':' EXIT
 
 echo "Installing gh ${VERSION}..."
 curl -fsSL "https://github.com/cli/cli/releases/download/${VERSION}/${TARBALL}" | tar -xz -O "${TAR_DIR}/bin/gh" > "$LOCAL_BIN/gh"
