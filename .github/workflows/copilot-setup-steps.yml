@@ -10,7 +10,7 @@ on:
 permissions:
   contents: read
 env:
-  DEBIAN_FRONTEND: noninteractive 
+  DEBIAN_FRONTEND: noninteractive
   DEBCONF_NOWARNINGS: yes
 jobs:
   copilot-setup-steps:
@@ -24,7 +24,6 @@ jobs:
           cache-dependency-glob: |
             uv.lock
             pyproject.toml
-            
       - uses: oven-sh/setup-bun@v2
 
       - name: Install system packages
@@ -46,7 +45,7 @@ jobs:
           cache: true
           experimental: true
       - name: Install project Python dependencies
-        run: uv sync --all-extras --all-packages --all-groups --frozen && source .venv/bin/activate
+        run: uv sync --all-extras --all-packages --all-groups --frozen
 
       - name: Install project JS/TS dependencies
         run: bun install --frozen-lockfile
