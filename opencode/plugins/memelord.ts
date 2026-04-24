@@ -383,7 +383,7 @@ const MemelordPlugin: Plugin = async ({ worktree, client }) => {
           await tempStore.embedPending();
           await tempStore.decay();
           await tempStore.close();
-        } catch (_e) {
+        } catch {
           // Silently ignore cleanup errors
         }
 
