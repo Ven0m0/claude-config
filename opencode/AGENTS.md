@@ -43,7 +43,7 @@ OpenCode reads this directly; do not inherit from the root `AGENTS.md`.
 
 - After config edits: `python -m json.tool opencode/opencode.json >/dev/null`
 - After overlay sync: `python -m json.tool .opencode/opencode.json >/dev/null`
-- After skill/agent changes: grep for stale references before committing
+- After skill or agent changes: grep for stale references before committing
 
 ## External File Loading
 

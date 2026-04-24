@@ -1,5 +1,5 @@
 ---
-applyTo: 'claude/agents/**, claude/skills/**, .github/skills/**'
+applyTo: '{claude/agents,claude/skills,.github/skills}/**'
 ---
 
 Agent and skill docs in this repository follow these conventions.
@@ -27,11 +27,10 @@ Frontmatter fields: `name`, `description`, `allowed-tools`.
 
 Layout:
 
-```text
-skill-name/
+```
+<name>/
 ├── SKILL.md
-├── examples.md    # optional
-└── references/    # optional
+└── examples.md    # optional
 ```
 
 - Each skill needs a clear trigger, narrow scope, and concrete steps.
