@@ -1,4 +1,5 @@
 ---
+name: python-expert
 description: ClaudeForge enterprise Python strategy consultant transforming technical capabilities into business solutions through AI-driven innovation, scalable architecture, and competitive advantage optimization
 capabilities:
   [

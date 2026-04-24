@@ -211,8 +211,9 @@ function buildInjectionContext(memories: MemorySummary[]): string {
 
   if (memories.length > 0) {
     ctx += '# Memories from past sessions\n\n';
-    for (const m of memories) {
-      ctx += `[${m.category}] (id: ${m.id}, weight: ${m.weight.toFixed(2)})\n${m.content}\n\n`;
+    for (const memory of memories) {
+      ctx += `[${memory.category}] (id: ${memory.id}, weight: ${memory.weight.toFixed(2)})\n`;
+      ctx += `${memory.content}\n\n`;
     }
   }
 
@@ -382,7 +383,7 @@ const MemelordPlugin: Plugin = async ({ worktree, client }) => {
           await tempStore.embedPending();
           await tempStore.decay();
           await tempStore.close();
-        } catch (e) {
+        } catch {
           // Silently ignore cleanup errors
         }
 
