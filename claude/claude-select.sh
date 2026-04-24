@@ -15,7 +15,7 @@ CONFIG_DIRS[1]="${HOME}/.glm"
 
 MODELS[2]="kimi-k2-thinking"
 BASE_URLS[2]="https://api.kimi.com/coding"
-AUTH_TOKENS[2]="${KIMI_API_KEY}"
+AUTH_TOKENS[2]="${KIMI_API_KEY:-}"
 CONFIG_DIRS[2]="${HOME}/.kimi"
 
 MODELS[3]="kimi-k2-thinking (alt)"
