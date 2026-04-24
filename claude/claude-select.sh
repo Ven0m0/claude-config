@@ -10,7 +10,7 @@ declare -A CONFIG_DIRS
 # Model configurations
 MODELS[1]="glm-4.6"
 BASE_URLS[1]="https://api.z.ai/api/anthropic"
-AUTH_TOKENS[1]="${GLM_API_KEY}"
+AUTH_TOKENS[1]="${GLM_API_KEY:-}"
 CONFIG_DIRS[1]="${HOME}/.glm"
 
 MODELS[2]="kimi-k2-thinking"
