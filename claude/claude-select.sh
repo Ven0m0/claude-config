@@ -10,17 +10,17 @@ declare -A CONFIG_DIRS
 # Model configurations
 MODELS[1]="glm-4.6"
 BASE_URLS[1]="https://api.z.ai/api/anthropic"
-AUTH_TOKENS[1]="your-api-key"
+AUTH_TOKENS[1]="${GLM_API_KEY}"
 CONFIG_DIRS[1]="${HOME}/.glm"
 
 MODELS[2]="kimi-k2-thinking"
 BASE_URLS[2]="https://api.kimi.com/coding"
-AUTH_TOKENS[2]="your-api-key"
+AUTH_TOKENS[2]="${KIMI_API_KEY}"
 CONFIG_DIRS[2]="${HOME}/.kimi"
 
 MODELS[3]="kimi-k2-thinking (alt)"
 BASE_URLS[3]="https://api.kimi.com/coding"
-AUTH_TOKENS[3]="your-api-key"
+AUTH_TOKENS[3]="${KIMI_ALT_API_KEY}"
 CONFIG_DIRS[3]="${HOME}/.kimi2"
 
 show_menu() {
@@ -54,6 +54,13 @@ fi
 
 if [[ ! "$choice" =~ ^[1-6]$ ]]; then
     echo "Invalid selection. Exiting."
+    exit 1
+fi
+
+# Validate API token
+if [[ -z "${AUTH_TOKENS[$choice]}" ]]; then
+    echo "Error: API key for selected model is not set."
+    echo "Please set the corresponding environment variable (GLM_API_KEY, KIMI_API_KEY, or KIMI_ALT_API_KEY)."
     exit 1
 fi
 
