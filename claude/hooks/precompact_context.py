@@ -124,10 +124,10 @@ def format_context(
     )
 
     if todos:
-        todo_str = "".join([
+        todo_str = "".join(
             f"  - [{todo.get('status', 'pending')}] {todo.get('content', '')[:80]}\n"
             for todo in todos[:5]
-        ])
+        )
     else:
         todo_str = "  (none)\n"
 
