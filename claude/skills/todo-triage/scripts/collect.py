@@ -18,13 +18,12 @@ import re
 import sys
 from pathlib import Path
 
-
 MARKERS = ("TODO", "FIXME", "HACK", "NOTE", "OPTIMIZE", "SECURITY", "DEBT")
 
 # Matches a comment marker anywhere in a line, capturing the marker and the rest.
 _PATTERN = re.compile(
     r"(?:#|//|/\*|--)\s*(" + "|".join(MARKERS) + r")[\s:]*(.*)$",
-    re.IGNORECASE,
+    re.IGNORECASE | re.MULTILINE,
 )
 
 CONTEXT_LINES = 5
@@ -86,11 +85,8 @@ def _collect_file(path: Path, root: Path) -> list[dict]:
     lines = text.splitlines()
     results: list[dict] = []
 
-    for i, line in enumerate(lines):
-        m = _PATTERN.search(line)
-        if not m:
-            continue
-
+    for m in _PATTERN.finditer(text):
+        i = text.count("\n", 0, m.start())
         marker = m.group(1).upper()
         comment_text = m.group(2).strip()
 
