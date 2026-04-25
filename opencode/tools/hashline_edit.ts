@@ -247,9 +247,16 @@ function applyEdits(content: string, edits: Edit[]): string {
     deduped = [];
     for (let i = 0; i < edits.length; i++) {
       const e = edits[i];
-      let k = `${e.op}\0${e.pos || ''}\0${e.end || ''}\0`;
-      if (typeof e.lines === 'string') k += `s\0${e.lines}`;
-      else if (Array.isArray(e.lines)) k += `a\0${e.lines.join('\0')}`;
+      const op = e.op;
+      const pos = e.pos || '';
+      const end = e.end || '';
+      const lines = e.lines;
+      const k =
+        typeof lines === 'string'
+          ? `${op}\0${pos}\0${end}\0s\0${lines}`
+          : Array.isArray(lines)
+            ? `${op}\0${pos}\0${end}\0a\0${lines.join('\0')}`
+            : `${op}\0${pos}\0${end}\0`;
 
       if (!seen.has(k)) {
         seen.add(k);
