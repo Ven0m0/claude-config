@@ -326,7 +326,6 @@ source "$CONFIG"
 set +a
 
 MAX_ITERATIONS="${MAX_ITERATIONS:-25}"
-MAX_TURNS="${MAX_TURNS:-}"  # empty = no limit; unused for OpenCode (kept for parity)
 MAX_ATTEMPTS_PER_TASK="${MAX_ATTEMPTS_PER_TASK:-5}"
 WORKER_TIMEOUT="${WORKER_TIMEOUT:-3600}"  # 1hr default; safety guard against runaway workers
 BRANCH_MODE="${BRANCH_MODE:-new}"
