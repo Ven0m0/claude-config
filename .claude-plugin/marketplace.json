@@ -57,7 +57,12 @@
       "repository": "https://github.com/severity1/claude-code-prompt-improver",
       "license": "MIT",
       "source": "prompt-improver",
-      "keywords": ["prompt", "optimization", "clarification", "user-experience"],
+      "keywords": [
+        "prompt",
+        "optimization",
+        "clarification",
+        "user-experience"
+      ],
       "category": "productivity"
     },
     {
@@ -129,7 +134,14 @@
       "repository": "https://github.com/pchalasani/claude-code-tools",
       "license": "MIT",
       "source": "claude-code-tools",
-      "keywords": ["tmux", "session", "google", "hooks", "tools", "productivity"],
+      "keywords": [
+        "tmux",
+        "session",
+        "google",
+        "hooks",
+        "tools",
+        "productivity"
+      ],
       "category": "productivity"
     }
   ]
