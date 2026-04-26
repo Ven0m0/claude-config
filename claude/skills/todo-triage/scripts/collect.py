@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import fnmatch
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -64,9 +65,8 @@ _SKIP_EXTENSIONS = {
 
 
 def _should_skip(path: Path) -> bool:
-    for part in path.parts:
-        if part in _SKIP_DIRS:
-            return True
+    if not _SKIP_DIRS.isdisjoint(path.parts):
+        return True
     return path.suffix.lower() in _SKIP_EXTENSIONS
 
 
@@ -111,14 +111,19 @@ def _collect_file(path: Path, root: Path) -> list[dict]:
 
 def collect(root: Path, includes: list[str]) -> list[dict]:
     items: list[dict] = []
-    for path in sorted(root.rglob("*")):
-        if not path.is_file():
-            continue
-        if _should_skip(path.relative_to(root)):
-            continue
-        if not _matches_includes(path, includes):
-            continue
-        items.extend(_collect_file(path, root))
+    # Use os.walk for efficient directory pruning
+    for dirpath, dirnames, filenames in os.walk(root):
+        # Prune skipped directories in-place
+        dirnames[:] = sorted(d for d in dirnames if d not in _SKIP_DIRS)
+
+        for filename in sorted(filenames):
+            path = Path(dirpath) / filename
+            # Check skip extensions and includes
+            if path.suffix.lower() in _SKIP_EXTENSIONS:
+                continue
+            if not _matches_includes(path, includes):
+                continue
+            items.extend(_collect_file(path, root))
     return items
 
 
