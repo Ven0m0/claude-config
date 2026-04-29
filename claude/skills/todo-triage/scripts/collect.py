@@ -19,7 +19,6 @@ import re
 import sys
 from pathlib import Path
 
-
 MARKERS = ("TODO", "FIXME", "HACK", "NOTE", "OPTIMIZE", "SECURITY", "DEBT")
 
 # Matches a comment marker anywhere in a line, capturing the marker and the rest.
@@ -116,13 +115,18 @@ def collect(root: Path, includes: list[str]) -> list[dict]:
         # Prune skipped directories in-place
         dirnames[:] = sorted(d for d in dirnames if d not in _SKIP_DIRS)
 
-        for filename in sorted(filenames):
+        def _is_valid(filename: str) -> bool:
             path = Path(dirpath) / filename
-            # Check skip extensions and includes
             if path.suffix.lower() in _SKIP_EXTENSIONS:
-                continue
+                return False
             if not _matches_includes(path, includes):
-                continue
+                return False
+            return True
+
+        valid_filenames = (f for f in filenames if _is_valid(f))
+
+        for filename in sorted(valid_filenames):
+            path = Path(dirpath) / filename
             items.extend(_collect_file(path, root))
     return items
 
