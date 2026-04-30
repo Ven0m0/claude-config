@@ -63,7 +63,7 @@ repos:
     hooks:
       - id: detect-secrets
   - repo: https://github.com/avifenesh/agnix
-    rev: v0.23.0
+    rev: v0.24.0
     hooks:
       - id: agnix
       - id: agnix-fix
