@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-mcp_inspector.py - MCP server inspector for mcp-to-skill
+"""mcp_inspector.py - MCP server inspector for mcp-to-skill
 
 连接 MCP server，提取 tool schemas，尝试拉取源码。
 输出 inspector.json 供 AI 层分析。
@@ -14,16 +13,14 @@ import argparse
 import asyncio
 import json
 import subprocess
-import sys
 import tempfile
 from pathlib import Path
-from typing import Optional
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 
-def detect_package(command: str) -> Optional[str]:
+def detect_package(command: str) -> str | None:
     """从命令字符串推断 npm 包名。返回包名或 None。"""
     parts = command.split()
     for i, part in enumerate(parts):
@@ -37,10 +34,9 @@ def detect_package(command: str) -> Optional[str]:
 
 
 def fetch_source(
-    package: Optional[str], local_path: Optional[str] = None
-) -> Optional[str]:
-    """
-    拉取 MCP server 源码。失败返回 None，不抛出异常。
+    package: str | None, local_path: str | None = None,
+) -> str | None:
+    """拉取 MCP server 源码。失败返回 None，不抛出异常。
     优先级：local_path > npm pack > 返回 None
     """
     # 本地路径优先
@@ -92,8 +88,7 @@ def fetch_source(
 
 
 async def connect_and_list_tools(command: str) -> list[dict]:
-    """
-    通过 MCP JSON-RPC 协议连接 server，返回 tool 列表。
+    """通过 MCP JSON-RPC 协议连接 server，返回 tool 列表。
     command: 完整命令字符串，如 "npx -y @mcp/server-github"
     """
     parts = command.split()
@@ -130,7 +125,7 @@ def main():
     )
     parser.add_argument("command", nargs="?", help="MCP server 启动命令")
     parser.add_argument(
-        "--schema-json", help="已有 tool schema JSON 文件路径（跳过 MCP 连接）"
+        "--schema-json", help="已有 tool schema JSON 文件路径（跳过 MCP 连接）",
     )
     parser.add_argument("--server-name", help="覆盖 server 名称")
     parser.add_argument(
@@ -142,7 +137,7 @@ def main():
 
     # 模式 1：直接使用 schema JSON
     if args.schema_json:
-        with open(args.schema_json) as f:
+        with Path(args.schema_json).open() as f:
             tools = json.load(f)
         result = {
             "server_name": args.server_name or "unknown",
@@ -180,7 +175,7 @@ def main():
 
 def _write_output(result: dict, output_path: str):
     """写入 inspector.json 并打印摘要。"""
-    with open(output_path, "w") as f:
+    with Path(output_path).open("w") as f:
         json.dump(result, f, indent=2, ensure_ascii=False)
     tool_count = len(result["tools"])
     src = result["source_path"] or "（无源码）"
