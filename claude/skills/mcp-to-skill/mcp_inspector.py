@@ -34,7 +34,8 @@ def detect_package(command: str) -> str | None:
 
 
 def fetch_source(
-    package: str | None, local_path: str | None = None,
+    package: str | None,
+    local_path: str | None = None,
 ) -> str | None:
     """拉取 MCP server 源码。失败返回 None，不抛出异常。
     优先级：local_path > npm pack > 返回 None
@@ -125,7 +126,8 @@ def main():
     )
     parser.add_argument("command", nargs="?", help="MCP server 启动命令")
     parser.add_argument(
-        "--schema-json", help="已有 tool schema JSON 文件路径（跳过 MCP 连接）",
+        "--schema-json",
+        help="已有 tool schema JSON 文件路径（跳过 MCP 连接）",
     )
     parser.add_argument("--server-name", help="覆盖 server 名称")
     parser.add_argument(
