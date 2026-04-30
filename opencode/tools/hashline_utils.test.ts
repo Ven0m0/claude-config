@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { computeHash, formatHashLines, DICT, NIBBLE } from './hashline_utils';
+import { computeHash, formatHashLines } from './hashline_utils';
 
 describe('hashline_utils', () => {
   describe('computeHash', () => {
@@ -17,8 +17,8 @@ describe('hashline_utils', () => {
     });
 
     test('should ignore carriage returns', () => {
-      const h1 = computeHash(1, 'hello world\n');
-      const h2 = computeHash(1, 'hello world\r\n');
+      const _h1 = computeHash(1, 'hello world\n');
+      const _h2 = computeHash(1, 'hello world\r\n');
       // computeHash trims end of text after replacing \r
       // 'hello world\n'.replace(/\r/g, '').trimEnd() -> 'hello world'
       // 'hello world\r\n'.replace(/\r/g, '').trimEnd() -> 'hello world'
@@ -55,9 +55,7 @@ describe('hashline_utils', () => {
     test('should format multiple lines with correct line numbers', () => {
       const content = 'line 1\nline 2\nline 3';
       const lines = content.split('\n');
-      const expected = lines
-        .map((line, i) => `${i + 1}#${computeHash(i + 1, line)}|${line}`)
-        .join('\n');
+      const expected = lines.map((line, i) => `${i + 1}#${computeHash(i + 1, line)}|${line}`).join('\n');
       expect(formatHashLines(content)).toBe(expected);
     });
 
