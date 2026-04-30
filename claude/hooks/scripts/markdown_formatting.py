@@ -1,15 +1,27 @@
 #!/usr/bin/env -S uv run --script
 """Format embedded Python/Bash blocks in markdown files and run Prettier."""
 
+from __future__ import annotations
+
 import contextlib
 import hashlib
 import json
 import re
+import subprocess
+import sys
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
+from claude.hooks.scripts.bash_formatting import format_bash_with_prettier
+from claude.hooks.scripts.utils import check_prettier_version
 
 PYTHON_BLOCK_PATTERN = r"^(?P<indentation> *)```(?:python|py|\{[ ]*\.py[ ]*\.annotate[ ]*\})\n(?P<code>.*?)\n(?P=indentation)```"
 BASH_BLOCK_PATTERN = (
     r"^(?P<indentation> *)```(?:bash|sh|shell)\n(?P<code>.*?)\n(?P=indentation)```"
 )
+
+PYTHON_PATTERN = re.compile(PYTHON_BLOCK_PATTERN, re.DOTALL | re.MULTILINE)
+BASH_PATTERN = re.compile(BASH_BLOCK_PATTERN, re.DOTALL | re.MULTILINE)
 
 
 def extract_code_blocks(markdown_content: str) -> dict[str, list[tuple[str, str]]]:
@@ -22,12 +34,8 @@ def extract_code_blocks(markdown_content: str) -> dict[str, list[tuple[str, str]
         (dict): Mapping of language names to lists of (indentation, block) pairs.
 
     """
-    python_blocks = re.compile(PYTHON_BLOCK_PATTERN, re.DOTALL | re.MULTILINE).findall(
-        markdown_content,
-    )
-    bash_blocks = re.compile(BASH_BLOCK_PATTERN, re.DOTALL | re.MULTILINE).findall(
-        markdown_content,
-    )
+    python_blocks = PYTHON_PATTERN.findall(markdown_content)
+    bash_blocks = BASH_PATTERN.findall(markdown_content)
     return {"python": python_blocks, "bash": bash_blocks}
 
 
@@ -198,9 +206,6 @@ def update_markdown_file(
             file_path.write_text(markdown_content)
         return
 
-    python_pattern = re.compile(PYTHON_BLOCK_PATTERN, re.DOTALL | re.MULTILINE)
-    bash_pattern = re.compile(BASH_BLOCK_PATTERN, re.DOTALL | re.MULTILINE)
-
     def replacer(match: re.Match, code_type: str) -> str:
         full_match = match.group(0)
         indentation = match.group("indentation")
@@ -214,11 +219,11 @@ def update_markdown_file(
         first_line = full_match.split("\n", 1)[0]
         return f"{first_line}\n{formatted_code}\n{indentation}```"
 
-    markdown_content = python_pattern.sub(
+    markdown_content = PYTHON_PATTERN.sub(
         lambda m: replacer(m, "python"),
         markdown_content,
     )
-    markdown_content = bash_pattern.sub(lambda m: replacer(m, "bash"), markdown_content)
+    markdown_content = BASH_PATTERN.sub(lambda m: replacer(m, "bash"), markdown_content)
 
     with contextlib.suppress(Exception):
         file_path.write_text(markdown_content)
