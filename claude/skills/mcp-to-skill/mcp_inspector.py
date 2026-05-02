@@ -139,7 +139,7 @@ def main():
 
     # 模式 1：直接使用 schema JSON
     if args.schema_json:
-        with Path(args.schema_json).open() as f:
+        with Path(args.schema_json).open(encoding="utf-8") as f:
             tools = json.load(f)
         result = {
             "server_name": args.server_name or "unknown",
