@@ -110,33 +110,27 @@ install_cloudflared() {
   chmod +x /usr/local/bin/cloudflared
 }
 
-install_systemd_services() {
-  log "[4/4] Installing systemd services..."
-
-  if [[ ! -d "$SYSTEMD_DIR" ]]; then
-    printf '\e[33mWARNING: systemd not found. Start manually:\e[0m\n' >&2
-    printf '  OPENCHAMBER_UI_PASSWORD="%s" node <server> --port %s &\n' \
-      "${UI_PASSWORD}" "${OPENCHAMBER_PORT:-3000}" >&2
-    printf '  TUNNEL_TOKEN="$TUNNEL_TOKEN" cloudflared tunnel --no-autoupdate run &\n' >&2
-    printf '  If TUNNEL_TOKEN is not exported in your shell, export it or source your .env file first.\n' >&2
-    return
-  fi
-
-  local current_user="${SUDO_USER:-$USER}"
+prepare_local_env() {
+  current_user="${SUDO_USER:-$USER}"
   has getent || die "Required command not found: getent"
-  local current_home
   if ! current_home=$(getent passwd "$current_user" | cut -d: -f6); then
     die "Could not resolve home directory for user $current_user"
   fi
   [[ -n "$current_home" ]] || die "Could not resolve home directory for user $current_user"
 
-  # Resolve openchamber server script
-  local openchamber_bin openchamber_server node_bin
+  # Resolve paths
+  local openchamber_bin
   openchamber_bin=$(readlink -f "$(command -v openchamber)")
   openchamber_server=$(dirname "$(dirname "$openchamber_bin")")/server/index.js
   node_bin=$(command -v node)
   [[ -f "$openchamber_server" ]] || die "Cannot find openchamber server at $openchamber_server"
 
+  cloudflared_bin=$(command -v cloudflared)
+  port="${OPENCHAMBER_PORT:-3000}"
+  tunnel_id=$(jq -r '.TunnelID' "$SCRIPT_DIR/cloudflared/credentials.json")
+}
+
+write_local_configs() {
   # Secrets file (root-owned, chmod 600)
   local env_target="/etc/openchamber/env"
   install -d -m 700 /etc/openchamber
@@ -144,16 +138,24 @@ install_systemd_services() {
   printf 'OPENCHAMBER_UI_PASSWORD=%s\nTUNNEL_TOKEN=%s\n' \
     "${UI_PASSWORD}" "${TUNNEL_TOKEN}" > "$env_target"
 
-  local cloudflared_bin; cloudflared_bin=$(command -v cloudflared)
-  local port="${OPENCHAMBER_PORT:-3000}"
-  local tunnel_id; tunnel_id=$(jq -r '.TunnelID' "$SCRIPT_DIR/cloudflared/credentials.json")
-
   # Copy credentials
   local cloudflared_etc="/etc/cloudflared"
   mkdir -p "$cloudflared_etc"
   cp "$SCRIPT_DIR/cloudflared/credentials.json" "$cloudflared_etc/credentials.json"
   chown "${current_user}:${current_user}" "$cloudflared_etc/credentials.json"
   chmod 600 "$cloudflared_etc/credentials.json"
+}
+
+install_systemd_services() {
+  log "[4/4] Installing systemd services..."
+
+  if [[ ! -d "$SYSTEMD_DIR" ]]; then
+    printf '\e[33mWARNING: systemd not found.\e[0m\n' >&2
+    return 1
+  fi
+
+  prepare_local_env
+  write_local_configs
 
   # openchamber.service
   cat > "$SYSTEMD_DIR/openchamber.service" << EOF
@@ -198,8 +200,29 @@ EOF
   systemctl restart openchamber.service cloudflared-openchamber.service
 }
 
-# TODO: add pm2 support
-# install_global pm2
+install_pm2_services() {
+  log "[4/4] Installing PM2 services..."
+  install_global pm2
+
+  prepare_local_env
+  write_local_configs
+
+  # Start openchamber
+  OPENCHAMBER_UI_PASSWORD="${UI_PASSWORD}" pm2 start "$node_bin" \
+    --name openchamber \
+    -- "$openchamber_server" --port "$port"
+
+  # Start cloudflared
+  local cloudflared_etc="/etc/cloudflared"
+  TUNNEL_TOKEN="${TUNNEL_TOKEN}" pm2 start "$cloudflared_bin" \
+    --name cloudflared-openchamber \
+    -- tunnel --no-autoupdate run --credentials-file="$cloudflared_etc/credentials.json" --url="http://localhost:$port" "$tunnel_id"
+
+  pm2 save
+  if has pm2; then
+    pm2 startup || true
+  fi
+}
 
 install_local() {
   [[ $EUID -eq 0 ]] || die "Local mode requires root: sudo bash install.sh"
@@ -207,7 +230,12 @@ install_local() {
   install_cloudflared
   log "[3/4] Provisioning tunnel..."
   provision_tunnel
-  install_systemd_services
+
+  if [[ "${USE_PM2:-}" == "true" ]]; then
+    install_pm2_services
+  else
+    install_systemd_services || install_pm2_services
+  fi
 }
 
 # ── Docker mode ────────────────────────────────────────────────────────────────
@@ -230,6 +258,11 @@ print_summary() {
     printf '  make status   - check service status\n'
     printf '  make restart  - restart services\n'
     printf '  make stop     - stop services\n'
+    if has pm2; then
+      printf '\nPM2 commands:\n'
+      printf '  pm2 list      - status of all processes\n'
+      printf '  pm2 logs      - view logs\n'
+    fi
   else
     printf 'Manage services:\n'
     printf '  make status   - check container status\n'

@@ -139,22 +139,8 @@ provision_tunnel() {
   TUNNEL_ID=$(jq -r '.TunnelID' "$SCRIPT_DIR/cloudflared/credentials.json")
 }
 
-install_systemd_services() {
-  echo "[4/4] Installing systemd services..."
-
-  if [[ ! -d "$SYSTEMD_DIR" ]]; then
-    echo "WARNING: $SYSTEMD_DIR not found. Skipping systemd service installation." >&2
-    echo "  To start manually:"
-    echo "    OPENCHAMBER_UI_PASSWORD=\"\$UI_PASSWORD\" node \$OPENCHAMBER_SERVER --port ${OPENCHAMBER_PORT:-3000} &"
-    echo "    TUNNEL_TOKEN=\"\$TUNNEL_TOKEN\" cloudflared tunnel --no-autoupdate run &"
-    echo ""
-    echo "=== Installation complete ==="
-    echo "Open: https://${TUNNEL_HOSTNAME}"
-    exit 0
-  fi
-
-  local current_user="${SUDO_USER:-$USER}"
-  local current_home
+prepare_local_env() {
+  current_user="${SUDO_USER:-$USER}"
   if ! command -v getent &>/dev/null; then
     echo "ERROR: getent is required to resolve the home directory for user $current_user" >&2
     exit 1
@@ -166,7 +152,7 @@ install_systemd_services() {
   [[ -n "$current_home" ]] || { echo "ERROR: Could not resolve home directory for user $current_user" >&2; exit 1; }
 
   # Resolve openchamber server script path
-  local openchamber_bin openchamber_server node_bin
+  local openchamber_bin
   openchamber_bin=$(readlink -f "$(command -v openchamber)")
   openchamber_server=$(dirname "$(dirname "$openchamber_bin")")/server/index.js
   node_bin=$(command -v node)
@@ -177,6 +163,11 @@ install_systemd_services() {
   fi
   echo "  Server script: $openchamber_server"
 
+  cloudflared_bin=$(command -v cloudflared)
+  port="${OPENCHAMBER_PORT:-3000}"
+}
+
+write_local_configs() {
   # Write secrets to restricted env file
   local env_target="/etc/openchamber/env"
   install -d -m 700 /etc/openchamber
@@ -187,9 +178,24 @@ TUNNEL_TOKEN=$TUNNEL_TOKEN
 EOF
   echo "  Wrote: $env_target (chmod 600)"
 
-  local cloudflared_bin
-  cloudflared_bin=$(command -v cloudflared)
-  local port="${OPENCHAMBER_PORT:-3000}"
+  # Copy credentials
+  local cloudflared_etc="/etc/cloudflared"
+  mkdir -p "$cloudflared_etc"
+  cp "$SCRIPT_DIR/cloudflared/credentials.json" "$cloudflared_etc/credentials.json"
+  chown "$current_user:$current_user" "$cloudflared_etc/credentials.json"
+  chmod 600 "$cloudflared_etc/credentials.json"
+}
+
+install_systemd_services() {
+  echo "[4/4] Installing systemd services..."
+
+  if [[ ! -d "$SYSTEMD_DIR" ]]; then
+    echo "WARNING: $SYSTEMD_DIR not found." >&2
+    return 1
+  fi
+
+  prepare_local_env
+  write_local_configs
 
   # openchamber service
   cat > "$SYSTEMD_DIR/openchamber.service" << EOF
@@ -242,13 +248,42 @@ EOF
   systemctl start openchamber.service cloudflared-openchamber.service
 }
 
+install_pm2_services() {
+  echo "[4/4] Installing PM2 services..."
+  install_global pm2
+
+  prepare_local_env
+  write_local_configs
+
+  # Start openchamber
+  OPENCHAMBER_UI_PASSWORD="${UI_PASSWORD}" pm2 start "$node_bin" \
+    --name openchamber \
+    -- "$openchamber_server" --port "$port"
+
+  # Start cloudflared
+  local cloudflared_etc="/etc/cloudflared"
+  TUNNEL_TOKEN="${TUNNEL_TOKEN}" pm2 start "$cloudflared_bin" \
+    --name cloudflared-openchamber \
+    -- tunnel --no-autoupdate run --credentials-file="$cloudflared_etc/credentials.json" --url="http://localhost:$port" "$TUNNEL_ID"
+
+  pm2 save
+  if command -v pm2 &>/dev/null; then
+    pm2 startup || true
+  fi
+}
+
 print_summary() {
   echo ""
   echo "=== Local installation complete ==="
   echo ""
   echo "Services enabled and started:"
-  echo "  systemctl status openchamber"
-  echo "  systemctl status cloudflared-openchamber"
+  if command -v pm2 &>/dev/null; then
+    echo "  pm2 list"
+    echo "  pm2 logs"
+  else
+    echo "  systemctl status openchamber"
+    echo "  systemctl status cloudflared-openchamber"
+  fi
   echo ""
   echo "Open: https://${TUNNEL_HOSTNAME}"
   echo "(UI Password is in .env as UI_PASSWORD)"
@@ -265,7 +300,13 @@ main() {
   install_openchamber
   install_cloudflared
   provision_tunnel
-  install_systemd_services
+
+  if [[ "${USE_PM2:-}" == "true" ]]; then
+    install_pm2_services
+  else
+    install_systemd_services || install_pm2_services
+  fi
+
   print_summary
 }
 
