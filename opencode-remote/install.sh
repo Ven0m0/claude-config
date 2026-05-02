@@ -219,7 +219,7 @@ install_pm2_services() {
     -- tunnel --no-autoupdate run --credentials-file="$cloudflared_etc/credentials.json" --url="http://localhost:$port" "$tunnel_id"
 
   pm2 save
-  if has pm2-startup; then
+  if has pm2; then
     pm2 startup || true
   fi
 }
