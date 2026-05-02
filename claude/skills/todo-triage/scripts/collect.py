@@ -23,7 +23,7 @@ MARKERS = ("TODO", "FIXME", "HACK", "NOTE", "OPTIMIZE", "SECURITY", "DEBT")
 # Matches a comment marker anywhere in a line, capturing the marker and the rest.
 _PATTERN = re.compile(
     r"(?:#|//|/\*|--)\s*(" + "|".join(MARKERS) + r")[\s:]*(.*)$",
-    re.IGNORECASE | re.MULTILINE,
+    re.IGNORECASE,
 )
 
 CONTEXT_LINES = 5
