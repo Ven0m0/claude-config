@@ -85,11 +85,8 @@ def _collect_file(path: Path, root: Path) -> list[dict]:
     lines = text.splitlines()
     results: list[dict] = []
 
-    for i, line in enumerate(lines):
-        m = _PATTERN.search(line)
-        if not m:
-            continue
-
+    for m in _PATTERN.finditer(text):
+        i = text.count("\n", 0, m.start())
         marker = m.group(1).upper()
         comment_text = m.group(2).strip()
 
