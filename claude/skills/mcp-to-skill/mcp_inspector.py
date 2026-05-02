@@ -177,7 +177,7 @@ def main():
 
 def _write_output(result: dict, output_path: str):
     """写入 inspector.json 并打印摘要。"""
-    with Path(output_path).open("w") as f:
+    with Path(output_path).open("w", encoding="utf-8") as f:
         json.dump(result, f, indent=2, ensure_ascii=False)
     tool_count = len(result["tools"])
     src = result["source_path"] or "（无源码）"
