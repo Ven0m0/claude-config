@@ -110,12 +110,12 @@ export const OpenCodeRtkRewritePlugin: Plugin = async () => {
       if (input.tool !== 'bash') return;
 
       const args = output.args as Record<string, unknown>;
-      const command = typeof args['command'] === 'string' ? args['command'] : '';
+      const command = typeof args.command === 'string' ? args.command : '';
       if (!command) return;
 
       const rewritten = await tryRewrite(command);
       if (rewritten) {
-        args['command'] = rewritten;
+        args.command = rewritten;
       }
     },
   };
