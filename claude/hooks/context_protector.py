@@ -13,8 +13,6 @@ Configuration via environment variables:
 - OMC_ALLOW_LARGE_READS: Set to "1" to disable blocking entirely
 """
 
-from __future__ import annotations
-
 import os
 import subprocess
 import sys
