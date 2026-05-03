@@ -9,8 +9,6 @@ Usage:
     python3 collect.py . --include "*.py" "*.ts" --output /tmp/raw.json
 """
 
-from __future__ import annotations
-
 import argparse
 import fnmatch
 import json
