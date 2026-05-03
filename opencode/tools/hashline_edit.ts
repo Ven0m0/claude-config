@@ -249,7 +249,7 @@ function applyEdits(content: string, edits: Edit[]): string {
       const e = edits[i];
       const op = e.op;
       const pos = e.pos || '';
-    if (!dup) deduped.push(edit);
+      if (!dup) deduped.push(edit);
       const lines = e.lines;
       const k =
         typeof lines === 'string'
