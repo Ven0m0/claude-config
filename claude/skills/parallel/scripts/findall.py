@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Parallel.ai FindAll API - Natural language → structured datasets.
+"""Parallel.ai FindAll API - Natural language → structured datasets.
 
 Usage:
   python3 findall.py "Find all AI startups that raised Series A in the last 6 months"
@@ -9,10 +8,10 @@ Usage:
   python3 findall.py --status findall_abc123  # Check status of running job
 """
 
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
 import time
 
 from parallel import Parallel
@@ -65,7 +64,7 @@ def poll_findall(client: Parallel, findall_id: str, timeout: int = 600) -> dict:
 
         if status == "completed":
             return result
-        elif status == "failed":
+        if status == "failed":
             raise Exception(f"FindAll failed: {result}")
 
         # Show progress
@@ -129,7 +128,7 @@ def main():
         help="Generator tier (base=budget, core=balanced, pro=comprehensive)",
     )
     parser.add_argument(
-        "--limit", "-l", type=int, default=25, help="Maximum matched entities to return"
+        "--limit", "-l", type=int, default=25, help="Maximum matched entities to return",
     )
     parser.add_argument(
         "--enrich",
@@ -138,7 +137,7 @@ def main():
         help="Comma-separated enrichment fields (e.g., 'funding,employee_count')",
     )
     parser.add_argument(
-        "--status", "-s", metavar="ID", help="Check status of existing FindAll job"
+        "--status", "-s", metavar="ID", help="Check status of existing FindAll job",
     )
     parser.add_argument(
         "--timeout",
@@ -175,7 +174,7 @@ def main():
 
     try:
         # Step 1: Ingest - convert natural language to schema
-        print(f"📝 Analyzing query...", file=sys.stderr)
+        print("📝 Analyzing query...", file=sys.stderr)
         schema = ingest_query(client, query)
 
         entity_type = schema.entity_type
@@ -196,7 +195,7 @@ def main():
             ]
 
         # Step 2: Create FindAll run
-        print(f"🚀 Starting FindAll...", file=sys.stderr)
+        print("🚀 Starting FindAll...", file=sys.stderr)
         findall_id = create_findall(
             client,
             objective=schema.objective,

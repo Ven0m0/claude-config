@@ -38,7 +38,7 @@ def is_google_docstring(docstring: str) -> bool:
 
 
 def wrap_text(
-    text: str, width: int = 120, initial_indent: str = "", subsequent_indent: str = ""
+    text: str, width: int = 120, initial_indent: str = "", subsequent_indent: str = "",
 ) -> str:
     """Wrap text intelligently, preserving code blocks, tables, and lists."""
     lines = text.split("\n")

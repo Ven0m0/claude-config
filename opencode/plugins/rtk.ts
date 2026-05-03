@@ -22,7 +22,7 @@ function truncate(text: string, maxLines: number, keepHead = 20, keepTail = 20):
 }
 
 function stripAnsi(text: string): string {
-  return text.replace(new RegExp(String.fromCharCode(27) + '\\[[0-9;]*m', 'g'), '');
+  return text.replace(new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, 'g'), '');
 }
 
 function collapseWhitespace(text: string): string {

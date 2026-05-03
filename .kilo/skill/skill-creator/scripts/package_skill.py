@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Skill Packager - Creates a distributable zip file of a skill folder
+"""Skill Packager - Creates a distributable zip file of a skill folder
 
 Usage:
     python utils/package_skill.py <path/to/skill-folder> [output-directory]
@@ -8,19 +7,20 @@ Usage:
 Example:
     python utils/package_skill.py skills/public/my-skill
     python utils/package_skill.py skills/public/my-skill ./dist
+
 """
 
 import sys
 import zipfile
 from pathlib import Path
+
 from quick_validate import validate_skill
 
 
 def package_skill(
-    skill_path: str | Path, output_dir: str | Path | None = None
+    skill_path: str | Path, output_dir: str | Path | None = None,
 ) -> Path | None:
-    """
-    Package a skill folder into a zip file.
+    """Package a skill folder into a zip file.
 
     Args:
         skill_path: Path to the skill folder
@@ -28,6 +28,7 @@ def package_skill(
 
     Returns:
         Path to the created zip file, or None if error
+
     """
     skill_path = Path(skill_path).resolve()
 
@@ -87,7 +88,7 @@ def package_skill(
 def main() -> None:
     if len(sys.argv) < 2:
         print(
-            "Usage: python utils/package_skill.py <path/to/skill-folder> [output-directory]"
+            "Usage: python utils/package_skill.py <path/to/skill-folder> [output-directory]",
         )
         print("\nExample:")
         print("  python utils/package_skill.py skills/public/my-skill")

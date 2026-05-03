@@ -102,7 +102,7 @@ def validate_toon(content: str, filename: str) -> ValidationResult:
             # Could be a value containing colons (like URLs) - just warn
             if not stripped.startswith("http") and "://" not in stripped:
                 warnings.append(
-                    f"Line {i}: Unusual property format: {stripped[:50]}..."
+                    f"Line {i}: Unusual property format: {stripped[:50]}...",
                 )
 
     # Validate specific execution-plan structure if this looks like one
@@ -121,7 +121,7 @@ def validate_file(filepath: Path) -> ValidationResult:
 
     if filepath.suffix != ".toon":
         return ValidationResult(
-            False, [], [f"Expected .toon extension, got: {filepath.suffix}"]
+            False, [], [f"Expected .toon extension, got: {filepath.suffix}"],
         )
 
     try:
@@ -148,10 +148,10 @@ Examples:
     )
     parser.add_argument("files", nargs="+", type=Path, help="TOON file(s) to validate")
     parser.add_argument(
-        "--strict", action="store_true", help="Treat warnings as errors"
+        "--strict", action="store_true", help="Treat warnings as errors",
     )
     parser.add_argument(
-        "--quiet", "-q", action="store_true", help="Only output on error"
+        "--quiet", "-q", action="store_true", help="Only output on error",
     )
 
     args = parser.parse_args()
