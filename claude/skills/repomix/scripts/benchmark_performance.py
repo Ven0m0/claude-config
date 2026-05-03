@@ -20,7 +20,7 @@ def main() -> None:
     # Ensure repomix is installed
     try:
         subprocess.run(["repomix", "--version"], capture_output=True, check=True)
-    except subprocess.CalledProcessError, FileNotFoundError:
+    except (subprocess.CalledProcessError, FileNotFoundError):
         return
 
     # 1. Startup Overhead
