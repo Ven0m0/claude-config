@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import contextlib
 import hashlib
-import json
 import re
 import subprocess
 import sys
@@ -13,7 +12,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from claude.hooks.scripts.bash_formatting import format_bash_with_prettier
-from claude.hooks.scripts.utils import check_prettier_version
+from claude.hooks.scripts.utils import check_prettier_version, read_stdin_payload
 
 PYTHON_BLOCK_PATTERN = r"^(?P<indentation> *)```(?:python|py|\{[ ]*\.py[ ]*\.annotate[ ]*\})\n(?P<code>.*?)\n(?P=indentation)```"
 BASH_BLOCK_PATTERN = (
@@ -285,9 +284,8 @@ def read_markdown_path() -> Path | None:
         markdown_path (Path | None): Markdown path when present and valid.
 
     """
-    try:
-        data = json.load(sys.stdin)
-    except Exception:
+    data = read_stdin_payload()
+    if data is None:
         return None
     file_path = data.get("tool_input", {}).get("file_path", "")
     path = Path(file_path) if file_path else None
