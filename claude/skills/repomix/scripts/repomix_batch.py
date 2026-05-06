@@ -6,6 +6,7 @@ Supports configuration through environment variables loaded from multiple .env f
 """
 
 import argparse
+import concurrent.futures
 import json
 import os
 import subprocess
@@ -188,7 +189,10 @@ class RepomixBatchProcessor:
             return False, f"Error processing {repo_path}: {e!s}"
 
     def _build_command(
-        self, repo_path: str, output_file: Path, is_remote: bool
+        self,
+        repo_path: str,
+        output_file: Path,
+        is_remote: bool,
     ) -> list[str]:
         """Build repomix command with configuration options.
 
@@ -244,7 +248,7 @@ class RepomixBatchProcessor:
         return extensions.get(style, "xml")
 
     def process_batch(self, repositories: list[dict[str, str]]) -> dict[str, list[str]]:
-        """Process multiple repositories.
+        """Process multiple repositories concurrently.
 
         Args:
             repositories: List of repository configurations
@@ -259,23 +263,47 @@ class RepomixBatchProcessor:
         """
         results = {"success": [], "failed": []}
 
+        # Filter valid repositories first
+        valid_repos = []
         for repo in repositories:
-            repo_path = repo.get("path")
-            if not repo_path:
+            if not repo.get("path"):
                 results["failed"].append("Missing 'path' in repository config")
-                continue
-
-            output_name = repo.get("output")
-            is_remote = repo.get("remote", False)
-
-            success, message = self.process_repository(
-                repo_path, output_name, is_remote
-            )
-
-            if success:
-                results["success"].append(message)
             else:
-                results["failed"].append(message)
+                valid_repos.append(repo)
+
+        if not valid_repos:
+            return results
+
+        # Process valid repositories concurrently
+        # Use min(len(valid_repos), 10) to bound the number of concurrent subprocesses
+        # and prevent overwhelming the system resources when processing many repos.
+        max_workers = min(len(valid_repos), 10)
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            future_to_repo = {}
+            for repo in valid_repos:
+                repo_path = repo.get("path")
+                output_name = repo.get("output")
+                is_remote = repo.get("remote", False)
+
+                future = executor.submit(
+                    self.process_repository,
+                    repo_path,
+                    output_name,
+                    is_remote,
+                )
+                future_to_repo[future] = repo_path
+
+            for future in concurrent.futures.as_completed(future_to_repo):
+                repo_path = future_to_repo[future]
+                try:
+                    success, message = future.result()
+                    if success:
+                        results["success"].append(message)
+                    else:
+                        results["failed"].append(message)
+                except Exception as exc:
+                    results["failed"].append(f"Error processing {repo_path}: {exc}")
 
         return results
 
@@ -318,7 +346,9 @@ def main() -> int:
     # Input options
     parser.add_argument("repos", nargs="*", help="Repository paths or URLs to process")
     parser.add_argument(
-        "-f", "--file", help="JSON file containing repository configurations"
+        "-f",
+        "--file",
+        help="JSON file containing repository configurations",
     )
 
     # Output options
@@ -344,11 +374,15 @@ def main() -> int:
     parser.add_argument("--include", help="Include pattern (glob)")
     parser.add_argument("--ignore", help="Ignore pattern (glob)")
     parser.add_argument(
-        "--no-security-check", action="store_true", help="Disable security checks"
+        "--no-security-check",
+        action="store_true",
+        help="Disable security checks",
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
     parser.add_argument(
-        "--remote", action="store_true", help="Treat all repos as remote URLs"
+        "--remote",
+        action="store_true",
+        help="Treat all repos as remote URLs",
     )
 
     args = parser.parse_args()
