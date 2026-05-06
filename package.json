@@ -15,9 +15,9 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.14",
     "agnix": "0.24.0",
-    "claude-code-lint": "^0.3.0",
-    "oxfmt": "0.47.0",
-    "oxlint": "1.62.0",
+    "claude-code-lint": "^0.5.0",
+    "oxfmt": "0.48.0",
+    "oxlint": "1.63.0",
     "ultracite": "^7.4.2"
   }
 }
