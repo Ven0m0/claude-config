@@ -4,11 +4,12 @@
 from __future__ import annotations
 
 import ast
-import json
 import re
 import sys
 import textwrap
 from pathlib import Path
+
+from claude.hooks.scripts.utils import read_stdin_payload
 
 STRUCTURAL_MARKERS = {"|", "-", "*", "+", "└", "├", "│"}
 
@@ -38,7 +39,10 @@ def is_google_docstring(docstring: str) -> bool:
 
 
 def wrap_text(
-    text: str, width: int = 120, initial_indent: str = "", subsequent_indent: str = ""
+    text: str,
+    width: int = 120,
+    initial_indent: str = "",
+    subsequent_indent: str = "",
 ) -> str:
     """Wrap text intelligently, preserving code blocks, tables, and lists."""
     lines = text.split("\n")
@@ -253,9 +257,8 @@ def read_python_path() -> Path | None:
         (Path | None): Python file path when present and valid.
 
     """
-    try:
-        data = json.load(sys.stdin)
-    except Exception:
+    data = read_stdin_payload()
+    if data is None:
         return None
     file_path = data.get("tool_input", {}).get("file_path", "")
     path = Path(file_path) if file_path else None

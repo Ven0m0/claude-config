@@ -5,12 +5,13 @@ Runs lint and type checks before allowing git commits.
 Implements quality gate with lint and type-check before commit.
 """
 
-import json
 import os
 import pathlib
 import shutil
 import subprocess
 import sys
+
+from claude.hooks.scripts.utils import read_stdin_payload
 
 
 def get_staged_files(cwd: str) -> list[str]:
@@ -106,7 +107,10 @@ def check_js_ts_lint(files: list[str], cwd: str) -> tuple[bool, str]:
 
 def main() -> None:
     try:
-        data = json.load(sys.stdin)
+        data = read_stdin_payload()
+        if data is None:
+            sys.exit(0)
+
         tool_name = data.get("tool_name", "")
         tool_input = data.get("tool_input", {})
 
@@ -151,9 +155,6 @@ def main() -> None:
             print("Quality gate failed:\n" + "\n\n".join(errors), file=sys.stderr)
             sys.exit(1)
 
-    except json.JSONDecodeError:
-        # No valid input, allow the operation
-        pass
     except Exception:
         # Log error but don't block on hook failures
         pass
