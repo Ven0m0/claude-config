@@ -93,18 +93,18 @@ export default tool({
 function streamRepair(text) {
   const log = []
   const r = new IncrementalJsonRepair({ onRepair: (a, i, c) => log.push({ action: a, idx: i, ctx: c }) })
-  let out = ""
-  for (let i = 0; i < text.length; i += CHUNK) out += r.push(text.slice(i, i + CHUNK))
-  out += r.end()
-  return { result: fmt(out), repairs: log }
+  const out = []
+  for (let i = 0; i < text.length; i += CHUNK) out.push(r.push(text.slice(i, i + CHUNK)))
+  out.push(r.end())
+  return { result: fmt(out.join("")), repairs: log }
 }`
       : `
 function streamRepair(text) {
   const r = new IncrementalJsonRepair()
-  let out = ""
-  for (let i = 0; i < text.length; i += CHUNK) out += r.push(text.slice(i, i + CHUNK))
-  out += r.end()
-  return fmt(out)
+  const out = []
+  for (let i = 0; i < text.length; i += CHUNK) out.push(r.push(text.slice(i, i + CHUNK)))
+  out.push(r.end())
+  return fmt(out.join(""))
 }`;
 
     const processFn =
