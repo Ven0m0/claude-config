@@ -13,8 +13,8 @@
     "mitata": "^1.0.34"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.14",
-    "agnix": "0.24.0",
+    "@biomejs/biome": "2.4.15",
+    "agnix": "0.25.0",
     "claude-code-lint": "^0.5.0",
     "oxfmt": "0.48.0",
     "oxlint": "1.63.0",
