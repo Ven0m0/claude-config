@@ -8,7 +8,7 @@
       },
       "devDependencies": {
         "@biomejs/biome": "2.4.16",
-        "agnix": "0.29.0",
+        "agnix": "0.30.0",
         "claude-code-lint": "^0.5.0",
         "oxfmt": "0.53.0",
         "oxlint": "1.68.0",
@@ -127,7 +127,7 @@
 
     "@types/unist": ["@types/unist@2.0.11", "", {}, "sha512-CmBKiL6NNo/OqgmMn95Fk9Whlp2mtvIv+KNpQKN2F4SjvrEesubTRWGYSg+BnWZOnlCaSTU1sMpsBOzgbYhnsA=="],
 
-    "agnix": ["agnix@0.29.0", "", { "os": [ "linux", "win32", "darwin", ], "cpu": [ "x64", "arm64", ], "bin": { "agnix": "bin/agnix" } }, "sha512-Ab70zB89HvKtTYPbFRpoN5c06YPwT5Tx0mn1hHAIFgECVPQFs/0tH9toYMQresRtUahDGvB0IQ2MmOZWMAf8/Q=="],
+    "agnix": ["agnix@0.30.0", "", { "os": [ "linux", "win32", "darwin", ], "cpu": [ "x64", "arm64", ], "bin": { "agnix": "bin/agnix" } }, "sha512-sok8YyVbH83W6Wi9lOagst+zNA7tO3txBMhkqTfKIF4RvcNqLFcSu774iIIQfp5RTr803obhWSoRTmoQ2SL2PQ=="],
 
     "ansi-escapes": ["ansi-escapes@4.3.2", "", { "dependencies": { "type-fest": "^0.21.3" } }, "sha512-gKXj5ALrKWQLsYG9jlTRmR/xKluxHV+Z9QEwNIgCfM1/uwPMCuzVVnh5mwTd+OuBZcwSIMbqssNWRm1lE51QaQ=="],
 
