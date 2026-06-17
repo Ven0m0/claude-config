@@ -14,10 +14,10 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.0",
-    "agnix": "0.32.0",
+    "agnix": "0.33.1",
     "claude-code-lint": "^0.5.0",
-    "oxfmt": "0.54.0",
-    "oxlint": "1.69.0",
+    "oxfmt": "0.55.0",
+    "oxlint": "1.70.0",
     "ultracite": "^7.4.2"
   }
 }
