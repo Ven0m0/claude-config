@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.1",
-    "agnix": "0.35.0",
+    "agnix": "0.36.2",
     "claude-code-lint": "^0.5.0",
     "oxfmt": "0.56.0",
     "oxlint": "1.71.0",
