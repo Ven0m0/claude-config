@@ -188,7 +188,10 @@ class RepomixBatchProcessor:
             return False, f"Error processing {repo_path}: {e!s}"
 
     def _build_command(
-        self, repo_path: str, output_file: Path, is_remote: bool
+        self,
+        repo_path: str,
+        output_file: Path,
+        is_remote: bool,
     ) -> list[str]:
         """Build repomix command with configuration options.
 
@@ -243,6 +246,57 @@ class RepomixBatchProcessor:
         extensions = {"xml": "xml", "markdown": "md", "json": "json", "plain": "txt"}
         return extensions.get(style, "xml")
 
+    async def process_repository_async(
+        self,
+        repo_path: str,
+        output_name: str | None = None,
+        is_remote: bool = False,
+    ) -> tuple[bool, str]:
+        import asyncio
+
+        output_dir = Path(self.config.output_dir)
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        if output_name:
+            output_file = output_dir / output_name
+        else:
+            if is_remote:
+                repo_name = repo_path.rstrip("/").split("/")[-1]
+            else:
+                repo_name = Path(repo_path).name
+
+            extension = self._get_extension(self.config.style)
+            output_file = output_dir / f"{repo_name}-output.{extension}"
+
+        cmd = self._build_command(repo_path, output_file, is_remote)
+
+        try:
+            process = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+                env=self.env_vars,
+            )
+
+            try:
+                stdout, stderr = await asyncio.wait_for(
+                    process.communicate(),
+                    timeout=300,
+                )
+                stdout_str = stdout.decode("utf-8", errors="replace")
+                stderr_str = stderr.decode("utf-8", errors="replace")
+
+                if process.returncode == 0:
+                    return True, f"Successfully processed {repo_path} -> {output_file}"
+                error_msg = stderr_str or stdout_str or "Unknown error"
+                return False, f"Failed to process {repo_path}: {error_msg}"
+            except TimeoutError:
+                process.kill()
+                return False, f"Timeout processing {repo_path} (exceeded 5 minutes)"
+
+        except Exception as e:
+            return False, f"Error processing {repo_path}: {e!s}"
+
     def process_batch(self, repositories: list[dict[str, str]]) -> dict[str, list[str]]:
         """Process multiple repositories.
 
@@ -257,27 +311,40 @@ class RepomixBatchProcessor:
             Dictionary with 'success' and 'failed' lists
 
         """
-        results = {"success": [], "failed": []}
+        import asyncio
 
-        for repo in repositories:
-            repo_path = repo.get("path")
-            if not repo_path:
-                results["failed"].append("Missing 'path' in repository config")
-                continue
+        async def run_batch():
+            results = {"success": [], "failed": []}
+            tasks = []
 
-            output_name = repo.get("output")
-            is_remote = repo.get("remote", False)
+            for repo in repositories:
+                repo_path = repo.get("path")
+                if not repo_path:
+                    results["failed"].append("Missing 'path' in repository config")
+                    continue
 
-            success, message = self.process_repository(
-                repo_path, output_name, is_remote
-            )
+                output_name = repo.get("output")
+                is_remote = repo.get("remote", False)
 
-            if success:
-                results["success"].append(message)
-            else:
-                results["failed"].append(message)
+                tasks.append(
+                    self.process_repository_async(
+                        repo_path,
+                        output_name,
+                        is_remote,
+                    ),
+                )
 
-        return results
+            if tasks:
+                completed = await asyncio.gather(*tasks)
+                for success, message in completed:
+                    if success:
+                        results["success"].append(message)
+                    else:
+                        results["failed"].append(message)
+
+            return results
+
+        return asyncio.run(run_batch())
 
 
 def load_repositories_from_file(file_path: str) -> list[dict[str, str]]:
@@ -318,7 +385,9 @@ def main() -> int:
     # Input options
     parser.add_argument("repos", nargs="*", help="Repository paths or URLs to process")
     parser.add_argument(
-        "-f", "--file", help="JSON file containing repository configurations"
+        "-f",
+        "--file",
+        help="JSON file containing repository configurations",
     )
 
     # Output options
@@ -344,11 +413,15 @@ def main() -> int:
     parser.add_argument("--include", help="Include pattern (glob)")
     parser.add_argument("--ignore", help="Ignore pattern (glob)")
     parser.add_argument(
-        "--no-security-check", action="store_true", help="Disable security checks"
+        "--no-security-check",
+        action="store_true",
+        help="Disable security checks",
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
     parser.add_argument(
-        "--remote", action="store_true", help="Treat all repos as remote URLs"
+        "--remote",
+        action="store_true",
+        help="Treat all repos as remote URLs",
     )
 
     args = parser.parse_args()
