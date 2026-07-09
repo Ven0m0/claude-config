@@ -1,10 +1,10 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "github-copilot/gpt-5",
-  "small_model": "github-copilot/gpt-5-mini",
+  "model": "opencode/minimax-m3-free",
+  "small_model": "opencode/big-pickle",
   "agent": {
     "build": {
-      "model": "github-copilot/gpt-5.1-codex",
+      "model": "opencode/minimax-m3-free",
       "temperature": 0.1,
       "options": {
         "reasoningEffort": "high",
@@ -13,7 +13,7 @@
       }
     },
     "coder": {
-      "model": "github-copilot/gpt-5.1-codex",
+      "model": "opencode/minimax-m3-free",
       "temperature": 0.1,
       "options": {
         "reasoningEffort": "medium",
@@ -22,7 +22,7 @@
       }
     },
     "explore": {
-      "model": "github-copilot/gpt-5.1-codex-mini",
+      "model": "opencode/nemotron-3-ultra-free",
       "temperature": 0.1,
       "options": {
         "reasoningEffort": "low",
@@ -30,7 +30,7 @@
       }
     },
     "plan": {
-      "model": "github-copilot/gpt-5",
+      "model": "opencode/qwen3.6-plus-free",
       "temperature": 0.2,
       "options": {
         "reasoningEffort": "high",
@@ -54,7 +54,7 @@
       }
     },
     "scribe": {
-      "model": "github-copilot/gpt-5-mini",
+      "model": "opencode/big-pickle",
       "temperature": 0.5,
       "options": {
         "reasoningEffort": "low",
@@ -63,10 +63,7 @@
     }
   },
   "default_agent": "build",
-  "instructions": [
-    "AGENTS.md",
-    "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"
-  ],
+  "instructions": ["AGENTS.md", "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"],
   "mcp": {
     "github-mcp-server": {
       "type": "remote",
@@ -76,7 +73,6 @@
       "timeout": 30000,
       "headers": {
         "Authorization": "Bearer {env:GITHUB_TOKEN}",
-        "X-MCP-Insiders": "true",
         "X-MCP-Toolsets": "default,actions,web_search,code_security,copilot,dependabot,git,secret_protection,security_advisories,stargazers,github_support_docs_search,labels,gists"
       }
     },
@@ -86,9 +82,7 @@
       "enabled": true,
       "oauth": false,
       "timeout": 30000,
-      "headers": {
-        "x-ref-api-key": "{env:REF_API_KEY}"
-      }
+      "headers": { "x-ref-api-key": "{env:REF_API_KEY}" }
     },
     "exa": {
       "type": "remote",
@@ -107,7 +101,6 @@
       "timeout": 30000
     }
   },
-  "share": "manual",
   "permission": {
     "*": "allow",
     "sudo *": "deny",
@@ -119,10 +112,17 @@
     "doom_loop": "deny"
   },
   "plugin": [
-    "oh-my-opencode@3.16.0",
+    "openslimedit@1.0.4",
+    "@bastiangx/opencode-unmoji@0.3.12",
+    "superpowers@git+https://github.com/obra/superpowers.git",
+    "@morphllm/opencode-morph-plugin@2.0.9",
+    "@openspoon/subtask2@0.3.9",
+    "@tarquinen/opencode-dcp@3.1.9",
     "opencode-image-compress@0.3.2",
     "opencode-ignore@1.1.0",
     "opencode-pty@0.3.2",
+    "opencode-agent-skills@0.6.5",
+    "@gotgenes/opencode-agent-identity@3.0.1",
     "opencode-session-handoff@1.1.6",
     "opencode-websearch@0.5.0"
   ],
@@ -214,6 +214,12 @@
     "openTelemetry": false,
     "batch_tool": true
   },
+  "compaction": {
+    "auto": true,
+    "prune": true
+  },
+  "share": "manual",
+  "autoupdate": "notify",
   "watcher": {
     "ignore": [
       "node_modules/**",
