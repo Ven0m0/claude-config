@@ -124,7 +124,8 @@
     "opencode-agent-skills@0.6.5",
     "@gotgenes/opencode-agent-identity@3.0.1",
     "opencode-session-handoff@1.1.6",
-    "opencode-websearch@0.5.0"
+    "opencode-websearch@0.5.0",
+    "@kilocode/kilo-indexing@latest"
   ],
   "lsp": {
     "typescript": {
