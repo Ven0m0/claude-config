@@ -1,13 +1,11 @@
 {
   "$schema": "https://app.kilo.ai/config.json",
-  "instructions": [".kilo/rules/*.md", "AGENTS.md", ".github/instructions/*.md"],
-  "skills": {
-    "paths": [".kilo/skills", ".kilo/skill", ".opencode/skills", ".claude/skills"]
-  },
+  "instructions": [".kilo/rules/*.md", "AGENTS.md"],
+  "skills": { "paths": [".kilo/skills", ".claude/skills"] },
   "permission": {
     "*": "allow",
     "read": { "*.env": "deny", "*.lock": "deny", "*": "allow" },
-    "edit": { "dist/**": "deny", "*.lock": "deny", "*": "allow" },
+    "edit": { "*.lock": "deny", "*": "allow" },
     "sudo *": "deny",
     "rm -rf /": "deny",
     "rm -rf /*": "deny",
@@ -16,62 +14,88 @@
     ":(){:|:&};:": "deny",
     "doom_loop": "deny"
   },
-  "disabled_providers": ["openai", "google"],
+  "agent": {
+    "compaction": { "model": "kilo-auto/free" }
+  },
+  "provider": {
+    "openai": {
+      "options": { "apiKey": "{env:OPENAI_API_KEY}" }
+    },
+    "anthropic": {
+      "options": { "apiKey": "{env:ANTHROPIC_API_KEY}" }
+    }
+  },
+  "disabled_providers": ["openai", "google", "anthropic"],
   "plugin": [
     "opencode-ignore@1.1.0",
-    "opencode-agent-skills@0.6.5",
-    "opencode-websearch@0.5.0",
-    "openslimedit@1.0.4",
-    "opencode-agent-skills",
+    "@bastiangx/opencode-unmoji@0.3.12",
     "@gotgenes/opencode-agent-identity@3.0.1",
-    "github:joshuadavidthomas/opencode-agent-memory",
-    "github:kdcokenny/opencode-background-agents",
-    "github:spoons-and-mirrors/subtask2",
-    "opencode-pty@0.3.2"
+    "opencode-agent-skills@0.6.5",
+    "@openspoon/subtask2@0.3.9",
+    "@tarquinen/opencode-dcp@3.1.9",
+    "opencode-session-handoff@1.1.6",
+    "opencode-websearch@0.5.0",
+    "superpowers@git+https://github.com/obra/superpowers.git",
+    "kilo-tools@git+https://github.com/Ven0m0/claude-config.git"
   ],
   "formatter": {
     "biome": {
-      "command": ["npx", "-y", "@biomejs/biome", "check", "--write", "--format-with-errors=true", "$FILE"],
-      "extensions": [".json", ".js"]
+      "command": [
+        "npx",
+        "-y",
+        "@biomejs/biome",
+        "check",
+        "--write",
+        "--format-with-errors=true",
+        "$FILE"
+      ],
+      "extensions": [".json", ".jsonc", ".js", ".ts"]
     },
     "ruff": {
-      "command": ["uv", "run", "ruff", "format", "$FILE"],
-      "extensions": [".py", ".pyi"]
+      "command": ["uvx", "ruff", "format", "$FILE"],
+      "extensions": [".py", ".pyi", ".pyc"]
     }
   },
-  "watcher": { "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**", "__pycache__/**", ".ruff_cache/**"] },
+  "watcher": {
+    "ignore": [
+      "node_modules/**",
+      "dist/**",
+      ".git/**",
+      ".venv/**",
+      "__pycache__/**",
+      ".ruff_cache/**"
+    ]
+  },
   "mcp": {
     "ref-tools": {
       "type": "remote",
       "url": "https://api.ref.tools/mcp",
       "enabled": true
     },
+    "grep": {
+      "type": "remote",
+      "url": "https://mcp.grep.app",
+      "enabled": true
+    },
     "context7": {
       "type": "remote",
       "url": "https://mcp.context7.com/mcp",
       "headers": { "Authorization": "Bearer {env:CONTEXT7_API_KEY}" },
-      "enabled": false
+      "enabled": true
     },
     "github": {
       "type": "remote",
       "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer {env:GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
       "enabled": true
-    },
-    "gh_grep": {
-      "type": "remote",
-      "url": "https://mcp.grep.app",
-      "enabled": false
     },
     "exa": {
       "type": "remote",
       "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
       "enabled": true,
       "headers": { "x-api-key": "{env:EXA_API_KEY}" }
-    },
-    "fast-filesystem": {
-      "type": "local",
-      "command": ["npx", "-y", "fast-filesystem@latest"],
-      "enabled": false
     },
     "serena": {
       "type": "local",
@@ -85,21 +109,11 @@
         "ide",
         "--project-from-cwd"
       ],
-      "enabled": false
+      "enabled": true
     },
     "octocode": {
       "type": "local",
       "command": ["npx", "-y", "octocode-mcp@latest"],
-      "enabled": true
-    },
-    "playwright": {
-      "type": "local",
-      "command": ["npx", "-y", "@playwright/mcp@latest", "--headless"],
-      "enabled": false
-    },
-    "gitnexus": {
-      "type": "local",
-      "command": ["npx", "-y", "gitnexus@latest", "mcp"],
       "enabled": true
     }
   },
@@ -108,17 +122,43 @@
       "command": ["basedpyright-langserver", "--stdio"],
       "extensions": [".py", ".pyw", ".pyi"]
     },
-    "ty": {
-      "command": ["ty", "check"],
-      "extensions": [".py", ".pyw", ".pyi"]
-    },
     "bash": {
       "command": ["bash-language-server", "start"],
-      "extensions": [".sh", ".bash", ".zsh"]
+      "extensions": [".sh", ".bash", ".zsh", ".ksh"]
     },
     "vtsls": {
       "command": ["vtsls", "--stdio"],
-      "extensions": [".ts", ".tsx", ".js", ".jsx", ".mjs", ".mts"]
+      "extensions": [
+        ".js",
+        ".jsx",
+        ".ts",
+        ".tsx",
+        ".mjs",
+        ".cjs",
+        ".mts",
+        ".cts"
+      ],
+      "initialization": {
+        "preferences": { "importModuleSpecifierPreference": "relative" }
+      }
+    },
+    "rust": {
+      "command": ["rust-analyzer"],
+      "extensions": [".rs"]
+    },
+    "eslint": {
+      "command": ["vscode-eslint-language-server", "--stdio"],
+      "extensions": [
+        ".js",
+        ".jsx",
+        ".mjs",
+        ".cjs",
+        ".ts",
+        ".tsx",
+        ".vue",
+        ".svelte",
+        ".astro"
+      ]
     },
     "yaml-ls": {
       "command": ["yaml-language-server", "--stdio"],
@@ -131,6 +171,28 @@
     "tombi": {
       "command": ["tombi", "lsp"],
       "extensions": [".toml"]
+    },
+    "dockerfile-ls": {
+      "command": ["docker-langserver", "--stdio"],
+      "extensions": [".dockerfile"]
+    },
+    "html-ls": {
+      "command": ["vscode-html-language-server", "--stdio"],
+      "extensions": [".html", ".htm"]
+    },
+    "css-ls": {
+      "command": ["vscode-css-language-server", "--stdio"],
+      "extensions": [".css", ".scss", ".less"]
+    },
+    "powershell": {
+      "command": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-Command",
+        "$module = Get-Module -ListAvailable PowerShellEditorServices | Sort-Object Version -Descending | Select-Object -First 1; if (-not $module) { throw 'PowerShellEditorServices is not installed. Run: Install-Module -Name PowerShellEditorServices -Scope CurrentUser' }; Import-Module $module.Path; Start-EditorServices -HostName 'Claude Code' -HostProfileId 'ClaudeCode' -HostVersion '1.0.0' -Stdio -BundledModulesPath (Split-Path $module.Path) -LogPath '/dev/null' -LogLevel 'None' -EnableConsoleRepl"
+      ],
+      "extensions": [".ps1", ".psm1", ".psd1"]
     }
   },
   "compaction": { "auto": true, "prune": true },
