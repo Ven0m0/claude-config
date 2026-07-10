@@ -146,20 +146,6 @@
       "command": ["rust-analyzer"],
       "extensions": [".rs"]
     },
-    "eslint": {
-      "command": ["vscode-eslint-language-server", "--stdio"],
-      "extensions": [
-        ".js",
-        ".jsx",
-        ".mjs",
-        ".cjs",
-        ".ts",
-        ".tsx",
-        ".vue",
-        ".svelte",
-        ".astro"
-      ]
-    },
     "yaml-ls": {
       "command": ["yaml-language-server", "--stdio"],
       "extensions": [".yaml", ".yml"]
@@ -190,7 +176,7 @@
         "-NoLogo",
         "-NoProfile",
         "-Command",
-        "$module = Get-Module -ListAvailable PowerShellEditorServices | Sort-Object Version -Descending | Select-Object -First 1; if (-not $module) { throw 'PowerShellEditorServices is not installed. Run: Install-Module -Name PowerShellEditorServices -Scope CurrentUser' }; Import-Module $module.Path; Start-EditorServices -HostName 'Claude Code' -HostProfileId 'ClaudeCode' -HostVersion '1.0.0' -Stdio -BundledModulesPath (Split-Path $module.Path) -LogPath '/dev/null' -LogLevel 'None' -EnableConsoleRepl"
+        "$module = Get-Module -ListAvailable PowerShellEditorServices | Sort-Object Version -Descending | Select-Object -First 1; if (-not $module) { throw 'PowerShellEditorServices is not installed. Run: Install-Module -Name PowerShellEditorServices -Scope CurrentUser' }; Import-Module $module.Path; Start-EditorServices -HostName 'kilo' -HostProfileId 'kilo' -HostVersion '1.0.0' -Stdio -BundledModulesPath (Split-Path $module.Path) -LogPath '/dev/null' -LogLevel 'None' -EnableConsoleRepl"
       ],
       "extensions": [".ps1", ".psm1", ".psd1"]
     }
