@@ -116,6 +116,12 @@
       "groupName": "Pre-commit hooks",
       "groupSlug": "pre-commit-hooks"
     },
+		{
+			"description": "Group mise tool updates",
+			"matchManagers": ["mise"],
+			"groupName": "mise tools",
+			"groupSlug": "mise-tools"
+		},
     {
       "description": "Group UV tool updates",
       "matchPackageNames": ["astral-sh/uv"],
