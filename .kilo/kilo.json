@@ -1,6 +1,6 @@
 {
   "$schema": "https://app.kilo.ai/config.json",
-  "instructions": [".kilo/rules/*.md", "AGENTS.md"],
+  "instructions": [".kilo/rules/*.md", "AGENTS.md", ".claude/rules/*.md"],
   "skills": { "paths": [".kilo/skills", ".claude/skills"] },
   "permission": {
     "*": "allow",
