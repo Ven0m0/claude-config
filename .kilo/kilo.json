@@ -33,8 +33,6 @@
     "opencode-agent-skills@0.6.5",
     "@openspoon/subtask2@0.3.9",
     "@tarquinen/opencode-dcp@3.1.9",
-    "opencode-session-handoff@1.1.6",
-    "opencode-websearch@0.5.0",
     "superpowers@git+https://github.com/obra/superpowers.git",
     "kilo-tools@git+https://github.com/Ven0m0/claude-config.git"
   ],
@@ -75,7 +73,7 @@
     "grep": {
       "type": "remote",
       "url": "https://mcp.grep.app",
-      "enabled": true
+      "enabled": false
     },
     "context7": {
       "type": "remote",
