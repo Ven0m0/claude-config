@@ -1,24 +1,22 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended",
+    "config:best-practices",
     ":configMigration",
-    ":preserveSemverRanges",
     "abandonments:recommended",
     "group:all",
     "packages:linters",
     "schedule:weekly",
-    ":dependencyDashboard",
-    ":automergeBranch",
     ":automergeMinor",
     ":ignoreModulesAndTests",
     "docker:enableMajor",
     "preview:dockerCompose",
-    ":enablePreCommit"
+    ":enablePreCommit",
+    ":preserveSemverRanges"
   ],
   "automerge": true,
+  "automergeStrategy": "squash",
   "forkProcessing": "enabled",
-  "ignoreTests": true,
   "abandonmentThreshold": "2 years",
   "lockFileMaintenance": {
     "enabled": true,
@@ -27,63 +25,117 @@
   },
   "labels": ["dependencies"],
   "timezone": "Europe/Berlin",
-  "cargo": {
-    "rangeStrategy": "update-lockfile"
+  "platformAutomerge": true,
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 0,
+  "rangeStrategy": "bump",
+  "constraints": {
+    "python": "<3.15"
   },
-  "postUpdateOptions": ["yarnDedupeHighest", "gomodTidy", "pnpmDedupe"],
+  "pre-commit": {
+    "enabled": true
+  },
+  "pep621": {
+    "enabled": true
+  },
+  "pep723": {
+    "enabled": true,
+    "managerFilePatterns": ["scripts/update_snapshot_and_defaults.py"]
+  },
+  "pip_requirements": {
+    "enabled": false
+  },
+  "poetry": {
+    "enabled": false
+  },
+  "pipenv": {
+    "enabled": false
+  },
+  "npm": {
+    "managerFilePatterns": ["/.kilo/package.json/", "kilo-tools/package.json/"]
+  },
+  "postUpdateOptions": ["uvLockUpdate"],
   "packageRules": [
     {
-      "description": "Require dashboard approval for 0.x major bumps",
-      "matchCurrentVersion": "/^0/",
-      "matchUpdateTypes": ["major"],
-      "dependencyDashboardApproval": true,
-      "automerge": false
+      "description": "Allow Python Docker images >=3.13 but exclude 3.14.x series",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["python"],
+      "pinDigests": false,
+      "allowedVersions": ">=3.14 <3.15"
+    },
+    {
+      "description": "Allow any Python version >=3.14 but exclude 3.15.x series",
+      "matchManagers": ["pep621"],
+      "matchPackageNames": ["python"],
+      "matchDepTypes": ["requires-python"],
+      "allowedVersions": "<3.15"
+    },
+    {
+      "description": "Restrict mise Python to 3.14.x, exclude 3.15+",
+      "matchManagers": ["mise"],
+      "matchPackageNames": ["python"],
+      "allowedVersions": "3.14.x"
+    },
+    {
+      "description": "Restrict Python version to exclude 3.15+ for pyenv, pep723 and custom managers",
+      "matchManagers": ["pyenv", "pep723", "custom.regex", "mise"],
+      "matchPackageNames": ["python"],
+      "allowedVersions": "<3.15"
+    },
+    {
+      "description": "Disable Docker digest pinning",
+      "matchDatasources": ["docker"],
+      "pinDigests": false
+    },
+    {
+      "description": "Disable GitHub Actions digest pinning",
+      "matchManagers": ["github-actions"],
+      "pinDigests": false
     },
     {
       "description": "Automerge linters at any time, bypassing weekly schedule",
       "matchCategories": ["linters"],
-      "schedule": ["at any time"]
+      "schedule": ["at any time"],
+      "automerge": true
+    },
+    {
+      "description": "Group Python dependencies together",
+      "matchDatasources": ["pypi"],
+      "groupName": "Python dependencies",
+      "groupSlug": "python-deps"
+    },
+    {
+      "description": "Group GitHub Actions updates",
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions",
+      "groupSlug": "github-actions"
+    },
+    {
+      "description": "Group pre-commit hooks updates",
+      "matchManagers": ["pre-commit"],
+      "groupName": "Pre-commit hooks",
+      "groupSlug": "pre-commit-hooks"
+    },
+		{
+			"description": "Group mise tool updates",
+			"matchManagers": ["mise"],
+			"groupName": "mise tools",
+			"groupSlug": "mise-tools"
+		},
+    {
+      "description": "Group UV tool updates",
+      "matchPackageNames": ["astral-sh/uv"],
+      "groupName": "UV tool",
+      "groupSlug": "uv-tool"
     }
   ],
   "customManagers": [
     {
-      "customType": "jsonata",
-      "datasourceTemplate": "npm",
-      "depNameTemplate": "@biomejs/biome",
-      "fileFormat": "json",
-      "managerFilePatterns": ["**/biome.{json,jsonc}"],
-      "matchStrings": ["{\"currentValue\": $split($.\"$schema\",(\"/\"))[-2]}"]
-    },
-    {
       "customType": "regex",
-      "managerFilePatterns": [
-        "**/[Dd]ockerfile*",
-        "**/[Cc]ontainerfile*",
-        "**/*.[Dd]ockerfile*",
-        "**/*.[Cc]ontainerfile*"
-      ],
+      "managerFilePatterns": ["**/.github/workflows/*.yml", "**/.github/workflows/*.yaml"],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)(?: (lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?\\s(?:ENV|ARG)\\s+[A-Za-z0-9_]+?_VERSION[ =][\"']?(?<currentValue>.+?)[\"']?\\s"
+        "# renovate: datasource=(?<datasource>[^\\s]+) depName=(?<depName>[^\\s]+)(?: version=[^\\s]+)?\\s+[A-Za-z0-9_]+_VERSION:\\s*['\"]?(?<currentValue>[^'\"\\s]+)['\"]?"
       ]
-    },
-    {
-      "customType": "regex",
-      "managerFilePatterns": [
-        "/(^|/)(workflow-templates|\\.(?:github|gitea|forgejo)/(?:workflows|actions))/.+\\.ya?ml$/",
-        "/(^|/)action\\.ya?ml$/"
-      ],
-      "datasourceTemplate": "github-tags",
-      "matchStrings": [
-        "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?\\s+[A-Za-z0-9_]+?_VERSION\\s*:\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
-      ]
-    },
-    {
-      "autoReplaceStringTemplate": "\"@tsconfig/node{{{major}}}/tsconfig.json\"",
-      "currentValueTemplate": "{{{major}}}",
-      "customType": "regex",
-      "datasourceTemplate": "npm",
-      "managerFilePatterns": ["**/{j,t}sconfig.json", "**/{j,t}sconfig.*.json"],
-      "matchStrings": ["\"(?<depName>@tsconfig/node(?<major>\\d+))/tsconfig\\.json\""]
     }
   ]
 }

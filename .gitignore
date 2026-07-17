@@ -6,6 +6,7 @@
 .mcp.json
 .claudelint-cache
 **/.claudelint-cache
+.codegraph
 
 # API keys and secrets
 .claude/settings/api_settings.json

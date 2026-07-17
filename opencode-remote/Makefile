@@ -76,24 +76,45 @@ status:
 	@echo "Systemd services:"
 	@systemctl is-active openchamber 2>/dev/null && echo "  openchamber: active" || echo "  openchamber: inactive"
 	@systemctl is-active cloudflared-openchamber 2>/dev/null && echo "  cloudflared-openchamber: active" || echo "  cloudflared-openchamber: inactive"
+	@echo ""
+	@echo "PM2 services:"
+	@if command -v pm2 >/dev/null 2>&1; then pm2 list; else echo "  pm2 not installed"; fi
 
 restart:
 	@if docker compose ps -q 2>/dev/null | grep -q .; then \
 	  docker compose restart; \
+	elif command -v pm2 >/dev/null 2>&1 && pm2 list | grep -q "openchamber"; then \
+	  pm2 restart openchamber cloudflared-openchamber; \
 	else \
 	  systemctl restart openchamber cloudflared-openchamber 2>/dev/null || echo "No services running"; \
 	fi
 
-# ── Local / systemd targets ───────────────────────────────────────────────────
+# ── Local / systemd / PM2 targets ─────────────────────────────────────────────
 
 start:
-	systemctl start openchamber cloudflared-openchamber
+	@if command -v pm2 >/dev/null 2>&1 && pm2 list | grep -q "openchamber"; then \
+	  pm2 start openchamber cloudflared-openchamber; \
+	else \
+	  systemctl start openchamber cloudflared-openchamber; \
+	fi
 
 stop:
-	systemctl stop openchamber cloudflared-openchamber
+	@if command -v pm2 >/dev/null 2>&1 && pm2 list | grep -q "openchamber"; then \
+	  pm2 stop openchamber cloudflared-openchamber; \
+	else \
+	  systemctl stop openchamber cloudflared-openchamber; \
+	fi
 
 enable:
-	systemctl enable openchamber cloudflared-openchamber
+	@if command -v pm2 >/dev/null 2>&1 && pm2 list | grep -q "openchamber"; then \
+	  pm2 save; \
+	else \
+	  systemctl enable openchamber cloudflared-openchamber; \
+	fi
 
 disable:
-	systemctl disable openchamber cloudflared-openchamber
+	@if command -v pm2 >/dev/null 2>&1 && pm2 list | grep -q "openchamber"; then \
+	  echo "PM2 services are always enabled if started. Use 'pm2 delete' to remove."; \
+	else \
+	  systemctl disable openchamber cloudflared-openchamber; \
+	fi

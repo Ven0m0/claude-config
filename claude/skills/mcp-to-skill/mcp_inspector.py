@@ -13,10 +13,8 @@ import argparse
 import asyncio
 import json
 import subprocess
-import sys
 import tempfile
 from pathlib import Path
-from typing import Optional
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
@@ -36,7 +34,8 @@ def detect_package(command: str) -> str | None:
 
 
 def fetch_source(
-    package: str | None, local_path: str | None = None,
+    package: str | None,
+    local_path: str | None = None,
 ) -> str | None:
     """拉取 MCP server 源码。失败返回 None，不抛出异常。
     优先级：local_path > npm pack > 返回 None
@@ -127,7 +126,8 @@ def main():
     )
     parser.add_argument("command", nargs="?", help="MCP server 启动命令")
     parser.add_argument(
-        "--schema-json", help="已有 tool schema JSON 文件路径（跳过 MCP 连接）",
+        "--schema-json",
+        help="已有 tool schema JSON 文件路径（跳过 MCP 连接）",
     )
     parser.add_argument("--server-name", help="覆盖 server 名称")
     parser.add_argument(
@@ -139,7 +139,7 @@ def main():
 
     # 模式 1：直接使用 schema JSON
     if args.schema_json:
-        with Path(args.schema_json).open() as f:
+        with Path(args.schema_json).open(encoding="utf-8") as f:
             tools = json.load(f)
         result = {
             "server_name": args.server_name or "unknown",
@@ -177,7 +177,7 @@ def main():
 
 def _write_output(result: dict, output_path: str):
     """写入 inspector.json 并打印摘要。"""
-    with Path(output_path).open("w") as f:
+    with Path(output_path).open("w", encoding="utf-8") as f:
         json.dump(result, f, indent=2, ensure_ascii=False)
     tool_count = len(result["tools"])
     src = result["source_path"] or "（无源码）"

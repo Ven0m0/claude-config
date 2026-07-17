@@ -2,10 +2,7 @@
 """Bash formatting logic using Prettier."""
 
 import subprocess
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from pathlib import Path
+from pathlib import Path
 
 
 def format_bash_with_prettier(temp_dir: Path) -> None:

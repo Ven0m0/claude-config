@@ -6,7 +6,7 @@ _Preferred CLI tools with specific use cases_
 - **Text Search**: Use `rg` over `grep` - faster, respects .gitignore, better output formatting
 - **Code Structure Search**: Use `ast-grep` for finding specific code patterns (classes, functions, interfaces)
 - **Semantic Code Navigation**: Use LSP operations (goToDefinition, findReferences) for symbol navigation and refactoring - see LSP Enforcement below
-- **Data Processing**: Use `jq -c` for JSON parsing/manipulation, `yq` for YAML/XML
+- **Data Processing**: Use `jq -c` for JSON parsing and manipulation, `yq` for YAML/XML
 - **File Listing**: Use `eza` over `ls` - better formatting, git integration, tree views
 - **File Viewing**: Use `bat` over `cat` - syntax highlighting, line numbers, git integration
 - **Text Processing**: Use `sed` for stream editing, `awk` for pattern scanning and processing
@@ -27,9 +27,9 @@ _Language Server Protocol for safe code operations_
 
 - **Symbol navigation**: LSP goToDefinition (not grep)
 - **Find all usages**: LSP findReferences (not grep)
-- **Type info/docs**: LSP hover (not reading multiple files)
+- **Type info and docs**: LSP hover (not reading multiple files)
 - **File structure**: LSP documentSymbol (not grep)
-- **Call graphs**: LSP incomingCalls/outgoingCalls (not grep)
+- **Call graphs**: LSP incomingCalls and outgoingCalls (not grep)
 - **Literal text search**: Grep (TODOs, strings, config)
 - **File patterns**: Glob (discovering files by name)
 
@@ -66,7 +66,7 @@ _Universal principles for writing quality code_
 - **Naming**: Use descriptive, self-documenting names. Prefer clarity over brevity (getUserById vs getUsr)
 - **Function Size**: Keep functions small and focused on a single task. Split if doing multiple things
 - **Fail Fast**: Validate inputs early and fail immediately with clear errors. Don't let invalid data propagate
-- **Security**: Never log/commit secrets, validate all inputs, redact sensitive data in logs
+- **Security**: Never log or commit secrets, validate all inputs, redact sensitive data in logs
 - **Imports**: Group (stdlib -> third-party -> local), sort alphabetically within groups
 - **Error Handling**: Handle errors gracefully with meaningful, actionable messages
 - **Comments**: Explain "why" decisions were made, not "what" the code does
@@ -95,7 +95,7 @@ Agents live in `claude/agents/`. Delegate via `Task(subagent_type="agent-name", 
 | Agent                                                          | When to use                                                                                        |
 | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | general-purpose                                                | Default; complex multi-step tasks, delegation                                                      |
-| code-simplifier                                                | Simplify/refine code without changing behavior                                                     |
+| code-simplifier                                                | Simplify or refine code without changing behavior                                                  |
 | janitor                                                        | Cleanup, tech debt, dead code removal (includes safety rules for framework preservation)           |
 | merge-supervisor                                               | Git merge conflict resolution                                                                      |
 | code-explorer                                                  | Trace execution, find patterns, map architecture (has feature-tracing and pattern-discovery modes) |
@@ -103,7 +103,7 @@ Agents live in `claude/agents/`. Delegate via `Task(subagent_type="agent-name", 
 | bash-pro, python-pro, javascript-pro, typescript-pro, rust-pro | Language-specific implementation                                                                   |
 | mcp-expert                                                     | MCP server config and integration                                                                  |
 | dx-optimizer                                                   | Dev experience, tooling, workflow setup                                                            |
-| llm-boost                                                      | LLM optimization: CLAUDE.md audit, skill/agent improvement, markdown compression                   |
+| llm-boost                                                      | LLM optimization: CLAUDE.md audit, skill and agent improvement, markdown compression               |
 | prd                                                            | Product requirements document                                                                      |
 | reverse-engineer                                               | Binary analysis, RE toolchains, security research                                                  |
 | turbo                                                          | Maximum speed, parallelize everything                                                              |
@@ -115,11 +115,11 @@ Agents live in `claude/agents/`. Delegate via `Task(subagent_type="agent-name", 
 ## Workflow and doc optimization
 
 - **Large markdown**: Use **markdown-optimizer** agent for token-heavy docs (e.g. long reference files).
-- **Data format (ZON/TOON/PLOON)**: Use **toon-formatter** skill for token-saving formats; see `claude/docs/toon.md`.
+- **Data format (ZON, TOON, PLOON)**: Use **toon-formatter** skill for token-saving formats; see `claude/docs/toon.md`.
 - **Model parameters**: Evidence-based tuning by task type in `claude/docs/llm-tuning.md`.
 - **MCP without context bloat**: Use **mcp-mode** skill for many-tool servers; see `claude/rules/mcp.md`.
 - **Skill token efficiency**: **skill-optimizer** skill (progressive disclosure, 500-line rule).
-- **Markdown consistency**: **manage-markdown-docs** skill for non-SKILL/agent markdown (headers, footers, metadata).
+- **Markdown consistency**: **manage-markdown-docs** skill for non-SKILL and agent markdown (headers, footers, metadata).
 - **Tool substitution**: **modern-tool-substitution** skill (fd, rg, bun, uv in generated code); aligns with Tool Preferences above.
 - **Hooks**: **hooks-configuration** skill for hook lifecycle and config; see `claude/docs/hooks.md`.
 - **TOON reference**: **ref-toon-format**, **use-toon** skills; `claude/docs/toon.md`; `claude/scripts/validate-toon.py`.
@@ -137,7 +137,7 @@ _How to request changes effectively_
 
 When requesting changes, specify: (1) the action verb, (2) the target file or component, (3) the expected behavior.
 
-Example: instead of "fix the bug", say "fix the null pointer in src/api/handler.py when user.email is missing".
+Example: instead of "fix the bug", say "fix the null pointer in the auth handler when user.email is missing".
 
 ## Progressive Disclosure
 

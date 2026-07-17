@@ -292,6 +292,14 @@ function isMcpResultShape(output: unknown): output is { content: Array<Record<st
   );
 }
 
+export interface ContextData {
+  files: string[];
+}
+
+export function formatContext(context: ContextData): string {
+  return `\n\nContext:\n${context.files.join('\n')}`;
+}
+
 export const OpenCodeContextShieldPlugin: Plugin = async ({ directory }) => {
   return {
     'tool.execute.before': async (input, output) => {

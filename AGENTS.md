@@ -12,8 +12,7 @@ Primary areas:
 - `claude/agents/` - agent definitions
 - `claude/skills/` - reusable skills and supporting files
 - `claude/hooks/` - Python, shell, and JS hook scripts
-- `plugins/` - installable plugins with their own validation paths
-- `cursor/rules/` - Cursor rules that should be preserved
+- `.github/skills/` - GitHub Copilot skills
 - `.github/copilot-instructions.md` - Copilot-specific companion guide
 
 ## Instruction Priority
@@ -38,7 +37,7 @@ Primary areas:
 ## Preferred Tooling
 
 - Python: `uv`, `ruff`, `pytest`
-- JavaScript/TypeScript: `bun`, `bunx`, `@biomejs/biome`
+- JavaScript/TypeScript: `bun`, `bunx`, `biome`
 - Shell: `shellcheck`
 - Agent docs: `claudelint`
 - File discovery: `rg --files`
@@ -104,20 +103,20 @@ Use YAML frontmatter with the required fields used throughout `claude/agents/`:
 ---
 name: agent-name
 description: One-line description for agent selection
-allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet
 ---
 ```
+
+Claude Code agents also accept `allowed-tools` to restrict the tool set.
 
 ### Skills
 
 Use this layout unless the task requires otherwise:
 
-```text
-claude/skills/skill-name/
+```
+<skill-name>/
 ├── SKILL.md
-├── examples.md        # optional
-└── references/        # optional
+└── examples.md        # optional
 ```
 
 ## Validation
@@ -141,8 +140,9 @@ uv run pytest <target>
 ### JavaScript / TypeScript
 
 ```bash
-bunx @biomejs/biome check <paths>
-bun run tsc --noEmit
+bun run lint:biome
+bun run lint:biome:fix
+bunx tsc --noEmit
 ```
 
 ### Shell
@@ -154,12 +154,7 @@ shellcheck <path-to-script>
 ### Common Targeted Test Commands
 
 ```bash
-uv run pytest plugins/conserve/tests/
-uv run pytest plugins/prompt-improver/tests/
-bats plugins/dependency-blocker/tests/test-bash-validate.bats
-node plugins/plugin-validator/test.js
-make -C plugins/conserve test
-make -C plugins/dependency-blocker test
+uv run pytest <plugin-dir>/tests/
 ```
 
 ## AI Config Maintenance

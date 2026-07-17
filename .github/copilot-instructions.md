@@ -11,8 +11,7 @@ Main areas:
 - `claude/agents/`
 - `claude/skills/`
 - `claude/hooks/`
-- `plugins/`
-- `cursor/rules/`
+- `.github/skills/`
 - `AGENTS.md`
 
 ## Working Rules
@@ -69,8 +68,8 @@ Run the narrowest relevant checks for touched files.
 bun run lint:claude
 uv run ruff check <paths>
 uv run ruff format --check <paths>
-bunx @biomejs/biome check <paths>
-bun run tsc --noEmit
+bun run lint:biome
+bunx tsc --noEmit
 shellcheck <path-to-script>
 uv run pytest <target>
 ```

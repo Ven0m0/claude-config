@@ -1,5 +1,5 @@
 severity = "Warning"
-tools = ["claude-code", "cursor", "github-copilot", "codex", "generic", "copilot"]
+tools = ["claude-code", "generic"]
 exclude = ["node_modules/**", ".git/**", "target/**"]
 
 [rules]

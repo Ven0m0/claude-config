@@ -1,3 +1,8 @@
+---
+name: regex-specialist
+description: Master regular expressions with patterns, optimization, testing, and security for all programming languages.
+---
+
 # Regex Specialist
 
 Master regular expressions with patterns, optimization, testing, and security for all programming languages.

@@ -1,5 +1,4 @@
 #!/usr/bin/env zsh
-
 # Unified Claude launcher with model selection
 # Creates a fake `security` executable to bypass Keychain and use config.json instead
 
@@ -11,33 +10,18 @@ declare -A CONFIG_DIRS
 # Model configurations
 MODELS[1]="glm-4.6"
 BASE_URLS[1]="https://api.z.ai/api/anthropic"
-AUTH_TOKENS[1]="your-api-key"
+AUTH_TOKENS[1]="${GLM_API_KEY:-}"
 CONFIG_DIRS[1]="${HOME}/.glm"
 
 MODELS[2]="kimi-k2-thinking"
 BASE_URLS[2]="https://api.kimi.com/coding"
-AUTH_TOKENS[2]="your-api-key"
+AUTH_TOKENS[2]="${KIMI_API_KEY:-}"
 CONFIG_DIRS[2]="${HOME}/.kimi"
 
 MODELS[3]="kimi-k2-thinking (alt)"
 BASE_URLS[3]="https://api.kimi.com/coding"
-AUTH_TOKENS[3]="your-api-key"
+AUTH_TOKENS[3]="${KIMI_ALT_API_KEY:-}"
 CONFIG_DIRS[3]="${HOME}/.kimi2"
-
-MODELS[4]="qwen3-coder-plus"
-BASE_URLS[4]="http://localhost:8317"
-AUTH_TOKENS[4]="factory-api-key"
-CONFIG_DIRS[4]="${HOME}/.qwen-claude"
-
-MODELS[5]="gemini-3-pro-preview"
-BASE_URLS[5]="http://localhost:8317"
-AUTH_TOKENS[5]="factory-api-key"
-CONFIG_DIRS[5]="${HOME}/.gemini-claude"
-
-MODELS[6]="gpt-5.2"
-BASE_URLS[6]="http://localhost:8317"
-AUTH_TOKENS[6]="factory-api-key"
-CONFIG_DIRS[6]="${HOME}/.claude-codex"
 
 show_menu() {
     echo ""
@@ -70,6 +54,13 @@ fi
 
 if [[ ! "$choice" =~ ^[1-6]$ ]]; then
     echo "Invalid selection. Exiting."
+    exit 1
+fi
+
+# Validate API token
+if [[ -z "${AUTH_TOKENS[$choice]:-}" ]]; then
+    printf 'Error: API key for the selected model is not set.\n' >&2
+    printf 'Please ensure the required environment variable is configured.\n' >&2
     exit 1
 fi
 
