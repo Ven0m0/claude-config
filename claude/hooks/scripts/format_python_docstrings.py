@@ -2,11 +2,12 @@
 """Format Python docstrings in Google style without external dependencies."""
 
 import ast
-import json
 import re
 import sys
 import textwrap
 from pathlib import Path
+
+from claude.hooks.scripts.utils import read_stdin_payload
 
 STRUCTURAL_MARKERS = {"|", "-", "*", "+", "└", "├", "│"}
 
@@ -254,9 +255,8 @@ def read_python_path() -> Path | None:
         (Path | None): Python file path when present and valid.
 
     """
-    try:
-        data = json.load(sys.stdin)
-    except Exception:
+    data = read_stdin_payload()
+    if data is None:
         return None
     file_path = data.get("tool_input", {}).get("file_path", "")
     path = Path(file_path) if file_path else None
