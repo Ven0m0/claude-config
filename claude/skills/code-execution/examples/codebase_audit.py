@@ -63,7 +63,7 @@ result = {
         "large_files": len(issues["large_files"]),
     },
     "top_complexity_issues": sorted(
-        issues["high_complexity"], key=lambda x: x["complexity"], reverse=True
+        issues["high_complexity"], key=lambda x: x["complexity"], reverse=True,
     )[:5],  # Only top 5
 }
 

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Parallel.ai Monitor API - Continuous web tracking with alerts.
+"""Parallel.ai Monitor API - Continuous web tracking with alerts.
 
 Usage:
   python3 monitor.py create "Track AI funding news" --cadence daily
@@ -10,10 +9,11 @@ Usage:
   python3 monitor.py delete monitor_abc123  # Delete a monitor
 """
 
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
+
 import requests
 
 API_KEY = os.environ.get("PARALLEL_API_KEY")
@@ -154,10 +154,10 @@ def main():
         help="How often to check",
     )
     create_parser.add_argument(
-        "--webhook", "-w", metavar="URL", help="Webhook URL for notifications"
+        "--webhook", "-w", metavar="URL", help="Webhook URL for notifications",
     )
     create_parser.add_argument(
-        "--metadata", "-m", metavar="JSON", help="JSON metadata to attach"
+        "--metadata", "-m", metavar="JSON", help="JSON metadata to attach",
     )
 
     # List command
@@ -198,7 +198,7 @@ def main():
             if args.json:
                 print(json.dumps(result, indent=2))
             else:
-                print(f"✅ Monitor created!")
+                print("✅ Monitor created!")
                 print(format_monitor(result))
 
         elif args.command == "list":
@@ -209,14 +209,13 @@ def main():
 
             if args.json:
                 print(json.dumps(monitors, indent=2))
+            elif not monitors:
+                print("No monitors found.")
             else:
-                if not monitors:
-                    print("No monitors found.")
-                else:
-                    print(f"📡 Monitors ({len(monitors)} total)\n")
-                    for monitor in monitors:
-                        print(format_monitor(monitor))
-                        print()
+                print(f"📡 Monitors ({len(monitors)} total)\n")
+                for monitor in monitors:
+                    print(format_monitor(monitor))
+                    print()
 
         elif args.command == "events":
             result = get_events(args.monitor_id, lookback=args.lookback)

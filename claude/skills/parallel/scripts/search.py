@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-"""
-Parallel.ai Search API
+"""Parallel.ai Search API
 Usage: python3 search.py <query> [--max-results N] [--mode one-shot|agentic]
 """
 
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
 
 from parallel import Parallel
 
@@ -58,7 +57,7 @@ def main():
     parser.add_argument("query", nargs="*", help="Search query")
     parser.add_argument("--max-results", "-n", type=int, default=10)
     parser.add_argument(
-        "--mode", "-m", default="one-shot", choices=["one-shot", "agentic", "fast"]
+        "--mode", "-m", default="one-shot", choices=["one-shot", "agentic", "fast"],
     )
     parser.add_argument("--json", "-j", action="store_true", help="Output raw JSON")
 
@@ -88,7 +87,7 @@ def main():
                     ],
                 },
                 indent=2,
-            )
+            ),
         )
     else:
         print(format_results(response))
