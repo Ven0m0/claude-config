@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "@ast-grep/cli": "*",
+    "@kilocode/plugin": "*",
+    "@opencode-ai/plugin": "*",
+    "diff": "*",
+    "opencode-rtk-rewrite": "github:itertea/opencode-rtk-rewrite",
+    "repair-json-stream": "*"
+  },
+  "devDependencies": {
+    "@kilocode/sdk": "*",
+    "@opencode-ai/sdk": "*",
+    "@types/bun": "*",
+    "typescript": "*"
+  },
+  "packageManager": "bun@*"
+}

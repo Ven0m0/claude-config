@@ -1,5 +1,5 @@
-import { tool } from '@opencode-ai/plugin';
-import { computeHash, parseRef, validateHash } from './hashline_utils.ts';
+import { tool } from "@opencode-ai/plugin";
+import { computeHash, parseRef, validateHash } from "./hashline_utils.ts";
 
 const CTX = 2;
 const HASHLINE_PREFIX = /^\s*(?:>>>|>>)?\s*\d+\s*#\s*[ZPMQVRWSNKTXJBYH]{2}\|/;
@@ -15,17 +15,17 @@ class HashMismatchError extends Error {
     }
     const mismatchSet = new Set(mismatches.map((m) => m.line));
     const sorted = [...displayLines].sort((a, b) => a - b);
-    const lines = [`${mismatches.length} line(s) changed since last read. Updated LINE#ID below (>>> = changed):`, ''];
+    const lines = [`${mismatches.length} line(s) changed since last read. Updated LINE#ID below (>>> = changed):`, ""];
     let prev = -1;
     for (const l of sorted) {
-      if (prev !== -1 && l > prev + 1) lines.push('    ...');
+      if (prev !== -1 && l > prev + 1) lines.push("    ...");
       prev = l;
-      const c = fileLines[l - 1] ?? '';
+      const c = fileLines[l - 1] ?? "";
       const h = computeHash(l, c);
       lines.push(mismatchSet.has(l) ? `>>> ${l}#${h}|${c}` : `    ${l}#${h}|${c}`);
     }
-    super(lines.join('\n'));
-    this.name = 'HashMismatchError';
+    super(lines.join("\n"));
+    this.name = "HashMismatchError";
   }
 }
 
@@ -56,26 +56,26 @@ function stripPrefixes(lines: string[]): string[] {
   const stripHash = hashCount >= nonEmpty * 0.5;
   const stripPlus = !stripHash && plusCount >= nonEmpty * 0.5;
   if (!stripHash && !stripPlus) return lines;
-  return lines.map((l) => (stripHash ? l.replace(HASHLINE_PREFIX, '') : stripPlus ? l.replace(DIFF_PLUS, '') : l));
+  return lines.map((l) => (stripHash ? l.replace(HASHLINE_PREFIX, "") : stripPlus ? l.replace(DIFF_PLUS, "") : l));
 }
 
 function toLines(input: string | string[]): string[] {
-  return stripPrefixes(Array.isArray(input) ? input : input.split('\n'));
+  return stripPrefixes(Array.isArray(input) ? input : input.split("\n"));
 }
 
 // ── Edit operations ─────────────────────────────────────────────────────────
 
 function eqNoWs(a: string, b: string) {
-  return a === b || a.replace(/\s+/g, '') === b.replace(/\s+/g, '');
+  return a === b || a.replace(/\s+/g, "") === b.replace(/\s+/g, "");
 }
 
 function applySetLine(lines: string[], anchor: string, text: string | string[]): string[] {
   const { line } = parseRef(anchor);
-  const orig = lines[line - 1] ?? '';
+  const orig = lines[line - 1] ?? "";
   const newLines = toLines(text);
-  const indent = orig.match(/^\s*/)?.[0] ?? '';
+  const indent = orig.match(/^\s*/)?.[0] ?? "";
   const restored = newLines.map((l, i) =>
-    i === 0 && !l.match(/^\s/) && indent && orig.trim() !== l.trim() ? indent + l : l
+    i === 0 && !l.match(/^\s/) && indent && orig.trim() !== l.trim() ? indent + l : l,
   );
   return [...lines.slice(0, line - 1), ...restored, ...lines.slice(line)];
 }
@@ -91,9 +91,9 @@ function applyReplaceRange(lines: string[], start: string, end: string, text: st
   const after = lines[e];
   if (stripped.length > 1 && before && eqNoWs(stripped[0], before)) stripped = stripped.slice(1);
   if (stripped.length > 0 && after && eqNoWs(stripped[stripped.length - 1], after)) stripped = stripped.slice(0, -1);
-  const indent = lines[s - 1]?.match(/^\s*/)?.[0] ?? '';
+  const indent = lines[s - 1]?.match(/^\s*/)?.[0] ?? "";
   const restored = stripped.map((l, i) =>
-    i === 0 && !l.match(/^\s/) && indent && lines[s - 1]?.trim() !== l.trim() ? indent + l : l
+    i === 0 && !l.match(/^\s/) && indent && lines[s - 1]?.trim() !== l.trim() ? indent + l : l,
   );
   return [...lines.slice(0, s - 1), ...restored, ...lines.slice(e)];
 }
@@ -120,22 +120,22 @@ function applyInsertBefore(lines: string[], anchor: string, text: string | strin
 // ── BOM / CRLF preservation ─────────────────────────────────────────────────
 
 function canonicalize(raw: string) {
-  const hadBom = raw.startsWith('\uFEFF');
+  const hadBom = raw.startsWith("﻿");
   const content = hadBom ? raw.slice(1) : raw;
   const crlf =
-    content.indexOf('\r\n') !== -1 &&
-    content.indexOf('\r\n') < (content.indexOf('\n') === -1 ? Infinity : content.indexOf('\n'));
-  return { content: content.replace(/\r\n/g, '\n').replace(/\r/g, '\n'), hadBom, crlf };
+    content.indexOf("\r\n") !== -1 &&
+    content.indexOf("\r\n") < (content.indexOf("\n") === -1 ? Infinity : content.indexOf("\n"));
+  return { content: content.replace(/\r\n/g, "\n").replace(/\r/g, "\n"), hadBom, crlf };
 }
 
 function restore(content: string, hadBom: boolean, crlf: boolean): string {
-  const s = crlf ? content.replace(/\n/g, '\r\n') : content;
-  return hadBom ? `\uFEFF${s}` : s;
+  const s = crlf ? content.replace(/\n/g, "\r\n") : content;
+  return hadBom ? `﻿${s}` : s;
 }
 
 // ── Edit application ────────────────────────────────────────────────────────
 
-type Op = 'replace' | 'append' | 'prepend';
+type Op = "replace" | "append" | "prepend";
 
 interface RawEdit {
   op?: Op;
@@ -157,15 +157,15 @@ function normalizeEdits(raw: RawEdit[]): Edit[] {
     const end = e.end?.trim() || undefined;
     const lines = e.lines ?? [];
     switch (e.op) {
-      case 'replace': {
+      case "replace": {
         const anchor = pos ?? end;
         if (!anchor) throw new Error(`Edit ${i}: replace requires pos`);
-        return { op: 'replace', pos: anchor, end: end !== anchor ? end : undefined, lines: lines ?? [] };
+        return { op: "replace", pos: anchor, end: end !== anchor ? end : undefined, lines: lines ?? [] };
       }
-      case 'append':
-        return { op: 'append', pos: pos ?? end, lines };
-      case 'prepend':
-        return { op: 'prepend', pos: pos ?? end, lines };
+      case "append":
+        return { op: "append", pos: pos ?? end, lines };
+      case "prepend":
+        return { op: "prepend", pos: pos ?? end, lines };
       default:
         throw new Error(`Edit ${i}: unsupported op "${String(e.op)}"`);
     }
@@ -174,9 +174,9 @@ function normalizeEdits(raw: RawEdit[]): Edit[] {
 
 function getLineNum(e: Edit): number {
   try {
-    if (e.op === 'replace') {
+    if (e.op === "replace") {
       const anchor = e.end ?? e.pos;
-      if (!anchor) throw new Error('replace requires pos or end');
+      if (!anchor) throw new Error("replace requires pos or end");
       return parseRef(anchor).line;
     }
     return e.pos ? parseRef(e.pos).line : Number.NEGATIVE_INFINITY;
@@ -193,14 +193,14 @@ function applyEdits(content: string, edits: Edit[]): string {
     if (e.end) refs.push(e.end);
   }
 
-  let lines = content.length === 0 ? [] : content.split('\n');
+  let lines = content.length === 0 ? [] : content.split("\n");
   if (refs.length) validateRefs(lines, refs);
 
   // Detect overlapping ranges
   const ranges: Array<{ s: number; e: number; idx: number }> = [];
   for (let i = 0; i < edits.length; i++) {
     const ed = edits[i];
-    if (ed.op === 'replace' && ed.end) {
+    if (ed.op === "replace" && ed.end) {
       if (!ed.pos) throw new Error(`Edit ${i + 1}: replace requires pos`);
       const s = parseRef(ed.pos).line;
       const e = parseRef(ed.end).line;
@@ -223,8 +223,8 @@ function applyEdits(content: string, edits: Edit[]): string {
       for (let j = deduped.length - 1; j >= 0; j--) {
         const b = deduped[j];
         if (edit.op === b.op && edit.pos === b.pos && edit.end === b.end) {
-          if (typeof edit.lines === 'string') {
-            if (typeof b.lines === 'string' && edit.lines === b.lines) dup = true;
+          if (typeof edit.lines === "string") {
+            if (typeof b.lines === "string" && edit.lines === b.lines) dup = true;
           } else if (Array.isArray(edit.lines)) {
             if (Array.isArray(b.lines) && edit.lines.length === b.lines.length) {
               let eq = true;
@@ -240,21 +240,16 @@ function applyEdits(content: string, edits: Edit[]): string {
         }
         if (dup) break;
       }
+      if (!dup) deduped.push(edit);
     }
   } else {
     const seen = new Set<string>();
     deduped = [];
     for (let i = 0; i < edits.length; i++) {
       const e = edits[i];
-      const op = e.op;
-      const pos = e.pos || '';
-      const lines = e.lines;
-      const k =
-        typeof lines === 'string'
-          ? `${op}\0${pos}\0${end}\0s\0${lines}`
-          : Array.isArray(lines)
-            ? `${op}\0${pos}\0${end}\0a\0${lines.join('\0')}`
-            : `${op}\0${pos}\0${end}\0`;
+      let k = `${e.op}\0${e.pos || ""}\0${e.end || ""}\0`;
+      if (typeof e.lines === "string") k += `s\0${e.lines}`;
+      else if (Array.isArray(e.lines)) k += `a\0${e.lines.join("\0")}`;
 
       if (!seen.has(k)) {
         seen.add(k);
@@ -272,24 +267,46 @@ function applyEdits(content: string, edits: Edit[]): string {
 
   for (const e of sorted) {
     switch (e.op) {
-      case 'replace':
-        if (!e.pos) throw new Error('replace requires pos');
+      case "replace":
+        if (!e.pos) throw new Error("replace requires pos");
         lines = e.end ? applyReplaceRange(lines, e.pos, e.end, e.lines) : applySetLine(lines, e.pos, e.lines);
         break;
-      case 'append':
+      case "append":
         lines = e.pos ? applyInsertAfter(lines, e.pos, e.lines) : [...lines, ...toLines(e.lines)];
         break;
-      case 'prepend':
+      case "prepend":
         lines = e.pos ? applyInsertBefore(lines, e.pos, e.lines) : [...toLines(e.lines), ...lines];
         break;
     }
   }
-  return lines.join('\n');
+  return lines.join("\n");
+}
+
+// ── Line-range edit (fastedit mode) ────────────────────────────────────────
+
+function applyLineRange(content: string, startLine: number, endLine: number, newCode: string): string {
+  const s = startLine;
+  const e = endLine;
+  if (s < 1) throw new Error(`start_line must be >= 1`);
+  if (s > e + 1) throw new Error(`start_line (${s}) must be <= end_line+1 (${e + 1})`);
+  const lines = content.length === 0 ? [] : content.split("\n");
+  if (s > lines.length) throw new Error(`start_line ${s} exceeds file length (${lines.length} lines)`);
+  if (e > lines.length && s <= e) throw new Error(`end_line ${e} exceeds file length (${lines.length} lines)`);
+  const before = lines.slice(0, s - 1);
+  const after = s <= e ? lines.slice(e) : lines.slice(s - 1);
+  return [...before, ...(newCode ? [newCode] : []), ...after].join("\n");
 }
 
 // ── Tool description ────────────────────────────────────────────────────────
 
-const DESCRIPTION = `Edit files using LINE#ID hash-anchored references to prevent stale edits.
+const DESCRIPTION = `Edit files using LINE#ID hash-anchored references (default) or line-number ranges (quick mode).
+
+QUICK MODE — use start_line/end_line/new_code instead of edits[]:
+  Replace lines 5-10: { start_line: 5, end_line: 10, new_code: "..." }
+  Delete lines 5-10:  { start_line: 5, end_line: 10, new_code: "" }
+  Insert before line 5: { start_line: 5, end_line: 4, new_code: "..." }
+
+HASH MODE — use edits[] with LINE#ID anchors (concurrent-safe, prevents stale edits):
 
 WORKFLOW:
 1. Read the file — each line appears as {line}#{hash}|{content}
@@ -323,34 +340,55 @@ EXAMPLE (file content after read):
 
 // ── Tool export ─────────────────────────────────────────────────────────────
 
-export default tool({
+const hl_edit = tool({
   description: DESCRIPTION,
   args: {
-    filePath: tool.schema.string().describe('Absolute path to the file'),
-    delete: tool.schema.boolean().optional().describe('Delete the file (edits must be [])'),
-    rename: tool.schema.string().optional().describe('Move file to this path after edits'),
+    filePath: tool.schema.string().describe("Absolute path to the file"),
+    delete: tool.schema.boolean().optional().describe("Delete the file (edits must be [])"),
+    rename: tool.schema.string().optional().describe("Move file to this path after edits"),
+    start_line: tool.schema
+      .number()
+      .min(1)
+      .optional()
+      .describe("Quick mode: first line to replace (1-indexed). Omit to use edits[]."),
+    end_line: tool.schema
+      .number()
+      .min(0)
+      .optional()
+      .describe("Quick mode: last line to replace (inclusive). Use start_line-1 to insert without deleting."),
+    new_code: tool.schema
+      .string()
+      .optional()
+      .describe("Quick mode: replacement content. Empty string to delete the range."),
     edits: tool.schema
       .array(
         tool.schema.object({
           op: tool.schema.union([
-            tool.schema.literal('replace'),
-            tool.schema.literal('append'),
-            tool.schema.literal('prepend'),
+            tool.schema.literal("replace"),
+            tool.schema.literal("append"),
+            tool.schema.literal("prepend"),
           ]),
           pos: tool.schema.string().optional(),
           end: tool.schema.string().optional(),
           lines: tool.schema
             .union([tool.schema.array(tool.schema.string()), tool.schema.string(), tool.schema.null()])
             .optional(),
-        })
+        }),
       )
-      .describe('Edit operations. Empty array when delete=true.'),
+      .optional()
+      .describe("Hash-anchor edit operations. Empty array when delete=true."),
   },
   async execute(args) {
     try {
-      if (args.delete && args.rename) return 'Error: delete and rename cannot be combined';
-      if (args.delete && args.edits.length) return 'Error: delete=true requires edits=[]';
-      if (!args.delete && !args.edits.length) return 'Error: edits must not be empty';
+      const hasLineRange = args.start_line !== undefined;
+      const editsArr = args.edits ?? [];
+      const hasEdits = editsArr.length > 0;
+
+      if (hasLineRange && hasEdits)
+        return "Error: use either start_line/end_line/new_code or edits[], not both";
+      if (args.delete && args.rename) return "Error: delete and rename cannot be combined";
+      if (args.delete && hasEdits) return "Error: delete=true requires edits=[]";
+      if (!args.delete && !hasLineRange && !hasEdits) return "Error: provide edits[] or start_line/end_line/new_code";
 
       const file = Bun.file(args.filePath);
       const exists = await file.exists();
@@ -361,17 +399,24 @@ export default tool({
         return `Deleted ${args.filePath}`;
       }
 
-      const rawEdits = args.edits as RawEdit[];
-      const edits = normalizeEdits(rawEdits);
-
-      // Allow creating a new file only with unanchored append/prepend
-      const canCreate = edits.every((e) => (e.op === 'append' || e.op === 'prepend') && !e.pos);
-      if (!exists && !canCreate) return `Error: file not found: ${args.filePath}`;
-
-      const rawContent = exists ? Buffer.from(await file.arrayBuffer()).toString('utf8') : '';
+      const rawContent = exists ? Buffer.from(await file.arrayBuffer()).toString("utf8") : "";
       const { content: canonical, hadBom, crlf } = canonicalize(rawContent);
 
-      const newContent = applyEdits(canonical, edits);
+      let newContent: string;
+
+      if (hasLineRange) {
+        if (!exists) return `Error: file not found: ${args.filePath}`;
+        const startLine = args.start_line as number;
+        const endLine = args.end_line ?? startLine;
+        const newCode = args.new_code ?? "";
+        newContent = applyLineRange(canonical, startLine, endLine, newCode);
+      } else {
+        const rawEdits = editsArr as RawEdit[];
+        const edits = normalizeEdits(rawEdits);
+        const canCreate = edits.every((e) => (e.op === "append" || e.op === "prepend") && !e.pos);
+        if (!exists && !canCreate) return `Error: file not found: ${args.filePath}`;
+        newContent = applyEdits(canonical, edits);
+      }
 
       if (newContent === canonical && !args.rename)
         return `Error: no changes — edits produced identical content. Re-read the file first.`;
@@ -381,16 +426,17 @@ export default tool({
       await Bun.write(dest, writeContent);
       if (args.rename && args.rename !== args.filePath && exists) await file.delete();
 
-      // Return hashline-annotated diff summary for context
-      const oldLines = canonical.split('\n');
-      const newLines = newContent.split('\n');
+      const oldLines = canonical.split("\n");
+      const newLines = newContent.split("\n");
       const changedCount =
         newLines.filter((l, i) => l !== oldLines[i]).length + Math.abs(newLines.length - oldLines.length);
       return args.rename ? `Moved ${args.filePath} → ${dest}` : `Updated ${dest} (${changedCount} line(s) changed)`;
     } catch (e) {
       if (e instanceof HashMismatchError)
-        return `Error: hash mismatch\n${e.message}\n\nTip: copy updated LINE#ID tags from the output above.`;
+        return `Error: hash mismatch — file changed since last read.\n${e.message}\n\nFix: re-read the file, then resubmit edits using the updated LINE#ID tags shown above (>>> marks changed lines).`;
       return `Error: ${e instanceof Error ? e.message : String(e)}`;
     }
   },
 });
+
+export { hl_edit as default, hl_edit };
