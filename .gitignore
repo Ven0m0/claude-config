@@ -1,6 +1,8 @@
 # Claude runtime state and local config
 .claude/
 .claude.ralph-*.local.md
+.serena/
+!.serena/project.yml
 .ralph/
 .planning/
 .mcp.json
