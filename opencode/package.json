@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@opencode-ai/plugin": "1.17.20",
+    "@opencode-ai/plugin": "1.18.3",
     "cachebro": "^0.2.0",
     "codemogger": "^0.1.4",
     "diff": "^9.0.0",
@@ -11,7 +11,7 @@
   "devDependencies": {
     "@opencode-ai/sdk": "^1.2.10",
     "@types/bun": "latest",
-    "oxfmt": "^0.58.0",
+    "oxfmt": "^0.59.0",
     "typescript": "^7.0.0"
   },
   "packageManager": "bun@*"
