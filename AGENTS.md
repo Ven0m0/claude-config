@@ -63,8 +63,8 @@ Check these files before making style-sensitive changes:
 - Use descriptive names instead of abbreviations.
 - Comments should explain why, not restate what the code already says.
 - Validate inputs at boundaries and fail with actionable errors.
-- Never hardcode credentials or introduce secret material.
-- Avoid `eval`, string-built shell commands, and other unnecessary dynamic execution.
+- Keep credentials and secret material out of the codebase; load them from the environment.
+- Use static, parameterized commands instead of `eval` or string-built shell commands.
 
 ### Python
 
@@ -97,7 +97,7 @@ Check these files before making style-sensitive changes:
 
 ### Agents
 
-Use YAML frontmatter with the required fields used throughout `claude/agents/`:
+Agents use this YAML frontmatter, consistent throughout `claude/agents/`:
 
 ```yaml
 ---

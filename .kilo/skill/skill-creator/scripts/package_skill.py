@@ -18,7 +18,8 @@ from quick_validate import validate_skill
 
 
 def package_skill(
-    skill_path: str | Path, output_dir: str | Path | None = None,
+    skill_path: str | Path,
+    output_dir: str | Path | None = None,
 ) -> Path | None:
     """Package a skill folder into a zip file.
 

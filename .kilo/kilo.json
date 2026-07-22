@@ -38,15 +38,7 @@
   ],
   "formatter": {
     "biome": {
-      "command": [
-        "npx",
-        "-y",
-        "@biomejs/biome",
-        "check",
-        "--write",
-        "--format-with-errors=true",
-        "$FILE"
-      ],
+      "command": ["npx", "-y", "@biomejs/biome", "check", "--write", "--format-with-errors=true", "$FILE"],
       "extensions": [".json", ".jsonc", ".js", ".ts"]
     },
     "ruff": {
@@ -55,14 +47,7 @@
     }
   },
   "watcher": {
-    "ignore": [
-      "node_modules/**",
-      "dist/**",
-      ".git/**",
-      ".venv/**",
-      "__pycache__/**",
-      ".ruff_cache/**"
-    ]
+    "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**", "__pycache__/**", ".ruff_cache/**"]
   },
   "mcp": {
     "ref-tools": {
@@ -126,16 +111,7 @@
     },
     "vtsls": {
       "command": ["vtsls", "--stdio"],
-      "extensions": [
-        ".js",
-        ".jsx",
-        ".ts",
-        ".tsx",
-        ".mjs",
-        ".cjs",
-        ".mts",
-        ".cts"
-      ],
+      "extensions": [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".mts", ".cts"],
       "initialization": {
         "preferences": { "importModuleSpecifierPreference": "relative" }
       }

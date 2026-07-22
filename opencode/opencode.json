@@ -1,10 +1,10 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "opencode/minimax-m3-free",
+  "model": "opencode/deepseek-v4-flash-free",
   "small_model": "opencode/big-pickle",
   "agent": {
     "build": {
-      "model": "opencode/minimax-m3-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "temperature": 0.1,
       "options": {
         "reasoningEffort": "high",
@@ -13,7 +13,7 @@
       }
     },
     "coder": {
-      "model": "opencode/minimax-m3-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "temperature": 0.1,
       "options": {
         "reasoningEffort": "medium",
@@ -63,7 +63,10 @@
     }
   },
   "default_agent": "build",
-  "instructions": ["AGENTS.md", "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"],
+  "instructions": [
+    "AGENTS.md",
+    "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"
+  ],
   "mcp": {
     "github-mcp-server": {
       "type": "remote",

@@ -5,18 +5,16 @@ OpenCode reads this directly; do not inherit from the root `AGENTS.md`.
 
 ## Scope
 
-- `opencode/` is the source-of-truth tree for agents, commands, skills, tools, docs, and prompts
-- `.opencode/` is a runtime compatibility layer that symlinks back into `opencode/`
+- `opencode/` holds the tracked OpenCode config: `opencode.json`, `tui.json`, and this file
+- Reusable plugins, tools, skills, and rules live in `kilo-tools/`, not here
 
 ## Source of Truth
 
-| Artifact              | Path                                                                            |
-| --------------------- | ------------------------------------------------------------------------------- |
-| Shared project config | `opencode/opencode.json`                                                        |
-| Runtime overlay       | `.opencode/opencode.json`                                                       |
-| Custom assets         | `opencode/agents/`, `opencode/command/`, `opencode/skill/`, `opencode/plugins/` |
-
-> Config sync: `opencode/opencode.json` → `.opencode/opencode.json`
+| Artifact              | Path                     |
+| ---------------------- | ------------------------ |
+| Shared project config | `opencode/opencode.json` |
+| TUI keybinds/theme    | `opencode/tui.json`      |
+| Reusable plugins/tools | `kilo-tools/`             |
 
 ## Working Style
 
@@ -35,14 +33,12 @@ OpenCode reads this directly; do not inherit from the root `AGENTS.md`.
 
 ## Commands, Agents, and Skills
 
-- Remove aliases, thin wrappers, and stale prompts that no longer map to configured agents
-- Keep Flow Next assets only where they add unique value over the local command layer
-- When moving assets from `.opencode/`, consolidate into `opencode/` and keep `.opencode/` as a thin compatibility path
+- Agents and models are configured directly in `opencode.json` (`agent.*`); there is no local `agents/`/`command/`/`skill/` layer
+- Keep Flow Next assets only where they add unique value over installed plugins
 
 ## Validation
 
 - After config edits: `python -m json.tool opencode/opencode.json >/dev/null`
-- After overlay sync: `python -m json.tool .opencode/opencode.json >/dev/null`
 - After skill or agent changes: grep for stale references before committing
 
 ## External File Loading

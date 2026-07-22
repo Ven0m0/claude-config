@@ -65,18 +65,18 @@ cleanup_dir(){
 
 main(){
   local total_before total_after
-  
+
   if [[ $DRY_RUN -eq 1 ]]; then
     echo "DRY RUN MODE - no files will be deleted or optimized"
     return 0
   fi
-  
+
   total_before=$(du -sh ~ 2>/dev/null | awk '{print $1}')
-  
+
   for dir in "${DIRS[@]}"; do
     cleanup_dir "$dir"
   done
-  
+
   total_after=$(du -sh ~ 2>/dev/null | awk '{print $1}')
   echo -e "\nBefore: $total_before | After: $total_after"
 }

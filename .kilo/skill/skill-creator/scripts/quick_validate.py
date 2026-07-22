@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Quick validation script for skills - minimal version
-"""
+"""Quick validation script for skills - minimal version"""
 
 import os
 import re
