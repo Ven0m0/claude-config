@@ -7,22 +7,17 @@ repos:
         entry: uv lock --upgrade
         language: python
         pass_filenames: false
-      - id: pre-commit autoupdate
-        name: autoupdate pre-commit
-        entry: pre-commit autoupdate
-        language: system
-        pass_filenames: false
       - id: biome-check
         name: biome check
         entry: bunx @biomejs/biome check --write
         language: node
-        types_or: [javascript, typescript, jsx, tsx, json, jsonc]
+        types_or: [javascript, jsx, tsx, json]
         pass_filenames: true
       - id: oxlint
         name: oxlint
         entry: bunx oxlint --fix
         language: node
-        types_or: [javascript, typescript, jsx, tsx]
+        types_or: [javascript, jsx, tsx]
         pass_filenames: true
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -77,12 +72,8 @@ repos:
     rev: v0.1
     hooks:
       - id: gha-update
-  - repo: https://github.com/koalaman/shellcheck-precommit
-    rev: v0.11.0
-    hooks:
-      - id: shellcheck
   - repo: https://github.com/rvben/rumdl-pre-commit
-    rev: v0.2.37
+    rev: v0.2.40
     hooks:
       - id: rumdl
       - id: rumdl-fmt

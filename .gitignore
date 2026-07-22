@@ -8,7 +8,16 @@
 .mcp.json
 .claudelint-cache
 **/.claudelint-cache
-.codegraph
+.codegraph/
+MEMORY.md
+USER.md
+SCRATCHPAD*.md
+WORKING*.md
+TASK-QUEUE.md
+memory/
+knowledge/
+plans/
+tenants/
 
 # API keys and secrets
 .claude/settings/api_settings.json

@@ -20,8 +20,6 @@ This subtree also keeps a deliberately small custom `command/`, `agents/`, `skil
 The OpenCode config loads these instruction files in order:
 
 1. `opencode/AGENTS.md`
-2. `../.github/copilot-instructions.md`
-3. `opencode/MORPH_INSTRUCTIONS.md`
 
 `opencode/AGENTS.md` is now the canonical OpenCode base instruction file for this repo.
 

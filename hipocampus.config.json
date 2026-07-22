@@ -1,0 +1,11 @@
+{
+  "platform": "claude-code",
+  "search": {
+    "vector": true,
+    "embedModel": "auto"
+  },
+  "compaction": {
+    "rootMaxTokens": 3000,
+    "cooldownHours": 3
+  }
+}
