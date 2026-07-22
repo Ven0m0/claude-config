@@ -1,23 +1,33 @@
 services:
-  openchamber:
-    image: ghcr.io/btriapitsyn/openchamber:latest
+  app:
+    image: ghcr.io/chriswritescode-dev/opencode-manager:latest
     restart: unless-stopped
     environment:
-      UI_PASSWORD: '${UI_PASSWORD}'
+      NODE_ENV: production
+      HOST: '0.0.0.0'
+      PORT: '5003'
+      OPENCODE_HOST: '127.0.0.1'
+      DATABASE_PATH: /app/data/opencode.db
+      WORKSPACE_PATH: /workspace
+      AUTH_SECRET: '${AUTH_SECRET}'
+      AUTH_TRUSTED_ORIGINS: 'https://${TUNNEL_HOSTNAME}'
+      AUTH_SECURE_COOKIES: 'true'
+      ADMIN_EMAIL: '${ADMIN_EMAIL:-}'
+      ADMIN_PASSWORD: '${ADMIN_PASSWORD:-}'
+      ADMIN_PASSWORD_RESET: '${ADMIN_PASSWORD_RESET:-false}'
     healthcheck:
-      test: ['CMD', 'curl', '-fsS', 'http://localhost:3000/health']
+      test: ['CMD', 'curl', '-fsS', 'http://localhost:5003/api/health']
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
     volumes:
-      - ${HOME}/.config/opencode:/home/openchamber/.config/opencode
-      - ./data/openchamber:/home/openchamber/data
-    # Port NOT published to host - only cloudflared and tailscale reach it
-    # Uncomment the next two lines to enable Tailscale access on port 3000:
-    # ports:
-    #   - "127.0.0.1:3000:3000"
-
+      - opencode-workspace:/workspace
+      - opencode-data:/app/data
+      # Port NOT published to host - only cloudflared reaches it
+  # Uncomment the next two lines to enable Tailscale/local access on port 5003:
+  # ports:
+  #   - "127.0.0.1:5003:5003"
   cloudflared:
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
@@ -25,5 +35,10 @@ services:
       TUNNEL_TOKEN: '${TUNNEL_TOKEN}'
     command: tunnel --no-autoupdate run
     depends_on:
-      openchamber:
+      app:
         condition: service_healthy
+volumes:
+  opencode-workspace:
+    driver: local
+  opencode-data:
+    driver: local

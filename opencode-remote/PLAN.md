@@ -1,7 +1,7 @@
-# OpenChamber Remote Setup - Implementation Plan
+# OpenCode Manager Remote Setup - Implementation Plan
 
 **Domain**: opencode.ven0m0.dpdns.org
-**Stack**: openchamber + cloudflared (local systemd or Docker Compose)
+**Stack**: opencode-manager + cloudflared (Docker Compose)
 **Status**: Operational
 
 ---
@@ -20,16 +20,15 @@ Traditional solutions (VPN, port forwarding, self-signed certs) have security, r
 
 ## Solution
 
-A reproducible setup using Cloudflare Tunnel to expose openchamber (OpenCode's web GUI) securely without:
+A reproducible setup using Cloudflare Tunnel to expose opencode-manager (OpenCode's web GUI)
+securely without:
 
 - Opening firewall ports
 - Managing TLS certificates
 - Exposing the host's IP
 
-Supports two install modes:
-
-- **Local mode** (default): systemd services, no Docker
-- **Docker mode**: Docker Compose stack
+Docker Compose only - opencode-manager ships a prebuilt multi-arch image and no global CLI,
+so there is no systemd/local install path.
 
 ---
 
@@ -50,17 +49,19 @@ Supports two install modes:
                                   │ Cloudflare Tunnel (outbound)
                                   ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                         Host Machine                             │
+│                         Host Machine (Docker)                    │
 │  ┌─────────────────────┐    ┌─────────────────────────────┐    │
 │  │   cloudflared       │◄───│  Cloudflare Tunnel API      │    │
-│  │   (systemd)         │    │  credentials.json           │    │
+│  │   (container)       │    │  credentials.json           │    │
 │  └──────────┬──────────┘    └─────────────────────────────┘    │
-│             │ http://localhost:3000                              │
+│             │ http://app:5003                                    │
 │             ▼                                                    │
 │  ┌─────────────────────────────────────────────────────────┐   │
-│  │  openchamber (systemd)                                   │   │
-│  │  node .../server/index.js --port 3000                   │   │
-│  │  Env: OPENCHAMBER_UI_PASSWORD (from /etc/openchamber/env)│   │
+│  │  app: opencode-manager (container)                        │   │
+│  │  ghcr.io/chriswritescode-dev/opencode-manager:latest      │   │
+│  │  Env: AUTH_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD             │   │
+│  │  Internal OpenCode server: 127.0.0.1:5551 (not exposed)    │   │
+│  │  Volumes: opencode-workspace, opencode-data                │   │
 │  └─────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -73,16 +74,9 @@ setup.sh
 ├── Cloudflare API (tunnel + DNS provisioning)
 └── writes: cloudflared/credentials.json, cloudflared/config.yml
 
-install-local.sh
-├── setup.sh (provisions tunnel)
-├── bun/npm (package managers)
-├── installs: openchamber, cloudflared
-└── creates: /etc/systemd/system/openchamber.service
-             /etc/systemd/system/cloudflared-openchamber.service
-             /etc/openchamber/env (secrets)
-
 docker-compose.yml
 ├── setup.sh (provisions tunnel)
+├── app: ghcr.io/chriswritescode-dev/opencode-manager:latest
 └── mounts: cloudflared/credentials.json
 ```
 
@@ -102,36 +96,32 @@ docker-compose.yml
 
 **Rationale**: Cloudflare Tunnel provides the best balance of security, simplicity, and cost for a single-user web service.
 
-### 2. Local (systemd) vs Docker
+### 2. Docker-only vs local (systemd) install
 
-| Mode      | Pros                                              | Cons                                | When to Use                     |
-| --------- | ------------------------------------------------- | ----------------------------------- | ------------------------------- |
-| **Local** | Lower overhead, native logging, simpler debugging | Host package dependency             | Default, production servers     |
-| Docker    | Isolation, reproducible environment               | Extra layer, Docker daemon required | Development, multi-tenant hosts |
+**Problem**: opencode-manager has no global CLI and no systemd-friendly binary - it ships a
+prebuilt multi-arch Docker image (`ghcr.io/chriswritescode-dev/opencode-manager`) built from a
+pnpm workspace (Bun backend + Vite frontend).
 
-**Rationale**: Local mode is default because this is a single-user service on a dedicated host. Docker adds unnecessary complexity.
+**Solution**: Docker Compose is the only supported install mode. The prior `install-local.sh` /
+`install.sh` systemd path (built around openchamber's global npm CLI) has no equivalent and was
+removed rather than reimplemented against a from-source build.
 
-### 3. Direct node Execution vs openchamber CLI
+**Rationale**: A from-source systemd install would require cloning, pnpm install/build, and
+tracking upstream Bun/Vite toolchain versions - all of which the prebuilt image already handles.
 
-**Problem**: `openchamber serve` uses bun's IPC which fails in systemd (daemon mode broken).
+### 3. Better Auth admin vs single UI password
 
-**Solution**: Bypass the CLI wrapper and execute the server script directly:
+**Problem**: openchamber used one shared `UI_PASSWORD`. opencode-manager uses Better Auth with
+per-user accounts and requires `AUTH_SECRET`, plus `AUTH_TRUSTED_ORIGINS`/`AUTH_SECURE_COOKIES`
+when served over HTTPS through the tunnel.
 
-```bash
-node /usr/lib/node_modules/@openchamber/web/server/index.js --port 3000
-```
+**Solution**: Pre-seed `ADMIN_EMAIL` + `ADMIN_PASSWORD` in `.env`; opencode-manager creates that
+admin account on first boot and disables self-signup, keeping the "one secret in .env" UX.
 
-**Rationale**: The CLI adds no value for systemd-managed services. Direct execution is simpler and works reliably.
+**Rationale**: Avoids a race where an unauthenticated visitor claims the admin account before the
+real owner does.
 
-### 4. Secrets in EnvironmentFile vs Inline
-
-**Problem**: systemd unit files are world-readable (`/etc/systemd/system/*.service`).
-
-**Solution**: Store secrets in `/etc/openchamber/env` (mode 0600, root-owned), reference via `EnvironmentFile=`.
-
-**Rationale**: Prevents accidental credential exposure via `systemctl cat` or file listing.
-
-### 5. Dual Cloudflare Credential Support
+### 4. Dual Cloudflare Credential Support
 
 | Credential Type | Length   | Auth Header                   | When to Use     |
 | --------------- | -------- | ----------------------------- | --------------- |
@@ -150,12 +140,14 @@ node /usr/lib/node_modules/@openchamber/web/server/index.js --port 3000
 | `.env`                         | User secrets                         | **No**      |
 | `.gitignore`                   | Exclude secrets                      | Yes         |
 | `setup.sh`                     | Cloudflare tunnel + DNS provisioning | Yes         |
-| `install-local.sh`             | Local systemd installation           | Yes         |
-| `docker-compose.yml`           | Docker stack definition              | Yes         |
+| `docker-compose.yml`           | Docker stack definition (opencode-manager + cloudflared) | Yes |
 | `Makefile`                     | Convenience targets                  | Yes         |
 | `cloudflared/credentials.json` | Tunnel credentials                   | **No**      |
 | `cloudflared/config.yml`       | Tunnel config (generated)            | Yes         |
-| `/etc/openchamber/env`         | Runtime secrets (local mode)         | **No**      |
+| `opencode-workspace` volume    | opencode-manager workspace data      | N/A (Docker volume) |
+| `opencode-data` volume         | opencode-manager DB (Better Auth, sessions) | N/A (Docker volume) |
+
+Docker-only: there is no `/etc/openchamber/env` or systemd unit equivalent.
 
 ---
 
@@ -165,17 +157,19 @@ node /usr/lib/node_modules/@openchamber/web/server/index.js --port 3000
 
 | Issue                             | Fix                     | Location                        |
 | --------------------------------- | ----------------------- | ------------------------------- |
-| Secrets in systemd unit files     | EnvironmentFile pattern | `install-local.sh:153-161`      |
 | .env world-readable after source  | chmod 600 immediately   | `setup.sh:20`                   |
 | JSON injection in API calls       | jq -n with --arg        | `setup.sh:152,219-220,225-226`  |
 | Missing directory for credentials | mkdir -p before write   | `setup.sh:160,172`              |
-| No Docker health monitoring       | healthcheck directive   | `docker-compose.yml:7-12,25-27` |
+| No Docker health monitoring       | healthcheck directive   | `docker-compose.yml`            |
 
-### Completed: Install Mode
+### Completed: opencode-manager migration
 
-- Default changed from Docker to local
-- `.env.example` defaults: `INSTALL_MODE=local`
-- README and Makefile updated
+- Switched backend from openchamber to opencode-manager (`ghcr.io/chriswritescode-dev/opencode-manager`)
+- Port changed 3000 → 5003; health endpoint `/health` → `/api/health`
+- Auth changed from single `UI_PASSWORD` to Better Auth (`AUTH_SECRET` + pre-seeded
+  `ADMIN_EMAIL`/`ADMIN_PASSWORD`)
+- Removed `install-local.sh`, `install.sh`, `docker-compose.opencode-container.yml`
+- README and Makefile updated to Docker-only
 
 ---
 
@@ -186,13 +180,11 @@ All items verified working:
 - [x] `bash setup.sh` completes without error
 - [x] `cloudflared/credentials.json` exists, mode 0600
 - [x] `.env` mode 600 immediately after source
-- [x] `/etc/openchamber/env` exists, mode 600, root-owned
-- [x] `systemctl status openchamber` shows active (running)
-- [x] `systemctl status cloudflared-openchamber` shows active (running)
-- [x] `curl http://localhost:3000/health` returns `{"status":"ok"}`
+- [x] `docker compose ps` shows `app` healthy and `cloudflared` running
+- [x] `curl http://localhost:5003/api/health` (from inside the `app` container) returns ok
 - [x] `curl -I https://opencode.ven0m0.dpdns.org` returns 200
 - [x] Remote UI accessible via Cloudflare Tunnel
-- [x] UI_PASSWORD authentication works
+- [x] Admin login via `ADMIN_EMAIL`/`ADMIN_PASSWORD` works; self-signup disabled
 
 ---
 
@@ -202,9 +194,9 @@ All items verified working:
 
 | Symptom                 | Check                                       | Fix                                         |
 | ----------------------- | ------------------------------------------- | ------------------------------------------- |
-| 502 Bad Gateway         | `systemctl status openchamber`              | `systemctl restart openchamber`             |
-| Connection timeout      | `systemctl status cloudflared-openchamber`  | `systemctl restart cloudflared-openchamber` |
-| Auth fails              | `/etc/openchamber/env` has correct password | Re-run `install-local.sh`                   |
+| 502 Bad Gateway         | `docker compose ps app`                     | `docker compose restart app`                |
+| Connection timeout      | `docker compose ps cloudflared`             | `docker compose restart cloudflared`         |
+| Auth fails              | `ADMIN_EMAIL`/`ADMIN_PASSWORD` in `.env` correct | Re-run `make up` (recreates container)  |
 | DNS not resolving       | Cloudflare dashboard > DNS                  | Check CNAME exists, is proxied              |
 | Tunnel not in dashboard | `cloudflared tunnel list`                   | Re-run `setup.sh`                           |
 
@@ -212,14 +204,14 @@ All items verified working:
 
 ```bash
 # Check service status
-systemctl status openchamber cloudflared-openchamber
+docker compose ps
 
 # View recent logs
-journalctl -u openchamber -n 50 --no-pager
-journalctl -u cloudflared-openchamber -n 50 --no-pager
+docker compose logs -n 50 app
+docker compose logs -n 50 cloudflared
 
 # Test local connectivity
-curl -v http://localhost:3000/health
+docker compose exec app curl -v http://localhost:5003/api/health
 
 # Verify tunnel registration
 cloudflared tunnel list
@@ -233,16 +225,8 @@ dig +short $TUNNEL_HOSTNAME
 ### Rollback Procedure
 
 ```bash
-# Stop services
-sudo systemctl stop cloudflared-openchamber openchamber
-
-# Disable at boot
-sudo systemctl disable cloudflared-openchamber openchamber
-
-# Remove service files (optional)
-sudo rm /etc/systemd/system/openchamber.service
-sudo rm /etc/systemd/system/cloudflared-openchamber.service
-sudo systemctl daemon-reload
+# Stop and remove services
+docker compose down
 
 # Remove tunnel from Cloudflare (via API or dashboard)
 # API: DELETE /accounts/{account_id}/cfd_tunnel/{tunnel_id}
@@ -260,18 +244,18 @@ sudo systemctl daemon-reload
 
 | Endpoint                       | Purpose                 | Expected             |
 | ------------------------------ | ----------------------- | -------------------- |
-| `http://localhost:3000/health` | Local service health    | `{"status":"ok"}`    |
-| `https://$TUNNEL_HOSTNAME`     | End-to-end connectivity | 200 with auth prompt |
+| `http://app:5003/api/health` (internal) | Container health check | 200 OK |
+| `https://$TUNNEL_HOSTNAME`     | End-to-end connectivity | 200 with login page  |
 
 ### Recommended Monitoring
 
-1. **systemd watchdog** (already configured via `Restart=on-failure`)
+1. **Docker healthcheck** (already configured, `restart: unless-stopped`)
 2. **Uptime monitoring** (external): UptimeRobot, Pingdom, or Cloudflare's built-in
-3. **Log aggregation**: `journalctl -u openchamber -u cloudflared-openchamber` to central logger
+3. **Log aggregation**: `docker compose logs -f` to central logger
 
 ### Key Metrics
 
-- Service uptime (systemd)
+- Container uptime / restart count (`docker compose ps`)
 - HTTP response time to health endpoint
 - Cloudflare Tunnel connection status
 
@@ -285,9 +269,9 @@ sudo systemctl daemon-reload
 | ------------------------------ | ---------------------------- |
 | `.env`                         | mode 0600, gitignored        |
 | `cloudflared/credentials.json` | mode 0600, gitignored        |
-| `/etc/openchamber/env`         | mode 0600, root-owned        |
+| `opencode-data` volume         | Docker-managed, not host-mounted |
 | In-transit data                | TLS 1.3 (Cloudflare-managed) |
-| Web UI                         | Password authentication      |
+| Web UI                         | Better Auth (per-user accounts, admin pre-seeded) |
 
 ### Threat Model
 
@@ -297,21 +281,19 @@ sudo systemctl daemon-reload
 | Credential exposure on host | Restricted file permissions   | Implemented          |
 | MITM on public network      | Cloudflare TLS termination    | Implemented          |
 | DDoS                        | Cloudflare proxy              | Automatic            |
-| Brute force UI password     | No rate limiting              | **Known limitation** |
-| Session hijacking           | No HTTPS-only cookies         | **Known limitation** |
+| Unauthenticated admin claim | `ADMIN_EMAIL`/`ADMIN_PASSWORD` pre-seeded, self-signup disabled | Implemented |
+| Session hijacking           | `AUTH_SECURE_COOKIES=true` over HTTPS | Implemented    |
 
 ### Known Limitations
 
-1. **No rate limiting** on UI password - could be brute-forced
-2. **No session management** - long-lived sessions
-3. **Single factor auth** - password only, no 2FA
-4. **No audit logging** - access not logged
+1. **No rate limiting** on login - could be brute-forced
+2. **Single factor auth** by default (OAuth providers available but unconfigured)
+3. **No audit logging** - access not logged
 
 ### Future Security Improvements
 
 - [ ] Add Cloudflare Access for SSO/2FA (requires Zero Trust plan)
-- [ ] Implement session timeout
-- [ ] Add fail2ban for repeated auth failures
+- [ ] Configure an OAuth provider (GitHub/Google/Discord) in `.env`
 - [ ] Enable Cloudflare WAF rules
 
 ---
@@ -321,30 +303,27 @@ sudo systemctl daemon-reload
 ### Known Limitations
 
 1. **Single host** - no high availability
-2. **No persistence** - openchamber data not backed up
-3. **Manual updates** - packages must be updated manually
+2. **Manual updates** - `make pull` required to get new opencode-manager releases
 
 ### Potential Improvements
 
-| Area         | Improvement                          | Effort |
-| ------------ | ------------------------------------ | ------ |
-| Availability | Multiple tunnels, load balancing     | Medium |
-| Backup       | Persistent volume, backup script     | Low    |
-| Updates      | Auto-update cloudflared, openchamber | Low    |
-| Auth         | Cloudflare Access (SSO/2FA)          | Low    |
-| Monitoring   | Prometheus metrics export            | Medium |
+| Area         | Improvement                            | Effort |
+| ------------ | ---------------------------------------- | ------ |
+| Availability | Multiple tunnels, load balancing         | Medium |
+| Backup       | Volume backup script for opencode-data   | Low    |
+| Updates      | Watchtower or CI-triggered `make pull`   | Low    |
+| Auth         | Cloudflare Access (SSO/2FA)              | Low    |
+| Monitoring   | Prometheus metrics export                | Medium |
 
 ---
 
 ## Reference
 
-### Binary Paths
+### Images
 
 ```
-openchamber server: /usr/lib/node_modules/@openchamber/web/server/index.js
-cloudflared:        /usr/bin/cloudflared (v2026.3.0)
-bun:                /usr/bin/bun
-node:               $(command -v node)
+app:         ghcr.io/chriswritescode-dev/opencode-manager:latest
+cloudflared: cloudflare/cloudflared:latest
 ```
 
 ### API Endpoints
@@ -353,25 +332,26 @@ node:               $(command -v node)
 Cloudflare API:     https://api.cloudflare.com/client/v4
 Tunnel token:       GET /accounts/{id}/cfd_tunnel/{id}/token
 Tunnel credentials: GET /accounts/{id}/cfd_tunnel/{id}/credentials
+opencode-manager:   GET /api/health
 ```
 
 ### Quick Commands
 
 ```bash
-# Local install (default)
-sudo bash install-local.sh
+# Provision + start
+make setup
+make up
 
 # Service management
-systemctl start openchamber cloudflared-openchamber
-systemctl stop openchamber cloudflared-openchamber
-systemctl status openchamber
-systemctl status cloudflared-openchamber
+docker compose ps
+docker compose restart
+docker compose down
 
 # Logs
-journalctl -u openchamber -f
-journalctl -u cloudflared-openchamber -f
+docker compose logs -f app
+docker compose logs -f cloudflared
 
 # Health
-curl http://localhost:3000/health
+docker compose exec app curl http://localhost:5003/api/health
 curl -I https://$TUNNEL_HOSTNAME
 ```

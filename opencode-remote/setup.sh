@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# setup.sh - Provision Cloudflare tunnel for openchamber (idempotent)
+# setup.sh - Provision Cloudflare tunnel for opencode-manager (idempotent)
 # Run once per machine. Re-running detects existing resources and skips creation.
 
 set -euo pipefail
@@ -28,7 +28,7 @@ load_env() {
 
 # ── Validation ─────────────────────────────────────────────────────────────────
 validate_env() {
-  local required_vars=("CLOUDFLARE_API_TOKEN" "UI_PASSWORD" "TUNNEL_HOSTNAME" "TUNNEL_NAME")
+  local required_vars=("CLOUDFLARE_API_TOKEN" "AUTH_SECRET" "TUNNEL_HOSTNAME" "TUNNEL_NAME")
   for var in "${required_vars[@]}"; do
     if [[ -z "${!var:-}" ]]; then
       echo "ERROR: $var is not set in .env" >&2
@@ -36,8 +36,9 @@ validate_env() {
     fi
   done
 
-  if [[ "$UI_PASSWORD" == "change_me_to_something_secure" ]]; then
-    echo "ERROR: Please set a real UI_PASSWORD in .env before running setup." >&2
+  if [[ "$AUTH_SECRET" == "CHANGE_ME_GENERATE_WITH_openssl_rand_base64_32" ]]; then
+    echo "ERROR: Please set a real AUTH_SECRET in .env before running setup." >&2
+    echo "  Generate with: openssl rand -base64 32" >&2
     exit 1
   fi
 }
@@ -196,9 +197,8 @@ get_tunnel_token() {
 
 write_cloudflared_config() {
   echo "[5/6] Writing cloudflared/config.yml..."
-  local service_host="openchamber"
-  local port="${OPENCHAMBER_PORT:-3000}"
-  [[ "${INSTALL_MODE:-docker}" == "local" ]] && service_host="localhost"
+  local service_host="app"
+  local port="5003"
 
   mkdir -p "$SCRIPT_DIR/cloudflared"
   cat > "$SCRIPT_DIR/cloudflared/config.yml" << EOF
@@ -244,17 +244,11 @@ print_summary() {
   echo ""
   echo "=== Setup complete ==="
   echo ""
-  if [[ "${INSTALL_MODE:-docker}" == "local" ]]; then
-    echo "Cloudflare tunnel provisioned. Continuing local installation..."
-  else
-    echo "Next steps:"
-    echo "  docker compose up -d"
-    echo "  # or for local install:"
-    echo "  sudo bash install-local.sh"
-    echo ""
-    echo "Then open: https://$TUNNEL_HOSTNAME"
-    echo "(UI Password is in .env as UI_PASSWORD)"
-  fi
+  echo "Next steps:"
+  echo "  docker compose up -d"
+  echo ""
+  echo "Then open: https://$TUNNEL_HOSTNAME"
+  echo "Log in with ADMIN_EMAIL / ADMIN_PASSWORD from .env"
 }
 
 # ── Main ───────────────────────────────────────────────────────────────────────
@@ -264,7 +258,7 @@ main() {
   check_dependencies
   setup_cf_auth
 
-  echo "=== OpenChamber Cloudflare Setup ==="
+  echo "=== OpenCode Manager Cloudflare Setup ==="
   echo "Hostname: $TUNNEL_HOSTNAME"
   echo "Tunnel:   $TUNNEL_NAME"
   echo ""
