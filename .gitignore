@@ -18,6 +18,7 @@ memory/
 knowledge/
 plans/
 tenants/
+hipocampus.config.json
 
 # API keys and secrets
 .claude/settings/api_settings.json
