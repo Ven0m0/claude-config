@@ -5,9 +5,11 @@
 
 node_modules
 
+*.sh
 *.ts
 *.md
 *.jsonc
 *.local
 *.example
 *.log
+Makefile
