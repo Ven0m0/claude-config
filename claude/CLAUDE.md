@@ -47,12 +47,7 @@ _Language Server Protocol for safe code operations_
 3. Confirm imports resolve
 4. Validate interface contracts
 
-**Usage:**
-
-- Skill: `/lsp-enable` for enforcement and guidance
-- Setup: `/lsp-setup` for project configuration
-- Docs: `claude/docs/lsp-tools-integration.md`
-- Reference: `claude/skills/lsp-enable/references/`
+**Usage:** the `LSP` tool exposes goToDefinition/findReferences/hover/documentSymbol/diagnostics directly - no separate skill needed.
 
 **Why LSP:** ~50ms vs 45s grep, exact semantic matches, no false positives, saves tokens on large codebases
 
@@ -92,37 +87,22 @@ _Preferences for code, comments, and documentation_
 
 Agents live in `claude/agents/`. Delegate via `Task(subagent_type="agent-name", prompt="...")`.
 
-| Agent                                                          | When to use                                                                                        |
-| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| general-purpose                                                | Default; complex multi-step tasks, delegation                                                      |
-| code-simplifier                                                | Simplify or refine code without changing behavior                                                  |
-| janitor                                                        | Cleanup, tech debt, dead code removal (includes safety rules for framework preservation)           |
-| merge-supervisor                                               | Git merge conflict resolution                                                                      |
-| code-explorer                                                  | Trace execution, find patterns, map architecture (has feature-tracing and pattern-discovery modes) |
-| context-manager                                                | Context engineering, token optimization, multi-agent orchestration                                 |
-| bash-pro, python-pro, javascript-pro, typescript-pro, rust-pro | Language-specific implementation                                                                   |
-| mcp-expert                                                     | MCP server config and integration                                                                  |
-| dx-optimizer                                                   | Dev experience, tooling, workflow setup                                                            |
-| llm-boost                                                      | LLM optimization: CLAUDE.md audit, skill and agent improvement, markdown compression               |
-| prd                                                            | Product requirements document                                                                      |
-| reverse-engineer                                               | Binary analysis, RE toolchains, security research                                                  |
-| turbo                                                          | Maximum speed, parallelize everything                                                              |
+| Agent            | When to use                                                                      |
+| ---------------- | --------------------------------------------------------------------------------- |
+| general-purpose  | Default agent for multi-step engineering work; plans, executes, delegates        |
+| language-expert  | Multi-language implementation (Bash, Python, JavaScript, TypeScript, Rust)       |
+| maintenance      | Removes safe tech debt / dead code while preserving required framework behavior  |
+| reverse-engineer | Authorized binary analysis, decompilation, defensive security research           |
 
 **Parallel execution**: Use parallel Task() for independent work (e.g. security analysis + performance review + type check in one turn).
 
 **Multi-perspective**: For hard problems, use split roles: factual reviewer, senior engineer, security expert, consistency reviewer.
 
-## Workflow and doc optimization
+## Doc optimization
 
-- **Large markdown**: Use **markdown-optimizer** agent for token-heavy docs (e.g. long reference files).
-- **Data format (ZON, TOON, PLOON)**: Use **toon-formatter** skill for token-saving formats; see `claude/docs/toon.md`.
 - **Model parameters**: Evidence-based tuning by task type in `claude/docs/llm-tuning.md`.
-- **MCP without context bloat**: Use **mcp-mode** skill for many-tool servers; see `claude/rules/mcp.md`.
-- **Skill token efficiency**: **skill-optimizer** skill (progressive disclosure, 500-line rule).
-- **Markdown consistency**: **manage-markdown-docs** skill for non-SKILL and agent markdown (headers, footers, metadata).
-- **Tool substitution**: **modern-tool-substitution** skill (fd, rg, bun, uv in generated code); aligns with Tool Preferences above.
-- **Hooks**: **hooks-configuration** skill for hook lifecycle and config; see `claude/docs/hooks.md`.
-- **TOON reference**: **ref-toon-format**, **use-toon** skills; `claude/docs/toon.md`; `claude/scripts/validate-toon.py`.
+- **Tool substitution**: fd/rg/bun/uv in generated code - see Tool Preferences above and the vault's Modern Tool Substitution note.
+- **Hooks**: hook lifecycle and config - see `claude/docs/hooks.md` and `claude/settings.json`.
 - **CLAUDE.md guide**: `claude/docs/claude-md-guide.md` for authoring best practices and scoring rubric.
 
 ## Session Management

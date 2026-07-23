@@ -7,16 +7,22 @@ paths:
 
 ## Required Structure
 
-Every SKILL.md must have YAML frontmatter:
+Every SKILL.md follows the Agent Skills standard (agentskills.io). Required frontmatter:
 
 ```yaml
 ---
-name: skill-name # Unique, kebab-case
-description: Brief desc # What the skill provides
+name: skill-name # Unique, kebab-case, max 64 chars
+description: > # Purpose, YAML folded scalar, max 1024 chars
+  Brief description of what this skill does and when to use it.
 ---
 ```
 
-Optional fields: `disable-model-invocation`, `model`, `allowed-tools`, `user-invocable`
+Optional fields: `disable-model-invocation`, `model`, `allowed-tools` (space-delimited, not a YAML array),
+`user-invocable`, `license` (default Apache-2.0), `compatibility`, `metadata` (map of quoted-string
+key/value pairs: `version`, `category`, `status`, `updated`, `tags`, `author`).
+
+Format rules: `allowed-tools: Read Grep Glob Bash` not `[Read, Grep, Glob, Bash]`; metadata values
+always quoted strings (`version: "1.0.0"` not `1.0.0`).
 
 ## File Organization
 
@@ -57,6 +63,22 @@ Use `$ARGUMENTS` placeholder for user input.
 | Read-Only    | Read, Grep, Glob                          |
 | Modification | Read, Grep, Edit, Bash                    |
 | Full Access  | Read, Grep, Glob, Edit, Write, Bash, Task |
+
+By category (foundation/workflow/domain/language skills - see `metadata.category`):
+
+- **Foundation**: Read, Grep, Glob, Context7 MCP only. Never Bash/Task.
+- **Workflow**: Read, Write, Edit, Grep, Glob, Bash, TodoWrite. AskUserQuestion/Task for orchestrators only.
+- **Domain / Language**: Read, Grep, Glob, Bash; Write/Edit only for implementation tasks. Never AskUserQuestion/Task.
+
+## Progressive Disclosure
+
+Three-level loading for token efficiency:
+
+1. **Metadata** (~100 tokens): name, description, triggers - always loaded for skills in agent frontmatter.
+2. **Body** (~5000 tokens): full SKILL.md content - loaded when trigger conditions match.
+3. **Bundled** (variable): `references/`, `scripts/`, examples - loaded on-demand by Claude.
+
+Keep SKILL.md itself under 500 lines; push detail into `references/` for level-3 loading.
 
 ## Debugging Skills
 

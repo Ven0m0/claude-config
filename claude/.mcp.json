@@ -10,22 +10,6 @@
       "url": "https://mcp.grep.app",
       "enabled": true
     },
-    "web-search": {
-      "enabled": false,
-      "type": "http",
-      "url": "https://api.z.ai/api/mcp/web_search_prime/mcp",
-      "headers": {
-        "Authorization": "Bearer $Z_AI_API_KEY"
-      }
-    },
-    "zread": {
-      "enabled": false,
-      "type": "http",
-      "url": "https://api.z.ai/api/mcp/zread/mcp",
-      "headers": {
-        "Authorization": "Bearer $Z_AI_API_KEY"
-      }
-    },
     "web-reader": {
       "type": "http",
       "url": "https://api.z.ai/api/mcp/web_reader/mcp",

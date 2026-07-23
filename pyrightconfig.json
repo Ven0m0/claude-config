@@ -1,0 +1,16 @@
+{
+  "typeCheckingMode": "standard",
+  "reportMissingImports": "warning",
+  "reportMissingModuleSource": "warning",
+  "reportAny": false,
+  "reportExplicitAny": false,
+  "reportUnknownMemberType": false,
+  "reportUnknownVariableType": false,
+  "reportUnknownArgumentType": false,
+  "reportUnknownParameterType": false,
+  "reportUnknownLambdaType": false,
+  "reportMissingParameterType": false,
+  "reportUnusedCallResult": false,
+  "reportUnannotatedClassAttribute": false,
+  "reportImplicitOverride": false
+}
