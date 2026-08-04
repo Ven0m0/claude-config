@@ -1,0 +1,7 @@
+{
+  "name": "ven0m0-ocx-registry",
+  "private": true,
+  "scripts": {
+    "build": "ocx build . --out dist"
+  }
+}

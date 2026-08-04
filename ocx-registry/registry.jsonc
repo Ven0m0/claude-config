@@ -1,0 +1,224 @@
+{
+	// Ven0m0 personal OCX registry
+	// Components sourced from ~/.kilo/skills, ~/.claude/agents, ~/.claude/commands,
+	// and claude-config/opencode/plugins.
+	"$schema": "https://ocx.kdco.dev/schemas/v2/registry.json",
+	"name": "Ven0m0 Registry",
+	"version": "1.0.0",
+	"author": "Ven0m0",
+
+	"components": [
+		// ============================================================================
+		// SKILLS
+		// ============================================================================
+		{
+			"name": "cavecrew",
+			"type": "skill",
+			"description": "Decision guide for delegating to caveman-style subagents (investigator/builder/reviewer) instead of doing work inline.",
+			"files": ["skills/cavecrew/SKILL.md", "skills/cavecrew/README.md"]
+		},
+		{
+			"name": "caveman",
+			"type": "skill",
+			"description": "Switch caveman response-compression intensity level (lite/full/ultra/wenyan).",
+			"files": ["skills/caveman/SKILL.md", "skills/caveman/README.md"]
+		},
+		{
+			"name": "caveman-commit",
+			"type": "skill",
+			"description": "Generate terse caveman-style commit messages.",
+			"files": ["skills/caveman-commit/SKILL.md", "skills/caveman-commit/README.md"]
+		},
+		{
+			"name": "caveman-compress",
+			"type": "skill",
+			"description": "Compress natural language memory files (CLAUDE.md, todos, preferences) into caveman format to save input tokens.",
+			"files": [
+				"skills/caveman-compress/SKILL.md",
+				"skills/caveman-compress/README.md",
+				"skills/caveman-compress/SECURITY.md",
+				"skills/caveman-compress/scripts/__init__.py",
+				"skills/caveman-compress/scripts/__main__.py",
+				"skills/caveman-compress/scripts/benchmark.py",
+				"skills/caveman-compress/scripts/cli.py",
+				"skills/caveman-compress/scripts/compress.py",
+				"skills/caveman-compress/scripts/detect.py",
+				"skills/caveman-compress/scripts/validate.py"
+			]
+		},
+		{
+			"name": "caveman-help",
+			"type": "skill",
+			"description": "Quick-reference card for all caveman modes, skills, and commands.",
+			"files": ["skills/caveman-help/SKILL.md", "skills/caveman-help/README.md"]
+		},
+		{
+			"name": "caveman-review",
+			"type": "skill",
+			"description": "One-line code review comments in caveman style.",
+			"files": ["skills/caveman-review/SKILL.md", "skills/caveman-review/README.md"]
+		},
+		{
+			"name": "caveman-stats",
+			"type": "skill",
+			"description": "Real session token usage, lifetime savings, and USD cost, with a tweetable share line.",
+			"files": ["skills/caveman-stats/SKILL.md", "skills/caveman-stats/README.md"]
+		},
+		{
+			"name": "create-pull-request",
+			"type": "skill",
+			"description": "Guided workflow for opening a well-formed pull request.",
+			"files": ["skills/create-pull-request/SKILL.md"]
+		},
+
+		// ============================================================================
+		// AGENTS
+		// ============================================================================
+		{
+			"name": "code-reviewer",
+			"type": "agent",
+			"description": "Read-only code review for PowerShell scripts and repository changes; checks CI compliance before merging.",
+			"files": ["agents/code-reviewer.md"]
+		},
+		{
+			"name": "config-deployer",
+			"type": "agent",
+			"description": "Dotfile/config deployment, tracked configuration management, and dotbot manifest maintenance.",
+			"files": ["agents/config-deployer.md"]
+		},
+		{
+			"name": "database-optimizer",
+			"type": "agent",
+			"description": "Database specialist for schema design, query optimization, indexing strategies, and performance tuning.",
+			"files": ["agents/database-optimizer.md"]
+		},
+		{
+			"name": "devops-automator",
+			"type": "agent",
+			"description": "DevOps engineer for infrastructure automation, CI/CD pipeline development, and cloud operations.",
+			"files": ["agents/devops-automator.md"]
+		},
+		{
+			"name": "documentation-writer",
+			"type": "agent",
+			"description": "Writes and maintains documentation: AGENTS.md, README.md, inline comment-based help, and guidance files. Read-only otherwise.",
+			"files": ["agents/documentation-writer.md"]
+		},
+		{
+			"name": "explore-codebase",
+			"type": "agent",
+			"description": "Fast read-only exploration across git repos and plain file trees: architecture mapping, file/pattern search, git history digging.",
+			"files": ["agents/explore-codebase.md"]
+		},
+		{
+			"name": "git-workflow-master",
+			"type": "agent",
+			"description": "Git workflows, branching strategies, conventional commits, rebasing, worktrees, and CI-friendly branch management.",
+			"files": ["agents/git-workflow-master.md"]
+		},
+		{
+			"name": "powershell-agent",
+			"type": "agent",
+			"description": "PowerShell script authoring and maintenance, cross-platform/cloud automation (PS7+, Azure, CI/CD), and module/profile architecture.",
+			"files": ["agents/powershell-agent.md"]
+		},
+		{
+			"name": "security-auditor",
+			"type": "agent",
+			"description": "Security-focused read-only audit for credential leaks, hardcoded paths, unsafe registry ops, and input validation flaws.",
+			"files": ["agents/security-auditor.md"]
+		},
+		{
+			"name": "windows-optimizer",
+			"type": "agent",
+			"description": "Windows system optimization, registry tweaks, debloating, and gaming performance tuning.",
+			"files": ["agents/windows-optimizer.md"]
+		},
+
+		// ============================================================================
+		// COMMANDS
+		// ============================================================================
+		{
+			"name": "audit-security",
+			"type": "command",
+			"description": "Run security checks across the repository for credentials, hardcoded paths, unsafe elevation patterns, and improper registry access.",
+			"files": ["commands/audit-security.md"]
+		},
+		{
+			"name": "backup-configs",
+			"type": "command",
+			"description": "Guide creating a backup of current system state before making significant changes.",
+			"files": ["commands/backup-configs.md"]
+		},
+		{
+			"name": "debloat-windows",
+			"type": "command",
+			"description": "Guide Windows debloating: remove built-in apps, disable unnecessary services and scheduled tasks.",
+			"files": ["commands/debloat-windows.md"]
+		},
+		{
+			"name": "deploy-configs",
+			"type": "command",
+			"description": "Deploy dotfiles using dotbot or Scripts/Setup-Dotfiles.ps1, full deployment or targeted config groups.",
+			"files": ["commands/deploy-configs.md"]
+		},
+		{
+			"name": "invoke-scriptanalyzer",
+			"type": "command",
+			"description": "Run PSScriptAnalyzer on PowerShell scripts using the repository settings file.",
+			"files": ["commands/invoke-scriptanalyzer.md"]
+		},
+		{
+			"name": "lint-guidance",
+			"type": "command",
+			"description": "Validate AI guidance files: AGENTS.md, .claude/ skills/agents/rules/commands, and .github/ workflows.",
+			"files": ["commands/lint-guidance.md"]
+		},
+		{
+			"name": "migrate-config",
+			"type": "command",
+			"description": "Migrate legacy config files into the current tracked dotfiles layout and update the dotbot manifest.",
+			"files": ["commands/migrate-config.md"]
+		},
+		{
+			"name": "optimize-repository",
+			"type": "command",
+			"description": "Analyze the repository for dead code, duplicate logic, unused dependencies, and structural inefficiencies.",
+			"files": ["commands/optimize-repository.md"]
+		},
+		{
+			"name": "review-code",
+			"type": "command",
+			"description": "Structured code review of PowerShell scripts: PSScriptAnalyzer compliance, Common.ps1 usage, ShouldProcess, error handling, style.",
+			"files": ["commands/review-code.md"]
+		},
+		{
+			"name": "sync-configs",
+			"type": "command",
+			"description": "Pull latest dotfile changes from remote and redeploy updated configs.",
+			"files": ["commands/sync-configs.md"]
+		},
+		{
+			"name": "test-environment",
+			"type": "command",
+			"description": "Check that the local environment meets all prerequisites for running the dotfiles scripts.",
+			"files": ["commands/test-environment.md"]
+		},
+		{
+			"name": "validate-changes",
+			"type": "command",
+			"description": "Run pre-commit validation: PSScriptAnalyzer on changed .ps1 files, XML validation, guidance lint.",
+			"files": ["commands/validate-changes.md"]
+		},
+
+		// ============================================================================
+		// PLUGINS
+		// ============================================================================
+		{
+			"name": "trim-tool-name",
+			"type": "plugin",
+			"description": "Trims whitespace from tool names before execution.",
+			"files": ["plugins/trim-tool-name.js"]
+		}
+	]
+}
