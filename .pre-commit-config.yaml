@@ -35,7 +35,7 @@ repos:
     hooks:
       - id: basedpyright
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.1
+    rev: v0.16.2
     hooks:
       - id: ruff-check
         args: [--fix]
@@ -55,12 +55,12 @@ repos:
     hooks:
       - id: pyupgrade
   - repo: https://github.com/avifenesh/agnix
-    rev: v0.45.0
+    rev: v0.48.0
     hooks:
       - id: agnix
       - id: agnix-fix
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.37.4
+    rev: 0.38.0
     hooks:
       - id: check-dependabot
       - id: check-github-actions
