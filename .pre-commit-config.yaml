@@ -31,11 +31,11 @@ repos:
       - id: fix-byte-order-marker
       - id: mixed-line-ending
   - repo: https://github.com/DetachHead/basedpyright-prek-mirror
-    rev: 1.39.9
+    rev: 1.39.10
     hooks:
       - id: basedpyright
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.2
+    rev: v0.16.3
     hooks:
       - id: ruff-check
         args: [--fix]
