@@ -24,7 +24,7 @@
     "@biomejs/biome": "2.5.7",
     "@opencode-ai/plugin": "^1.18.4",
     "@types/bun": "^1.3.14",
-    "agnix": "0.47.0",
+    "agnix": "0.48.0",
     "claude-code-lint": "^0.7.0",
     "mitata": "^1.0.34",
     "oxfmt": "0.62.0",
