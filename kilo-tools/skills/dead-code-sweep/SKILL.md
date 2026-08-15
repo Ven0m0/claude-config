@@ -10,8 +10,8 @@ Finds unreferenced code using two complementary tools and removes confirmed dead
 ## Step 1 - Run scanners
 
 ```bash
-uv run deadcode src/ 2>&1
-uv run vulture src/ --min-confidence 80 2>&1
+uvx deadcode . 2>&1
+uvx vulture --min-confidence 80 . 2>&1
 ```
 
 ## Step 2 - Filter false positives
