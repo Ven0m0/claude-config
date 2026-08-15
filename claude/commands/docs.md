@@ -1,6 +1,5 @@
 ---
 description: Intelligently manage project documentation by analyzing changes and updating all relevant docs
-category: documentation
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 
