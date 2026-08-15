@@ -1,7 +1,6 @@
 ---
 name: reverse-engineer
 description: Reverse-engineering specialist for authorized binary analysis, decompilation, and defensive security research.
-allowed-tools: Read, Grep, Glob, Bash
 model: opus
 ---
 
