@@ -1,6 +1,5 @@
 ---
 description: Analyze GitHub issues to create detailed implementation plans with requirements and technical approach
-version: 1.0.0
 ---
 
 # Issue Analyzer
