@@ -1,6 +1,5 @@
 ---
 description: Clean up code, artifacts, branches, context, and comments. Consolidates technical debt removal, branch management, and context optimization.
-category: utilities-maintenance
 allowed-tools: Read, Edit, Bash(git *), Bash(rm *), Grep, Glob
 ---
 
