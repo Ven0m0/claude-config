@@ -12,6 +12,6 @@
     "skipLibCheck": true,
     "types": ["bun"]
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "**/*.js"],
   "exclude": ["node_modules"]
 }
