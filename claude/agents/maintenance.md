@@ -1,7 +1,6 @@
 ---
 name: maintenance
 description: Removes safe tech debt, dead code, and workflow friction while preserving required framework behavior.
-allowed-tools: Read, Edit, Grep, Glob, Bash
 model: sonnet
 ---
 
