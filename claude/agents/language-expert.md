@@ -1,7 +1,6 @@
 ---
 name: language-expert
 description: Multi-language implementation specialist for Bash, Python, JavaScript, TypeScript, and Rust with idiomatic patterns and modern tooling.
-allowed-tools: Read, Edit, Grep, Glob, Bash
 model: sonnet
 ---
 
