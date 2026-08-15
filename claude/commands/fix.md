@@ -1,6 +1,5 @@
 ---
 description: Comprehensive error resolution and self-healing. Analyzes errors, suggests fixes, and automatically recovers from common issues.
-category: utilities-debugging
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 
