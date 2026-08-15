@@ -1,4 +1,5 @@
 ---
+name: code-reviewer
 description: Read-only code review for PowerShell scripts and repository changes. Use when asked to review, audit, or check CI compliance of .ps1 files before merging. Does not make changes.
 mode: subagent
 ---

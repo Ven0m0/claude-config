@@ -1,4 +1,5 @@
 ---
+name: explore-codebase
 description: Fast read-only exploration across git repos and plain file trees. Maps architecture, finds files, searches patterns/symbols, inspects git history. Token-optimized via rtk output suppression. Use for "where is X", "how does Y work", "what calls Z", directory mapping, and git blame/log digging. Never modifies files.
 mode: subagent
 ---

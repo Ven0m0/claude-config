@@ -1,4 +1,5 @@
 ---
+name: powershell-agent
 description: PowerShell script authoring and maintenance — Win dotfiles repo scripts, cross-platform/cloud automation (PS7+, Azure, CI/CD), and module/profile architecture. Use for writing or refactoring Scripts/*.ps1, adding error handling, writing Pester tests, designing reusable modules, or building PS7+ automation for Azure/M365/GitHub Actions.
 mode: subagent
 ---

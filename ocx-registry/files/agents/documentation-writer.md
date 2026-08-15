@@ -1,4 +1,5 @@
 ---
+name: documentation-writer
 description: Write and maintain documentation. Use for updating AGENTS.md, README.md, inline comment-based help in PowerShell functions, and .claude/ guidance files. Does not run shell commands.
 mode: subagent
 ---

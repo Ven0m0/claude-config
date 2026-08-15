@@ -1,4 +1,5 @@
 ---
+name: windows-optimizer
 description: Windows system optimization, registry tweaks, debloating, and gaming performance tuning. Use for scripts that modify HKLM/HKCU, remove Windows apps, manage services/tasks, tune NVIDIA/GPU settings, or apply gaming optimizations.
 mode: subagent
 ---

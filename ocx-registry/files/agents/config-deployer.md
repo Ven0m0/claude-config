@@ -1,4 +1,5 @@
 ---
+name: config-deployer
 description: Dotfile/config deployment, tracked configuration management, and dotbot manifest maintenance. Use for edits to install.conf.yaml, Scripts/Setup-Dotfiles.ps1, or files under user/.dotfiles/config/.
 mode: subagent
 ---
