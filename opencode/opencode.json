@@ -5,7 +5,7 @@
   "agent": {
     "build": {
       "model": "opencode/deepseek-v4-flash-free",
-      "temperature": 0.1,
+      "temperature": 0.35,
       "options": {
         "reasoningEffort": "high",
         "reasoningSummary": "auto",
@@ -14,7 +14,7 @@
     },
     "coder": {
       "model": "opencode/deepseek-v4-flash-free",
-      "temperature": 0.1,
+      "temperature": 0.3,
       "options": {
         "reasoningEffort": "medium",
         "reasoningSummary": "auto",
@@ -128,7 +128,8 @@
     "@gotgenes/opencode-agent-identity@3.0.1",
     "opencode-session-handoff@1.1.6",
     "opencode-websearch@0.5.0",
-    "@kilocode/kilo-indexing@latest"
+    "@kilocode/kilo-indexing@latest",
+    "opencode-ascii"
   ],
   "lsp": {
     "typescript": {
