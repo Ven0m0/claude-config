@@ -9,16 +9,7 @@
 .claudelint-cache
 **/.claudelint-cache
 .codegraph/
-MEMORY.md
-USER.md
-SCRATCHPAD*.md
-WORKING*.md
-TASK-QUEUE.md
-memory/
-knowledge/
-plans/
-tenants/
-hipocampus.config.json
+.serena/
 
 # API keys and secrets
 .claude/settings/api_settings.json
