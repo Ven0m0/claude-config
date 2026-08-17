@@ -1,0 +1,15 @@
+{
+  "checks": ["commands", "tokens", "contradictions", "frontmatter", "redundancy"],
+  "ignore": [],
+  "strict": true,
+  "mcp": false,
+  "tokenThresholds": {
+    "info": 1000,
+    "warning": 5000,
+    "error": 10000,
+    "aggregate": 30000,
+    "tierBreakdown": 5000,
+    "tierAggregate": 30000
+  },
+  "contextFiles": ["AGENTS.md", "claude/CLAUDE.md", "claude/*/*.md", "github/instructions/*.md"]
+}
