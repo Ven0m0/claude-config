@@ -6,6 +6,7 @@
   "scripts": {
     "lint:claude": "claudelint check-all",
     "lint:claude:fix": "claudelint format --fix",
+    "lint:ctx": "ctxlint --strict",
     "lint:biome": "bunx @biomejs/biome check .",
     "lint:biome:fix": "bunx @biomejs/biome check --write .",
     "lint:oxlint": "bunx oxlint .",
