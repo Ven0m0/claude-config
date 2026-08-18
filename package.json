@@ -26,7 +26,7 @@
     "@opencode-ai/plugin": "^1.18.4",
     "@types/bun": "^1.3.14",
     "agnix": "^0.48.1",
-    "@yawlabs/ctxlint" "^0.23.0",
+    "@yawlabs/ctxlint": "^0.23.0",
     "claude-code-lint": "^0.8.0",
     "mitata": "^1.0.34",
     "oxfmt": "0.63.0",
