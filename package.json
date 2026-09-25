@@ -29,7 +29,7 @@
     "@yawlabs/ctxlint": "^0.27.2",
     "claude-code-lint": "^0.9.0",
     "mitata": "^1.0.34",
-    "oxfmt": "0.68.0",
+    "oxfmt": "0.70.0",
     "oxlint": "^1.78.0",
     "ultracite": "^7.9.4"
   }
