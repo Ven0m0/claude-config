@@ -38,7 +38,7 @@ jobs:
           chmod +x shfmt
           sudo mv shfmt /usr/local/bin/
       - name: Install repository toolchain
-        uses: jdx/mise-action@v4
+        uses: jdx/mise-action@v5
         with:
           install: true
           cache: true
