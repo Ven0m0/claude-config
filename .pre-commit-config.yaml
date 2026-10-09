@@ -31,11 +31,11 @@ repos:
       - id: fix-byte-order-marker
       - id: mixed-line-ending
   - repo: https://github.com/DetachHead/basedpyright-prek-mirror
-    rev: 1.40.1
+    rev: 1.40.2
     hooks:
       - id: basedpyright
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.9
+    rev: v0.17.0
     hooks:
       - id: ruff-check
         args: [--fix]
@@ -51,11 +51,11 @@ repos:
     hooks:
       - id: yamlfmt
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.21.2
+    rev: v3.22.0
     hooks:
       - id: pyupgrade
   - repo: https://github.com/avifenesh/agnix
-    rev: v0.56.0
+    rev: v0.57.0
     hooks:
       - id: agnix
       - id: agnix-fix
