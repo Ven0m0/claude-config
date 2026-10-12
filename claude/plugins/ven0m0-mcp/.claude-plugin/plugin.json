@@ -1,0 +1,8 @@
+{
+  "name": "ven0m0-mcp",
+  "version": "1.0.0",
+  "description": "MCP servers: grep.app",
+  "author": { "name": "Ven0m0" },
+  "repository": "https://github.com/Ven0m0/claude-config",
+  "license": "MIT"
+}

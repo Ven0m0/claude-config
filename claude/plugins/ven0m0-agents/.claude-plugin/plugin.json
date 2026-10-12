@@ -1,0 +1,8 @@
+{
+  "name": "ven0m0-agents",
+  "version": "1.0.0",
+  "description": "Custom agents: explore-codebase, general-purpose, language-expert, maintenance, reverse-engineer",
+  "author": { "name": "Ven0m0" },
+  "repository": "https://github.com/Ven0m0/claude-config",
+  "license": "MIT"
+}

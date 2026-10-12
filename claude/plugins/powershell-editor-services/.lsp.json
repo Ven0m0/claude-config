@@ -1,0 +1,22 @@
+{
+  "powershell": {
+    "command": "pwsh",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-Command",
+      "$module = Get-Module -ListAvailable PowerShellEditorServices | Sort-Object Version -Descending | Select-Object -First 1; if (-not $module) { throw 'PowerShellEditorServices is not installed. Run: Install-Module -Name PowerShellEditorServices -Scope CurrentUser' }; Import-Module $module.Path; Start-EditorServices -HostName 'Claude Code' -HostProfileId 'ClaudeCode' -HostVersion '1.0.0' -Stdio -BundledModulesPath (Split-Path $module.Path) -SessionDetailsPath ([System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), \"pses-claude-$PID.json\")) -LogPath ([System.IO.Path]::GetTempPath()) -LogLevel 'None' -EnableConsoleRepl"
+    ],
+    "extensionToLanguage": {
+      ".ps1": "powershell",
+      ".psm1": "powershell",
+      ".psd1": "powershell"
+    },
+    "transport": "stdio",
+    "initializationOptions": {},
+    "settings": {},
+    "startupTimeout": 120000,
+    "shutdownTimeout": 20000,
+    "maxRestarts": 3
+  }
+}

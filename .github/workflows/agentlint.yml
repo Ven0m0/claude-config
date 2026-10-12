@@ -1,11 +1,8 @@
 name: Lint LLM config files
-
 on:
   workflow_dispatch:
-
 permissions:
   contents: read
-
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -14,14 +11,11 @@ jobs:
         uses: actions/checkout@v7
       - name: Set up uv
         uses: astral-sh/setup-uv@v10.3.0
-
       - name: Run claudelint
         run: uvx "claudelint" --strict .
-  
       - name: Validate Claude Code agent configs
         uses: agent-sh/agnix@v0
         with:
           target: 'claude-code'
-
       - name: Lint AI context files
         run: npx -y @yawlabs/ctxlint --strict --yes

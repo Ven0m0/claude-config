@@ -1,0 +1,8 @@
+{
+  "name": "ven0m0-commands",
+  "version": "1.0.0",
+  "description": "Slash commands: analyze-issue, ci-gen, clean, dependency-audit, docs, fix, pipeline-optimize",
+  "author": { "name": "Ven0m0" },
+  "repository": "https://github.com/Ven0m0/claude-config",
+  "license": "MIT"
+}

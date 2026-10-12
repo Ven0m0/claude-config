@@ -1,0 +1,8 @@
+{
+  "name": "ven0m0-lsp",
+  "version": "1.0.0",
+  "description": "Language server configs for bash, fish, python, typescript, rust, toml, json, yaml, html, css, dockerfile, markdown",
+  "author": { "name": "Ven0m0" },
+  "repository": "https://github.com/Ven0m0/claude-config",
+  "license": "MIT"
+}

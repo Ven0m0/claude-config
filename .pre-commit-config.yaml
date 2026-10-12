@@ -58,6 +58,7 @@ repos:
     rev: v0.57.0
     hooks:
       - id: agnix
+        args: []
       - id: agnix-fix
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: 0.38.2

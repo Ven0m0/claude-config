@@ -30,13 +30,13 @@
       "tools": ["*"]
     },
     "serena": {
-      "type": "local",
+      "type": "stdio",
       "tools": ["*"],
       "command": "uvx",
       "args": ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--project-from-cwd"]
     },
     "morph-mcp": {
-      "type": "local",
+      "type": "stdio",
       "tools": ["*"],
       "command": "npx",
       "args": ["-y", "@morphllm/morphmcp"],

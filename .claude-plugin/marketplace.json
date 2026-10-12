@@ -131,6 +131,72 @@
       "source": "claude-code-tools",
       "keywords": ["tmux", "session", "google", "hooks", "tools", "productivity"],
       "category": "productivity"
+    },
+    {
+      "name": "powershell-editor-services",
+      "description": "PowerShell LSP via PowerShellEditorServices. Fork of Piebald claude-code-lsps with -LogPath fixed for Windows",
+      "version": "0.1.1",
+      "author": {
+        "name": "Ven0m0"
+      },
+      "homepage": "https://github.com/PowerShell/PowerShellEditorServices",
+      "repository": "https://github.com/Ven0m0/claude-config",
+      "license": "MIT",
+      "source": "./claude/plugins/powershell-editor-services",
+      "keywords": ["powershell", "ps1", "lsp", "language-server"],
+      "category": "development"
+    },
+    {
+      "name": "ven0m0-agents",
+      "description": "Custom agents: explore-codebase, general-purpose, language-expert, maintenance, reverse-engineer",
+      "version": "1.0.0",
+      "author": {
+        "name": "Ven0m0"
+      },
+      "repository": "https://github.com/Ven0m0/claude-config",
+      "license": "MIT",
+      "source": "./claude/plugins/ven0m0-agents",
+      "keywords": ["agents", "subagents"],
+      "category": "development"
+    },
+    {
+      "name": "ven0m0-commands",
+      "description": "Slash commands: analyze-issue, ci-gen, clean, dependency-audit, docs, fix, pipeline-optimize",
+      "version": "1.0.0",
+      "author": {
+        "name": "Ven0m0"
+      },
+      "repository": "https://github.com/Ven0m0/claude-config",
+      "license": "MIT",
+      "source": "./claude/plugins/ven0m0-commands",
+      "keywords": ["commands", "slash-commands"],
+      "category": "development"
+    },
+    {
+      "name": "ven0m0-lsp",
+      "description": "Language server configs for bash, fish, python, typescript, rust, toml, json, yaml, html, css, dockerfile, markdown",
+      "version": "1.0.0",
+      "author": {
+        "name": "Ven0m0"
+      },
+      "repository": "https://github.com/Ven0m0/claude-config",
+      "license": "MIT",
+      "source": "./claude/plugins/ven0m0-lsp",
+      "keywords": ["lsp", "language-server"],
+      "category": "development"
+    },
+    {
+      "name": "ven0m0-mcp",
+      "description": "MCP servers: grep.app",
+      "version": "1.0.0",
+      "author": {
+        "name": "Ven0m0"
+      },
+      "repository": "https://github.com/Ven0m0/claude-config",
+      "license": "MIT",
+      "source": "./claude/plugins/ven0m0-mcp",
+      "keywords": ["mcp", "grep"],
+      "category": "development"
     }
   ]
 }

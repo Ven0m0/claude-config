@@ -7,6 +7,7 @@ description: >-
   "Push this live". No authentication required - returns preview URL and
   claimable deployment link.
 license: MIT
+disable-model-invocation: true
 metadata:
   author: vercel
   version: 1.0.0

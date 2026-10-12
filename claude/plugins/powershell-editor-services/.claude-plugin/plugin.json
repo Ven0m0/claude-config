@@ -1,0 +1,9 @@
+{
+  "name": "powershell-editor-services",
+  "version": "0.1.1",
+  "description": "PowerShell language server (PowerShellEditorServices) with Windows-safe log path",
+  "author": { "name": "Ven0m0" },
+  "repository": "https://github.com/Ven0m0/claude-config",
+  "license": "MIT",
+  "keywords": ["powershell", "ps1", "lsp", "language-server"]
+}
