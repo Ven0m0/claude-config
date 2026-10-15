@@ -30,7 +30,7 @@
   "prHourlyLimit": 0,
   "rangeStrategy": "bump",
   "constraints": {
-    "python": "<3.15"
+    "python": "<3.16"
   },
   "pre-commit": {
     "enabled": true
