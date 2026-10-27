@@ -35,7 +35,7 @@ repos:
     hooks:
       - id: basedpyright
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.17.1
+    rev: v0.17.3
     hooks:
       - id: ruff-check
         args: [--fix]
@@ -46,22 +46,18 @@ repos:
     rev: v1.7.12
     hooks:
       - id: actionlint
-  - repo: https://github.com/google/yamlfmt
-    rev: v0.21.0
-    hooks:
-      - id: yamlfmt
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.22.0
     hooks:
       - id: pyupgrade
   - repo: https://github.com/avifenesh/agnix
-    rev: v0.59.0
+    rev: v0.59.3
     hooks:
       - id: agnix
         args: []
       - id: agnix-fix
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.38.2
+    rev: 0.39.0
     hooks:
       - id: check-dependabot
       - id: check-github-actions
