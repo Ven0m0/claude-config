@@ -44,12 +44,12 @@ const GitingestPlugin: Plugin = async () => ({
   tool: {
     gitingest: tool({
       description:
-        "Fetch a GitHub repository's full content via gitingest.com. Returns summary, directory tree, and file contents optimized for LLM analysis. Use when you need to understand an external repository's structure or code.",
+        "Fetch a GitHub repo as summary+tree+content for analysis.",
       args: {
-        url: tool.schema.string().describe("GitHub repository URL (e.g., https://github.com/owner/repo)"),
-        maxFileSize: tool.schema.number().optional().describe("Max file size in bytes (default: 50000)"),
-        pattern: tool.schema.string().optional().describe("Glob pattern to filter files"),
-        patternType: tool.schema.enum(["include", "exclude"]).optional().describe("Pattern mode (default: exclude)"),
+        url: tool.schema.string().describe("GitHub repo URL"),
+        maxFileSize: tool.schema.number().optional().describe("Bytes, default 50000"),
+        pattern: tool.schema.string().optional().describe("Glob"),
+        patternType: tool.schema.enum(["include", "exclude"]).optional().describe("Default exclude"),
       },
       async execute(args) {
         return fetchGitingest(args);

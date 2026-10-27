@@ -181,16 +181,13 @@ function formatSearchResult(r: Awaited<ReturnType<typeof runSg>>): string {
 }
 
 const search = tool({
-  description: "AST structural code search via ast-grep CLI. Use meta-vars: $VAR (single node), $$$ (multiple). Preferred over grep for code patterns.",
+  description: "AST structural code search (ast-grep). Meta-vars: $VAR (one node), $$$ (many). Prefer over grep for code patterns.",
   args: {
-    lang: tool.schema.string().optional().describe("Language (e.g. python, typescript, rust)."),
-    paths: tool.schema.array(tool.schema.string()).optional().describe("File paths to search."),
-    pattern: tool.schema.string().describe("AST pattern to match."),
-    rewrite: tool.schema.string().optional().describe("Rewrite pattern for sgr."),
-    globs: tool.schema.array(tool.schema.string()).optional().describe("Glob patterns."),
-    context: tool.schema.number().optional().describe("Lines of context."),
-    dryRun: tool.schema.boolean().optional().describe("Dry run for sgr."),
-    include: tool.schema.string().optional().describe("Include glob."),
+    pattern: tool.schema.string(),
+    lang: tool.schema.string().optional().describe("e.g. typescript, python (default javascript)"),
+    paths: tool.schema.array(tool.schema.string()).optional(),
+    globs: tool.schema.array(tool.schema.string()).optional(),
+    context: tool.schema.number().optional().describe("Context lines"),
   },
   async execute(args) {
     const result = await runSg({
@@ -205,15 +202,14 @@ const search = tool({
 });
 
 const replace = tool({
-  description: "AST structural code replace via ast-grep CLI. Dry-run by default.",
+  description: "AST structural code replace (ast-grep). Dry-run by default; set dryRun=false to write.",
   args: {
-    lang: tool.schema.string().optional().describe("Language (e.g. python, typescript, rust)."),
-    paths: tool.schema.array(tool.schema.string()).optional().describe("File paths."),
-    pattern: tool.schema.string().describe("AST pattern to match."),
-    rewrite: tool.schema.string().describe("Rewrite pattern."),
-    globs: tool.schema.array(tool.schema.string()).optional().describe("Glob patterns."),
-    dryRun: tool.schema.boolean().optional().default(true).describe("Dry run (default: true)."),
-    include: tool.schema.string().optional().describe("Include glob."),
+    pattern: tool.schema.string(),
+    rewrite: tool.schema.string().describe("Replacement; may use $VAR/$$$"),
+    lang: tool.schema.string().optional().describe("e.g. typescript, python (default javascript)"),
+    paths: tool.schema.array(tool.schema.string()).optional(),
+    globs: tool.schema.array(tool.schema.string()).optional(),
+    dryRun: tool.schema.boolean().optional().default(true),
   },
   async execute(args) {
     if (args.dryRun ?? true) {
