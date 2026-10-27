@@ -54,7 +54,6 @@
   "npm": {
     "managerFilePatterns": ["/.kilo/package.json/", "kilo-tools/package.json/"]
   },
-  "postUpdateOptions": ["uvLockUpdate"],
   "packageRules": [
     {
       "description": "Allow Python Docker images >=3.13 but exclude 3.14.x series",
