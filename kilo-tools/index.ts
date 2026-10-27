@@ -10,6 +10,7 @@ import { search as sgSearch, replace as sgReplace } from "./tools/ast_grep.ts";
 import hlEdit from "./tools/hashline_edit.ts";
 import { read as hlRead, grep as hlGrep } from "./tools/hashline_rg.ts";
 import jsonRepair from "./tools/json_repair.ts";
+import { toV2 } from "./v2.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -57,5 +58,6 @@ const KiloToolsPlugin = compose([
   RegisterPlugin,
 ]);
 
-export default KiloToolsPlugin;
+// v2 hosts read id + setup; v1 hosts read server. Both share the same sub-plugins.
+export default { ...toV2(KiloToolsPlugin, join(__dirname, "skills")), server: KiloToolsPlugin };
 export { KiloToolsPlugin };
