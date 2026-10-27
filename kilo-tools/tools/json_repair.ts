@@ -7,42 +7,31 @@ import { extractJson, extractAllJson, stripLlmWrapper } from "repair-json-stream
 const CHUNK = 65536; // 64 KB push chunks for streaming repair
 
 /**
- * Chunked streaming JSON repair — shared with plugins/json-healer.ts.
+ * Chunked streaming JSON repair, shared with plugins/json-healer.ts. `onRepair` receives each
+ * repair the parser applies (used by the verbose mode of the json_repair tool).
  */
-export function streamRepairJson(text: string): string {
-  const r = new IncrementalJsonRepair();
+export function streamRepairJson(text: string, onRepair?: (action: unknown, idx: unknown, ctx: unknown) => void): string {
+  const r = new IncrementalJsonRepair(onRepair ? { onRepair } : undefined);
   let out = "";
   for (let i = 0; i < text.length; i += CHUNK) out += r.push(text.slice(i, i + CHUNK));
   return out + r.end();
 }
 
 const json_repair = tool({
-  description: "Repair malformed/incomplete JSON. Modes: repair|extract|extract_all|strip. Accepts string or file path.",
-
+  description: "Fix malformed JSON from a string or file path. Use whenever JSON fails to parse.",
   args: {
-    input: tool.schema
-      .string()
-      .optional()
-      .describe("Malformed JSON string or file path (absolute or project-relative)."),
+    input: tool.schema.string().optional().describe("JSON string or file path"),
 
-    inputs: tool.schema
-      .array(tool.schema.string())
-      .optional()
-      .describe("Multiple strings/paths — repaired in parallel, returned as JSON array."),
+    inputs: tool.schema.array(tool.schema.string()).optional().describe("Batch; returns JSON array"),
 
     mode: tool.schema
       .enum(["repair", "extract", "extract_all", "strip"])
       .optional()
-      .describe(
-        "repair (default): structural fix. " +
-          "extract: first JSON block from prose/markdown/thinking tags. " +
-          "extract_all: all JSON blocks as array. " +
-          "strip: remove LLM wrappers then repair.",
-      ),
+      .describe("extract/extract_all: pull JSON block(s) from prose; strip: drop LLM wrappers then repair"),
 
-    pretty: tool.schema.boolean().optional().describe("Pretty-print (2-space indent)."),
+    pretty: tool.schema.boolean().optional().describe("2-space indent"),
 
-    verbose: tool.schema.boolean().optional().describe("Return { result, repairs[] } log. repair/strip modes only."),
+    verbose: tool.schema.boolean().optional().describe("Return { result, repairs[] }"),
   },
 
   async execute(args, context) {
@@ -99,11 +88,7 @@ const json_repair = tool({
     function streamRepair(text: string): RepairResult {
       if (verbose) {
         const log: RepairLog[] = [];
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const r = new IncrementalJsonRepair({ onRepair: (a: any, i: any, c: any) => log.push({ action: a, idx: i, ctx: c }) });
-        let out = "";
-        for (let i = 0; i < text.length; i += CHUNK) out += r.push(text.slice(i, i + CHUNK));
-        out += r.end();
+        const out = streamRepairJson(text, (action, idx, ctx) => log.push({ action, idx, ctx }));
         return { result: fmt(out), repairs: log };
       }
       return fmt(streamRepairJson(text));

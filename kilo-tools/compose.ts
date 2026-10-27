@@ -6,11 +6,13 @@ type HookFn = (...args: unknown[]) => unknown;
 /**
  * Compose multiple opencode/kilo Plugin factories into a single Plugin.
  *
- * - `tool` maps are merged (later plugins win on a name collision).
- * - Any other function-valued hook sharing a key (e.g. `tool.execute.after`,
- *   `config`) is chained: each implementation runs in array order, awaited
- *   in sequence, so plugins that mutate the same output (like context-shield
- *   compacting, then json-healer repairing) compose instead of clobbering.
+ * Contract:
+ * - `tool` maps are merged. Two plugins defining the same tool name is a bug, so compose throws
+ *   at setup instead of letting the later one silently win.
+ * - Any other function-valued hook sharing a key (e.g. `tool.execute.after`, `config`) is
+ *   chained: implementations run in array order, each awaited before the next. Return values
+ *   are discarded, so hooks must mutate their arguments in place. Array order is therefore part
+ *   of a plugin's behaviour (context-shield compacts, then json-healer repairs the result).
  * - Non-function values are last-write-wins.
  */
 export function compose(plugins: Plugin[]): Plugin {
@@ -21,7 +23,11 @@ export function compose(plugins: Plugin[]): Plugin {
     for (const inst of instances) {
       for (const [key, value] of Object.entries(inst)) {
         if (key === "tool") {
-          merged.tool = { ...(merged.tool as PluginInstance | undefined), ...(value as PluginInstance) };
+          const tools = (merged.tool ?? {}) as PluginInstance;
+          for (const name of Object.keys(value as PluginInstance)) {
+            if (name in tools) throw new Error(`compose: tool "${name}" is defined by more than one plugin`);
+          }
+          merged.tool = { ...tools, ...(value as PluginInstance) };
           continue;
         }
         if (typeof value === "function") {

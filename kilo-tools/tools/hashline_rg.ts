@@ -9,7 +9,7 @@ import { type Dirent, readdirSync, statSync } from "node:fs";
 import { extname, isAbsolute, join, relative, resolve } from "node:path";
 import { tool } from "@opencode-ai/plugin";
 import { spawn } from "bun";
-import { computeHash, formatHashLines } from "./hashline_utils.ts";
+import { formatHashLine, formatHashLines } from "./hashline_utils.ts";
 
 // ── Binary detection ────────────────────────────────────────────────────────
 
@@ -88,14 +88,11 @@ async function dirListing(dir: string, indent = ""): Promise<string> {
 
 const read = tool({
   description:
-    "Read a file with LINE#HASH|content annotations for use with hl_edit. " +
-    "Each line is tagged so you can reference it precisely in edits. " +
-    "Supports pagination via offset/limit for large files. " +
-    "On a directory path, returns a tree listing with file sizes.",
+    "Read file with LINE#HASH|content tags for hl_edit. Directory path returns a tree.",
   args: {
-    filePath: tool.schema.string().describe("Path to a file or directory"),
-    offset: tool.schema.number().optional().describe("Start line (1-indexed, default 1)"),
-    limit: tool.schema.number().optional().describe("Max lines to return (default 2000)"),
+    filePath: tool.schema.string(),
+    offset: tool.schema.number().optional().describe("1-based start line"),
+    limit: tool.schema.number().optional().describe("Default 2000"),
   },
   async execute(args, context) {
     const base = context.directory || context.worktree;
@@ -191,7 +188,7 @@ function formatGrepResults(matches: GrepMatch[], base: string): string {
     .map(([file, ms]) => {
       const lines = [`## ${file}`];
       for (const m of ms.sort((a, b) => a.line - b.line)) {
-        const tag = `${m.line}#${computeHash(m.line, m.content)}|${m.content}`;
+        const tag = formatHashLine(m.line, m.content);
         lines.push(m.isMatch ? `> ${tag}` : `  ${tag}`);
       }
       return lines.join("\n");
@@ -269,14 +266,12 @@ async function fsFallback(pattern: string, searchPath: string, include?: string,
 
 const grep = tool({
   description:
-    "Search files and return results with LINE#HASH|content annotations. " +
-    "Results can be used directly as anchors for hl_edit — no separate read needed. " +
-    "Uses rg (ripgrep) when available, falls back to fs-based search.",
+    "Search files; matches carry LINE#HASH tags usable directly in hl_edit.",
   args: {
-    pattern: tool.schema.string().describe("Regex search pattern"),
-    path: tool.schema.string().optional().describe("Directory or file to search (default: project root)"),
-    include: tool.schema.string().optional().describe("Glob file filter e.g. '*.ts'"),
-    context: tool.schema.number().optional().describe("Context lines around matches (default 2)"),
+    pattern: tool.schema.string().describe("Regex"),
+    path: tool.schema.string().optional().describe("Default project root"),
+    include: tool.schema.string().optional().describe("Glob, e.g. *.ts"),
+    context: tool.schema.number().optional().describe("Default 2"),
   },
   async execute(args, context) {
     const base = context.directory || context.worktree;

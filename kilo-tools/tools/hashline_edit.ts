@@ -1,8 +1,7 @@
 import { tool } from "@opencode-ai/plugin";
-import { computeHash, parseRef, validateHash } from "./hashline_utils.ts";
+import { formatHashLine, HASHLINE_PREFIX, parseRef, validateHash } from "./hashline_utils.ts";
 
 const CTX = 2;
-const HASHLINE_PREFIX = /^\s*(?:>>>|>>)?\s*\d+\s*#\s*[ZPMQVRWSNKTXJBYH]{2}\|/;
 const DIFF_PLUS = /^[+](?![+])/;
 
 // ── Line ref validation ─────────────────────────────────────────────────────
@@ -21,8 +20,7 @@ class HashMismatchError extends Error {
       if (prev !== -1 && l > prev + 1) lines.push("    ...");
       prev = l;
       const c = fileLines[l - 1] ?? "";
-      const h = computeHash(l, c);
-      lines.push(mismatchSet.has(l) ? `>>> ${l}#${h}|${c}` : `    ${l}#${h}|${c}`);
+      lines.push(`${mismatchSet.has(l) ? ">>> " : "    "}${formatHashLine(l, c)}`);
     }
     super(lines.join("\n"));
     this.name = "HashMismatchError";
@@ -299,67 +297,33 @@ function applyLineRange(content: string, startLine: number, endLine: number, new
 
 // ── Tool description ────────────────────────────────────────────────────────
 
-const DESCRIPTION = `Edit files using LINE#ID hash-anchored references (default) or line-number ranges (quick mode).
-
-QUICK MODE — use start_line/end_line/new_code instead of edits[]:
-  Replace lines 5-10: { start_line: 5, end_line: 10, new_code: "..." }
-  Delete lines 5-10:  { start_line: 5, end_line: 10, new_code: "" }
-  Insert before line 5: { start_line: 5, end_line: 4, new_code: "..." }
-
-HASH MODE — use edits[] with LINE#ID anchors (concurrent-safe, prevents stale edits):
-
-WORKFLOW:
-1. Read the file — each line appears as {line}#{hash}|{content}
-2. Copy the exact LINE#ID tags for lines you want to modify
-3. Submit edits referencing those tags
-
-OPERATIONS:
-  replace pos only    → replace single line
-  replace pos+end     → replace range pos..end inclusive (ranges must not overlap)
-  append pos/end      → insert after that line
-  prepend pos/end     → insert before that line
-  append/prepend (no anchor) → insert at EOF/BOF; also creates missing files
-  lines: null with replace → delete those lines
-  delete: true → delete the file (edits must be [])
-
-RULES:
-  - All edits in one call reference the ORIGINAL file state (applied bottom-up automatically)
-  - lines must contain ONLY replacement content — not the surrounding context lines
-  - Never include content after end in lines (it still exists after end — including it duplicates it)
-  - Re-read the file before a second edit call
-
-EXAMPLE (file content after read):
-  10#VK|function hello() {
-  11#XJ|  console.log("hi")
-  12#MB|}
-
-  Single line: { op: "replace", pos: "11#XJ", lines: "  return 42" }
-  Range:       { op: "replace", pos: "10#VK", end: "12#MB", lines: ["function hello() {", "  return 42", "}"] }
-  Insert:      { op: "append", pos: "12#MB", lines: ["", "function world() {}"] }
-  Delete line: { op: "replace", pos: "11#XJ", lines: null }`;
+const DESCRIPTION = `Edit files via LINE#ID anchors from hl_read/hl_grep, or by line range (quick mode).
+Quick: start_line/end_line/new_code. Replace 5-10: 5,10,code. Delete: new_code "". Insert before 5: end_line=4.
+Hash: edits[] with op replace|append|prepend and pos/end tags. replace pos[+end] swaps that line/range (lines null = delete); append/prepend insert after/before pos (no pos = EOF/BOF, creates missing files). delete:true removes the file (edits []).
+All edits in a call use the ORIGINAL file state. lines holds only replacement text, never surrounding context or content after end. Re-read before the next call.`;
 
 // ── Tool export ─────────────────────────────────────────────────────────────
 
 const hl_edit = tool({
   description: DESCRIPTION,
   args: {
-    filePath: tool.schema.string().describe("Absolute path to the file"),
-    delete: tool.schema.boolean().optional().describe("Delete the file (edits must be [])"),
-    rename: tool.schema.string().optional().describe("Move file to this path after edits"),
+    filePath: tool.schema.string().describe("Absolute path"),
+    delete: tool.schema.boolean().optional().describe("Delete file"),
+    rename: tool.schema.string().optional().describe("Move to path after edits"),
     start_line: tool.schema
       .number()
       .min(1)
       .optional()
-      .describe("Quick mode: first line to replace (1-indexed). Omit to use edits[]."),
+      .describe("Quick mode: first line (1-based)"),
     end_line: tool.schema
       .number()
       .min(0)
       .optional()
-      .describe("Quick mode: last line to replace (inclusive). Use start_line-1 to insert without deleting."),
+      .describe("Quick mode: last line, inclusive"),
     new_code: tool.schema
       .string()
       .optional()
-      .describe("Quick mode: replacement content. Empty string to delete the range."),
+      .describe("Quick mode: replacement"),
     edits: tool.schema
       .array(
         tool.schema.object({
@@ -376,7 +340,7 @@ const hl_edit = tool({
         }),
       )
       .optional()
-      .describe("Hash-anchor edit operations. Empty array when delete=true."),
+      .describe("Hash-mode ops"),
   },
   async execute(args) {
     try {

@@ -12,8 +12,14 @@ export const DICT = Array.from({ length: 256 }, (_, i) => `${NIBBLE[i >>> 4]}${N
 /** Regex to detect significant (non-whitespace) content */
 export const RE_SIGNIFICANT = /[\p{L}\p{N}]/u;
 
+/** Source of a 2-char hash, derived from the alphabet so the format has one owner */
+const HASH_PATTERN = `[${NIBBLE}]{2}`;
+
 /** Regex to parse hash references like "42#VK" */
-export const HASH_REF = /^([0-9]+)#([ZPMQVRWSNKTXJBYH]{2})$/;
+export const HASH_REF = new RegExp(`^([0-9]+)#(${HASH_PATTERN})$`);
+
+/** Regex matching a rendered "{line}#{hash}|" prefix, with optional >>> / >> change markers */
+export const HASHLINE_PREFIX = new RegExp(String.raw`^\s*(?:>>>|>>)?\s*\d+\s*#\s*${HASH_PATTERN}\|`);
 
 /**
  * Compute xxHash32-based line hash.
@@ -36,13 +42,18 @@ export function computeLegacyHash(lineNum: number, content: string): string {
 }
 
 /**
- * Format file content with line number and hash annotations.
- * Output format: "{line}#{hash}|{content}"
+ * Render one line as "{line}#{hash}|{content}". Every module that shows or parses anchors
+ * goes through this and HASHLINE_PREFIX, so the format changes in one place.
  */
+export function formatHashLine(lineNum: number, content: string): string {
+  return `${lineNum}#${computeHash(lineNum, content)}|${content}`;
+}
+
+/** Format file content with line number and hash annotations. */
 export function formatHashLines(content: string, startLine = 1): string {
   return content
     .split("\n")
-    .map((line, i) => `${startLine + i}#${computeHash(startLine + i, line)}|${line}`)
+    .map((line, i) => formatHashLine(startLine + i, line))
     .join("\n");
 }
 
@@ -55,7 +66,7 @@ export function normalizeRef(ref: string): string {
   s = s.replace(/\s*#\s*/, "#");
   s = s.replace(/\|.*$/, "").trim();
   if (HASH_REF.test(s)) return s;
-  const m = s.match(/([0-9]+#[ZPMQVRWSNKTXJBYH]{2})/);
+  const m = s.match(new RegExp(`([0-9]+#${HASH_PATTERN})`));
   return m ? m[1] : ref.trim();
 }
 
@@ -72,7 +83,7 @@ export function parseRef(ref: string): { line: number; hash: string } {
   if (hIdx > 0) {
     const pre = n.slice(0, hIdx);
     const suf = n.slice(hIdx + 1);
-    if (!/^\d+$/.test(pre) && /^[ZPMQVRWSNKTXJBYH]{2}$/.test(suf)) {
+    if (!/^\d+$/.test(pre) && new RegExp(`^${HASH_PATTERN}$`).test(suf)) {
       throw new Error(`"${pre}" is not a line number in ref "${ref}"`);
     }
   }
