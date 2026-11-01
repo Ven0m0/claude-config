@@ -2,12 +2,9 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:best-practices",
-    ":configMigration",
     "abandonments:recommended",
     "group:all",
     "packages:linters",
-    "schedule:weekly",
-    ":automergeMinor",
     ":ignoreModulesAndTests",
     "docker:enableMajor",
     "preview:dockerCompose",
@@ -21,12 +18,18 @@
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
-    "extends": ["schedule:monthly"]
+    "automergeType": "branch",
+    "ignoreTests": true,
+    "schedule": ["at any time"],
+    "automergeSchedule": ["at any time"],
+    "minimumReleaseAge": "0 days",
+    "dependencyDashboardApproval": false,
+    "prCreation": "approval"
   },
   "labels": ["dependencies"],
   "timezone": "Europe/Berlin",
   "platformAutomerge": true,
-  "prConcurrentLimit": 5,
+  "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
   "rangeStrategy": "bump",
   "constraints": {
@@ -92,12 +95,6 @@
       "pinDigests": false
     },
     {
-      "description": "Automerge linters at any time, bypassing weekly schedule",
-      "matchCategories": ["linters"],
-      "schedule": ["at any time"],
-      "automerge": true
-    },
-    {
       "description": "Group Python dependencies together",
       "matchDatasources": ["pypi"],
       "groupName": "Python dependencies",
@@ -126,6 +123,18 @@
       "matchPackageNames": ["astral-sh/uv"],
       "groupName": "UV tool",
       "groupSlug": "uv-tool"
+    },
+    {
+      "description": "Apply all eligible updates directly to the base branch without automatic pull requests",
+      "matchPackageNames": ["*"],
+      "automerge": true,
+      "automergeType": "branch",
+      "ignoreTests": true,
+      "schedule": ["at any time"],
+      "automergeSchedule": ["at any time"],
+      "minimumReleaseAge": "0 days",
+      "dependencyDashboardApproval": false,
+      "prCreation": "approval"
     }
   ],
   "customManagers": [
@@ -136,5 +145,17 @@
         "# renovate: datasource=(?<datasource>[^\\s]+) depName=(?<depName>[^\\s]+)(?: version=[^\\s]+)?\\s+[A-Za-z0-9_]+_VERSION:\\s*['\"]?(?<currentValue>[^'\"\\s]+)['\"]?"
       ]
     }
-  ]
+  ],
+  "automergeType": "branch",
+  "ignoreTests": true,
+  "schedule": ["at any time"],
+  "automergeSchedule": ["at any time"],
+  "minimumReleaseAge": "0 days",
+  "dependencyDashboardApproval": false,
+  "prCreation": "approval",
+  "configMigration": false,
+  "branchConcurrentLimit": 0,
+  "vulnerabilityAlerts": {
+    "prCreation": "approval"
+  }
 }
