@@ -30,7 +30,7 @@
     "agnix": "^0.60.0",
     "claude-code-lint": "^0.10.0",
     "mitata": "^1.0.34",
-    "oxfmt": "0.75.0",
+    "oxfmt": "0.76.0",
     "oxlint": "^1.78.0",
     "ultracite": "^8.0.0"
   }
