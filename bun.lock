@@ -14,7 +14,7 @@
         "@opencode/plugin": "2.2.5",
         "@types/bun": "^1.3.14",
         "@yawlabs/ctxlint": "^0.28.0",
-        "agnix": "^0.60.0",
+        "agnix": "^0.61.0",
         "claude-code-lint": "^0.10.0",
         "mitata": "^1.0.34",
         "oxfmt": "0.76.0",
@@ -411,7 +411,7 @@
 
     "agent-base": ["agent-base@7.1.4", "", {}, "sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ=="],
 
-    "agnix": ["agnix@0.60.3", "", { "os": [ "linux", "win32", "darwin", ], "cpu": [ "x64", "arm64", ], "hasInstallScript": true, "bin": { "agnix": "bin/agnix" } }, "sha512-ptkzuiLTyjdNuWLCa6J/pk/fgaIhfpDG6NHL5AilaGZ/Q0Ph1MtzqMzZRboxfpzCsrDtnwtRlpElUx9pTiJUbQ=="],
+    "agnix": ["agnix@0.61.0", "", { "os": [ "linux", "win32", "darwin", ], "cpu": [ "x64", "arm64", ], "hasInstallScript": true, "bin": { "agnix": "bin/agnix" } }, "sha512-G6JRMmpscfuSOxdX92ThnzHRwmxVXoWriF+sTBY3+5599epo+T/OYBvpQFtkx8tYy7Or5pEN5muUdNfSxuNQrQ=="],
 
     "ansi-escapes": ["ansi-escapes@7.3.0", "", { "dependencies": { "environment": "^1.0.0" } }, "sha512-BvU8nYgGQBxcmMuEeUEmNTvrMVjJNSH7RgW24vXexN4Ven6qCvy4TntnvlnwnMLTVlcRQQdbRY8NKnaIoeWDNg=="],
 
