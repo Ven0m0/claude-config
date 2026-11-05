@@ -6,10 +6,11 @@ import {
   isEditTool,
   isReadTool,
   isSubagentTool,
-  normalizeToolName,
   SKIP_COMPACTION_FOR,
   SLIM_DESCRIPTIONS,
+  TOOL,
 } from "../tool-names.ts";
+import { resultText } from "../result-text.ts";
 import { type CompactResult, compactOutput } from "./shield-compact.ts";
 import { createConfigStore } from "./shield-config.ts";
 
@@ -18,24 +19,6 @@ const LINE_RANGE_RE = /^(\d+)(?:\s*-\s*(\d+))?$/;
 
 const TASK_ROUTING_TAG = "CONTEXT-SHIELD SUBAGENT ROUTING";
 const TASK_ROUTING_BLOCK = `${TASK_ROUTING_TAG}: batch independent tool calls; summarize, never dump raw output; final report under 250 words (what you did, findings, file paths).`;
-
-function isToolOutputShape(output: unknown): output is { output: string; metadata?: unknown } {
-  return (
-    !!output &&
-    typeof output === "object" &&
-    "output" in output &&
-    typeof (output as { output: unknown }).output === "string"
-  );
-}
-
-function isMcpResultShape(output: unknown): output is { content: Array<Record<string, unknown>>; metadata?: unknown } {
-  return (
-    !!output &&
-    typeof output === "object" &&
-    "content" in output &&
-    Array.isArray((output as { content: unknown }).content)
-  );
-}
 
 function withShieldMetadata(existing: unknown, result: CompactResult): Record<string, unknown> {
   const metadata = existing && typeof existing === "object" && !Array.isArray(existing) ? existing : {};
@@ -61,7 +44,7 @@ function expandLineRange(content: string, oldString: string): string | undefined
   return undefined;
 }
 
-export const OpenCodeContextShieldPlugin: Plugin = async ({ directory }) => {
+const OpenCodeContextShieldPlugin: Plugin = async ({ directory }) => {
   const store = createConfigStore(directory);
 
   return {
@@ -76,8 +59,6 @@ export const OpenCodeContextShieldPlugin: Plugin = async ({ directory }) => {
 
     // Pre-execution: limit reads, inject task routing, expand line ranges.
     "tool.execute.before": async (input, output) => {
-      if (typeof input.tool === "string") input.tool = normalizeToolName(input.tool);
-
       const config = store.read();
       const args = output.args as Record<string, unknown>;
 
@@ -141,32 +122,18 @@ export const OpenCodeContextShieldPlugin: Plugin = async ({ directory }) => {
       if (!config.enabled || SKIP_COMPACTION_FOR.has(input.tool)) return;
 
       const limits = { thresholdBytes: config.compactThresholdBytes, targetBytes: config.compactTargetBytes };
-      const payload = output as unknown;
-
-      if (isToolOutputShape(payload)) {
-        const compacted = compactOutput({ tool: input.tool, output: payload.output, limits });
-        payload.output = compacted.output;
-        payload.metadata = withShieldMetadata(payload.metadata, compacted);
-        return;
-      }
-
-      if (isMcpResultShape(payload)) {
-        const textParts = payload.content
-          .filter((item) => item["type"] === "text" && typeof item["text"] === "string")
-          .map((item) => item["text"] as string);
-        if (textParts.length === 0) return;
-
-        const compacted = compactOutput({ tool: input.tool, output: textParts.join("\n\n"), limits });
-        if (compacted.compacted) {
-          const nonText = payload.content.filter((item) => item["type"] !== "text");
-          payload.content = [{ type: "text", text: compacted.output }, ...nonText];
-        }
-        payload.metadata = withShieldMetadata(payload.metadata, compacted);
-      }
+      // v1 hosts expect the output object to be mutated in place.
+      const view = resultText(output);
+      if (!view) return;
+      const compacted = compactOutput({ tool: input.tool, output: view.text, limits });
+      const payload = output as Record<string, unknown>;
+      Object.assign(payload, view.withText(compacted.output), {
+        metadata: withShieldMetadata(payload["metadata"], compacted),
+      });
     },
 
     tool: {
-      cshield_toggle: tool({
+      [TOOL.cshieldToggle]: tool({
         description: "Toggle output compaction.",
         args: {
           enabled: tool.schema.boolean().optional().describe("Toggles if omitted"),

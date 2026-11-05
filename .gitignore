@@ -1,5 +1,10 @@
-# Claude runtime state and local config
-.claude/
+# Claude runtime state and local config. Project automation (settings, hooks, skills, agents)
+# is shared; everything else under .claude/ (settings.local.json, state) stays local.
+.claude/*
+!.claude/settings.json
+!.claude/hooks/
+!.claude/skills/
+!.claude/agents/
 .claude.ralph-*.local.md
 .serena/
 !.serena/project.yml

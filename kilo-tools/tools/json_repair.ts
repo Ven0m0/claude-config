@@ -1,21 +1,22 @@
 import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { isAbsolute, join } from "node:path";
 import { tool } from "@opencode-ai/plugin";
-import { IncrementalJsonRepair } from "repair-json-stream/incremental";
-import { extractJson, extractAllJson, stripLlmWrapper } from "repair-json-stream/extract";
-
-const CHUNK = 65536; // 64 KB push chunks for streaming repair
+import { repairJson } from "repair-json-stream";
+import { extractAllJson, extractJson, stripLlmWrapper } from "repair-json-stream/extract";
 
 /**
- * Chunked streaming JSON repair, shared with plugins/json-healer.ts. `onRepair` receives each
- * repair the parser applies (used by the verbose mode of the json_repair tool).
+ * Whole-string JSON repair, shared with plugins/json-healer.ts. `onRepair` receives each repair
+ * the parser applies (used by the verbose mode of the json_repair tool). The batch repairer is
+ * used on purpose: the incremental one emits output as it goes and cannot fix trailing commas,
+ * concatenated/NDJSON values or code-fenced blocks, which need lookahead.
  */
-export function streamRepairJson(text: string, onRepair?: (action: unknown, idx: unknown, ctx: unknown) => void): string {
-  const r = new IncrementalJsonRepair(onRepair ? { onRepair } : undefined);
-  let out = "";
-  for (let i = 0; i < text.length; i += CHUNK) out += r.push(text.slice(i, i + CHUNK));
-  return out + r.end();
+export function repairJsonText(text: string, onRepair?: (action: unknown, idx: unknown, ctx: unknown) => void): string {
+  return onRepair ? repairJson(text, onRepair as never) : repairJson(text);
 }
+
+// Numbers with 16+ digits do not survive JSON.parse/stringify (12345678901234567890 becomes
+// 12345678901234567000), so reformatting such text would silently corrupt the data.
+const UNSAFE_NUMBER = /\d{16,}/;
 
 const json_repair = tool({
   description: "Fix malformed JSON from a string or file path. Use whenever JSON fails to parse.",
@@ -48,18 +49,17 @@ const json_repair = tool({
 
     // ── resolve text for one entry ───────────────────────────────────────────
     const resolve = (raw: string): string => {
+      // A path is a short single line. Without the length/newline guard, JSON that happens to
+      // start with "/" (a leading comment) would be treated as a file name.
+      const t = raw.trim();
       const looksLikePath =
-        raw.startsWith("/") ||
-        raw.startsWith("./") ||
-        raw.startsWith("../") ||
-        (!raw.trim().startsWith("{") &&
-          !raw.trim().startsWith("[") &&
-          !raw.trim().startsWith('"') &&
-          raw.length < 512 &&
-          /\.(json|jsonl|ndjson|txt)$/i.test(raw));
+        t.length < 512 &&
+        !/[\r\n]/.test(t) &&
+        !/[{}[\]"]/.test(t) &&
+        (/^\.{1,2}[\\/]/.test(t) || isAbsolute(t) || /\.(json|jsonl|ndjson|txt)$/i.test(t));
 
       if (!looksLikePath) return raw;
-      const p = raw.startsWith("/") ? raw : join(context.worktree, raw);
+      const p = isAbsolute(t) ? t : join(context.worktree, t);
       if (!existsSync(p)) throw new Error(`file not found: ${p}`);
       return readFileSync(p, "utf8");
     };
@@ -74,6 +74,7 @@ const json_repair = tool({
 
     // ── format helper ────────────────────────────────────────────────────────
     const fmt = (s: string): string => {
+      if (UNSAFE_NUMBER.test(s)) return s;
       try {
         return pretty ? JSON.stringify(JSON.parse(s), null, 2) : JSON.stringify(JSON.parse(s));
       } catch {
@@ -81,22 +82,22 @@ const json_repair = tool({
       }
     };
 
-    // ── streaming repair ─────────────────────────────────────────────────────
+    // ── repair ───────────────────────────────────────────────────────────────
     type RepairLog = { action: unknown; idx: unknown; ctx: unknown };
     type RepairResult = string | { result: string; repairs: RepairLog[] };
 
-    function streamRepair(text: string): RepairResult {
+    function repairText(text: string): RepairResult {
       if (verbose) {
         const log: RepairLog[] = [];
-        const out = streamRepairJson(text, (action, idx, ctx) => log.push({ action, idx, ctx }));
+        const out = repairJsonText(text, (action, idx, ctx) => log.push({ action, idx, ctx }));
         return { result: fmt(out), repairs: log };
       }
-      return fmt(streamRepairJson(text));
+      return fmt(repairJsonText(text));
     }
 
     // ── mode dispatch ─────────────────────────────────────────────────────────
     function process(text: string): RepairResult | string {
-      if (mode === "repair") return streamRepair(text);
+      if (mode === "repair") return repairText(text);
       if (mode === "extract") {
         const out = extractJson(text);
         if (!out) throw new Error("no JSON found in input");
@@ -115,7 +116,7 @@ const json_repair = tool({
         return pretty ? JSON.stringify(parsed, null, 2) : JSON.stringify(parsed);
       }
       // strip
-      return streamRepair(stripLlmWrapper(text));
+      return repairText(stripLlmWrapper(text));
     }
 
     // ── run in parallel, collect results ─────────────────────────────────────
@@ -123,8 +124,8 @@ const json_repair = tool({
       texts.map((t) =>
         Promise.resolve()
           .then(() => process(t))
-          .catch((e: unknown) => ({ error: e instanceof Error ? e.message : String(e) })),
-      ),
+          .catch((e: unknown) => ({ error: e instanceof Error ? e.message : String(e) }))
+      )
     );
 
     if (results.length === 1) {

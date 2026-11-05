@@ -9,7 +9,7 @@ import { type Dirent, readdirSync, statSync } from "node:fs";
 import { extname, isAbsolute, join, relative, resolve } from "node:path";
 import { tool } from "@opencode-ai/plugin";
 import { spawn } from "bun";
-import { formatHashLine, formatHashLines } from "./hashline_utils.ts";
+import { clipLine, formatHashLine } from "./hashline_utils.ts";
 
 // ── Binary detection ────────────────────────────────────────────────────────
 
@@ -52,7 +52,11 @@ function fmtSize(bytes: number): string {
   return `${bytes}B`;
 }
 
-async function dirListing(dir: string, indent = ""): Promise<string> {
+// Bounded: hl_read is exempt from output compaction, and a project root can hold thousands of files.
+const LIST_MAX_DEPTH = 4;
+const LIST_MAX_ENTRIES = 400;
+
+async function dirListing(dir: string, indent = "", depth = 0, budget = { left: LIST_MAX_ENTRIES }): Promise<string> {
   let entries: Dirent[];
   try {
     entries = readdirSync(dir, { withFileTypes: true, encoding: "utf8" });
@@ -68,10 +72,19 @@ async function dirListing(dir: string, indent = ""): Promise<string> {
   const lines: string[] = [];
   for (const e of entries) {
     if (e.name.startsWith(".") || e.name === "node_modules") continue;
+    if (budget.left <= 0) {
+      lines.push(`${indent}... (truncated, list a subdirectory for more)`);
+      break;
+    }
+    budget.left--;
     const full = join(dir, e.name);
     if (e.isDirectory()) {
+      if (depth + 1 >= LIST_MAX_DEPTH) {
+        lines.push(`${indent}${e.name}/ ...`);
+        continue;
+      }
       lines.push(`${indent}${e.name}/`);
-      lines.push(await dirListing(full, `${indent}  `));
+      lines.push(await dirListing(full, `${indent}  `, depth + 1, budget));
     } else {
       try {
         const { size } = statSync(full);
@@ -87,8 +100,7 @@ async function dirListing(dir: string, indent = ""): Promise<string> {
 // ── hashline_read ───────────────────────────────────────────────────────────
 
 const read = tool({
-  description:
-    "Read file with LINE#HASH|content tags for hl_edit. Directory path returns a tree.",
+  description: "Read file with LINE#HASH|content tags for hl_edit. Directory path returns a tree.",
   args: {
     filePath: tool.schema.string(),
     offset: tool.schema.number().optional().describe("1-based start line"),
@@ -136,11 +148,10 @@ const read = tool({
     if (offset > total) return `Error: offset ${offset} exceeds file length (${total} lines)`;
 
     const startIdx = offset - 1;
-    const slice = allLines
-      .slice(startIdx, startIdx + limit)
-      .map((l) => (l.length > 2000 ? `${l.slice(0, 2000)}...[truncated]` : l));
+    const slice = allLines.slice(startIdx, startIdx + limit);
 
-    const annotated = formatHashLines(slice.join("\n"), offset);
+    // Hash the full line but show a clipped one, so editing a long line still validates.
+    const annotated = slice.map((l, i) => formatHashLine(offset + i, l, clipLine(l))).join("\n");
 
     const showEnd = startIdx + slice.length;
     return total > limit || offset > 1 ? `(lines ${offset}-${showEnd} of ${total})\n${annotated}` : annotated;
@@ -156,19 +167,41 @@ interface GrepMatch {
   content: string;
 }
 
-function parseRgOutput(out: string): GrepMatch[] {
+// rg --json instead of the text format: "path-12-text" context lines are ambiguous when the path
+// or the content itself contains "-12-" or ":12:".
+function parseRgJson(out: string): GrepMatch[] {
   const results: GrepMatch[] = [];
   for (const raw of out.split("\n")) {
-    if (!raw || raw === "--") continue;
-    const m = raw.match(/^(.+?):(\d+):(.*)$/);
-    if (m) {
-      results.push({ file: m[1], line: parseInt(m[2], 10), isMatch: true, content: m[3] });
+    if (!raw) continue;
+    let ev: { type?: string; data?: { path?: { text?: string }; lines?: { text?: string }; line_number?: number } };
+    try {
+      ev = JSON.parse(raw);
+    } catch {
       continue;
     }
-    const c = raw.match(/^(.+?)-(\d+)-(.*)$/);
-    if (c) results.push({ file: c[1], line: parseInt(c[2], 10), isMatch: false, content: c[3] });
+    if (ev.type !== "match" && ev.type !== "context") continue;
+    const file = ev.data?.path?.text;
+    const text = ev.data?.lines?.text;
+    const line = ev.data?.line_number;
+    if (typeof file !== "string" || typeof text !== "string" || typeof line !== "number") continue;
+    results.push({ file, line, isMatch: ev.type === "match", content: text.replace(/\r?\n$/, "") });
   }
   return results;
+}
+
+// hl_grep is exempt from output compaction (it carries edit anchors), so it bounds itself.
+const MAX_MATCHES = 300;
+
+function capMatches(matches: GrepMatch[]): { kept: GrepMatch[]; total: number } {
+  const total = matches.filter((m) => m.isMatch).length;
+  if (total <= MAX_MATCHES) return { kept: matches, total };
+  let seen = 0;
+  const kept: GrepMatch[] = [];
+  for (const m of matches) {
+    if (m.isMatch && ++seen > MAX_MATCHES) break;
+    kept.push(m);
+  }
+  return { kept, total };
 }
 
 function formatGrepResults(matches: GrepMatch[], base: string): string {
@@ -188,7 +221,7 @@ function formatGrepResults(matches: GrepMatch[], base: string): string {
     .map(([file, ms]) => {
       const lines = [`## ${file}`];
       for (const m of ms.sort((a, b) => a.line - b.line)) {
-        const tag = formatHashLine(m.line, m.content);
+        const tag = formatHashLine(m.line, m.content, clipLine(m.content));
         lines.push(m.isMatch ? `> ${tag}` : `  ${tag}`);
       }
       return lines.join("\n");
@@ -247,8 +280,8 @@ async function fsFallback(pattern: string, searchPath: string, include?: string,
           if (!matchIdx.length) return [];
           const included = new Set(
             matchIdx.flatMap((mi) =>
-              Array.from({ length: 2 * ctx + 1 }, (_, k) => mi - ctx + k).filter((j) => j >= 0 && j < lines.length),
-            ),
+              Array.from({ length: 2 * ctx + 1 }, (_, k) => mi - ctx + k).filter((j) => j >= 0 && j < lines.length)
+            )
           );
           const matchSet = new Set(matchIdx);
           return [...included]
@@ -257,7 +290,7 @@ async function fsFallback(pattern: string, searchPath: string, include?: string,
         } catch {
           return [];
         }
-      }),
+      })
     );
     for (const results of batchResults) all.push(...results);
   }
@@ -265,8 +298,7 @@ async function fsFallback(pattern: string, searchPath: string, include?: string,
 }
 
 const grep = tool({
-  description:
-    "Search files; matches carry LINE#HASH tags usable directly in hl_edit.",
+  description: "Search files; matches carry LINE#HASH tags usable directly in hl_edit.",
   args: {
     pattern: tool.schema.string().describe("Regex"),
     path: tool.schema.string().optional().describe("Default project root"),
@@ -279,25 +311,35 @@ const grep = tool({
     const ctx = args.context ?? 2;
     const pattern = args.pattern.replace(/\\\|/g, "|");
 
-    // Try rg — stderr ignored to avoid blocking on stderr pipe
+    const finish = (all: GrepMatch[]): string => {
+      const { kept, total } = capMatches(all);
+      if (!total) return `No matches found for: ${args.pattern}`;
+      const body = formatGrepResults(kept, base);
+      return total > MAX_MATCHES
+        ? `${body}\n\n[truncated: showing ${MAX_MATCHES} of ${total} matches; narrow pattern, path or include]`
+        : body;
+    };
+
+    // Try rg. `-e` and `--` keep a pattern or path that starts with "-" from being read as a flag;
+    // stderr is ignored so a full stderr pipe cannot block the process.
     try {
-      const rgArgs = ["--line-number", "--with-filename", `--context=${ctx}`, "--color=never"];
+      const rgArgs = ["--json", `--context=${ctx}`, "--max-count=100"];
       if (args.include) rgArgs.push("--glob", args.include);
-      const proc = spawn(["rg", ...rgArgs, pattern, searchPath], { stdout: "pipe", stderr: "ignore" });
+      const proc = spawn(["rg", ...rgArgs, "-e", pattern, "--", searchPath], { stdout: "pipe", stderr: "ignore" });
       const out = await new Response(proc.stdout).text();
       const code = await proc.exited;
-      if (code === 1 || !out.trim()) return `No matches found for: ${args.pattern}`;
-      if (code === 0) {
-        const matches = parseRgOutput(out);
-        if (!matches.length) return `No matches found for: ${args.pattern}`;
-        return formatGrepResults(matches, base);
-      }
+      if (code === 0 || code === 1) return finish(parseRgJson(out));
+      // Exit 2 with some output is a partial result (e.g. an unreadable file).
+      const partial = parseRgJson(out);
+      if (partial.length) return finish(partial);
     } catch {}
 
-    // Fallback
-    const matches = await fsFallback(pattern, searchPath, args.include, ctx);
-    if (!matches.length) return `No matches found for: ${args.pattern}`;
-    return formatGrepResults(matches, base);
+    // Fallback (rg missing, or a pattern rg rejects but JS accepts)
+    try {
+      return finish(await fsFallback(pattern, searchPath, args.include, ctx));
+    } catch (e) {
+      return `Error: ${e instanceof Error ? e.message : String(e)}`;
+    }
   },
 });
 

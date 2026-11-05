@@ -6,6 +6,22 @@
 // (opencode/plugins and ocx-registry/files/plugins trim-tool-name.js) are guarded by a test.
 export const normalizeToolName = (name: string) => name.trim();
 
+// Names of the tools this package registers. Registration (index.ts, context-shield.ts) and the
+// skip list below both read this object, so a rename cannot leave the skip list stale. Every
+// tool listed here is exempt from compaction: its output is hash-annotated, already short, or
+// bounded by the tool itself (hl_grep, hl_read listings, gitingest). Compacting gitingest to the
+// 2KB default target would reduce a repo ingest to a head/tail stub.
+export const TOOL = {
+  jsonRepair: "json_repair",
+  hlEdit: "hl_edit",
+  hlRead: "hl_read",
+  hlGrep: "hl_grep",
+  sg: "sg",
+  sgr: "sgr",
+  cshieldToggle: "cshield_toggle",
+  gitingest: "gitingest",
+} as const;
+
 const SUBAGENT_TOOLS = new Set(["task", "subagent"]);
 
 export const isReadTool = (name: string) => name === "read";
@@ -21,18 +37,32 @@ export function filePathArg(args: Record<string, unknown>): string | null {
 
 // Tools whose output must NOT be compacted: either compaction would destroy structured or
 // hash-annotated output, or they already return short messages.
-export const SKIP_COMPACTION_FOR = new Set([
+export const SKIP_COMPACTION_FOR = new Set<string>([
   "write",
   "apply_patch",
   "multiedit",
   "lsp",
-  "hl_read",
-  "hl_grep",
-  "hl_edit",
-  "json_repair",
-  "sg",
-  "sgr",
-  "cshield_toggle",
+  ...Object.values(TOOL),
+]);
+
+// Tools whose output shows file contents or command output as-is. Rewriting it (e.g. repairing
+// the JSON that `cat` printed) would misreport what is actually on disk.
+export const VERBATIM_OUTPUT = new Set<string>([
+  "read",
+  "edit",
+  "write",
+  "apply_patch",
+  "multiedit",
+  "grep",
+  "glob",
+  "list",
+  "bash",
+  "execute_bash",
+  "shell",
+  TOOL.hlRead,
+  TOOL.hlGrep,
+  TOOL.hlEdit,
+  TOOL.jsonRepair,
 ]);
 
 // Slim descriptions replace verbose built-in tool help text to save per-turn tokens. Names cover

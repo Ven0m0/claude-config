@@ -4,19 +4,19 @@
  */
 
 /** 16-character nibble alphabet for hash encoding */
-export const NIBBLE = "ZPMQVRWSNKTXJBYH";
+const NIBBLE = "ZPMQVRWSNKTXJBYH";
 
 /** Precomputed 2-char hash dictionary for all 256 byte values */
-export const DICT = Array.from({ length: 256 }, (_, i) => `${NIBBLE[i >>> 4]}${NIBBLE[i & 0x0f]}`);
+const DICT = Array.from({ length: 256 }, (_, i) => `${NIBBLE[i >>> 4]}${NIBBLE[i & 0x0f]}`);
 
 /** Regex to detect significant (non-whitespace) content */
-export const RE_SIGNIFICANT = /[\p{L}\p{N}]/u;
+const RE_SIGNIFICANT = /[\p{L}\p{N}]/u;
 
 /** Source of a 2-char hash, derived from the alphabet so the format has one owner */
 const HASH_PATTERN = `[${NIBBLE}]{2}`;
 
 /** Regex to parse hash references like "42#VK" */
-export const HASH_REF = new RegExp(`^([0-9]+)#(${HASH_PATTERN})$`);
+const HASH_REF = new RegExp(`^([0-9]+)#(${HASH_PATTERN})$`);
 
 /** Regex matching a rendered "{line}#{hash}|" prefix, with optional >>> / >> change markers */
 export const HASHLINE_PREFIX = new RegExp(String.raw`^\s*(?:>>>|>>)?\s*\d+\s*#\s*${HASH_PATTERN}\|`);
@@ -25,7 +25,7 @@ export const HASHLINE_PREFIX = new RegExp(String.raw`^\s*(?:>>>|>>)?\s*\d+\s*#\s
  * Compute xxHash32-based line hash.
  * Uses line number as seed for whitespace-only lines to ensure uniqueness.
  */
-export function computeHash(lineNum: number, content: string): string {
+function computeHash(lineNum: number, content: string): string {
   const text = content.replace(/\r/g, "").trimEnd();
   const seed = RE_SIGNIFICANT.test(text) ? 0 : lineNum;
   return DICT[Bun.hash.xxHash32(text, seed) % 256];
@@ -45,22 +45,21 @@ export function computeLegacyHash(lineNum: number, content: string): string {
  * Render one line as "{line}#{hash}|{content}". Every module that shows or parses anchors
  * goes through this and HASHLINE_PREFIX, so the format changes in one place.
  */
-export function formatHashLine(lineNum: number, content: string): string {
-  return `${lineNum}#${computeHash(lineNum, content)}|${content}`;
+export function formatHashLine(lineNum: number, content: string, shown: string = content): string {
+  return `${lineNum}#${computeHash(lineNum, content)}|${shown}`;
 }
 
-/** Format file content with line number and hash annotations. */
-export function formatHashLines(content: string, startLine = 1): string {
-  return content
-    .split("\n")
-    .map((line, i) => formatHashLine(startLine + i, line))
-    .join("\n");
+const MAX_SHOWN = 2000;
+
+/** Display form of a long line. The anchor hash is still computed on the full line. */
+export function clipLine(content: string): string {
+  return content.length > MAX_SHOWN ? `${content.slice(0, MAX_SHOWN)}...[truncated]` : content;
 }
 
 /**
  * Normalize a hash reference string by removing noise characters.
  */
-export function normalizeRef(ref: string): string {
+function normalizeRef(ref: string): string {
   let s = ref.trim();
   s = s.replace(/^(?:>>>|[+-])\s*/, "");
   s = s.replace(/\s*#\s*/, "#");

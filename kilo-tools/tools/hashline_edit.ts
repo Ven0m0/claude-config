@@ -73,7 +73,7 @@ function applySetLine(lines: string[], anchor: string, text: string | string[]):
   const newLines = toLines(text);
   const indent = orig.match(/^\s*/)?.[0] ?? "";
   const restored = newLines.map((l, i) =>
-    i === 0 && !l.match(/^\s/) && indent && orig.trim() !== l.trim() ? indent + l : l,
+    i === 0 && !l.match(/^\s/) && indent && orig.trim() !== l.trim() ? indent + l : l
   );
   return [...lines.slice(0, line - 1), ...restored, ...lines.slice(line)];
 }
@@ -91,7 +91,7 @@ function applyReplaceRange(lines: string[], start: string, end: string, text: st
   if (stripped.length > 0 && after && eqNoWs(stripped[stripped.length - 1], after)) stripped = stripped.slice(0, -1);
   const indent = lines[s - 1]?.match(/^\s*/)?.[0] ?? "";
   const restored = stripped.map((l, i) =>
-    i === 0 && !l.match(/^\s/) && indent && lines[s - 1]?.trim() !== l.trim() ? indent + l : l,
+    i === 0 && !l.match(/^\s/) && indent && lines[s - 1]?.trim() !== l.trim() ? indent + l : l
   );
   return [...lines.slice(0, s - 1), ...restored, ...lines.slice(e)];
 }
@@ -158,7 +158,7 @@ function normalizeEdits(raw: RawEdit[]): Edit[] {
       case "replace": {
         const anchor = pos ?? end;
         if (!anchor) throw new Error(`Edit ${i}: replace requires pos`);
-        return { op: "replace", pos: anchor, end: end !== anchor ? end : undefined, lines: lines ?? [] };
+        return { op: "replace", pos: anchor, end: end !== anchor ? end : undefined, lines };
       }
       case "append":
         return { op: "append", pos: pos ?? end, lines };
@@ -183,6 +183,37 @@ function getLineNum(e: Edit): number {
   }
 }
 
+// Every edit addresses the ORIGINAL file, so two edits touching the same lines cannot both apply.
+// Replaces are intervals [s, e]; an append sits after line L, a prepend before it. Without this
+// check a single-line replace inside a replaced range silently corrupted the file.
+function assertNoConflicts(edits: Edit[]): void {
+  const replaces: Array<{ s: number; e: number; n: number }> = [];
+  edits.forEach((ed, i) => {
+    if (ed.op !== "replace") return;
+    if (!ed.pos) throw new Error(`Edit ${i + 1}: replace requires pos`);
+    const s = parseRef(ed.pos).line;
+    const e = ed.end ? parseRef(ed.end).line : s;
+    if (s > e) throw new Error(`Edit ${i + 1}: range start ${s} > end ${e}`);
+    replaces.push({ s, e, n: i + 1 });
+  });
+  replaces.sort((a, b) => a.s - b.s);
+  for (let i = 1; i < replaces.length; i++) {
+    if (replaces[i].s <= replaces[i - 1].e)
+      throw new Error(
+        `Overlapping edits ${replaces[i - 1].n} and ${replaces[i].n} (lines ${replaces[i].s}-${replaces[i - 1].e})`
+      );
+  }
+  edits.forEach((ed, i) => {
+    if ((ed.op !== "append" && ed.op !== "prepend") || !ed.pos) return;
+    const line = parseRef(ed.pos).line;
+    for (const r of replaces) {
+      const inside = ed.op === "append" ? r.s <= line && line < r.e : r.s < line && line <= r.e;
+      if (inside)
+        throw new Error(`Edit ${i + 1}: ${ed.op} at line ${line} falls inside the range replaced by edit ${r.n}`);
+    }
+  });
+}
+
 function applyEdits(content: string, edits: Edit[]): string {
   // Collect all refs and validate upfront
   const refs: string[] = [];
@@ -194,70 +225,22 @@ function applyEdits(content: string, edits: Edit[]): string {
   let lines = content.length === 0 ? [] : content.split("\n");
   if (refs.length) validateRefs(lines, refs);
 
-  // Detect overlapping ranges
-  const ranges: Array<{ s: number; e: number; idx: number }> = [];
-  for (let i = 0; i < edits.length; i++) {
-    const ed = edits[i];
-    if (ed.op === "replace" && ed.end) {
-      if (!ed.pos) throw new Error(`Edit ${i + 1}: replace requires pos`);
-      const s = parseRef(ed.pos).line;
-      const e = parseRef(ed.end).line;
-      ranges.push({ s, e, idx: i });
-    }
-  }
-  ranges.sort((a, b) => a.s - b.s);
-  for (let i = 1; i < ranges.length; i++) {
-    if (ranges[i].s <= ranges[i - 1].e)
-      throw new Error(`Overlapping ranges: edit ${ranges[i - 1].idx + 1} and ${ranges[i].idx + 1}`);
-  }
+  // Collapse exact duplicates (same op, anchors and text). JSON keeps a string and a one-element
+  // array of the same text distinct, and cannot collide on embedded separators.
+  const seen = new Set<string>();
+  const deduped = edits.filter((e) => {
+    const key = JSON.stringify([e.op, e.pos, e.end, e.lines]);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 
-  // Dedup
-  let deduped: Edit[];
-  if (edits.length < 50) {
-    deduped = [];
-    for (let i = 0; i < edits.length; i++) {
-      const edit = edits[i];
-      let dup = false;
-      for (let j = deduped.length - 1; j >= 0; j--) {
-        const b = deduped[j];
-        if (edit.op === b.op && edit.pos === b.pos && edit.end === b.end) {
-          if (typeof edit.lines === "string") {
-            if (typeof b.lines === "string" && edit.lines === b.lines) dup = true;
-          } else if (Array.isArray(edit.lines)) {
-            if (Array.isArray(b.lines) && edit.lines.length === b.lines.length) {
-              let eq = true;
-              for (let k = 0; k < edit.lines.length; k++) {
-                if (edit.lines[k] !== b.lines[k]) {
-                  eq = false;
-                  break;
-                }
-              }
-              if (eq) dup = true;
-            }
-          }
-        }
-        if (dup) break;
-      }
-      if (!dup) deduped.push(edit);
-    }
-  } else {
-    const seen = new Set<string>();
-    deduped = [];
-    for (let i = 0; i < edits.length; i++) {
-      const e = edits[i];
-      let k = `${e.op}\0${e.pos || ""}\0${e.end || ""}\0`;
-      if (typeof e.lines === "string") k += `s\0${e.lines}`;
-      else if (Array.isArray(e.lines)) k += `a\0${e.lines.join("\0")}`;
+  assertNoConflicts(deduped);
 
-      if (!seen.has(k)) {
-        seen.add(k);
-        deduped.push(e);
-      }
-    }
-  }
-
-  // Sort bottom-up
-  const PREC: Record<Op, number> = { replace: 0, append: 1, prepend: 2 };
+  // Sort bottom-up. Edits are applied against the original line numbers, so on the same anchor
+  // the one that lands lowest in the file goes last: append (after the line) first, then
+  // replace, then prepend (before the line). Replace-first put an append inside the replacement.
+  const PREC: Record<Op, number> = { append: 0, replace: 1, prepend: 2 };
   const sorted = [...deduped].sort((a, b) => {
     const diff = getLineNum(b) - getLineNum(a);
     return diff !== 0 ? diff : PREC[a.op] - PREC[b.op];
@@ -295,6 +278,16 @@ function applyLineRange(content: string, startLine: number, endLine: number, new
   return [...before, ...(newCode ? [newCode] : []), ...after].join("\n");
 }
 
+// Lines in the changed middle after trimming the common head and tail. A positional diff reported
+// every line below an insertion as changed.
+function changedLineCount(a: string[], b: string[]): number {
+  let head = 0;
+  while (head < a.length && head < b.length && a[head] === b[head]) head++;
+  let tail = 0;
+  while (tail < a.length - head && tail < b.length - head && a[a.length - 1 - tail] === b[b.length - 1 - tail]) tail++;
+  return Math.max(a.length - head - tail, b.length - head - tail);
+}
+
 // ── Tool description ────────────────────────────────────────────────────────
 
 const DESCRIPTION = `Edit files via LINE#ID anchors from hl_read/hl_grep, or by line range (quick mode).
@@ -310,20 +303,9 @@ const hl_edit = tool({
     filePath: tool.schema.string().describe("Absolute path"),
     delete: tool.schema.boolean().optional().describe("Delete file"),
     rename: tool.schema.string().optional().describe("Move to path after edits"),
-    start_line: tool.schema
-      .number()
-      .min(1)
-      .optional()
-      .describe("Quick mode: first line (1-based)"),
-    end_line: tool.schema
-      .number()
-      .min(0)
-      .optional()
-      .describe("Quick mode: last line, inclusive"),
-    new_code: tool.schema
-      .string()
-      .optional()
-      .describe("Quick mode: replacement"),
+    start_line: tool.schema.number().min(1).optional().describe("Quick mode: first line (1-based)"),
+    end_line: tool.schema.number().min(0).optional().describe("Quick mode: last line, inclusive"),
+    new_code: tool.schema.string().optional().describe("Quick mode: replacement"),
     edits: tool.schema
       .array(
         tool.schema.object({
@@ -337,7 +319,7 @@ const hl_edit = tool({
           lines: tool.schema
             .union([tool.schema.array(tool.schema.string()), tool.schema.string(), tool.schema.null()])
             .optional(),
-        }),
+        })
       )
       .optional()
       .describe("Hash-mode ops"),
@@ -348,8 +330,7 @@ const hl_edit = tool({
       const editsArr = args.edits ?? [];
       const hasEdits = editsArr.length > 0;
 
-      if (hasLineRange && hasEdits)
-        return "Error: use either start_line/end_line/new_code or edits[], not both";
+      if (hasLineRange && hasEdits) return "Error: use either start_line/end_line/new_code or edits[], not both";
       if (args.delete && args.rename) return "Error: delete and rename cannot be combined";
       if (args.delete && hasEdits) return "Error: delete=true requires edits=[]";
       if (!args.delete && !hasLineRange && !hasEdits) return "Error: provide edits[] or start_line/end_line/new_code";
@@ -390,10 +371,7 @@ const hl_edit = tool({
       await Bun.write(dest, writeContent);
       if (args.rename && args.rename !== args.filePath && exists) await file.delete();
 
-      const oldLines = canonical.split("\n");
-      const newLines = newContent.split("\n");
-      const changedCount =
-        newLines.filter((l, i) => l !== oldLines[i]).length + Math.abs(newLines.length - oldLines.length);
+      const changedCount = changedLineCount(canonical.split("\n"), newContent.split("\n"));
       return args.rename ? `Moved ${args.filePath} → ${dest}` : `Updated ${dest} (${changedCount} line(s) changed)`;
     } catch (e) {
       if (e instanceof HashMismatchError)

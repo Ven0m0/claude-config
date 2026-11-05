@@ -9,10 +9,31 @@ const IS_WINDOWS = platform() === "win32";
 const SG_BIN = IS_WINDOWS ? "sg.exe" : "sg";
 
 const CLI_LANGUAGES = [
-  "bash", "c", "cpp", "csharp", "css", "elixir", "go", "haskell",
-  "html", "java", "javascript", "json", "kotlin", "lua", "nix", "php",
-  "python", "ruby", "rust", "scala", "solidity", "swift", "typescript",
-  "tsx", "yaml",
+  "bash",
+  "c",
+  "cpp",
+  "csharp",
+  "css",
+  "elixir",
+  "go",
+  "haskell",
+  "html",
+  "java",
+  "javascript",
+  "json",
+  "kotlin",
+  "lua",
+  "nix",
+  "php",
+  "python",
+  "ruby",
+  "rust",
+  "scala",
+  "solidity",
+  "swift",
+  "typescript",
+  "tsx",
+  "yaml",
 ] as const;
 
 type Lang = (typeof CLI_LANGUAGES)[number];
@@ -61,17 +82,20 @@ interface SgMatch {
   file: string;
   text: string;
   lines: string;
+  replacement?: string;
   range: { start: { line: number; column: number }; end: { line: number; column: number } };
 }
 
+// sg resolves relative paths (and the default ".") against its cwd, which is the host process's
+// directory, not the project. Every call passes the project directory explicitly.
 async function runSg(opts: {
+  cwd: string;
   pattern: string;
   lang: Lang;
   paths: string[];
   globs?: string[];
   rewrite?: string;
   context?: number;
-  updateAll?: boolean;
 }): Promise<{ matches: SgMatch[]; totalMatches: number; truncated: boolean; error?: string }> {
   const sg = findSg();
   if (!sg) {
@@ -90,11 +114,13 @@ async function runSg(opts: {
   const paths = opts.paths.length ? opts.paths : ["."];
   args.push(...paths);
 
-  const proc = spawn([sg, ...args], { stdout: "pipe", stderr: "pipe" });
+  const proc = spawn([sg, ...args], { cwd: opts.cwd, stdout: "pipe", stderr: "pipe" });
 
   const timeout = new Promise<never>((_, reject) => {
     const id = setTimeout(() => {
-      try { proc.kill(); } catch {}
+      try {
+        proc.kill();
+      } catch {}
       reject(new Error(`Search timeout after ${DEFAULT_TIMEOUT_MS}ms`));
     }, DEFAULT_TIMEOUT_MS);
     proc.exited.then(() => clearTimeout(id)).catch(() => clearTimeout(id));
@@ -142,13 +168,14 @@ async function runSg(opts: {
 }
 
 async function runSgReplace(opts: {
+  cwd: string;
   pattern: string;
   lang: Lang;
   paths: string[];
   globs?: string[];
   rewrite: string;
 }): Promise<{ matches: SgMatch[]; totalMatches: number; truncated: boolean; error?: string }> {
-  const result = await runSg({ ...opts, updateAll: false });
+  const result = await runSg(opts);
   if (result.error || result.matches.length === 0) return result;
 
   const sg = findSg();
@@ -157,7 +184,7 @@ async function runSgReplace(opts: {
   if (opts.globs) for (const g of opts.globs) args.push("--globs", g);
   args.push(...(opts.paths.length ? opts.paths : ["."]));
 
-  const proc = spawn([sg, ...args], { stdout: "pipe", stderr: "pipe" });
+  const proc = spawn([sg, ...args], { cwd: opts.cwd, stdout: "pipe", stderr: "pipe" });
   const code = await proc.exited;
   if (code !== 0) {
     const stderr = await new Response(proc.stderr).text();
@@ -166,7 +193,15 @@ async function runSgReplace(opts: {
   return result;
 }
 
-function formatSearchResult(r: Awaited<ReturnType<typeof runSg>>): string {
+type SgResult = Awaited<ReturnType<typeof runSg>>;
+
+const indentBlock = (text: string, pad: string) =>
+  text
+    .split("\n")
+    .map((l) => pad + l)
+    .join("\n");
+
+function formatSearchResult(r: SgResult): string {
   if (r.error) return `Error: ${r.error}`;
   if (r.matches.length === 0) return "No matches found";
   const lines: string[] = [];
@@ -175,13 +210,25 @@ function formatSearchResult(r: Awaited<ReturnType<typeof runSg>>): string {
   for (const m of r.matches) {
     lines.push(`${m.file}:${m.range.start.line + 1}:${m.range.start.column + 1}`);
     lines.push(`  ${m.lines.trim()}`);
+    // A dry run must show what would change, not just where the pattern matched.
+    if (m.replacement !== undefined) lines.push(`  => ${indentBlock(m.replacement, "     ").trimStart()}`);
     lines.push("");
   }
   return lines.join("\n");
 }
 
+function formatApplied(r: SgResult): string {
+  if (r.error) return `Error: ${r.error}`;
+  if (r.matches.length === 0) return "No matches found";
+  const files = [...new Set(r.matches.map((m) => m.file))];
+  const atLeast = r.truncated ? "at least " : "";
+  const header = `Replaced ${atLeast}${r.totalMatches} match(es) in ${files.length} file(s)`;
+  return [header, ...files.map((f) => `  ${f}`)].join("\n");
+}
+
 const search = tool({
-  description: "AST structural code search (ast-grep). Meta-vars: $VAR (one node), $$$ (many). Prefer over grep for code patterns.",
+  description:
+    "AST structural code search (ast-grep). Meta-vars: $VAR (one node), $$$ (many). Prefer over grep for code patterns.",
   args: {
     pattern: tool.schema.string(),
     lang: tool.schema.string().optional().describe("e.g. typescript, python (default javascript)"),
@@ -189,8 +236,9 @@ const search = tool({
     globs: tool.schema.array(tool.schema.string()).optional(),
     context: tool.schema.number().optional().describe("Context lines"),
   },
-  async execute(args) {
+  async execute(args, context) {
     const result = await runSg({
+      cwd: context.directory || context.worktree,
       pattern: args.pattern,
       lang: (args.lang ?? "javascript") as Lang,
       paths: args.paths ?? [],
@@ -211,9 +259,11 @@ const replace = tool({
     globs: tool.schema.array(tool.schema.string()).optional(),
     dryRun: tool.schema.boolean().optional().default(true),
   },
-  async execute(args) {
+  async execute(args, context) {
+    const cwd = context.directory || context.worktree;
     if (args.dryRun ?? true) {
       const result = await runSg({
+        cwd,
         pattern: args.pattern,
         lang: (args.lang ?? "javascript") as Lang,
         paths: args.paths ?? [],
@@ -223,13 +273,14 @@ const replace = tool({
       return formatSearchResult(result);
     }
     const result = await runSgReplace({
+      cwd,
       pattern: args.pattern,
       lang: (args.lang ?? "javascript") as Lang,
       paths: args.paths ?? [],
       globs: args.globs,
       rewrite: args.rewrite,
     });
-    return formatSearchResult(result);
+    return formatApplied(result);
   },
 });
 

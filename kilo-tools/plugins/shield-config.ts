@@ -19,18 +19,21 @@ export const DEFAULT_CONFIG: ShieldConfig = {
   compactTargetBytes: 2 * 1024,
 };
 
-const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+// A non-number ("800", null, NaN) falls back to the default instead of becoming NaN, which would
+// make every size comparison false and silently disable the limit.
+const clamp = (value: unknown, fallback: number, min: number, max: number) =>
+  typeof value === "number" && Number.isFinite(value) ? Math.min(Math.max(value, min), max) : fallback;
 
 // Pure: file text (or undefined when missing) to a validated config. Bad JSON falls back to defaults.
 export function parseConfig(text: string | undefined): ShieldConfig {
   if (text === undefined) return { ...DEFAULT_CONFIG };
   try {
-    const parsed = JSON.parse(text) as Partial<ShieldConfig>;
+    const parsed = JSON.parse(text) as Record<string, unknown>;
     return {
-      enabled: parsed.enabled ?? DEFAULT_CONFIG.enabled,
-      readLimit: clamp(parsed.readLimit ?? DEFAULT_CONFIG.readLimit, 50, 2000),
-      compactThresholdBytes: clamp(parsed.compactThresholdBytes ?? DEFAULT_CONFIG.compactThresholdBytes, 2048, 256000),
-      compactTargetBytes: clamp(parsed.compactTargetBytes ?? DEFAULT_CONFIG.compactTargetBytes, 1024, 64000),
+      enabled: typeof parsed.enabled === "boolean" ? parsed.enabled : DEFAULT_CONFIG.enabled,
+      readLimit: clamp(parsed.readLimit, DEFAULT_CONFIG.readLimit, 50, 2000),
+      compactThresholdBytes: clamp(parsed.compactThresholdBytes, DEFAULT_CONFIG.compactThresholdBytes, 2048, 256000),
+      compactTargetBytes: clamp(parsed.compactTargetBytes, DEFAULT_CONFIG.compactTargetBytes, 1024, 64000),
     };
   } catch {
     return { ...DEFAULT_CONFIG };

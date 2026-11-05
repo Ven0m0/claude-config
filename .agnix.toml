@@ -16,7 +16,8 @@ xml = true
 imports = true
 cross_platform = true
 agents_md = true
-disabled_rules = []
+# CC-HK-008: agnix on Windows resolves $CLAUDE_PROJECT_DIR to "\" and misses existing scripts
+disabled_rules = ["CC-HK-008"]
 
 [tool_versions]
 # claude_code = "1.0.0"

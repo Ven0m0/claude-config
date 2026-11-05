@@ -2,6 +2,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Plugin } from "@opencode/plugin";
 import { tool } from "@opencode-ai/plugin";
+import { resultText } from "./result-text.ts";
 import { SLIM_DESCRIPTIONS } from "./tool-names.ts";
 
 // opencode v2 plugin adapter. v2 loads a default-exported `{ id, setup }` object and has no
@@ -11,17 +12,6 @@ import { SLIM_DESCRIPTIONS } from "./tool-names.ts";
 
 type Hooks = Record<string, any>;
 type V1Plugin = (input: any) => Promise<Hooks>;
-
-// Splits a tool result into the text the v1 hooks understand and the parts they must not touch
-// (files, images). Undefined when there is no text to hook.
-function partsOf(result: any): { text: string; rest: any[] } | undefined {
-  const c = result.content;
-  if (typeof c === "string") return { text: c, rest: [] };
-  if (!Array.isArray(c)) return undefined;
-  const texts = c.filter((p) => p.type === "text");
-  if (texts.length === 0) return undefined;
-  return { text: texts.map((p) => p.text).join("\n"), rest: c.filter((p) => p.type !== "text") };
-}
 
 function skillsFrom(dir: string) {
   if (!existsSync(dir)) return [];
@@ -93,18 +83,13 @@ export function toV2(plugin: V1Plugin, skillsDir: string): Plugin.Plugin {
       if (after) {
         await ctx.tool.hook("execute.after", async (e) => {
           if (e.status !== "completed") return;
-          const parts = partsOf(e.result);
-          if (!parts) return;
-          const out = { title: "", output: parts.text, metadata: { ...e.result.metadata } };
+          // Only the text is shown to v1 hooks; non-text parts survive inside withText().
+          const view = resultText({ content: e.result.content });
+          if (!view) return;
+          const out = { title: "", output: view.text, metadata: { ...e.result.metadata } };
           await after({ tool: e.tool, sessionID: e.sessionID, callID: e.id, args: e.input }, out);
-          // Result fields are readonly in v2, so replace the whole object. Non-text parts survive.
-          const content =
-            out.output === parts.text
-              ? e.result.content
-              : parts.rest.length
-                ? [{ type: "text", text: out.output }, ...parts.rest]
-                : out.output;
-          e.result = { ...e.result, content, metadata: out.metadata };
+          // Result fields are readonly in v2, so replace the whole object.
+          e.result = { ...e.result, ...view.withText(out.output), metadata: out.metadata };
         });
       }
 

@@ -1,1 +1,0 @@
-- [ ] implement "https://github.com/fengjikui/opencode-ignore"

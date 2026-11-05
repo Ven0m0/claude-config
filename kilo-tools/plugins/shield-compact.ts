@@ -1,4 +1,5 @@
 // Pure output compaction: text in, text out. No filesystem, no shared state.
+import { sliceToBytes, toBytes } from "../bytes.ts";
 
 export interface CompactLimits {
   thresholdBytes: number;
@@ -19,34 +20,17 @@ const SIGNAL_PATTERNS = [
   /(exit code|aborted|killed|terminated)/i,
 ];
 
-function toBytes(value: string): number {
-  return Buffer.byteLength(value, "utf-8");
-}
-
 function formatBytes(bytes: number): string {
   if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
   return `${(bytes / 1024).toFixed(1)}KB`;
 }
 
+// Last-resort cut for the assembled summary; the per-section budget in compactOutput means this
+// normally only fires when the header and signals alone exceed the target.
 function truncateToBytes(text: string, maxBytes: number): string {
   if (toBytes(text) <= maxBytes) return text;
-
   const suffix = "\n...[context-shield truncated summary]";
-  let low = 0;
-  let high = text.length;
-
-  while (low < high) {
-    const mid = Math.ceil((low + high) / 2);
-    if (toBytes(text.slice(0, mid)) <= maxBytes) low = mid;
-    else high = mid - 1;
-  }
-
-  let end = low;
-  while (end > 0 && toBytes(text.slice(0, end) + suffix) > maxBytes) {
-    end -= 1;
-  }
-
-  return text.slice(0, Math.max(0, end)) + suffix;
+  return sliceToBytes(text, Math.max(0, maxBytes - toBytes(suffix)), "start") + suffix;
 }
 
 function collectSignals(lines: string[], limit = 12): string[] {
@@ -85,25 +69,32 @@ export function compactOutput(input: { tool: string; output: string; limits: Com
   const omitted = Math.max(lines.length - headLines.length - tailLines.length, 0);
   const signals = collectSignals(lines);
 
-  const out: string[] = [];
-  out.push(`[context-shield] ${input.tool} output compacted from ${formatBytes(originalBytes)} (${lines.length} lines)`);
+  const assemble = (head: string, tail: string): string => {
+    const out: string[] = [];
+    out.push(
+      `[context-shield] ${input.tool} output compacted from ${formatBytes(originalBytes)} (${lines.length} lines)`
+    );
+    if (signals.length > 0) {
+      out.push("signals:");
+      for (const signal of signals) out.push(`- ${signal}`);
+    }
+    out.push("head:", head);
+    if (omitted > 0) out.push(`... ${omitted} lines omitted ...`);
+    out.push("tail:", tail);
+    out.push("tip: narrow the next call (path, query, range).");
+    return out.join("\n");
+  };
 
-  if (signals.length > 0) {
-    out.push("signals:");
-    for (const signal of signals) out.push(`- ${signal}`);
-  }
-  if (headLines.length > 0) {
-    out.push("head:");
-    out.push(headLines.join("\n"));
-  }
-  if (omitted > 0) out.push(`... ${omitted} lines omitted ...`);
-  if (tailLines.length > 0) {
-    out.push("tail:");
-    out.push(tailLines.join("\n"));
-  }
-  out.push("tip: narrow the next call (path, query, range).");
+  // Budget policy: header, signals and tip are fixed; the tail (most recent output) gets at least
+  // half of what is left, the head takes the rest. Without this, long head lines pushed the tail
+  // and tip past the cut.
+  const head = headLines.join("\n");
+  const tail = tailLines.join("\n");
+  const room = Math.max(0, input.limits.targetBytes - toBytes(assemble("", "")));
+  const tailRoom = Math.min(toBytes(tail), Math.max(Math.floor(room / 2), room - toBytes(head)));
+  const fitted = assemble(sliceToBytes(head, room - tailRoom, "start"), sliceToBytes(tail, tailRoom, "end"));
 
-  const compacted = truncateToBytes(out.join("\n"), input.limits.targetBytes);
+  const compacted = truncateToBytes(fitted, input.limits.targetBytes);
   const emittedBytes = toBytes(compacted);
   // Compaction that does not shrink the output is worse than none.
   if (emittedBytes >= originalBytes) return unchanged;
