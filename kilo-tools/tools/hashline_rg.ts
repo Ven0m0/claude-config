@@ -274,8 +274,8 @@ async function fsFallback(pattern: string, searchPath: string, include?: string,
         try {
           const lines = (await Bun.file(fp).text()).split("\n");
           const matchIdx: number[] = [];
-          for (let li = 0; li < lines.length; li++) {
-            if (re.test(lines[li])) matchIdx.push(li);
+          for (const [li, line] of lines.entries()) {
+            if (re.test(line)) matchIdx.push(li);
           }
           if (!matchIdx.length) return [];
           const included = new Set(
@@ -286,7 +286,7 @@ async function fsFallback(pattern: string, searchPath: string, include?: string,
           const matchSet = new Set(matchIdx);
           return [...included]
             .sort((a, b) => a - b)
-            .map((li): GrepMatch => ({ file: fp, line: li + 1, isMatch: matchSet.has(li), content: lines[li] }));
+            .map((li): GrepMatch => ({ file: fp, line: li + 1, isMatch: matchSet.has(li), content: lines[li] ?? "" }));
         } catch {
           return [];
         }

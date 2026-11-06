@@ -4,7 +4,7 @@ import type { Plugin } from "@opencode-ai/plugin";
 
 // v1 adapter: auto-register bundled skills and rule files with the host config at load time,
 // same pattern superpowers uses so consumers need no per-project config edits. v2 has no
-// config hook or instructions domain, so rules only reach v1 hosts (see v2.ts for skills).
+// config hook, so v2.ts registers skills and pushes rule text into the system prompt itself.
 export const RegisterPlugin = (baseDir: string): Plugin => async () => ({
   config: async (config: Record<string, unknown>) => {
     const skills = (config.skills ?? {}) as { paths?: string[] };

@@ -45,6 +45,10 @@ export const SKIP_COMPACTION_FOR = new Set<string>([
   ...Object.values(TOOL),
 ]);
 
+// context-mode's ctx_* tools already return compacted output; re-compacting would cut its search hints.
+// Matches the bare name and MCP-prefixed forms (context-mode_ctx_search, mcp__..._ctx_search).
+export const isPreCompacted = (name: string) => /(?:^|_)ctx_\w+$/.test(name);
+
 // Tools whose output shows file contents or command output as-is. Rewriting it (e.g. repairing
 // the JSON that `cat` printed) would misreport what is actually on disk.
 export const VERBATIM_OUTPUT = new Set<string>([

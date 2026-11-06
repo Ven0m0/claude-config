@@ -12,7 +12,7 @@ const hasSg =
 function project() {
   const dir = mkdtempSync(join(tmpdir(), "sg-"));
   writeFileSync(join(dir, "a.js"), "console.log(1);\nfoo(console.log(2));\n");
-  return { dir, file: join(dir, "a.js"), ctx: { directory: dir, worktree: dir } as any };
+  return { dir, file: join(dir, "a.js"), ctx: { directory: dir, worktree: dir, ask: async () => {} } as any };
 }
 
 test.skipIf(!hasSg)("search resolves relative paths against the project directory, not the process cwd", async () => {
@@ -29,6 +29,21 @@ test.skipIf(!hasSg)("a dry run shows the replacement and leaves the file alone",
   expect(out).toContain("=> logger.info(1)");
   expect(out).toContain("=> logger.info(2)");
   expect(readFileSync(file, "utf8")).toBe(before);
+});
+
+test.skipIf(!hasSg)("a denied edit permission leaves the files unchanged", async () => {
+  const { dir, file } = project();
+  const asked: string[][] = [];
+  const ask = async (i: { patterns: string[] }) => {
+    asked.push(i.patterns);
+    throw new Error("denied");
+  };
+  const ctx = { directory: dir, worktree: dir, ask } as any;
+  const before = readFileSync(file, "utf8");
+  const run = (replace as any).execute({ pattern: "console.log($A)", rewrite: "x($A)", dryRun: false }, ctx);
+  await expect(run).rejects.toThrow("denied");
+  expect(readFileSync(file, "utf8")).toBe(before);
+  expect(asked).toEqual([[file]]);
 });
 
 test.skipIf(!hasSg)("dryRun=false writes the files and reports what was replaced", async () => {

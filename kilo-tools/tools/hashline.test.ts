@@ -13,7 +13,12 @@ const formatHashLines = (content: string, startLine = 1) =>
     .map((line, i) => formatHashLine(startLine + i, line))
     .join("\n");
 
-const ctx: any = { directory: process.cwd(), worktree: process.cwd(), abort: new AbortController().signal };
+const ctx: any = {
+  directory: process.cwd(),
+  worktree: process.cwd(),
+  abort: new AbortController().signal,
+  ask: async () => {},
+};
 
 function tempFile(content: string) {
   const file = join(mkdtempSync(join(tmpdir(), "hashline-")), "f.txt");

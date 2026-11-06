@@ -1,17 +1,20 @@
 import { expect, test } from "bun:test";
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import plugin from "./index.ts";
 import { SKIP_COMPACTION_FOR } from "./tool-names.ts";
 
-async function setup() {
+async function setup(assert: (i: any) => Promise<void> = async () => {}) {
   const dir = mkdtempSync(join(tmpdir(), "kilo-v2-"));
   const tools: any[] = [];
   const updates: Record<string, string> = {};
   const hooks: Record<string, (e: any) => Promise<void>> = {};
+  const sessionHooks: Record<string, (e: any) => void> = {};
   const skills: any[] = [];
   const ctx: any = {
+    session: { hook: async (name: string, cb: any) => void (sessionHooks[name] = cb) },
+    permission: { assert },
     location: { directory: dir, project: { directory: dir, canonical: dir } },
     tool: {
       transform: async (cb: any) =>
@@ -29,8 +32,40 @@ async function setup() {
     skill: { transform: async (cb: any) => cb({ add: (s: any) => skills.push(s) }) },
   };
   await plugin.setup(ctx);
-  return { dir, tools, hooks, skills, updates };
+  return { dir, tools, hooks, sessionHooks, skills, updates };
 }
+
+const callCtx = { sessionID: "s", messageID: "m", agent: "a", id: "c", signal: new AbortController().signal };
+
+test("rule files are pushed into the v2 system prompt", async () => {
+  const { sessionHooks } = await setup();
+  const e = { system: [] as { type: string; text: string }[] };
+  sessionHooks.context!(e);
+  expect(e.system.some((p) => p.type === "text" && p.text.length > 0)).toBe(true);
+});
+
+test("hl_edit asks for edit permission and a denial leaves the file unchanged", async () => {
+  const asked: any[] = [];
+  const { dir, tools } = await setup(async (i) => {
+    asked.push(i);
+    throw new Error("denied");
+  });
+  const file = join(dir, "f.lock");
+  writeFileSync(file, "one\ntwo\n");
+  const hlEdit = tools.find((t) => t.name === "hl_edit");
+  await expect(hlEdit.execute({ filePath: file, start_line: 1, end_line: 1, new_code: "x" }, callCtx)).rejects.toThrow(
+    "denied"
+  );
+  expect(readFileSync(file, "utf8")).toBe("one\ntwo\n");
+  expect(asked[0]).toMatchObject({
+    sessionID: "s",
+    agent: "a",
+    action: "edit",
+    resources: [file],
+    save: ["*"],
+    source: { type: "tool", messageID: "m", id: "c" },
+  });
+});
 
 test("registers tools with JSON Schema input and skills", async () => {
   const { tools, skills } = await setup();
@@ -74,6 +109,16 @@ test("execute.after replaces the readonly result object", async () => {
   await hooks["execute.after"]!(e);
   expect(e.result).not.toBe(result);
   expect(e.result.content.length).toBeLessThan(big.length);
+});
+
+test("context-mode ctx_* output is not re-compacted, with or without an MCP prefix", async () => {
+  const { hooks } = await setup();
+  const big = "line\n".repeat(5000);
+  for (const tool of ["ctx_execute", "context-mode_ctx_search", "mcp__plugin_context-mode_context-mode__ctx_batch"]) {
+    const e: any = { tool, status: "completed", sessionID: "s", id: "c", input: {}, result: { content: big } };
+    await hooks["execute.after"]!(e);
+    expect(e.result.content).toBe(big);
+  }
 });
 
 test("slim descriptions are applied to built-in tools", async () => {

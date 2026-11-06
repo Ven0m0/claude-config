@@ -28,7 +28,7 @@ export const HASHLINE_PREFIX = new RegExp(String.raw`^\s*(?:>>>|>>)?\s*\d+\s*#\s
 function computeHash(lineNum: number, content: string): string {
   const text = content.replace(/\r/g, "").trimEnd();
   const seed = RE_SIGNIFICANT.test(text) ? 0 : lineNum;
-  return DICT[Bun.hash.xxHash32(text, seed) % 256];
+  return DICT[Bun.hash.xxHash32(text, seed) % 256] ?? "";
 }
 
 /**
@@ -38,7 +38,7 @@ function computeHash(lineNum: number, content: string): string {
 export function computeLegacyHash(lineNum: number, content: string): string {
   const text = content.replace(/\r/g, "").replace(/\s+/g, "");
   const seed = RE_SIGNIFICANT.test(text) ? 0 : lineNum;
-  return DICT[Bun.hash.xxHash32(text, seed) % 256];
+  return DICT[Bun.hash.xxHash32(text, seed) % 256] ?? "";
 }
 
 /**
@@ -66,7 +66,7 @@ function normalizeRef(ref: string): string {
   s = s.replace(/\|.*$/, "").trim();
   if (HASH_REF.test(s)) return s;
   const m = s.match(new RegExp(`([0-9]+#${HASH_PATTERN})`));
-  return m ? m[1] : ref.trim();
+  return m?.[1] ?? ref.trim();
 }
 
 /**
@@ -76,7 +76,7 @@ function normalizeRef(ref: string): string {
 export function parseRef(ref: string): { line: number; hash: string } {
   const n = normalizeRef(ref);
   const m = n.match(HASH_REF);
-  if (m) return { line: parseInt(m[1], 10), hash: m[2] };
+  if (m?.[1] && m[2]) return { line: parseInt(m[1], 10), hash: m[2] };
 
   const hIdx = n.indexOf("#");
   if (hIdx > 0) {

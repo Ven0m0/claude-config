@@ -4,6 +4,7 @@ import { tool } from "@opencode-ai/plugin";
 import {
   filePathArg,
   isEditTool,
+  isPreCompacted,
   isReadTool,
   isSubagentTool,
   SKIP_COMPACTION_FOR,
@@ -82,7 +83,8 @@ const OpenCodeContextShieldPlugin: Plugin = async ({ directory }) => {
       if (isEditTool(input.tool)) {
         const oldString = typeof args["oldString"] === "string" ? args["oldString"] : null;
         const filePath = filePathArg(args);
-        if (oldString && filePath) {
+        // Test the range first so ordinary edits never pay for a full file read.
+        if (oldString && filePath && LINE_RANGE_RE.test(oldString.trim())) {
           const resolved = path.isAbsolute(filePath) ? path.normalize(filePath) : path.resolve(directory, filePath);
           try {
             const expanded = expandLineRange(await Bun.file(resolved).text(), oldString);
@@ -119,7 +121,7 @@ const OpenCodeContextShieldPlugin: Plugin = async ({ directory }) => {
       }
 
       const config = store.read();
-      if (!config.enabled || SKIP_COMPACTION_FOR.has(input.tool)) return;
+      if (!config.enabled || SKIP_COMPACTION_FOR.has(input.tool) || isPreCompacted(input.tool)) return;
 
       const limits = { thresholdBytes: config.compactThresholdBytes, targetBytes: config.compactTargetBytes };
       // v1 hosts expect the output object to be mutated in place.

@@ -7,6 +7,7 @@
     "lint:claude": "claudelint check-all",
     "lint:claude:fix": "claudelint format --fix",
     "lint:ctx": "ctxlint --strict",
+    "typecheck": "tsc --noEmit",
     "lint:biome": "bunx @biomejs/biome check .",
     "lint:biome:fix": "bunx @biomejs/biome check --write .",
     "lint:oxlint": "bunx oxlint .",
@@ -32,6 +33,7 @@
     "mitata": "^1.0.34",
     "oxfmt": "0.76.0",
     "oxlint": "^1.91.0",
+    "typescript": "^7.0.2",
     "ultracite": "^8.1.1"
   }
 }

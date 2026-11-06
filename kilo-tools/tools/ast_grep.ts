@@ -1,12 +1,11 @@
 import { existsSync } from "node:fs";
 import { createRequire } from "node:module";
-import { homedir, platform } from "node:os";
-import { dirname, join } from "node:path";
+import { platform } from "node:os";
+import { dirname, join, resolve } from "node:path";
 import { tool } from "@opencode-ai/plugin";
 import { spawn } from "bun";
 
 const IS_WINDOWS = platform() === "win32";
-const SG_BIN = IS_WINDOWS ? "sg.exe" : "sg";
 
 const CLI_LANGUAGES = [
   "bash",
@@ -47,35 +46,21 @@ let _sgPath: string | null | undefined;
 function findSg(): string | null {
   if (_sgPath !== undefined) return _sgPath;
 
-  const cacheBase = IS_WINDOWS
-    ? (process.env.LOCALAPPDATA ?? join(homedir(), "AppData", "Local"))
-    : (process.env.XDG_CACHE_HOME ?? join(homedir(), ".cache"));
-  const cachePath = join(cacheBase, "oh-my-opencode", "bin", SG_BIN);
-  if (existsSync(cachePath)) {
-    _sgPath = cachePath;
-    return _sgPath;
-  }
-
+  // The platform package @ast-grep/cli installs ships the real binary as ast-grep(.exe). Preferring
+  // it over a PATH `sg` avoids picking up Linux's setgroups `sg`.
   try {
-    const req = createRequire(import.meta.url);
-    const pkgDir = dirname(req.resolve("@ast-grep/cli/package.json"));
-    const p = join(pkgDir, SG_BIN);
+    const libc = { win32: "-msvc", linux: "-gnu" }[process.platform as string] ?? "";
+    const pkg = `@ast-grep/cli-${process.platform}-${process.arch}${libc}`;
+    const pkgDir = dirname(createRequire(import.meta.url).resolve(`${pkg}/package.json`));
+    const p = join(pkgDir, IS_WINDOWS ? "ast-grep.exe" : "ast-grep");
     if (existsSync(p)) {
       _sgPath = p;
-      return _sgPath;
+      return p;
     }
   } catch {}
 
-  try {
-    const p = Bun.which("sg");
-    if (p && existsSync(p)) {
-      _sgPath = p;
-      return _sgPath;
-    }
-  } catch {}
-
-  _sgPath = null;
-  return null;
+  _sgPath = Bun.which("ast-grep") ?? Bun.which("sg");
+  return _sgPath;
 }
 
 interface SgMatch {
@@ -174,9 +159,13 @@ async function runSgReplace(opts: {
   paths: string[];
   globs?: string[];
   rewrite: string;
+  approve: (files: string[]) => Promise<void>;
 }): Promise<{ matches: SgMatch[]; totalMatches: number; truncated: boolean; error?: string }> {
   const result = await runSg(opts);
   if (result.error || result.matches.length === 0) return result;
+  // --update-all also writes files past the match cap, which the permission check would never see.
+  if (result.truncated) return { ...result, error: "too many matches to permission-check; narrow paths or globs" };
+  await opts.approve([...new Set(result.matches.map((m) => resolve(opts.cwd, m.file)))]);
 
   const sg = findSg();
   if (!sg) return { ...result, error: "sg binary not found" };
@@ -221,8 +210,7 @@ function formatApplied(r: SgResult): string {
   if (r.error) return `Error: ${r.error}`;
   if (r.matches.length === 0) return "No matches found";
   const files = [...new Set(r.matches.map((m) => m.file))];
-  const atLeast = r.truncated ? "at least " : "";
-  const header = `Replaced ${atLeast}${r.totalMatches} match(es) in ${files.length} file(s)`;
+  const header = `Replaced ${r.totalMatches} match(es) in ${files.length} file(s)`;
   return [header, ...files.map((f) => `  ${f}`)].join("\n");
 }
 
@@ -279,6 +267,7 @@ const replace = tool({
       paths: args.paths ?? [],
       globs: args.globs,
       rewrite: args.rewrite,
+      approve: (files) => context.ask({ permission: "edit", patterns: files, always: ["*"], metadata: {} }),
     });
     return formatApplied(result);
   },

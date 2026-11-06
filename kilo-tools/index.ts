@@ -43,5 +43,5 @@ const behaviour = compose([
 // id + setup. Host-specific gaps are declared in v1.ts and v2.ts, not here.
 const KiloToolsPlugin = compose([behaviour, RegisterPlugin(baseDir)]);
 
-export default { ...toV2(behaviour, join(baseDir, "skills")), server: KiloToolsPlugin };
+export default { ...toV2(behaviour, join(baseDir, "skills"), join(baseDir, "rules")), server: KiloToolsPlugin };
 export { KiloToolsPlugin };

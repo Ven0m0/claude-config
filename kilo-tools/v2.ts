@@ -24,10 +24,17 @@ function skillsFrom(dir: string) {
   });
 }
 
+function rulesFrom(dir: string) {
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => f.endsWith(".md"))
+    .sort()
+    .map((f) => readFileSync(join(dir, f), "utf8"));
+}
+
 // shortcut: the async v1 tool.definition hook is not bridged (v2 transforms are synchronous);
-// SLIM_DESCRIPTIONS is applied directly instead. Rule files (shell-strategy.md) have no v2
-// registration point, so they only load on v1 hosts.
-export function toV2(plugin: V1Plugin, skillsDir: string): Plugin.Plugin {
+// SLIM_DESCRIPTIONS is applied directly instead.
+export function toV2(plugin: V1Plugin, skillsDir: string, rulesDir: string): Plugin.Plugin {
   return {
     id: "kilo-tools",
     async setup(ctx: Plugin.Context) {
@@ -53,7 +60,17 @@ export function toV2(plugin: V1Plugin, skillsDir: string): Plugin.Plugin {
                 worktree,
                 abort: c.signal,
                 metadata() {},
-                ask: async () => {},
+                // Without this, custom write tools would bypass the user's edit rules on v2.
+                ask: (i: { permission: string; patterns: string[]; always: string[]; metadata: object }) =>
+                  ctx.permission.assert({
+                    sessionID: c.sessionID,
+                    agent: c.agent,
+                    action: i.permission,
+                    resources: i.patterns,
+                    save: i.always,
+                    metadata: i.metadata as Record<string, unknown>,
+                    source: { type: "tool", messageID: c.messageID, id: c.id },
+                  }),
               });
               return typeof out === "string" ? { content: out } : { content: out.output, metadata: out.metadata };
             },
@@ -97,6 +114,14 @@ export function toV2(plugin: V1Plugin, skillsDir: string): Plugin.Plugin {
       if (skills.length) {
         await ctx.skill.transform((editor) => {
           for (const s of skills) editor.add(s as any);
+        });
+      }
+
+      // v2 has no instructions registration point, so rule files go straight into the system prompt.
+      const rules = rulesFrom(rulesDir);
+      if (rules.length) {
+        await ctx.session.hook("context", (e) => {
+          for (const text of rules) e.system.push({ type: "text", text });
         });
       }
     },

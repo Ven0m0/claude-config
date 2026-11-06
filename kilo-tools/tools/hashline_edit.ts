@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import { tool } from "@opencode-ai/plugin";
 import { formatHashLine, HASHLINE_PREFIX, parseRef, validateHash } from "./hashline_utils.ts";
 
@@ -32,7 +33,7 @@ function validateRefs(lines: string[], refs: string[]): void {
   for (const ref of refs) {
     const { line, hash } = parseRef(ref);
     if (line < 1 || line > lines.length) throw new Error(`Line ${line} out of bounds (file has ${lines.length} lines)`);
-    const c = lines[line - 1];
+    const c = lines[line - 1] ?? "";
     if (!validateHash(line, c, hash)) mismatches.push({ line, expected: hash });
   }
   if (mismatches.length) throw new HashMismatchError(mismatches, lines);
@@ -87,8 +88,8 @@ function applyReplaceRange(lines: string[], start: string, end: string, text: st
   let stripped = newLines;
   const before = lines[s - 2];
   const after = lines[e];
-  if (stripped.length > 1 && before && eqNoWs(stripped[0], before)) stripped = stripped.slice(1);
-  if (stripped.length > 0 && after && eqNoWs(stripped[stripped.length - 1], after)) stripped = stripped.slice(0, -1);
+  if (stripped.length > 1 && before && eqNoWs(stripped[0] ?? "", before)) stripped = stripped.slice(1);
+  if (stripped.length > 0 && after && eqNoWs(stripped.at(-1) ?? "", after)) stripped = stripped.slice(0, -1);
   const indent = lines[s - 1]?.match(/^\s*/)?.[0] ?? "";
   const restored = stripped.map((l, i) =>
     i === 0 && !l.match(/^\s/) && indent && lines[s - 1]?.trim() !== l.trim() ? indent + l : l
@@ -197,12 +198,10 @@ function assertNoConflicts(edits: Edit[]): void {
     replaces.push({ s, e, n: i + 1 });
   });
   replaces.sort((a, b) => a.s - b.s);
-  for (let i = 1; i < replaces.length; i++) {
-    if (replaces[i].s <= replaces[i - 1].e)
-      throw new Error(
-        `Overlapping edits ${replaces[i - 1].n} and ${replaces[i].n} (lines ${replaces[i].s}-${replaces[i - 1].e})`
-      );
-  }
+  replaces.forEach((cur, i) => {
+    const prev = replaces[i - 1];
+    if (prev && cur.s <= prev.e) throw new Error(`Overlapping edits ${prev.n} and ${cur.n} (lines ${cur.s}-${prev.e})`);
+  });
   edits.forEach((ed, i) => {
     if ((ed.op !== "append" && ed.op !== "prepend") || !ed.pos) return;
     const line = parseRef(ed.pos).line;
@@ -291,7 +290,7 @@ function changedLineCount(a: string[], b: string[]): number {
 // ── Tool description ────────────────────────────────────────────────────────
 
 const DESCRIPTION = `Edit files via LINE#ID anchors from hl_read/hl_grep, or by line range (quick mode).
-Quick: start_line/end_line/new_code. Replace 5-10: 5,10,code. Delete: new_code "". Insert before 5: end_line=4.
+Quick: start_line/end_line/new_code (no hash check: re-read first). Replace 5-10: 5,10,code. Delete: new_code "". Insert before 5: end_line=4.
 Hash: edits[] with op replace|append|prepend and pos/end tags. replace pos[+end] swaps that line/range (lines null = delete); append/prepend insert after/before pos (no pos = EOF/BOF, creates missing files). delete:true removes the file (edits []).
 All edits in a call use the ORIGINAL file state. lines holds only replacement text, never surrounding context or content after end. Re-read before the next call.`;
 
@@ -324,18 +323,23 @@ const hl_edit = tool({
       .optional()
       .describe("Hash-mode ops"),
   },
-  async execute(args) {
+  async execute(args, context) {
+    const hasLineRange = args.start_line !== undefined;
+    const editsArr = args.edits ?? [];
+    const hasEdits = editsArr.length > 0;
+
+    if (hasLineRange && hasEdits) return "Error: use either start_line/end_line/new_code or edits[], not both";
+    if (args.delete && args.rename) return "Error: delete and rename cannot be combined";
+    if (args.delete && hasEdits) return "Error: delete=true requires edits=[]";
+    if (!args.delete && !hasLineRange && !hasEdits) return "Error: provide edits[] or start_line/end_line/new_code";
+
+    // The paths checked here are the paths written below, so a relative path cannot slip past the rules.
+    const target = resolve(context.directory, args.filePath);
+    const dest = args.rename ? resolve(context.directory, args.rename) : target;
+    // Outside the try: a rejection must end the step, not come back as tool output.
+    await context.ask({ permission: "edit", patterns: [...new Set([target, dest])], always: ["*"], metadata: {} });
     try {
-      const hasLineRange = args.start_line !== undefined;
-      const editsArr = args.edits ?? [];
-      const hasEdits = editsArr.length > 0;
-
-      if (hasLineRange && hasEdits) return "Error: use either start_line/end_line/new_code or edits[], not both";
-      if (args.delete && args.rename) return "Error: delete and rename cannot be combined";
-      if (args.delete && hasEdits) return "Error: delete=true requires edits=[]";
-      if (!args.delete && !hasLineRange && !hasEdits) return "Error: provide edits[] or start_line/end_line/new_code";
-
-      const file = Bun.file(args.filePath);
+      const file = Bun.file(target);
       const exists = await file.exists();
 
       if (args.delete) {
@@ -367,9 +371,8 @@ const hl_edit = tool({
         return `Error: no changes — edits produced identical content. Re-read the file first.`;
 
       const writeContent = restore(newContent, hadBom, crlf);
-      const dest = args.rename ?? args.filePath;
       await Bun.write(dest, writeContent);
-      if (args.rename && args.rename !== args.filePath && exists) await file.delete();
+      if (dest !== target && exists) await file.delete();
 
       const changedCount = changedLineCount(canonical.split("\n"), newContent.split("\n"));
       return args.rename ? `Moved ${args.filePath} → ${dest}` : `Updated ${dest} (${changedCount} line(s) changed)`;
