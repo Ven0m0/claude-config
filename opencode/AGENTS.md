@@ -21,11 +21,10 @@ Prefer `fd`, `rg`, `jq`/`yq`, `uv` (python), `bun` (js/ts), `7z`, `markitdown` (
 Use the fff MCP tools for all file search operations instead of default tools. For structural (AST) code search/rewrite, use `@ast-grep/cli` (`ast-grep` / `sg`) instead of regex `rg`.
 Browser automation: always Patchright (stealth Playwright fork), never Playwright. MCP server: `patchright`. Python: `from patchright.sync_api import ...` via `uv run --with patchright`. Node: `patchright` package. Never install `playwright` or `@playwright/mcp` standalone.
 
-## Docs Lookup (ref-tools, context7)
+## Docs Lookup (context7)
 Before using or changing any library, framework, SDK, API, CLI tool, or dependency, and before assuming how a tool or project works, check docs through MCP instead of answering from memory. Training data goes stale.
-- **ref-tools first** (`ref_search_documentation`, then `ref_read_url` for the exact page) when connected: more token-efficient, since it returns only the relevant page section.
-- **context7 as fallback** (`resolve-library-id`, then `query-docs`): use when ref-tools is not connected, returns nothing useful, or the library is missing there.
-- Use both for: API syntax, config options, version migrations, library-specific errors, setup steps, and understanding an unfamiliar dependency or project before editing it.
+- **context7** (`resolve-library-id`, then `query-docs`); fall back to `webfetch` on the official docs page when the library is missing there.
+- Use for: API syntax, config options, version migrations, library-specific errors, setup steps, and understanding an unfamiliar dependency or project before editing it.
 - Skip for: refactoring, scripts from scratch, business-logic debugging, code review, general programming concepts.
 - Read the project's own manifest and README first so lookups target the pinned version.
 

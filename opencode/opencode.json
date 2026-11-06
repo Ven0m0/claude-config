@@ -123,14 +123,6 @@
         "timeout": {
           "execution": 1800000
         }
-      },
-      "ref-tools": {
-        "type": "remote",
-        "url": "https://api.ref.tools/mcp",
-        "headers": {
-          "x-ref-api-key": "{env:REF_API_KEY}"
-        },
-        "disabled": false
       }
     }
   },
