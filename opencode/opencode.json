@@ -302,8 +302,42 @@
     "kilo-tools@git+https://github.com/Ven0m0/claude-config.git#0d265880e6a343607a54a50599eb3e080e1819be",
     "@tarquinen/opencode-dcp@3.2.0",
     "context-mode@2.1.4",
-    "opencode-ecosystem-manager@0.3.2"
+    "opencode-ecosystem-manager@0.3.2",
+    "C:/Users/Ven0m0/.local/share/opencode-v2-lsp-support"
   ],
+  "lsp": {
+    "bash": { "command": ["bash-language-server", "start"], "extensions": [".sh", ".bash", ".zsh", ".ksh"] },
+    "pyright": { "command": ["basedpyright-langserver", "--stdio"], "extensions": [".py", ".pyi"] },
+    "typescript": {
+      "command": ["vtsls", "--stdio"],
+      "extensions": [".ts", ".tsx", ".js", ".jsx", ".mts", ".cts", ".mjs", ".cjs"],
+      "initialization": {
+        "maxTsServerMemory": 4096,
+        "disableAutomaticTypeAcquisition": true
+      }
+    },
+    "rust": {
+      "command": ["rust-analyzer"],
+      "extensions": [".rs"],
+      "initialization": { "diagnostics": { "experimental": { "enable": true } } }
+    },
+    "tombi": { "command": ["tombi", "lsp"], "extensions": [".toml"] },
+    "json": {
+      "command": ["vscode-json-language-server", "--stdio"],
+      "extensions": [".json", ".jsonc"],
+      "initialization": { "json": { "validate": { "enable": true }, "schemas": [] } }
+    },
+    "yaml-ls": { "command": ["yaml-language-server", "--stdio"], "extensions": [".yaml", ".yml"] },
+    "html": { "command": ["vscode-html-language-server", "--stdio"], "extensions": [".html", ".htm"] },
+    "css": {
+      "command": ["vscode-css-language-server", "--stdio"],
+      "extensions": [".css", ".scss", ".less"],
+      "initialization": { "css": { "validate": true }, "scss": { "validate": true }, "less": { "validate": true } }
+    },
+    "dockerfile": { "command": ["docker-langserver", "--stdio"], "extensions": [".dockerfile", "Dockerfile"] },
+    "markdown-oxide": { "command": ["markdown-oxide"], "extensions": [".md"] },
+    "jdtls": { "command": ["jdtls"], "extensions": [".java"] }
+  },
   "skills": [".kilo/skills"],
   "watcher": {
     "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**", "__pycache__/**", ".ruff_cache/**"]
