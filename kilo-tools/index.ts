@@ -4,8 +4,10 @@ import type { Plugin } from "@opencode-ai/plugin";
 import { compose } from "./compose.ts";
 import ContextShieldPlugin from "./plugins/context-shield.ts";
 import GitingestPlugin from "./plugins/gitingest.ts";
+import IcmPlugin from "./plugins/icm.ts";
 import JsonHealerPlugin from "./plugins/json-healer.ts";
 import NormalizeToolNamePlugin from "./plugins/normalize-tool-name.ts";
+import RtkPlugin from "./plugins/rtk.ts";
 import { TOOL } from "./tool-names.ts";
 import { replace as sgReplace, search as sgSearch } from "./tools/ast_grep.ts";
 import hlEdit from "./tools/hashline_edit.ts";
@@ -43,5 +45,19 @@ const behaviour = compose([
 // id + setup. Host-specific gaps are declared in v1.ts and v2.ts, not here.
 const KiloToolsPlugin = compose([behaviour, RegisterPlugin(baseDir)]);
 
-export default { ...toV2(behaviour, join(baseDir, "skills"), join(baseDir, "rules")), server: KiloToolsPlugin };
+const kiloV2 = toV2(behaviour, join(baseDir, "skills"), join(baseDir, "rules"));
+
+// icm and rtk are native v2 plugins (they use ctx.tool/ctx.session/ctx.shell hooks that have no v1
+// equivalent), so they run only through the v2 setup, alongside the bridged behaviour above.
+const V2_NATIVE = [IcmPlugin, RtkPlugin];
+
+const kiloV2WithNative: typeof kiloV2 = {
+  ...kiloV2,
+  async setup(ctx) {
+    await kiloV2.setup(ctx);
+    for (const p of V2_NATIVE) await p.setup(ctx);
+  },
+};
+
+export default { ...kiloV2WithNative, server: KiloToolsPlugin };
 export { KiloToolsPlugin };
