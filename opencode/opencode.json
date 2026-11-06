@@ -307,7 +307,7 @@
     }
   ],
   "plugins": [
-    "kilo-tools@git+https://github.com/Ven0m0/claude-config.git#c69fd74cce90b1add920f78c4487ea47fa400b83",
+    "kilo-tools@git+https://github.com/Ven0m0/claude-config.git#0d265880e6a343607a54a50599eb3e080e1819be",
     "@tarquinen/opencode-dcp@3.2.0",
     "context-mode@2.1.4",
     "opencode-ecosystem-manager@0.3.2"
