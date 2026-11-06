@@ -1,240 +1,319 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "opencode/deepseek-v4-flash-free",
-  "small_model": "opencode/big-pickle",
-  "agent": {
-    "build": {
-      "model": "opencode/deepseek-v4-flash-free",
-      "temperature": 0.35,
-      "options": {
-        "reasoningEffort": "high",
-        "reasoningSummary": "auto",
-        "textVerbosity": "low"
-      }
+  "model": "opencode/deepseek-v4.1-flash-free",
+  "small_model": "opencode/nemotron-3.5-lightning-free",
+  "agents": {
+    "ask": {
+      "model": "opencode/mimo-v2.6-flash-free"
     },
-    "coder": {
-      "model": "opencode/deepseek-v4-flash-free",
-      "temperature": 0.3,
-      "options": {
-        "reasoningEffort": "medium",
-        "reasoningSummary": "auto",
-        "textVerbosity": "low"
-      }
+    "code": {
+      "model": "opencode/deepseek-v4.1-flash-free"
     },
-    "explore": {
-      "model": "opencode/nemotron-3-ultra-free",
-      "temperature": 0.1,
-      "options": {
-        "reasoningEffort": "low",
-        "textVerbosity": "low"
-      }
+    "compaction": {
+      "model": "opencode/deepseek-v4.1-flash-free"
+    },
+    "debug": {
+      "model": "opencode/nemotron-3-ultra-free"
     },
     "plan": {
-      "model": "opencode/qwen3.6-plus-free",
-      "temperature": 0.2,
-      "options": {
-        "reasoningEffort": "high",
-        "reasoningSummary": "auto",
-        "textVerbosity": "low"
-      }
-    },
-    "researcher": {
-      "model": "github-copilot/gemini-3.1-pro-preview",
-      "temperature": 0.3,
-      "options": {
-        "reasoningEffort": "high"
-      }
-    },
-    "reviewer": {
-      "model": "github-copilot/claude-sonnet-4.5",
-      "temperature": 0.1,
-      "options": {
-        "reasoningEffort": "high",
-        "textVerbosity": "low"
-      }
-    },
-    "scribe": {
-      "model": "opencode/big-pickle",
-      "temperature": 0.5,
-      "options": {
-        "reasoningEffort": "low",
-        "textVerbosity": "low"
-      }
+      "model": "opencode/glm-5.3-flash-free"
     }
-  },
-  "default_agent": "build",
-  "instructions": [
-    "AGENTS.md",
-    "https://raw.githubusercontent.com/JRedeker/opencode-shell-strategy/trunk/shell_strategy.md"
-  ],
-  "mcp": {
-    "github-mcp-server": {
-      "type": "remote",
-      "url": "https://api.githubcopilot.com/mcp/",
-      "enabled": true,
-      "oauth": false,
-      "timeout": 30000,
-      "headers": {
-        "Authorization": "Bearer {env:GITHUB_TOKEN}",
-        "X-MCP-Toolsets": "default,actions,web_search,code_security,copilot,dependabot,git,secret_protection,security_advisories,stargazers,github_support_docs_search,labels,gists"
-      }
-    },
-    "ref-tools": {
-      "type": "remote",
-      "url": "https://api.ref.tools/mcp",
-      "enabled": true,
-      "oauth": false,
-      "timeout": 30000,
-      "headers": { "x-ref-api-key": "{env:REF_API_KEY}" }
-    },
-    "exa": {
-      "type": "remote",
-      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa",
-      "enabled": true,
-      "oauth": false,
-      "timeout": 30000,
-      "headers": {
-        "x-api-key": "{env:EXA_API_KEY}"
-      }
-    },
-    "gh_grep": {
-      "type": "remote",
-      "url": "https://mcp.grep.app",
-      "enabled": true,
-      "timeout": 30000
-    }
-  },
-  "permission": {
-    "*": "allow",
-    "sudo *": "deny",
-    "rm -rf /": "deny",
-    "rm -rf /*": "deny",
-    "rm -rf ~": "deny",
-    "rm -rf ~/*": "deny",
-    ":(){:|:&}:": "deny",
-    "doom_loop": "deny"
-  },
-  "plugin": [
-    "openslimedit@1.0.4",
-    "@bastiangx/opencode-unmoji@0.3.12",
-    "superpowers@git+https://github.com/obra/superpowers.git",
-    "@morphllm/opencode-morph-plugin@2.0.9",
-    "@openspoon/subtask2@0.3.9",
-    "@tarquinen/opencode-dcp@3.1.9",
-    "opencode-image-compress@0.3.2",
-    "opencode-ignore@1.1.0",
-    "opencode-pty@0.3.2",
-    "opencode-agent-skills@0.6.5",
-    "@gotgenes/opencode-agent-identity@3.0.1",
-    "opencode-session-handoff@1.1.6",
-    "opencode-websearch@0.5.0",
-    "@kilocode/kilo-indexing@latest",
-    "opencode-ascii"
-  ],
-  "lsp": {
-    "typescript": {
-      "command": ["vtsls", "--stdio"],
-      "extensions": [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".mts", ".cts"]
-    },
-    "pyright": {
-      "command": ["basedpyright-langserver", "--stdio"],
-      "extensions": [".py"]
-    },
-    "rust": {
-      "command": ["rust-analyzer"],
-      "extensions": [".rs"]
-    },
-    "bash": {
-      "command": ["bash-language-server", "start"],
-      "extensions": [".sh", ".bash", ".zsh"]
-    },
-    "yaml-ls": {
-      "command": ["yaml-language-server", "--stdio"],
-      "extensions": [".yaml", ".yml"]
-    },
-    "markdown-oxide": {
-      "command": ["markdown-oxide"],
-      "extensions": [".md", ".mdx"]
-    },
-    "json-ls": {
-      "command": ["vscode-json-language-server", "--stdio"],
-      "extensions": [".json", ".jsonc"]
-    },
-    "dockerfile-ls": {
-      "command": ["docker-langserver", "--stdio"],
-      "extensions": [".dockerfile"]
-    },
-    "html-ls": {
-      "command": ["vscode-html-language-server", "--stdio"],
-      "extensions": [".html", ".htm"]
-    },
-    "css-ls": {
-      "command": ["vscode-css-language-server", "--stdio"],
-      "extensions": [".css", ".scss", ".less"]
-    },
-    "tombi": {
-      "command": ["tombi", "lsp"],
-      "extensions": [".toml"]
-    }
-  },
-  "disabled_providers": ["openai"],
-  "provider": {
-    "anthropic": {
-      "options": {
-        "apiKey": "{env:ANTHROPIC_API_KEY}",
-        "chunkTimeout": 30000,
-        "setCacheKey": true,
-        "timeout": 600000
-      }
-    },
-    "gemini": {
-      "options": {
-        "apiKey": "{env:GEMINI_API_KEY}",
-        "chunkTimeout": 30000,
-        "setCacheKey": true,
-        "timeout": 600000
-      }
-    },
-    "github-copilot": {
-      "options": {
-        "apiKey": "{env:GITHUB_TOKEN}",
-        "chunkTimeout": 30000,
-        "enterpriseUrl": "{env:GITHUB_ENTERPRISE_URL}",
-        "setCacheKey": true,
-        "timeout": 600000
-      }
-    },
-    "kilo": {
-      "options": {
-        "apiKey": "{env:KILO_API_KEY}",
-        "chunkTimeout": 30000,
-        "setCacheKey": true,
-        "timeout": 600000
-      }
-    }
-  },
-  "experimental": {
-    "continue_loop_on_deny": false,
-    "mcp_timeout": 30000,
-    "openTelemetry": false,
-    "batch_tool": true
   },
   "compaction": {
-    "auto": true,
-    "prune": true
+    "auto": true
   },
-  "share": "manual",
-  "autoupdate": "notify",
+  "disabled_providers": ["openai", "google", "anthropic"],
+  "experimental": {
+    "todo": true
+  },
+  "formatter": {
+    "biome": {
+      "command": ["bunx", "--bun", "@biomejs/biome", "check", "--write", "--format-with-errors=true", "$FILE"],
+      "extensions": [".json", ".jsonc", ".js", ".ts"]
+    },
+    "ruff": {
+      "command": ["ruff", "format", "$FILE"],
+      "extensions": [".py", ".pyi", ".pyc"]
+    }
+  },
+  "instructions": [
+    ".opencode/rules/*.md",
+    ".kilo/rules/*.md",
+    ".claude/rules/*.md",
+    "~/.claude/rules/*.md",
+    "https://raw.githubusercontent.com/DietrichGebert/ponytail/main/PONYTAIL.md",
+    "https://raw.githubusercontent.com/JuliusBrussee/caveman/main/CAVEMAN.md"
+  ],
+  "mcp": {
+    "timeout": {
+      "catalog": 30000,
+      "execution": 600000
+    },
+    "servers": {
+      "codegraph": {
+        "command": ["codegraph", "serve", "--mcp"],
+        "disabled": false,
+        "type": "local"
+      },
+      "context7": {
+        "disabled": false,
+        "type": "remote",
+        "url": "https://mcp.context7.com/mcp"
+      },
+      "exa": {
+        "disabled": false,
+        "type": "remote",
+        "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa"
+      },
+      "fff": {
+        "command": ["fff-mcp"],
+        "type": "local",
+        "disabled": false
+      },
+      "github": {
+        "disabled": false,
+        "headers": {
+          "Authorization": "Bearer {env:GITHUB_TOKEN}"
+        },
+        "oauth": false,
+        "type": "remote",
+        "url": "https://api.githubcopilot.com/mcp/"
+      },
+      "icm": {
+        "type": "local",
+        "command": ["C:/Users/Ven0m0/AppData/Local/icm/bin/icm.exe", "serve"],
+        "disabled": false
+      },
+      "obsidian-hybrid-search": {
+        "type": "local",
+        "command": [
+          "C:\\Users\\Ven0m0\\AppData\\Local\\mise\\installs\\node\\24.22.0\\node.exe",
+          "C:\\Users\\Ven0m0\\AppData\\Local\\obsidian-hybrid-search\\app\\node_modules\\obsidian-hybrid-search\\dist\\src\\server.js"
+        ],
+        "disabled": false,
+        "environment": {
+          "OBSIDIAN_VAULT_PATH": "C:\\Users\\Ven0m0\\Nextcloud\\obsidian-vault",
+          "OBSIDIAN_IGNORE_PATTERNS": ".obsidian/**,.claude/**,.claudian/**,.remember/**,Templates/**,*.canvas"
+        }
+      },
+      "patchright": {
+        "type": "local",
+        "command": ["node", "C:/Users/Ven0m0/.local/share/patchright-mcp/node_modules/@playwright/mcp/cli.js"],
+        "disabled": false
+      },
+      "rea": {
+        "type": "local",
+        "command": [
+          "C:/Program Files/nodejs/node.exe",
+          "C:/Users/Ven0m0/.bun/install/global/node_modules/rea-agents/scripts/rea.mjs",
+          "mcp"
+        ],
+        "environment": {
+          "GHIDRA_INSTALL_DIR": "C:/Users/Ven0m0/tools/rea/ghidra_12.1.4_PUBLIC",
+          "JAVA_HOME": "C:/Users/Ven0m0/tools/rea/jdk-21.0.12.1+1",
+          "REA_APKTOOL_COMMAND": "C:/Users/Ven0m0/scoop/shims/apktool.cmd",
+          "REA_CAPINFOS_COMMAND": "C:/Users/Ven0m0/scoop/apps/wireshark/current/capinfos.exe",
+          "REA_GHIDRA_STARTUP_TIMEOUT_MS": "1500000",
+          "REA_JADX_MCP_JAR": "C:/Users/Ven0m0/.local/share/rea/android/jadx-headless-mcp-0.7.1-all.jar",
+          "REA_OBJDUMP_COMMAND": "C:/Users/Ven0m0/scoop/apps/binutils/current/bin/objdump.exe",
+          "REA_TSHARK_COMMAND": "C:/Users/Ven0m0/scoop/apps/wireshark/current/tshark.exe",
+          "REA_WABT_BIN_DIRECTORY": "C:/Users/Ven0m0/scoop/apps/wabt/current"
+        },
+        "disabled": false,
+        "timeout": {
+          "execution": 1800000
+        }
+      },
+      "ref-tools": {
+        "type": "remote",
+        "url": "https://api.ref.tools/mcp",
+        "headers": {
+          "x-ref-api-key": "{env:REF_API_KEY}"
+        },
+        "disabled": false
+      }
+    }
+  },
+  "permissions": [
+    {
+      "action": "*",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "read",
+      "resource": "*.env",
+      "effect": "deny"
+    },
+    {
+      "action": "read",
+      "resource": "*.lock",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": "*.lock",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "sudo *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "rm -rf /",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "rm -rf /*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "rm -rf ~",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "rm -rf ~/*",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": ":(){:|:&};:",
+      "effect": "deny"
+    },
+    {
+      "action": "read",
+      "resource": "~/.git-credentials",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": "~/.git-credentials",
+      "effect": "deny"
+    },
+    {
+      "action": "read",
+      "resource": "~/.claude/.credentials.json",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": "~/.claude/.credentials.json",
+      "effect": "deny"
+    },
+    {
+      "action": "read",
+      "resource": "~/.ssh/id_*",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": "~/.ssh/id_*",
+      "effect": "deny"
+    },
+    {
+      "action": "read",
+      "resource": "~/.mcp-auth/*",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": "~/.mcp-auth/*",
+      "effect": "deny"
+    },
+    {
+      "action": "read",
+      "resource": "~/.gnupg/*",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": "~/.gnupg/*",
+      "effect": "deny"
+    },
+    {
+      "action": "read",
+      "resource": "~/.local/share/opencode/auth.json",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": "~/.local/share/opencode/auth.json",
+      "effect": "deny"
+    },
+    {
+      "action": "read",
+      "resource": "~/.pi/agent/auth.json",
+      "effect": "deny"
+    },
+    {
+      "action": "edit",
+      "resource": "~/.pi/agent/auth.json",
+      "effect": "deny"
+    },
+    {
+      "action": "read",
+      "resource": "~/.npmrc",
+      "effect": "ask"
+    },
+    {
+      "action": "edit",
+      "resource": "~/.npmrc",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git push --force*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git push *--force*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git push -f*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git push * -f*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git reset --hard*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "git clean -fd*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "npm publish*",
+      "effect": "ask"
+    },
+    {
+      "action": "patchright_browser_install",
+      "resource": "*",
+      "effect": "deny"
+    }
+  ],
+  "plugins": [
+    "kilo-tools@git+https://github.com/Ven0m0/claude-config.git#c69fd74cce90b1add920f78c4487ea47fa400b83",
+    "@tarquinen/opencode-dcp@3.2.0",
+    "context-mode@2.1.4",
+    "opencode-ecosystem-manager@0.3.2"
+  ],
+  "skills": [".kilo/skills"],
   "watcher": {
-    "ignore": [
-      "node_modules/**",
-      "dist/**",
-      ".git/**",
-      ".venv/**",
-      ".omc/**",
-      ".kilo/**",
-      ".kilocode/**",
-      ".opencode/**"
-    ]
+    "ignore": ["node_modules/**", "dist/**", ".git/**", ".venv/**", "__pycache__/**", ".ruff_cache/**"]
   }
 }
