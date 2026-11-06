@@ -85,13 +85,10 @@ _Preferences for code, comments, and documentation_
 
 ## Agent Orchestration
 
-Agents live in `claude/agents/`. Delegate via `Task(subagent_type="agent-name", prompt="...")`.
+Agents live in `claude/plugins/ven0m0-agents/agents/`. Delegate via `Task(subagent_type="agent-name", prompt="...")`.
 
 | Agent            | When to use                                                                      |
 | ---------------- | --------------------------------------------------------------------------------- |
-| general-purpose  | Default agent for multi-step engineering work; plans, executes, delegates        |
-| language-expert  | Multi-language implementation (Bash, Python, JavaScript, TypeScript, Rust)       |
-| maintenance      | Removes safe tech debt / dead code while preserving required framework behavior  |
 | reverse-engineer | Authorized binary analysis, decompilation, defensive security research           |
 
 **Parallel execution**: Use parallel Task() for independent work (e.g. security analysis + performance review + type check in one turn).

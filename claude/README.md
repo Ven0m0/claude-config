@@ -49,8 +49,7 @@ claude/
 
 ## Commands
 
-Available under `commands/`: `analyze-issue`, `ci-gen`, `clean`, `dependency-audit`, `docs`,
-`fix`, `pipeline-optimize`. See each file for details.
+Available under `plugins/ven0m0-commands/commands/`: `analyze-issue`, `ci-gen`, `dependency-audit`. See each file for details.
 
 ## Hooks
 
