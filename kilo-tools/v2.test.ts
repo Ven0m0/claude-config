@@ -1,9 +1,8 @@
 import { expect, test } from "bun:test";
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import plugin from "./index.ts";
-import { SKIP_COMPACTION_FOR } from "./tool-names.ts";
 
 async function setup(assert: (i: any) => Promise<void> = async () => {}) {
   const dir = mkdtempSync(join(tmpdir(), "kilo-v2-"));
@@ -15,6 +14,7 @@ async function setup(assert: (i: any) => Promise<void> = async () => {}) {
   const ctx: any = {
     session: { hook: async (name: string, cb: any) => void (sessionHooks[name] = cb) },
     permission: { assert },
+    shell: { hook: async () => {} },
     location: { directory: dir, project: { directory: dir, canonical: dir } },
     tool: {
       transform: async (cb: any) =>
@@ -27,7 +27,16 @@ async function setup(assert: (i: any) => Promise<void> = async () => {}) {
               },
             }),
         }),
-      hook: async (name: string, cb: any) => void (hooks[name] = cb),
+      // The host runs every registered hook for a name (kilo-tools and icm both register execute.after).
+      hook: async (name: string, cb: any) => {
+        const prev = hooks[name];
+        hooks[name] = prev
+          ? async (e: any) => {
+              await prev(e);
+              await cb(e);
+            }
+          : cb;
+      },
     },
     skill: { transform: async (cb: any) => cb({ add: (s: any) => skills.push(s) }) },
   };
@@ -44,19 +53,22 @@ test("rule files are pushed into the v2 system prompt", async () => {
   expect(e.system.some((p) => p.type === "text" && p.text.length > 0)).toBe(true);
 });
 
-test("hl_edit asks for edit permission and a denial leaves the file unchanged", async () => {
+// Needs the sg binary (@ast-grep/cli); reported as skipped, not passed, without it.
+const hasSg = Boolean(Bun.which("sg")) || existsSync(join(import.meta.dir, "../node_modules/@ast-grep/cli"));
+
+test.skipIf(!hasSg)("sgr asks for edit permission and a denial leaves the file unchanged", async () => {
   const asked: any[] = [];
   const { dir, tools } = await setup(async (i) => {
     asked.push(i);
     throw new Error("denied");
   });
-  const file = join(dir, "f.lock");
-  writeFileSync(file, "one\ntwo\n");
-  const hlEdit = tools.find((t) => t.name === "hl_edit");
-  await expect(hlEdit.execute({ filePath: file, start_line: 1, end_line: 1, new_code: "x" }, callCtx)).rejects.toThrow(
+  const file = join(dir, "a.js");
+  writeFileSync(file, "console.log(1);\n");
+  const sgr = tools.find((t) => t.name === "sgr");
+  await expect(sgr.execute({ pattern: "console.log($A)", rewrite: "x($A)", dryRun: false }, callCtx)).rejects.toThrow(
     "denied"
   );
-  expect(readFileSync(file, "utf8")).toBe("one\ntwo\n");
+  expect(readFileSync(file, "utf8")).toBe("console.log(1);\n");
   expect(asked[0]).toMatchObject({
     sessionID: "s",
     agent: "a",
@@ -70,19 +82,16 @@ test("hl_edit asks for edit permission and a denial leaves the file unchanged", 
 test("registers tools with JSON Schema input and skills", async () => {
   const { tools, skills } = await setup();
   const names = tools.map((t) => t.name);
-  expect(names).toEqual(expect.arrayContaining(["hl_read", "hl_edit", "hl_grep", "json_repair", "sg", "sgr"]));
-  expect(tools.find((t) => t.name === "json_repair").input.type).toBe("object");
+  expect(names.sort()).toEqual(["sg", "sgr"]);
+  expect(tools.find((t) => t.name === "sg").input.type).toBe("object");
   expect(skills.length).toBeGreaterThan(0);
   expect(skills[0]).toMatchObject({ id: expect.any(String), path: expect.any(String), content: expect.any(String) });
 });
 
-test("tool execute parses input and wraps string output", async () => {
-  const { tools } = await setup();
-  const repair = tools.find((t) => t.name === "json_repair");
-  const out = await repair.execute(
-    { input: '{"a":1,}' },
-    { sessionID: "s", messageID: "m", agent: "a", signal: new AbortController().signal }
-  );
+test.skipIf(!hasSg)("tool execute parses input and wraps string output", async () => {
+  const { dir, tools } = await setup();
+  writeFileSync(join(dir, "a.js"), "console.log(1);\n");
+  const out = await tools.find((t) => t.name === "sg").execute({ pattern: "console.log($A)" }, callCtx);
   expect(typeof out.content).toBe("string");
 });
 
@@ -103,22 +112,11 @@ test("execute.before expands a v2 edit line range via path", async () => {
 
 test("execute.after replaces the readonly result object", async () => {
   const { hooks } = await setup();
-  const big = "line\n".repeat(5000);
-  const result = Object.freeze({ content: big, metadata: Object.freeze({}) });
-  const e: any = { tool: "bash", status: "completed", sessionID: "s", id: "c", input: {}, result };
+  const result = Object.freeze({ content: "Edit applied successfully.", metadata: Object.freeze({}) });
+  const e: any = { tool: "edit", status: "completed", sessionID: "s", id: "c", input: {}, result };
   await hooks["execute.after"]!(e);
   expect(e.result).not.toBe(result);
-  expect(e.result.content.length).toBeLessThan(big.length);
-});
-
-test("context-mode ctx_* output is not re-compacted, with or without an MCP prefix", async () => {
-  const { hooks } = await setup();
-  const big = "line\n".repeat(5000);
-  for (const tool of ["ctx_execute", "context-mode_ctx_search", "mcp__plugin_context-mode_context-mode__ctx_batch"]) {
-    const e: any = { tool, status: "completed", sessionID: "s", id: "c", input: {}, result: { content: big } };
-    await hooks["execute.after"]!(e);
-    expect(e.result.content).toBe(big);
-  }
+  expect(e.result.content).toBe("OK");
 });
 
 test("slim descriptions are applied to built-in tools", async () => {
@@ -127,20 +125,19 @@ test("slim descriptions are applied to built-in tools", async () => {
   expect(updates.read).toBe("Read file content.");
 });
 
-test("execute.after keeps non-text parts while compacting the text", async () => {
+test("execute.after keeps non-text parts while rewriting the text", async () => {
   const { hooks } = await setup();
   const file = { type: "file", uri: "data:image/png;base64,AA", mime: "image/png" };
-  const big = "line\n".repeat(5000);
   const e: any = {
-    tool: "bash",
+    tool: "edit",
     status: "completed",
     sessionID: "s",
     id: "c",
     input: {},
-    result: { content: [{ type: "text", text: big }, file], metadata: {} },
+    result: { content: [{ type: "text", text: "Edit applied successfully." }, file], metadata: {} },
   };
   await hooks["execute.after"]!(e);
-  expect(e.result.content[0].text.length).toBeLessThan(big.length);
+  expect(e.result.content[0].text).toBe("OK");
   expect(e.result.content[1]).toEqual(file);
 });
 
@@ -164,43 +161,9 @@ test("only the v1 adapter registers skills paths and rule files with the host co
   expect(config.instructions.some((p: string) => p.endsWith("shell-strategy.md"))).toBe(true);
 });
 
-test("v1 and v2 adapters compact a multi-part result to the same text and keep non-text parts", async () => {
-  const file = { type: "file", uri: "data:image/png;base64,AA", mime: "image/png" };
-  const content = [
-    { type: "text", text: "first\n".repeat(2500) },
-    file,
-    { type: "text", text: "second\n".repeat(2500) },
-  ];
-
-  const v1 = await (plugin.server as any)({ directory: mkdtempSync(join(tmpdir(), "kilo-v1-")) });
-  const viaV1: any = { content: structuredClone(content), metadata: {} };
-  await v1["tool.execute.after"]({ tool: "bash", sessionID: "s", callID: "c", args: {} }, viaV1);
-
-  const { hooks } = await setup();
-  const viaV2: any = {
-    tool: "bash",
-    status: "completed",
-    sessionID: "s",
-    id: "c",
-    input: {},
-    result: { content: structuredClone(content), metadata: {} },
-  };
-  await hooks["execute.after"]!(viaV2);
-
-  expect(viaV1.content[0].text).toBe(viaV2.result.content[0].text);
-  expect(viaV1.content[1]).toEqual(file);
-  expect(viaV2.result.content[1]).toEqual(file);
-});
-
 test("a padded tool name is trimmed for the after-hook too", async () => {
   const v1 = await (plugin.server as any)({ directory: mkdtempSync(join(tmpdir(), "kilo-v1-")) });
   const output = { title: "", output: "Edit applied successfully.", metadata: {} };
   await v1["tool.execute.after"]({ tool: " edit ", sessionID: "s", callID: "c", args: {} }, output);
   expect(output.output).toBe("OK");
-});
-
-test("every registered tool is either exempt from compaction or listed as compactable", async () => {
-  const { tools } = await setup();
-  const compactable = new Set<string>();
-  for (const { name } of tools) expect(SKIP_COMPACTION_FOR.has(name) || compactable.has(name)).toBe(true);
 });
