@@ -12,7 +12,7 @@ type HookFn = (...args: unknown[]) => unknown;
  * - Any other function-valued hook sharing a key (e.g. `tool.execute.after`, `config`) is
  *   chained: implementations run in array order, each awaited before the next. Return values
  *   are discarded, so hooks must mutate their arguments in place. Array order is therefore part
- *   of a plugin's behaviour (context-shield compacts, then json-healer repairs the result).
+ *   of a plugin's behaviour (normalize-tool-name runs first so later hooks see the trimmed name).
  * - Non-function values are last-write-wins.
  */
 export function compose(plugins: Plugin[]): Plugin {

@@ -11,7 +11,7 @@ Start from `git diff` (or the files you are pointed at), then read `kilo-tools/i
 
 Check:
 1. **One implementation per concern.** Result text extraction and replacement go through `result-text.ts`; host-specific names and arg keys live in `tool-names.ts`. Flag logic duplicated across adapters or plugins.
-2. **Hook order.** Hooks run in `compose` array order and mutate their arguments in place. Name normalization must stay first; context-shield before json-healer. Flag a hook that reads `input.tool` before normalization could have run, or one that returns a value (return values are discarded).
+2. **Hook order.** Hooks run in `compose` array order and mutate their arguments in place. Name normalization must stay first. Flag a hook that reads `input.tool` before normalization could have run, or one that returns a value (return values are discarded).
 3. **Result shapes.** A change must work for `{output}`, `{content: string}` and `{content: parts[]}`, and non-text parts must survive.
 4. **v2 limits.** The async `tool.definition` hook is not bridged (`SLIM_DESCRIPTIONS` is applied directly), and rule files only load on v1. Flag changes that assume otherwise.
 5. **Tests.** The parity tests in `v2.test.ts` should cover any new hook behaviour for both adapters. Flag behaviour only one adapter's test exercises.
