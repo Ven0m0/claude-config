@@ -1,0 +1,28 @@
+{
+  "permission": {
+    "*": "allow",
+    "path": {
+      "*": "allow",
+      "~/.git-credentials": "deny",
+      "~/.claude/.credentials.json": "deny",
+      "~/.ssh/id_*": "deny",
+      "~/.mcp-auth/*": "deny",
+      "~/.gnupg/*": "deny",
+      "~/.pi/agent/auth.json": "deny",
+      "~/.npmrc": "ask"
+    },
+    "bash": {
+      "*": "allow",
+      "git push --force*": "ask",
+      "git push -f*": "ask",
+      "git reset --hard*": "ask",
+      "git clean -fd*": "ask",
+      "npm publish*": "ask"
+    },
+    "mcp": {
+      "*": "allow",
+      "patchright:browser_install": "deny"
+    },
+    "external_directory": "allow"
+  }
+}
