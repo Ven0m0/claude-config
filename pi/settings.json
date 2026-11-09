@@ -1,0 +1,45 @@
+{
+  "packages": [
+    "npm:pi-btw",
+    "npm:pi-claude-bridge",
+    "npm:pi-claude-bridge-askclaude",
+    "npm:pi-mcp-adapter",
+    "npm:pi-subagents",
+    "npm:pi-claude-marketplace",
+    "npm:@quintinshaw/pi-dynamic-workflows",
+    "npm:pi-lens",
+    "npm:@jordyvanvorselen/pi-claude-hooks",
+    "npm:context-mode",
+    "npm:@dietrichgebert/ponytail",
+    "npm:pi-web-access",
+    "npm:@juicesharp/rpiv-todo",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:@narumitw/pi-plan-mode",
+    "npm:pi-rewind-hook",
+    "npm:@gotgenes/pi-permission-system",
+    "npm:pi-background-tasks",
+    "npm:pi-context-view",
+    "npm:pi-goal-x",
+    "npm:pi-simplify",
+    "npm:pi-powerline-footer",
+    "npm:@narumitw/pi-usage",
+    "npm:@ff-labs/pi-fff",
+    "npm:pi-hashline-edit-pro"
+  ],
+  "defaultProvider": "claude-bridge",
+  "defaultModel": "claude-sonnet-5-5",
+  "defaultTools": ["+powershell", "+codemode"],
+  "skills": ["~/.claude/skills", "~/.claude/plugins/cache/claude-night-market/conserve/1.10.0/skills"],
+  "extensions": ["-builtin:mcp"],
+  "prompts": ["~/.claude/plugins/cache/claude-night-market/conserve/1.10.0/commands"],
+  "images": {
+    "blockImages": false
+  },
+  "terminal": {
+    "showTerminalProgress": true
+  },
+  "enableInstallTelemetry": false,
+  "defaultProjectTrust": "always",
+  "theme": "system",
+  "enabledModels": ["claude-bridge/claude-opus-5-5", "claude-bridge/claude-sonnet-5-5"]
+}

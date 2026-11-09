@@ -1,0 +1,45 @@
+{
+  "mcpServers": {
+    "codegraph": {
+      "command": "codegraph",
+      "args": ["serve", "--mcp"],
+      "directTools": ["codegraph_explore"]
+    },
+    "obsidian-hybrid-search": {
+      "command": "C:\\Users\\Ven0m0\\AppData\\Local\\mise\\installs\\node\\24.22.0\\node.exe",
+      "args": [
+        "C:\\Users\\Ven0m0\\AppData\\Local\\obsidian-hybrid-search\\app\\node_modules\\obsidian-hybrid-search\\dist\\src\\server.js"
+      ],
+      "env": {
+        "OBSIDIAN_VAULT_PATH": "C:\\Users\\Ven0m0\\Nextcloud\\obsidian-vault",
+        "OBSIDIAN_IGNORE_PATTERNS": ".obsidian/**,.claude/**,.claudian/**,.remember/**,Templates/**,*.canvas"
+      }
+    },
+    "rea": {
+      "command": "C:/Program Files/nodejs/node.exe",
+      "args": ["C:/Users/Ven0m0/.bun/install/global/node_modules/rea-agents/scripts/rea.mjs", "mcp"],
+      "env": {
+        "GHIDRA_INSTALL_DIR": "C:\\Users\\Ven0m0\\tools\\rea\\ghidra_12.1.4_PUBLIC",
+        "JAVA_HOME": "C:\\Users\\Ven0m0\\tools\\rea\\jdk-21.0.12.1+1",
+        "REA_JADX_MCP_JAR": "C:\\Users\\Ven0m0\\.local\\share\\rea\\android\\jadx-headless-mcp-0.7.1-all.jar",
+        "REA_APKTOOL_COMMAND": "C:\\Users\\Ven0m0\\scoop\\shims\\apktool.cmd",
+        "REA_OBJDUMP_COMMAND": "C:\\Users\\Ven0m0\\scoop\\apps\\binutils\\current\\bin\\objdump.exe",
+        "REA_RIZIN_COMMAND": "C:\\Users\\Ven0m0\\scoop\\apps\\rizin\\current\\bin\\rizin.exe",
+        "REA_TSHARK_COMMAND": "C:\\Users\\Ven0m0\\scoop\\apps\\wireshark\\current\\tshark.exe",
+        "REA_CAPINFOS_COMMAND": "C:\\Users\\Ven0m0\\scoop\\apps\\wireshark\\current\\capinfos.exe",
+        "REA_WABT_BIN_DIRECTORY": "C:\\Users\\Ven0m0\\scoop\\apps\\wabt\\current",
+        "REA_GHIDRA_STARTUP_TIMEOUT_MS": "1500000"
+      }
+    },
+    "icm": {
+      "command": "C:/Users/Ven0m0/AppData/Local/icm/bin/icm.exe",
+      "args": ["serve"],
+      "env": {}
+    },
+    "patchright": {
+      "command": "node",
+      "args": ["C:/Users/Ven0m0/.local/share/patchright-mcp/node_modules/@playwright/mcp/cli.js"],
+      "env": {}
+    }
+  }
+}

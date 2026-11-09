@@ -1,0 +1,6 @@
+{
+  "$schema": "https://raw.githubusercontent.com/apmantza/pi-lens/master/docs/schema/pi-lens-config-v1.json",
+  "lsp": { "enabled": true },
+  "format": { "enabled": false },
+  "autofix": { "enabled": false }
+}
