@@ -447,7 +447,7 @@
 
     "@typescript/typescript-win32-x64": ["@typescript/typescript-win32-x64@7.0.2", "", { "os": "win32", "cpu": "x64" }, "sha512-0BQ3HkAHHlKLSp1qRvf3SUhGpGsDuhB/jgFw75guyqbxJqEaS0Cw/VFO8i2nHglJUzQCRtMMR/IBAKE3ETMC4g=="],
 
-    "@yawlabs/ctxlint": ["@yawlabs/ctxlint@0.28.1", "", { "dependencies": { "picomatch": "^4.0.4", "vscode-languageserver": "^10.0.0", "vscode-languageserver-textdocument": "^1.0.12" }, "bin": { "ctxlint": "bin/ctxlint.mjs" } }, "sha512-c/VMeYHASiIUuoajbGRSnvDsYcxeb1L79uxwVPT9BbTUaYyNQz+/P2LH9vncOVq7d9bYe6jI7RHGpwIA2XGfQA=="],
+    "@yawlabs/ctxlint": ["@yawlabs/ctxlint@0.28.2", "", { "dependencies": { "picomatch": "^4.0.4", "vscode-languageserver": "^10.0.0", "vscode-languageserver-textdocument": "^1.0.12" }, "bin": { "ctxlint": "bin/ctxlint.mjs" } }, "sha512-EWHfJtdj19MpgigCO0GkQEKGlZDPK1590eKxbjAXLqxrUO5lobyY36HzUcegPCs5CM40AwnRj0bo3TmbvfrZ/Q=="],
 
     "abbrev": ["abbrev@4.0.0", "", {}, "sha512-a1wflyaL0tHtJSmLSOVybYhy22vRih4eduhhrkcjgrWGnRfrZtovJ2FRjxuTtkkj47O/baf0R86QU5OuYpz8fA=="],
 
