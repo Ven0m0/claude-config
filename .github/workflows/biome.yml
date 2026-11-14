@@ -14,6 +14,14 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - name: Install dependencies
         run: bun install --frozen-lockfile
+      - name: Check biome.json schema matches the installed Biome
+        run: |
+          installed=$(bunx @biomejs/biome --version | awk '{print $2}')
+          pinned=$(jq -r '."$schema"' biome.json | awk -F/ '{print $5}')
+          if [[ "$installed" != "$pinned" ]]; then
+            echo "::error file=biome.json::\$schema pins $pinned but Biome $installed is installed; update the URL"
+            exit 1
+          fi
       - name: Run Biome check
         run: bunx @biomejs/biome check .
       - name: Run oxlint
