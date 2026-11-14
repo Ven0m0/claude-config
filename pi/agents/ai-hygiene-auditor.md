@@ -108,14 +108,12 @@ def detect_tutorial_shape(code_path):
     for pat in placeholder_patterns:
         hits = bash(f'rg -rl "{pat}" --type py --type js --type ts . 2>/dev/null')
         if hits:
-            findings.append(
-                {
-                    "type": "placeholder_data",
-                    "severity": "MEDIUM",
-                    "files": hits.strip().split("\n"),
-                    "recommendation": "Replace placeholder data with real config or env vars",
-                }
-            )
+            findings.append({
+                "type": "placeholder_data",
+                "severity": "MEDIUM",
+                "files": hits.strip().split("\n"),
+                "recommendation": "Replace placeholder data with real config or env vars",
+            })
 
     # Generic-function entry points with no real integration
     generic_mains = bash(
@@ -128,14 +126,12 @@ def detect_tutorial_shape(code_path):
             filepath = hit.split(":")[0]
             line_count = int(bash(f"wc -l < {filepath}").strip() or 0)
             if line_count < 100:
-                findings.append(
-                    {
-                        "type": "tutorial_main",
-                        "severity": "LOW",
-                        "file": filepath,
-                        "recommendation": "Verify this is production entry point, not a demo stub",
-                    }
-                )
+                findings.append({
+                    "type": "tutorial_main",
+                    "severity": "LOW",
+                    "file": filepath,
+                    "recommendation": "Verify this is production entry point, not a demo stub",
+                })
 
     return findings
 ```
@@ -167,14 +163,12 @@ def detect_style_mismatch(changed_files, baseline_sample=None):
             continue
         file_has_google = bash(f'rg -l "Args:\\n" {f}').strip()
         if numpy_style and file_has_google:
-            findings.append(
-                {
-                    "type": "docstring_style_mismatch",
-                    "severity": "LOW",
-                    "file": f,
-                    "recommendation": "Use numpy-style docstrings to match the codebase",
-                }
-            )
+            findings.append({
+                "type": "docstring_style_mismatch",
+                "severity": "LOW",
+                "file": f,
+                "recommendation": "Use numpy-style docstrings to match the codebase",
+            })
 
     # --- Import style mismatch ---
     # If codebase uses relative imports, new file uses absolute?
@@ -200,14 +194,12 @@ def detect_style_mismatch(changed_files, baseline_sample=None):
                     bash(f'rg -c "^from [a-z]" {f} 2>/dev/null').strip() or "0"
                 )
                 if int(uses_absolute) > 2:
-                    findings.append(
-                        {
-                            "type": "import_style_mismatch",
-                            "severity": "LOW",
-                            "file": f,
-                            "recommendation": "Codebase uses relative imports; align new file",
-                        }
-                    )
+                    findings.append({
+                        "type": "import_style_mismatch",
+                        "severity": "LOW",
+                        "file": f,
+                        "recommendation": "Codebase uses relative imports; align new file",
+                    })
 
     return findings
 ```
@@ -226,28 +218,24 @@ def analyze_git_patterns(repo_path):
         head -20
     """)
     if massive_commits:
-        findings.append(
-            {
-                "type": "massive_commits",
-                "severity": "MEDIUM",
-                "evidence": massive_commits,
-                "recommendation": "Break into smaller, reviewable commits",
-            }
-        )
+        findings.append({
+            "type": "massive_commits",
+            "severity": "MEDIUM",
+            "evidence": massive_commits,
+            "recommendation": "Break into smaller, reviewable commits",
+        })
 
     # Refactoring ratio
     refactor_commits = bash("git log --oneline | grep -ci refactor")
     total_commits = bash("git rev-list --count HEAD")
     ratio = int(refactor_commits) / max(int(total_commits), 1)
     if ratio < 0.05:  # Less than 5% refactoring
-        findings.append(
-            {
-                "type": "refactoring_deficit",
-                "severity": "HIGH",
-                "metric": f"{ratio:.1%} refactoring commits",
-                "recommendation": "Add refactoring to every 4th commit",
-            }
-        )
+        findings.append({
+            "type": "refactoring_deficit",
+            "severity": "HIGH",
+            "metric": f"{ratio:.1%} refactoring commits",
+            "recommendation": "Add refactoring to every 4th commit",
+        })
 
     return findings
 ```
@@ -265,27 +253,23 @@ def analyze_duplication(code_path):
     )
     duplicates = json.loads(report)
     if duplicates["summary"]["duplication_percentage"] > 10:
-        findings.append(
-            {
-                "type": "tab_completion_bloat",
-                "severity": "HIGH",
-                "metric": f"{duplicates['summary']['duplication_percentage']}% duplication",
-                "blocks": len(duplicates["duplicates"]),
-                "recommendation": "Extract repeated blocks to shared utilities",
-            }
-        )
+        findings.append({
+            "type": "tab_completion_bloat",
+            "severity": "HIGH",
+            "metric": f"{duplicates['summary']['duplication_percentage']}% duplication",
+            "blocks": len(duplicates["duplicates"]),
+            "recommendation": "Extract repeated blocks to shared utilities",
+        })
 
     # One name, different bodies, several files: two models of one concern
     competing = duplicates["competing_implementations"]
     if competing:
-        findings.append(
-            {
-                "type": "competing_implementations",
-                "severity": "MEDIUM",
-                "evidence": competing,
-                "recommendation": "Keep one body per name, or record why both stand",
-            }
-        )
+        findings.append({
+            "type": "competing_implementations",
+            "severity": "MEDIUM",
+            "evidence": competing,
+            "recommendation": "Keep one body per name, or record why both stand",
+        })
 
     return findings
 ```
@@ -306,28 +290,24 @@ def verify_dependencies(project_path):
         """)
         for pkg in imports.split("\n"):
             if not is_stdlib(pkg) and not is_installed(pkg):
-                findings.append(
-                    {
-                        "type": "hallucinated_dependency",
-                        "severity": "HIGH",
-                        "package": pkg,
-                        "recommendation": f"Verify {pkg} exists: pip show {pkg}",
-                    }
-                )
+                findings.append({
+                    "type": "hallucinated_dependency",
+                    "severity": "HIGH",
+                    "package": pkg,
+                    "recommendation": f"Verify {pkg} exists: pip show {pkg}",
+                })
 
     # JavaScript
     if exists("package.json"):
         deps = bash("jq -r '.dependencies // {} | keys[]' package.json")
         for pkg in deps.split("\n"):
             if not npm_exists(pkg):
-                findings.append(
-                    {
-                        "type": "hallucinated_dependency",
-                        "severity": "HIGH",
-                        "package": pkg,
-                        "recommendation": f"Verify {pkg} exists: npm view {pkg}",
-                    }
-                )
+                findings.append({
+                    "type": "hallucinated_dependency",
+                    "severity": "HIGH",
+                    "package": pkg,
+                    "recommendation": f"Verify {pkg} exists: npm view {pkg}",
+                })
 
     return findings
 ```
@@ -345,14 +325,12 @@ def assess_test_quality(test_path):
             --include="test_*.py" .
     """)
     if happy_only:
-        findings.append(
-            {
-                "type": "happy_path_only",
-                "severity": "HIGH",
-                "files": happy_only.split("\n"),
-                "recommendation": "Add error path tests to each file",
-            }
-        )
+        findings.append({
+            "type": "happy_path_only",
+            "severity": "HIGH",
+            "files": happy_only.split("\n"),
+            "recommendation": "Add error path tests to each file",
+        })
 
     # Test-to-code ratio
     test_lines = bash(
@@ -363,14 +341,12 @@ def assess_test_quality(test_path):
     )
     ratio = int(test_lines) / max(int(code_lines), 1)
     if ratio < 0.3:  # Less than 30% test coverage by lines
-        findings.append(
-            {
-                "type": "test_deficit",
-                "severity": "MEDIUM",
-                "metric": f"{ratio:.1%} test-to-code ratio",
-                "recommendation": "Target minimum 50% test-to-code ratio",
-            }
-        )
+        findings.append({
+            "type": "test_deficit",
+            "severity": "MEDIUM",
+            "metric": f"{ratio:.1%} test-to-code ratio",
+            "recommendation": "Target minimum 50% test-to-code ratio",
+        })
 
     return findings
 ```
@@ -443,15 +419,13 @@ def detect_documentation_slop(docs_path):
         if word_count > 100:
             density = (hedge_count * 1000) / word_count
             if density > 15:  # More than 15 per 1000 words
-                findings.append(
-                    {
-                        "type": "documentation_slop",
-                        "severity": "LOW",
-                        "file": md_file,
-                        "metric": f"{density:.0f} hedges per 1000 words",
-                        "recommendation": "Rewrite with concrete specifics",
-                    }
-                )
+                findings.append({
+                    "type": "documentation_slop",
+                    "severity": "LOW",
+                    "file": md_file,
+                    "metric": f"{density:.0f} hedges per 1000 words",
+                    "recommendation": "Rewrite with concrete specifics",
+                })
 
     return findings
 ```
@@ -528,15 +502,13 @@ def detect_ai_code_debt(code_path):
             signals.append(f"guard_density={guard_density:.1f}")
 
         if signals:
-            findings.append(
-                {
-                    "type": "ai_code_debt_signals",
-                    "severity": "MEDIUM",
-                    "file": src_file,
-                    "signals": signals,
-                    "recommendation": "Review for AI-generated boilerplate",
-                }
-            )
+            findings.append({
+                "type": "ai_code_debt_signals",
+                "severity": "MEDIUM",
+                "file": src_file,
+                "signals": signals,
+                "recommendation": "Review for AI-generated boilerplate",
+            })
 
     # --- Pattern-based detection (codebase-wide) ---
 
@@ -567,18 +539,16 @@ def detect_ai_code_debt(code_path):
         head -20
     """)
     if generic_names:
-        findings.append(
-            {
-                "type": "generic_naming",
-                "severity": "LOW",
-                "evidence": generic_names,
-                "recommendation": (
-                    "Replace generic names with domain terms. "
-                    '"handle_data" tells you nothing; '
-                    '"reconcile_invoice" tells you everything.'
-                ),
-            }
-        )
+        findings.append({
+            "type": "generic_naming",
+            "severity": "LOW",
+            "evidence": generic_names,
+            "recommendation": (
+                "Replace generic names with domain terms. "
+                '"handle_data" tells you nothing; '
+                '"reconcile_invoice" tells you everything.'
+            ),
+        })
 
     return findings
 ```

@@ -16,6 +16,6 @@ jobs:
       - name: Validate Claude Code agent configs
         uses: agent-sh/agnix@v0
         with:
-          target: 'claude-code'
+          target: "claude-code"
       - name: Lint AI context files
         run: npx -y @yawlabs/ctxlint --strict --yes

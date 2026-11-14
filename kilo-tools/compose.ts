@@ -1,4 +1,4 @@
-import type { Plugin } from "@opencode-ai/plugin";
+import type { Plugin } from '@opencode-ai/plugin';
 
 type PluginInstance = Record<string, unknown>;
 type HookFn = (...args: unknown[]) => unknown;
@@ -22,7 +22,7 @@ export function compose(plugins: Plugin[]): Plugin {
 
     for (const inst of instances) {
       for (const [key, value] of Object.entries(inst)) {
-        if (key === "tool") {
+        if (key === 'tool') {
           const tools = (merged.tool ?? {}) as PluginInstance;
           for (const name of Object.keys(value as PluginInstance)) {
             if (name in tools) throw new Error(`compose: tool "${name}" is defined by more than one plugin`);
@@ -30,7 +30,7 @@ export function compose(plugins: Plugin[]): Plugin {
           merged.tool = { ...tools, ...(value as PluginInstance) };
           continue;
         }
-        if (typeof value === "function") {
+        if (typeof value === 'function') {
           const existing = merged[key] as HookFn | undefined;
           const next = value as HookFn;
           merged[key] = existing

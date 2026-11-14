@@ -30,7 +30,7 @@ MD032: false
 # Allow inline HTML where needed for documentation
 
 MD033:
-  allowed_elements: ['br', 'img', 'a', 'ul', 'li', 'ol', 'p', 'div', 'span', 'skill']
+  allowed_elements: [ "br", "img", "a", "ul", "li", "ol", "p", "div", "span", "skill" ]
 # Allow bare URLs in documentation
 
 MD034: false

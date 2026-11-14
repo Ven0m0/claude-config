@@ -1,9 +1,9 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
-import type { Plugin } from "@opencode/plugin";
-import { tool } from "@opencode-ai/plugin";
-import { resultText } from "./result-text.ts";
-import { SLIM_DESCRIPTIONS } from "./tool-names.ts";
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import type { Plugin } from '@opencode/plugin';
+import { tool } from '@opencode-ai/plugin';
+import { resultText } from './result-text.ts';
+import { SLIM_DESCRIPTIONS } from './tool-names.ts';
 
 // opencode v2 plugin adapter. v2 loads a default-exported `{ id, setup }` object and has no
 // v1 hook surface, so this wraps the v1 Plugin factory and re-registers its parts through the
@@ -16,27 +16,27 @@ type V1Plugin = (input: any) => Promise<Hooks>;
 function skillsFrom(dir: string) {
   if (!existsSync(dir)) return [];
   return readdirSync(dir, { withFileTypes: true }).flatMap((d) => {
-    const path = join(dir, d.name, "SKILL.md");
+    const path = join(dir, d.name, 'SKILL.md');
     if (!d.isDirectory() || !existsSync(path)) return [];
-    const raw = readFileSync(path, "utf8");
-    const description = raw.match(/^description:\s*(.+)$/m)?.[1]?.replace(/^["']|["']$/g, "");
-    return [{ id: d.name, name: d.name, description, path, content: raw.replace(/^---\n[\s\S]*?\n---\n/, "") }];
+    const raw = readFileSync(path, 'utf8');
+    const description = raw.match(/^description:\s*(.+)$/m)?.[1]?.replace(/^["']|["']$/g, '');
+    return [{ id: d.name, name: d.name, description, path, content: raw.replace(/^---\n[\s\S]*?\n---\n/, '') }];
   });
 }
 
 function rulesFrom(dir: string) {
   if (!existsSync(dir)) return [];
   return readdirSync(dir)
-    .filter((f) => f.endsWith(".md"))
+    .filter((f) => f.endsWith('.md'))
     .sort()
-    .map((f) => readFileSync(join(dir, f), "utf8"));
+    .map((f) => readFileSync(join(dir, f), 'utf8'));
 }
 
 // shortcut: the async v1 tool.definition hook is not bridged (v2 transforms are synchronous);
 // SLIM_DESCRIPTIONS is applied directly instead.
 export function toV2(plugin: V1Plugin, skillsDir: string, rulesDir: string): Plugin.Plugin {
   return {
-    id: "kilo-tools",
+    id: 'kilo-tools',
     async setup(ctx: Plugin.Context) {
       const directory: string = ctx.location.directory;
       const worktree: string = ctx.location.project.canonical ?? directory;
@@ -69,10 +69,10 @@ export function toV2(plugin: V1Plugin, skillsDir: string, rulesDir: string): Plu
                     resources: i.patterns,
                     save: i.always,
                     metadata: i.metadata as Record<string, unknown>,
-                    source: { type: "tool", messageID: c.messageID, id: c.id },
+                    source: { type: 'tool', messageID: c.messageID, id: c.id },
                   }),
               });
-              return typeof out === "string" ? { content: out } : { content: out.output, metadata: out.metadata };
+              return typeof out === 'string' ? { content: out } : { content: out.output, metadata: out.metadata };
             },
           });
         }
@@ -84,9 +84,9 @@ export function toV2(plugin: V1Plugin, skillsDir: string, rulesDir: string): Plu
         }
       });
 
-      const before = hooks["tool.execute.before"];
+      const before = hooks['tool.execute.before'];
       if (before) {
-        await ctx.tool.hook("execute.before", async (e) => {
+        await ctx.tool.hook('execute.before', async (e) => {
           const input = { tool: e.tool, sessionID: e.sessionID, callID: e.id };
           // Copy so the v1 hook's in-place `args[...] =` writes never touch the host's object.
           const out = { args: { ...(e.input as object) } };
@@ -96,14 +96,14 @@ export function toV2(plugin: V1Plugin, skillsDir: string, rulesDir: string): Plu
         });
       }
 
-      const after = hooks["tool.execute.after"];
+      const after = hooks['tool.execute.after'];
       if (after) {
-        await ctx.tool.hook("execute.after", async (e) => {
-          if (e.status !== "completed") return;
+        await ctx.tool.hook('execute.after', async (e) => {
+          if (e.status !== 'completed') return;
           // Only the text is shown to v1 hooks; non-text parts survive inside withText().
           const view = resultText({ content: e.result.content });
           if (!view) return;
-          const out = { title: "", output: view.text, metadata: { ...e.result.metadata } };
+          const out = { title: '', output: view.text, metadata: { ...e.result.metadata } };
           await after({ tool: e.tool, sessionID: e.sessionID, callID: e.id, args: e.input }, out);
           // Result fields are readonly in v2, so replace the whole object.
           e.result = { ...e.result, ...view.withText(out.output), metadata: out.metadata };
@@ -120,8 +120,8 @@ export function toV2(plugin: V1Plugin, skillsDir: string, rulesDir: string): Plu
       // v2 has no instructions registration point, so rule files go straight into the system prompt.
       const rules = rulesFrom(rulesDir);
       if (rules.length) {
-        await ctx.session.hook("context", (e) => {
-          for (const text of rules) e.system.push({ type: "text", text });
+        await ctx.session.hook('context', (e) => {
+          for (const text of rules) e.system.push({ type: 'text', text });
         });
       }
     },

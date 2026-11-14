@@ -11,13 +11,13 @@ repos:
         name: biome check
         entry: bunx @biomejs/biome check --write
         language: node
-        types_or: [javascript, jsx, tsx, json]
+        types_or: [ javascript, jsx, tsx, json ]
         pass_filenames: true
       - id: oxlint
         name: oxlint
         entry: bunx oxlint --fix
         language: node
-        types_or: [javascript, jsx, tsx]
+        types_or: [ javascript, jsx, tsx ]
         pass_filenames: true
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -25,7 +25,7 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
-        args: [--allow-multiple-documents]
+        args: [ --allow-multiple-documents ]
       - id: check-added-large-files
       - id: check-toml
       - id: fix-byte-order-marker
@@ -38,10 +38,10 @@ repos:
     rev: v0.17.5
     hooks:
       - id: ruff-check
-        args: [--fix]
-        types_or: [python, pyi]
+        args: [ --fix ]
+        types_or: [ python, pyi ]
       - id: ruff-format
-        types_or: [python, pyi]
+        types_or: [ python, pyi ]
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.12
     hooks:

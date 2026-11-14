@@ -3,7 +3,7 @@ permissions:
   contents: read
 on:
   push:
-    branches: [main]
+    branches: [ main ]
     paths:
       - "kilo-tools/**"
       - "package.json"

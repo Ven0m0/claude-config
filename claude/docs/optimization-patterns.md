@@ -94,6 +94,7 @@ See [Data Extraction Pattern Guide](./guides/data-extraction-pattern.md) for det
 def _topics():
     return [Topic(...), Topic(...), ...]  # Hundreds of lines
 
+
 # After: Load from YAML
 def load_topics():
     with open("data/seed_topics.yaml") as f:
@@ -259,6 +260,7 @@ rg "TODO|FIXME|HACK|XXX" --type py --type md
 
 ```python
 from mylib import Client
+
 client = Client(api_key="...")
 result = client.process(data)
 ```

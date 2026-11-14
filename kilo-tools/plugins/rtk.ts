@@ -1,5 +1,5 @@
-import type { Plugin } from "@opencode/plugin"
-import { execFileSync } from "node:child_process"
+import { execFileSync } from 'node:child_process';
+import type { Plugin } from '@opencode/plugin';
 
 // RTK OpenCode plugin — rewrites commands to use rtk for token savings.
 // Requires rtk in PATH; `rtk rewrite` is the single source of truth for rewrite
@@ -12,26 +12,26 @@ import { execFileSync } from "node:child_process"
 
 function rewriteCommand(command: string): string | undefined {
   try {
-    const out = execFileSync("rtk", ["rewrite", command], {
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "ignore"],
+    const out = execFileSync('rtk', ['rewrite', command], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
       timeout: 5_000,
-    }).trim()
-    if (out && out !== command) return out
+    }).trim();
+    if (out && out !== command) return out;
   } catch {
     // rtk missing from PATH, unsupported command, or timeout — pass through unchanged
   }
-  return undefined
+  return undefined;
 }
 
 const plugin: Plugin.Plugin = {
-  id: "rtk",
+  id: 'rtk',
   async setup(ctx) {
-    await ctx.shell.hook("create.before", (event) => {
-      const rewritten = rewriteCommand(event.command)
-      if (rewritten) event.command = rewritten
-    })
+    await ctx.shell.hook('create.before', (event) => {
+      const rewritten = rewriteCommand(event.command);
+      if (rewritten) event.command = rewritten;
+    });
   },
-}
+};
 
-export default plugin
+export default plugin;
