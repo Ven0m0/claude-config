@@ -166,3 +166,4 @@ lib64/
 theme.config.tsx
 .omc/
 .cachebro/
+.headroom/
