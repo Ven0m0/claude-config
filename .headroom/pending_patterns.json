@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "patterns": [
+    {
+      "category": "preference",
+      "content": "User preference: need the model anymore",
+      "importance": 0.75,
+      "count": 1,
+      "entity_refs": [],
+      "metadata": {
+        "type": "correction",
+        "source_text": "remove install-gemma, I dont need the model anymore",
+        "first_seen_at": "2026-11-16T02:30:39.095801+00:00",
+        "last_seen_at": "2026-11-16T02:30:39.095801+00:00"
+      },
+      "content_hash": "28be6378f261506d",
+      "save_token": null
+    },
+    {
+      "category": "error_recovery",
+      "content": "Search pattern `mtp|draft|spec|error|unknown|accept` found no results. Use `8080|8788|llama` instead.",
+      "importance": 0.5,
+      "count": 1,
+      "entity_refs": [],
+      "metadata": {
+        "first_seen_at": "2026-11-16T02:35:51.421063+00:00",
+        "last_seen_at": "2026-11-16T02:35:51.421063+00:00"
+      },
+      "content_hash": "9db5769249b07f53",
+      "save_token": null
+    }
+  ]
+}
