@@ -26,7 +26,7 @@ jobs:
             pyproject.toml
       - uses: oven-sh/setup-bun@v2
       - name: Install system packages
-        uses: awalsh128/cache-apt-pkgs-action@v1
+        uses: awalsh128/cache-apt-pkgs-action@v2
         with:
           packages: shellcheck jq build-essential pkg-config ripgrep fd-find
           version: 1.0
